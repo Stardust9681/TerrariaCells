@@ -3,4 +3,9 @@ Items: {
 		DisplayName: Connector
 		Tooltip: ""
 	}
+
+	RoomConnectorItem: {
+		DisplayName: Room Connector Item
+		Tooltip: ""
+	}
 }
