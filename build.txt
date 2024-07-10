@@ -1,3 +1,4 @@
 displayName = Terraria Cells
 author = Sorbet and co.
 version = 0.1
+modReferences = StructureHelper
