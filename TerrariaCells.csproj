@@ -8,7 +8,19 @@
 		
 	</PropertyGroup>
 	<ItemGroup>
-	  <Folder Include="Content\Modifiers\" />
+	  <AdditionalFiles Remove="Content\Modifiers\**" />
+	  <Compile Remove="Content\Modifiers\**" />
+	  <EmbeddedResource Remove="Content\Modifiers\**" />
+	  <None Remove="Content\Modifiers\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Common\" />
+	  <Folder Include="Content\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Reference Include="StructureHelper">
+	    <HintPath>..\ModAssemblies\StructureHelper_v2.5.2.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 	<!-- References -->
