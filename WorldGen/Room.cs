@@ -25,10 +25,10 @@ namespace TerrariaCells.WorldGen {
 		}
 	}
 
-	internal struct RoomConnection {
-		public RoomConnectionSide Side;
-		public int Offset;
-		public int Length;
+	internal class RoomConnection(RoomConnectionSide side, int offset, int length) {
+		public readonly RoomConnectionSide Side = side;
+		public readonly int Offset = offset;
+		public readonly int Length = length;
 	}
 
 	internal class Room {
@@ -117,11 +117,7 @@ namespace TerrariaCells.WorldGen {
 						end++;
 					}
 
-					var connection = new RoomConnection {
-						Side = RoomConnectionSide.Top,
-						Offset = x,
-						Length = end - x
-					};
+					var connection = new RoomConnection(RoomConnectionSide.Top, x, end - x);
 					this.Connections.Add(connection);
 
 					x = end;
@@ -145,11 +141,7 @@ namespace TerrariaCells.WorldGen {
 						end++;
 					}
 
-					var connection = new RoomConnection {
-						Side = RoomConnectionSide.Bottom,
-						Offset = x,
-						Length = end - x
-					};
+					var connection = new RoomConnection(RoomConnectionSide.Bottom, x, end - x);
 					this.Connections.Add(connection);
 
 					x = end;
@@ -173,11 +165,7 @@ namespace TerrariaCells.WorldGen {
 						end++;
 					}
 
-					var connection = new RoomConnection {
-						Side = RoomConnectionSide.Left,
-						Offset = y,
-						Length = end - y
-					};
+					var connection = new RoomConnection(RoomConnectionSide.Left, y, end - y);
 					this.Connections.Add(connection);
 
 					y = end;
@@ -201,11 +189,7 @@ namespace TerrariaCells.WorldGen {
 						end++;
 					}
 
-					var connection = new RoomConnection {
-						Side = RoomConnectionSide.Right,
-						Offset = y,
-						Length = end - y
-					};
+					var connection = new RoomConnection(RoomConnectionSide.Right, y, end - y);
 					this.Connections.Add(connection);
 
 					y = end;

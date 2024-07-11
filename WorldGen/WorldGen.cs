@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.IO;
 using Terraria.ModLoader;
@@ -22,8 +23,11 @@ namespace TerrariaCells.WorldGen {
 	}
 
 	class GenerateRoomsPass : GenPass {
+
+		const int ConnectorFrontClearance = 7;
+		const int ConnectorSideClearance = 2;
 		
-		private readonly struct RoomRect(Point position, int roomIndex) {
+		private class RoomRect(Point position, int roomIndex) {
 			public readonly Rectangle Rect = new(
 				position.X, position.Y,
 				Room.Rooms[roomIndex].Width, Room.Rooms[roomIndex].Height
@@ -31,15 +35,32 @@ namespace TerrariaCells.WorldGen {
 			public readonly int RoomIndex = roomIndex;
 		}
 
-		private struct Connection {
-			public Point Position;
-			public int Length;
-			public RoomConnectionSide Side;
+		/// <summary>
+		/// Represents a connection along with an absolute position in world space.
+		/// </summary>
+		private readonly struct PosConnection {
+			public readonly Point Position;
+			public readonly RoomConnection Connection;
+
+			public PosConnection(Point position, Room room, RoomConnection connection) {
+
+				var offset = connection.Side switch {
+					RoomConnectionSide.Left => new Point(0, connection.Offset),
+					RoomConnectionSide.Right => new Point(room.Width, connection.Offset),
+					RoomConnectionSide.Top => new Point(connection.Offset, 0),
+					RoomConnectionSide.Bottom => new Point(connection.Offset, room.Height),
+					_ => throw new Exception("invalid room connection side"),
+				};
+
+				this.Position = position + offset;
+				this.Connection = connection;
+			}
+
 		}
 
 		private struct RoomGenState {
 			public int RoomIndex;
-			public List<Connection> Connections;
+			public List<PosConnection> Connections;
 		}
 
 		private struct ValidRoomPosition {
@@ -54,22 +75,9 @@ namespace TerrariaCells.WorldGen {
 
 			var room = Room.Rooms[index];
 
-			List<Connection> connections = [];
+			List<PosConnection> connections = [];
 			foreach (var connection in room.Connections) {
-
-				var offset = connection.Side switch {
-					RoomConnectionSide.Left => new Point(0, connection.Offset),
-					RoomConnectionSide.Right => new Point(room.Width, connection.Offset),
-					RoomConnectionSide.Top => new Point(connection.Offset, 0),
-					RoomConnectionSide.Bottom => new Point(connection.Offset, room.Height),
-					_ => throw new Exception("invalid room connection side"),
-				};
-
-				connections.Add(new Connection {
-					Position = position + offset,
-					Length = connection.Length,
-					Side = connection.Side,
-				});
+				connections.Add(new PosConnection(position, room, connection));
 			}
 
 			stack.Push(new RoomGenState {
@@ -88,20 +96,79 @@ namespace TerrariaCells.WorldGen {
 			};
 		}
 
-		private static bool IsRoomPositionValid(List<RoomRect> roomRects, int x, int y, int width, int height) {
-			var roomRect = new Rectangle(x, y, width, height);
+		private static Rectangle GetConnectionClearanceRect(PosConnection connection) {
+			return connection.Connection.Side switch {
+				RoomConnectionSide.Left => new Rectangle(
+					connection.Position.X - ConnectorFrontClearance,
+					connection.Position.Y - ConnectorSideClearance,
+					ConnectorFrontClearance,
+					ConnectorSideClearance * 2 + connection.Connection.Length
+				),
+				RoomConnectionSide.Right => new Rectangle(
+					connection.Position.X,
+					connection.Position.Y - ConnectorSideClearance,
+					ConnectorFrontClearance,
+					ConnectorSideClearance * 2 + connection.Connection.Length
+				),
+				RoomConnectionSide.Top => new Rectangle(
+					connection.Position.X - ConnectorSideClearance,
+					connection.Position.Y - ConnectorFrontClearance,
+					ConnectorSideClearance * 2 + connection.Connection.Length,
+					ConnectorFrontClearance
+				),
+				RoomConnectionSide.Bottom => new Rectangle(
+					connection.Position.X - ConnectorSideClearance,
+					connection.Position.Y,
+					ConnectorSideClearance * 2 + connection.Connection.Length,
+					ConnectorFrontClearance
+				),
+				_ => throw new Exception("invalid room connection side"),
+			};
+		}
 
-			// TODO: Also ensure that connections of other rooms are not blocked.
+		private static bool IsRoomPositionValid(List<RoomRect> roomRects, Point placingRoomPos, Room placingRoom, PosConnection ignoreConnection, RoomConnection placingIgnoreConnection) {
+			var placingRoomRect = new Rectangle(placingRoomPos.X, placingRoomPos.Y, placingRoom.Width, placingRoom.Height);
+
+			var placingConnectionClearances = new List<Rectangle>();
+			foreach (var placingConnection in placingRoom.Connections) {
+				if (placingConnection != placingIgnoreConnection) {
+					var posConnection = new PosConnection(placingRoomPos, placingRoom, placingConnection);
+					placingConnectionClearances.Add(GetConnectionClearanceRect(posConnection));
+				}
+			}
+
 			foreach (var room in roomRects) {
-				if (roomRect.Intersects(room.Rect)) {
+				if (placingRoomRect.Intersects(room.Rect)) {
 					return false;
+				}
+
+				foreach (var placingConnectionRect in placingConnectionClearances) {
+					if (placingConnectionRect.Intersects(room.Rect)) {
+						return false;
+					}
+				}
+
+				foreach (var connection in Room.Rooms[room.RoomIndex].Connections) {
+
+					var posConnection = new PosConnection(room.Rect.Location, Room.Rooms[room.RoomIndex], connection);
+
+					if (connection == ignoreConnection.Connection && ignoreConnection.Position == posConnection.Position) {
+						continue;
+					}
+
+					var clearanceRect = GetConnectionClearanceRect(posConnection);
+
+					if (placingRoomRect.Intersects(clearanceRect)) {
+						return false;
+					}
+
 				}
 			}
 
 			return true;
 		}
 
-		private static List<ValidRoomPosition> GetValidRoomPositionList(List<RoomRect> roomRects, Connection connection) {
+		private static List<ValidRoomPosition> GetValidRoomPositionList(List<RoomRect> roomRects, PosConnection connection) {
 
 			List<ValidRoomPosition> validRooms = [];
 
@@ -109,11 +176,11 @@ namespace TerrariaCells.WorldGen {
 			foreach (var room in Room.Rooms) {
 				int connectionIndex = 0;
 				foreach (var otherConnection in room.Connections) {
-					if (connection.Length == otherConnection.Length && connection.Side == otherConnection.Side.Opposite()) {
+					if (connection.Connection.Length == otherConnection.Length && connection.Connection.Side == otherConnection.Side.Opposite()) {
 
 						var roomPos = PositionRoomByConnection(room, otherConnection, connection.Position);
 
-						if (IsRoomPositionValid(roomRects, roomPos.X, roomPos.Y, room.Width, room.Height)) {
+						if (IsRoomPositionValid(roomRects, roomPos, room, connection, otherConnection)) {
 							validRooms.Add(new ValidRoomPosition {
 								Position = roomPos,
 								RoomIndex = roomIndex,
@@ -174,7 +241,7 @@ namespace TerrariaCells.WorldGen {
 						rooms.Add(new RoomRect(roomPos.Position, roomPos.RoomIndex));
 
 					}
-					
+
 				} else {
 					genStates.Pop();
 				}
