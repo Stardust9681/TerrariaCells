@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using TerrariaCells.Content.Tiles;

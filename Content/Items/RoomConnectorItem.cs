@@ -1,8 +1,6 @@
-using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using TerrariaCells.Content.Tiles;
 
 namespace TerrariaCells.Content.Items
 {
@@ -12,7 +10,7 @@ namespace TerrariaCells.Content.Items
 			Item.consumable = true;
 			Item.useTime = 10;
 			Item.useAnimation = 10;
-			Item.useStyle = 1;
+			Item.useStyle = ItemUseStyleID.Swing;
 			Item.maxStack = 9999;
 			Item.autoReuse = true;
 			Item.createTile = ModContent.TileType<Tiles.RoomConnectorTile>();
