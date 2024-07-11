@@ -5,9 +5,132 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrariaCells.Common.GlobalNPCs;
 
 namespace TerrariaCells.Content.Buffs
 {
+    //do special buff effects here
+    //also holds variables for debuff strengthening/resistance
+    public class PlayerBuffs : ModPlayer
+    {
+       
+        public override void UpdateLifeRegen()
+        {
+            int dot = 0;
+            //unfortunately terraria hardcodes player DoTs alongside beneficial life regen effects so we have to manually reverse all DoT Effects
+            #region RemoveVanillaDoT
+            if (Player.poisoned)
+            {
+                Player.lifeRegen += 4;
+            }
+            if (Player.venom)
+            {
+                Player.lifeRegen += 30;
+            }
+            if (Player.onFire)
+            {
+                Player.lifeRegen += 8;
+            }
+            if (Player.onFire3)
+            {
+                Player.lifeRegen += 8;
+            }
+            if (Player.onFrostBurn)
+            {
+                Player.lifeRegen += 16;
+            }
+            if (Player.onFrostBurn2)
+            {
+                Player.lifeRegen += 16;
+            }
+            if (Player.onFire2)
+            {
+                Player.lifeRegen += 24;
+            }
+            if (Player.burned)
+            {
+                Player.lifeRegen += 60;
+                Player.moveSpeed /= 0.5f;
+            }
+            if (Player.suffocating)
+            {
+                Player.lifeRegen += 40;
+            }
+            if (Player.electrified)
+            {
+                Player.lifeRegen += 8;
+                if (Player.controlLeft || Player.controlRight)
+                {
+                    Player.lifeRegen += 32;
+                }
+            }
+            if (Player.tongued && Main.expertMode)
+            {
+                Player.lifeRegen += 100;
+            }
+            #endregion RemoveVanillaDoT
+            for (int i = 0; i < BuffSystem.BuffInfo.Keys.Count; i++)
+            {
+                int id = BuffSystem.BuffInfo.Keys.ToList()[i];
+                bool real = BuffSystem.BuffInfo.TryGetValue(id, out BuffData data);
+                if (real && Player.HasBuff(id))
+                {
+
+                    if (data.PlayerDoT != null && (int)data.PlayerDoT != 0 && !data.CustomDoTLogic)
+                    {
+                        float multiplier = GlobalDebuffResist;
+                        if (BuffData.HasTag(id, BuffData.Fire)) multiplier *= FireDebuffResist;
+                        if (BuffData.HasTag(id, BuffData.Ice)) multiplier *= IceDebuffResist;
+                        if (BuffData.HasTag(id, BuffData.Evil)) multiplier *= EvilDebuffResist;
+                        if (BuffData.HasTag(id, BuffData.Holy)) multiplier *= HolyDebuffResist;
+                        if (BuffData.HasTag(id, BuffData.Blood)) multiplier *= BloodDebuffResist;
+                        if (BuffData.HasTag(id, BuffData.Poison)) multiplier *= PoisonDebuffResist;
+                        if (BuffData.HasTag(id, BuffData.Natural)) multiplier *= NaturalDebuffResist;
+                        if (BuffData.HasTag(id, BuffData.Electric)) multiplier *= ElectricDebuffResist;
+                        dot -= (int)(data.PlayerDoT * multiplier * 2); //need to multiply intended dps by 2 because weird
+
+                    }
+                    //electrified is weird.
+                    if (id == BuffID.Electrified)
+                    {
+                        dot -= (int)data.PlayerDoT * 2;
+                        if (Player.controlLeft || Player.controlRight)
+                        {
+                            dot -= (int)data.PlayerDoT * 8;
+                        }
+                    }
+                    //theres no other DoT debuffs applyable to players that do weird things thank god.
+                    //but if you decide to make them do something, put the logic here.
+                }
+            }
+            if (BuffData.HasAnyBuffWithTag(Player, BuffData.Fire) && Player.HasBuff(BuffID.Oiled))
+            {
+                dot -= 50; //oiled does +25 dps if you have any fire debuff
+            }
+            Player.lifeRegen += dot;
+        }
+        //debuffs of x type dealt by this player deal more/less damage
+        public float GlobalDebuffMultiplier = 1;
+        public float FireDebuffMultiplier = 1;
+        public float IceDebuffMultiplier = 1;
+        public float EvilDebuffMultiplier = 1;
+        public float HolyDebuffMultiplier = 1;
+        public float BloodDebuffMultiplier = 1;
+        public float PoisonDebuffMultiplier = 1;
+        public float NaturalDebuffMultiplier = 1;
+        public float ElectricDebuffMultiplier = 1;
+
+        //debuffs of x type deal more/less damage to the player
+        public float GlobalDebuffResist = 1;
+        public float FireDebuffResist = 1;
+        public float IceDebuffResist = 1;
+        public float EvilDebuffResist = 1;
+        public float HolyDebuffResist = 1;
+        public float BloodDebuffResist = 1;
+        public float PoisonDebuffResist = 1;
+        public float NaturalDebuffResist = 1;
+        public float ElectricDebuffResist = 1;
+    }
     public class BuffSystem : ModSystem
     {
         public static Dictionary<int, BuffData> BuffInfo;
@@ -73,6 +196,33 @@ namespace TerrariaCells.Content.Buffs
             {
                 int id = BuffInfo.Keys.ToList()[i];
                 bool real = BuffInfo.TryGetValue(id, out BuffData data);
+                BuffNPC buffNPC = self.GetGlobalNPC<BuffNPC>();
+                //im so sorry
+                float multiplier = buffNPC.GlobalDebuffResist;
+                if (BuffData.HasTag(id, BuffData.Fire)) multiplier *= buffNPC.FireDebuffResist;
+                if (BuffData.HasTag(id, BuffData.Ice)) multiplier *= buffNPC.IceDebuffResist;
+                if (BuffData.HasTag(id, BuffData.Evil)) multiplier *= buffNPC.EvilDebuffResist;
+                if (BuffData.HasTag(id, BuffData.Holy)) multiplier *= buffNPC.HolyDebuffResist;
+                if (BuffData.HasTag(id, BuffData.Blood)) multiplier *= buffNPC.BloodDebuffResist;
+                if (BuffData.HasTag(id, BuffData.Poison)) multiplier *= buffNPC.PoisonDebuffResist;
+                if (BuffData.HasTag(id, BuffData.Natural)) multiplier *= buffNPC.NaturalDebuffResist;
+                if (BuffData.HasTag(id, BuffData.Electric)) multiplier *= buffNPC.ElectricDebuffResist;
+                for (int d = 0; d < buffNPC.PlayerTags.Length; i++)
+                {
+                    if (buffNPC.PlayerTags[i] > 0)
+                    {
+                        PlayerBuffs player = Main.player[i].GetModPlayer<PlayerBuffs>();
+                        if (BuffData.HasTag(id, BuffData.Fire)) multiplier *= player.FireDebuffMultiplier;
+                        if (BuffData.HasTag(id, BuffData.Ice)) multiplier *= player.IceDebuffMultiplier;
+                        if (BuffData.HasTag(id, BuffData.Evil)) multiplier *= player.EvilDebuffMultiplier;
+                        if (BuffData.HasTag(id, BuffData.Holy)) multiplier *= player.HolyDebuffMultiplier;
+                        if (BuffData.HasTag(id, BuffData.Blood)) multiplier *= player.BloodDebuffMultiplier;
+                        if (BuffData.HasTag(id, BuffData.Poison)) multiplier *= player.PoisonDebuffMultiplier;
+                        if (BuffData.HasTag(id, BuffData.Natural)) multiplier *= player.NaturalDebuffMultiplier;
+                        if (BuffData.HasTag(id, BuffData.Electric)) multiplier *= player.ElectricDebuffMultiplier;
+                    }
+                }
+
                 if (real && self.HasBuff(id))
                 {
                     if (data.DoT != 0 && dot == 0 && self.lifeRegen > 0)
@@ -80,18 +230,16 @@ namespace TerrariaCells.Content.Buffs
                     if (data.DoT != 0 && !data.CustomDoTLogic)
                     {
 
-                        dot -= data.DoT * 2; //need to multiply intended dps by 2 because weird
-                        if (self.oiled && data.Tags != null && data.Tags.Contains(BuffData.Fire))
-                            dot -= 50; //oiled does +25 dps per fire debuff
+                        dot -= (int)(data.DoT * multiplier * 2); //need to multiply intended dps by 2 because weird
                     }
                     //custom debuff function
                     #region CustomDoTFunction
                     if (id == BuffID.Electrified)
                     {
-                        dot -= data.DoT * 2;
+                        dot -= (int)(data.DoT * multiplier * 2);
                         //idk random velocity number check to make electrified do more damage.
                         //electrified doesnt apply to selfs ever in vanilla so nothing to base off of
-                        if (self.velocity.Length() >= 7) dot -= data.DoT * 4;
+                        if (self.velocity.Length() >= 7) dot -= (int)(data.DoT * multiplier * 2);
                     }
                     //bone javeline debuff
                     if (id == 169 && self.javelined)
@@ -104,7 +252,7 @@ namespace TerrariaCells.Content.Buffs
                                 numJavelines++;
                             }
                         }
-                        dot -= numJavelines * data.DoT * 2;
+                        dot -= numJavelines * (int)(data.DoT * multiplier * 2);
                     }
                     if (id == BuffID.BloodButcherer)
                     {
@@ -116,7 +264,7 @@ namespace TerrariaCells.Content.Buffs
                                 numBlood++;
                             }
                         }
-                        dot -= numBlood * 2 * data.DoT;
+                        dot -= numBlood * (int)(data.DoT * multiplier * 2);
                     }
                     if (id == BuffID.Daybreak)
                     {
@@ -132,7 +280,7 @@ namespace TerrariaCells.Content.Buffs
                         {
                             numDaybreak = 1;
                         }
-                        dot -= numDaybreak * 2 * data.DoT;
+                        dot -= numDaybreak * (int)(data.DoT * multiplier * 2);
                     }
                     //celled
                     if (id == 183)
@@ -145,69 +293,72 @@ namespace TerrariaCells.Content.Buffs
                                 num10++;
                             }
                         }
-                        dot -= num10 * 2 * data.DoT;
+                        dot -= num10 * (int)(data.DoT * multiplier * 2);
                     }
                     //copy pasted from vanilla (i hate it)
                     if (id == BuffID.DryadsWardDebuff)
                     {
                         int baseDoT = data.DoT;
-                        float multiplier = 1f;
+                        float dryadmultiplier = 1f;
                         if (NPC.downedBoss1)
                         {
-                            multiplier += 0.1f;
+                            dryadmultiplier += 0.1f;
                         }
                         if (NPC.downedBoss2)
                         {
-                            multiplier += 0.1f;
+                            dryadmultiplier += 0.1f;
                         }
                         if (NPC.downedBoss3)
                         {
-                            multiplier += 0.1f;
+                            dryadmultiplier += 0.1f;
                         }
                         if (NPC.downedQueenBee)
                         {
-                            multiplier += 0.1f;
+                            dryadmultiplier += 0.1f;
                         }
                         if (Main.hardMode)
                         {
-                            multiplier += 0.4f;
+                            dryadmultiplier += 0.4f;
                         }
                         if (NPC.downedMechBoss1)
                         {
-                            multiplier += 0.15f;
+                            dryadmultiplier += 0.15f;
                         }
                         if (NPC.downedMechBoss2)
                         {
-                            multiplier += 0.15f;
+                            dryadmultiplier += 0.15f;
                         }
                         if (NPC.downedMechBoss3)
                         {
-                            multiplier += 0.15f;
+                            dryadmultiplier += 0.15f;
                         }
                         if (NPC.downedPlantBoss)
                         {
-                            multiplier += 0.15f;
+                            dryadmultiplier += 0.15f;
                         }
                         if (NPC.downedGolemBoss)
                         {
-                            multiplier += 0.15f;
+                            dryadmultiplier += 0.15f;
                         }
                         if (NPC.downedAncientCultist)
                         {
-                            multiplier += 0.15f;
+                            dryadmultiplier += 0.15f;
                         }
                         if (Main.expertMode)
                         {
-                            multiplier *= Main.GameModeInfo.TownNPCDamageMultiplier;
+                            dryadmultiplier *= Main.GameModeInfo.TownNPCDamageMultiplier;
                         }
-                        baseDoT = (int)((float)baseDoT * multiplier);
+                        baseDoT = (int)((float)baseDoT * dryadmultiplier * multiplier);
                         dot -= 2 * baseDoT;
                     }
                     #endregion CustomDoTFunction
                 }
 
             }
-
+            if (BuffData.HasAnyBuffWithTag(self, BuffData.Fire) && self.HasBuff(BuffID.Oiled))
+            {
+                dot -= 50; //oiled does +25 dps if you have any fire debuff
+            }
             //some misc stuff that is also done in the method i turned off because lol
             #region MiscselfBuffRedo
             //this mechanic doesnt have an attatched debuff but its done in the method i turned off so i gotta redo it here
@@ -310,92 +461,7 @@ namespace TerrariaCells.Content.Buffs
         }
 
     }
-    public class PlayerBuffs : ModPlayer
-    {
-        public override void UpdateLifeRegen()
-        {
-            int dot = 0;
-            //unfortunately terraria hardcodes player DoTs alongside beneficial life regen effects so we have to manually reverse all DoT Effects
-            #region RemoveVanillaDoT
-            if (Player.poisoned)
-            {
-                Player.lifeRegen += 4;
-            }
-            if (Player.venom)
-            {
-                Player.lifeRegen += 30;
-            }
-            if (Player.onFire)
-            {
-                Player.lifeRegen += 8;
-            }
-            if (Player.onFire3)
-            {
-                Player.lifeRegen += 8;
-            }
-            if (Player.onFrostBurn)
-            {
-                Player.lifeRegen += 16;
-            }
-            if (Player.onFrostBurn2)
-            {
-                Player.lifeRegen += 16;
-            }
-            if (Player.onFire2)
-            {
-                Player.lifeRegen += 24;
-            }
-            if (Player.burned)
-            {
-                Player.lifeRegen += 60;
-                Player.moveSpeed /= 0.5f;
-            }
-            if (Player.suffocating)
-            {
-                Player.lifeRegen += 40;
-            }
-            if (Player.electrified)
-            {
-                Player.lifeRegen += 8;
-                if (Player.controlLeft || Player.controlRight)
-                {
-                    Player.lifeRegen += 32;
-                }
-            }
-            if (Player.tongued && Main.expertMode)
-            {
-                Player.lifeRegen += 100;
-            }
-            #endregion RemoveVanillaDoT
-            for (int i = 0; i < BuffSystem.BuffInfo.Keys.Count; i++)
-            {
-                int id = BuffSystem.BuffInfo.Keys.ToList()[i];
-                bool real = BuffSystem.BuffInfo.TryGetValue(id, out BuffData data);
-                if (real && Player.HasBuff(id))
-                {
-                    
-                    if (data.PlayerDoT != null && (int)data.PlayerDoT != 0 && !data.CustomDoTLogic)
-                    {
-                        dot -= (int)data.PlayerDoT * 2; //need to multiply intended dps by 2 because weird
-                        if (Player.HasBuff(BuffID.Oiled) && data.Tags != null && data.Tags.Contains(BuffData.Fire))
-                            dot -= 50; //oiled does +25 dps per fire debuff
-                    }
-                    //electrified is weird.
-                    if (id == BuffID.Electrified)
-                    {
-                        dot -= (int)data.PlayerDoT * 2;
-                        if (Player.controlLeft || Player.controlRight)
-                        {
-                            dot -= (int)data.PlayerDoT * 8;
-                        }
-                    }
-                    //theres no other DoT debuffs applyable to players that do weird things thank god.
-                    //but if you decide to make them do something, put the logic here.
-                }
-            }
-            Player.lifeRegen += dot;
-        }
-    }
+    
     public class BuffData
     {
         //damage over time done to npcs
@@ -496,6 +562,40 @@ namespace TerrariaCells.Content.Buffs
             if (tags != null && tags.Length > 0 && tags.Contains(tag))
             {
                 return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// returns true if the given npc has any buff with the given tag
+        /// </summary>
+        /// <param name="npc"></param>
+        /// <param name="tag"></param>
+        /// <returns></returns>
+        public static bool HasAnyBuffWithTag(NPC npc, string tag)
+        {
+            for (int i = 0; i < npc.buffType.Length; i++)
+            {
+                if (npc.buffTime[i] > 0 && HasTag(npc.buffType[i], tag))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        /// <summary>
+        /// returns true if the given player has any buff with the given tag
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="tag"></param>
+        /// <returns></returns>
+        public static bool HasAnyBuffWithTag(Player player, string tag)
+        {
+            for (int i = 0; i < player.buffType.Length; i++)
+            {
+                if (player.buffTime[i] > 0 && HasTag(player.buffType[i], tag))
+                {
+                    return true;
+                }
             }
             return false;
         }
