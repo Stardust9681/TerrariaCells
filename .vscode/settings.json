@@ -1,0 +1,30 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        ".config": true,
+        ".gitattributes": true,
+        ".gitignore": true,
+        ".vscode": true,
+        "**.csproj": false,
+        "**.sln": true,
+        "**/.gdignore": true,
+        "**/.godot": true,
+        "**/.vs": true,
+        "**/*.dll": true,
+        "**/*.dylib": true,
+        "**/*.exe": true,
+        "**/*.godot": true,
+        "**/*.import": true,
+        "**/*.meta": true,
+        "**/*.png": true,
+        "**/*.so": true,
+        "**/*.zip": true,
+        "icon.svg": true
+    },
+    "explorerExclude.backup": {}
+}
