@@ -57,18 +57,18 @@ namespace TerrariaCells.WorldGen {
 			List<Connection> connections = [];
 			foreach (var connection in room.Connections) {
 
-				var offset = connection.side switch {
-					RoomConnectionSide.Left => new Point(0, connection.offset),
-					RoomConnectionSide.Right => new Point(room.Width, connection.offset),
-					RoomConnectionSide.Top => new Point(connection.offset, 0),
-					RoomConnectionSide.Bottom => new Point(connection.offset, room.Height),
+				var offset = connection.Side switch {
+					RoomConnectionSide.Left => new Point(0, connection.Offset),
+					RoomConnectionSide.Right => new Point(room.Width, connection.Offset),
+					RoomConnectionSide.Top => new Point(connection.Offset, 0),
+					RoomConnectionSide.Bottom => new Point(connection.Offset, room.Height),
 					_ => throw new Exception("invalid room connection side"),
 				};
 
 				connections.Add(new Connection {
 					Position = position + offset,
-					Length = connection.length,
-					Side = connection.side,
+					Length = connection.Length,
+					Side = connection.Side,
 				});
 			}
 
@@ -79,11 +79,11 @@ namespace TerrariaCells.WorldGen {
 		}
 
 		private static Point PositionRoomByConnection(Room room, RoomConnection connection, Point connPosition) {
-			return connection.side switch {
-				RoomConnectionSide.Left => new Point(connPosition.X, connPosition.Y - connection.offset),
-				RoomConnectionSide.Right => new Point(connPosition.X - room.Width, connPosition.Y - connection.offset),
-				RoomConnectionSide.Top => new Point(connPosition.X - connection.offset, connPosition.Y),
-				RoomConnectionSide.Bottom => new Point(connPosition.X - connection.offset, connPosition.Y - room.Height),
+			return connection.Side switch {
+				RoomConnectionSide.Left => new Point(connPosition.X, connPosition.Y - connection.Offset),
+				RoomConnectionSide.Right => new Point(connPosition.X - room.Width, connPosition.Y - connection.Offset),
+				RoomConnectionSide.Top => new Point(connPosition.X - connection.Offset, connPosition.Y),
+				RoomConnectionSide.Bottom => new Point(connPosition.X - connection.Offset, connPosition.Y - room.Height),
 				_ => throw new Exception("invalid room connection side"),
 			};
 		}
@@ -109,7 +109,7 @@ namespace TerrariaCells.WorldGen {
 			foreach (var room in Room.Rooms) {
 				int connectionIndex = 0;
 				foreach (var otherConnection in room.Connections) {
-					if (connection.Length == otherConnection.length && connection.Side == otherConnection.side.Opposite()) {
+					if (connection.Length == otherConnection.Length && connection.Side == otherConnection.Side.Opposite()) {
 
 						var roomPos = PositionRoomByConnection(room, otherConnection, connection.Position);
 
