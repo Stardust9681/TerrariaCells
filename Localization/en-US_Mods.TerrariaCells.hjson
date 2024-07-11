@@ -4,3 +4,23 @@ Items: {
 		Tooltip: ""
 	}
 }
+
+Configs: {
+	TerrariaCellsModConfig: {
+		DisplayName: Terraria Cells Mod Config
+
+		EnableInventoryLock: {
+			Label: Enable Inventory Lock
+			Tooltip: ""
+		}
+	}
+
+	InventoryUIConfiguration: {
+		DisplayName: Inventory U I Configuration
+
+		EnableInventoryLock: {
+			Label: Enable Inventory Lock
+			Tooltip: ""
+		}
+	}
+}

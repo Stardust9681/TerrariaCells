@@ -3,6 +3,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.UI;
+using TerrariaCells.Common;
 
 namespace TerrariaCells.Content.UI;
 
@@ -13,21 +14,33 @@ public class InventoryManager : ModSystem
 
     EntitySource_OverfullInventory entitySource_OverfullInventory;
     Player player;
+    InventoryUiConfiguration config;
 
     public override void OnWorldLoad()
     {
         player = Main.player[Main.myPlayer];
         entitySource_OverfullInventory = new(player, "TerraCells limit of 6 inventory slots");
+        config = (InventoryUiConfiguration)Mod.GetConfig("InventoryUiConfiguration");
+        if (config == null)
+        {
+            Logging.PublicLogger.Error("No config file found!");
+            return;
+        }
     }
 
     public override void PreUpdatePlayers()
     {
-        for (int i = 6; i < 50; i++)
+        if (config != null)
         {
-            player.inventory[i].TurnToAir();
+            if (config.EnableInventoryLock)
+            {
+                if (IsInventoryFull()) { }
+                for (int i = 6; i < 50; i++)
+                {
+                    player.inventory[i].TurnToAir();
+                }
+            }
         }
-
-        if (IsInventoryFull()) { }
     }
 
     private bool IsInventoryFull()
