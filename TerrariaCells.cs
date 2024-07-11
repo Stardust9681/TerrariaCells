@@ -3,14 +3,18 @@ using System;
 using Terraria;
 using Terraria.Graphics;
 using Terraria.ModLoader;
+using TerrariaCells.WorldGen;
 
 namespace TerrariaCells
 {
-    //Contributions already present are by no means absolute, conventions are negotiable.
-    public class TerrariaCells : Mod
-    {
 
-    }
+	//Contributions already present are by no means absolute, conventions are negotiable.
+	public class TerrariaCells : Mod
+	{
+		public override void Load() {
+			Room.LoadRooms(this);
+		}
+	}
 
     public class TerraCellsSystem : ModSystem
     {
