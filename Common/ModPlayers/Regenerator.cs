@@ -7,12 +7,12 @@ using Terraria.DataStructures;
 
 namespace TerrariaCells.Common.ModPlayers
 {
+	//ModPlayer handling health and regeneration aspects
 	public class Regenerator : ModPlayer
 	{
 		private const float STAGGER_POTENCY = 3f;
 		private const float INV_STAGGER_POTENCY = 1f / STAGGER_POTENCY;
 
-		//Not yet worried about multiplayer sync
 		private int damageBuffer;
 		private int damageTime;
 		private float antiRegen;
@@ -22,8 +22,8 @@ namespace TerrariaCells.Common.ModPlayers
 		private int DamageLeft => (int)(-MathF.Sqrt(TimeAmplitude * damageTime) + damageBuffer);
 
 		//Mathematics used for Damage Staggering:
-		// Damage Left = -sqrt(TimeAmplitude * damageTime) + damageBuffer
-		// Damage per Tick = -TimeAmplitude / (2 * sqrt(TimeAmplitude * damageTime))
+			//Damage Left = -sqrt(TimeAmplitude * damageTime) + damageBuffer
+			//Damage per Tick = -TimeAmplitude / (2 * sqrt(TimeAmplitude * damageTime))
 		//Damage Left approaches 0 when damageTime reaches MaxTime
 
 		public void SetStaggerDamage(int value)
@@ -55,39 +55,41 @@ namespace TerrariaCells.Common.ModPlayers
 		{
 			if (damageBuffer > 0)
 			{
-				damageTime++;
-				float timeAmp = TimeAmplitude;
-				float sqrt = MathF.Sqrt(timeAmp * damageTime);
-				antiRegen += (timeAmp / (2f * sqrt));
-				int lifeDamage = (int)MathF.Floor(antiRegen);
-				if (lifeDamage != 0)
-				{
-					Player.statLife -= lifeDamage;
-					antiRegen -= lifeDamage;
-					CheckDead();
-				}
-
-				if (damageTime > MaxTime)
-				{
-					if (antiRegen != 0)
-					{
-						antiRegen = 0;
-						Player.statLife--;
-						CheckDead();
-					}
-
-					damageTime = 0;
-					damageBuffer = 0;
-				}
+				UpdateDamageBuffer();
+			}
+		}
+		//Run damage stagger calcs
+		private void UpdateDamageBuffer()
+		{
+			damageTime++;
+			float timeAmp = TimeAmplitude;
+			float sqrt = MathF.Sqrt(timeAmp * damageTime);
+			antiRegen += (timeAmp / (2f * sqrt));
+			int lifeDamage = (int)MathF.Floor(antiRegen);
+			if (lifeDamage != 0)
+			{
+				Player.statLife -= lifeDamage;
+				antiRegen -= lifeDamage;
+				CheckDead();
+			}
+			if (damageTime > MaxTime)
+			{
+				//Assume antiRegen will never be 0, knock off 1 extra health to mark what would have been
+				antiRegen = 0;
+				Player.statLife--;
+				CheckDead();
+				damageTime = 0;
+				damageBuffer = 0;
 			}
 		}
 
 		public override void OnHurt(Player.HurtInfo info)
 		{
 			int damageTaken = info.Damage;
-			Player.statLife += damageTaken;
+			Player.statLife += damageTaken; //Prevent player from taking instant direct damage
 			if (damageTaken > Player.statLife)
 			{
+				//Oneshot protection
 				int oneShotTolerance = (int)(Player.statLifeMax2 * 0.02f);
 				if (Player.statLife > Player.statLifeMax2 - oneShotTolerance)
 				{
@@ -107,7 +109,7 @@ namespace TerrariaCells.Common.ModPlayers
 			}
 		}
 
-		//Helper function, modifying health directly a lot here, want to make sure player can't live with 0 hp
+		//Make sure player dies when they hit <=0 health
 		private void CheckDead(PlayerDeathReason reason = null)
 		{
 			if (Player.statLife <= 0)
