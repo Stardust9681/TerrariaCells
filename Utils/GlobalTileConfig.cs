@@ -27,7 +27,8 @@ namespace TerrariaCells.Utils
 	public class GlobalPlayer : ModPlayer 
 	{
 		public static bool isBuilder = false;
-		public override void OnEnterWorld() {
+		public override void OnEnterWorld() 
+		{
 			isBuilder = false;
 			Player.noBuilding = true;
 		}
