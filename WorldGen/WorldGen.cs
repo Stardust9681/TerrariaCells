@@ -1,226 +1,236 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.GameContent.Generation;
 using Terraria.IO;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
 namespace TerrariaCells.WorldGen {
-    class WorldGen : ModSystem {
-        public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight) {
-            // TODO: Disable previous tasks.
-            tasks.Add(new GenerateRoomsPass());
-        }
-    }
+	class WorldGen : ModSystem {
+		public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight) {
 
-    class GenerateRoomsPass : GenPass {
-        
-        private struct RoomRect(int x, int y, int index) {
-            public int x = x;
-            public int y = y;
-            public int width = Room.Rooms[index].Width;
-            public int height = Room.Rooms[index].Height;
-            public int roomIndex = index;
-        }
+			// Disable vanilla world gen tasks.
+			foreach (var task in tasks) {
+				// TODO: I'm not sure if anything non-obvious breaks by skipping the Reset task.
+				if (task.Name != "Reset") {
+				   task.Disable();
+				}
+			}
 
-        private struct Connection {
-            public int x;
-            public int y;
-            public int length;
-            public RoomConnectionSide side;
-        }
+			tasks.Add(new GenerateRoomsPass());
+		}
+	}
 
-        private struct RoomGenState {
-            public int x;
-            public int y;
-            public int roomIndex;
-            public List<Connection> connections;
-        }
+	class GenerateRoomsPass : GenPass {
+		
+		private struct RoomRect(int x, int y, int index) {
+			public int x = x;
+			public int y = y;
+			public int width = Room.Rooms[index].Width;
+			public int height = Room.Rooms[index].Height;
+			public int roomIndex = index;
+		}
 
-        public GenerateRoomsPass() : base("Generate Rooms", 1.0) {}
+		private struct Connection {
+			public int x;
+			public int y;
+			public int length;
+			public RoomConnectionSide side;
+		}
 
-        private static void PushRoomToStack(Stack<RoomGenState> stack, int x, int y, int index, int? entranceConnIndex = null) {
+		private struct RoomGenState {
+			public int x;
+			public int y;
+			public int roomIndex;
+			public List<Connection> connections;
+		}
 
-            var room = Room.Rooms[index];
+		public GenerateRoomsPass() : base("Generate Rooms", 1.0) {}
 
-            List<Connection> connections = [];
-            int connIndex = 0;
-            foreach (var connection in room.Connections) {
+		private static void PushRoomToStack(Stack<RoomGenState> stack, int x, int y, int index, int? entranceConnIndex = null) {
 
-                if (entranceConnIndex.HasValue && entranceConnIndex.Value == connIndex) {
-                    continue;
-                }
+			var room = Room.Rooms[index];
 
-                int connX;
-                int connY;
+			List<Connection> connections = [];
+			int connIndex = 0;
+			foreach (var connection in room.Connections) {
 
-                switch (connection.side) {
-                    case RoomConnectionSide.Left:
-                        connX = x;
-                        connY = y + connection.offset;
-                        break;
-                    case RoomConnectionSide.Right:
-                        connX = x + room.Width;
-                        connY = y + connection.offset;
-                        break;
-                    case RoomConnectionSide.Top:
-                        connX = x + connection.offset;
-                        connY = y;
-                        break;
-                    case RoomConnectionSide.Bottom:
-                        connX = x + connection.offset;
-                        connY = y + room.Height;
-                        break;
-                    default:
-                        throw new Exception("invalid room connection side");
-                }
+				if (entranceConnIndex.HasValue && entranceConnIndex.Value == connIndex) {
+					continue;
+				}
 
-                connections.Add(new Connection {
-                    x = connX,
-                    y = connY,
-                    length = connection.length,
-                    side = connection.side,
-                });
-            }
+				int connX;
+				int connY;
 
-            stack.Push(new RoomGenState {
-                x = x,
-                y = y,
-                roomIndex = index,
-                connections = connections
-            });
-        }
+				switch (connection.side) {
+					case RoomConnectionSide.Left:
+						connX = x;
+						connY = y + connection.offset;
+						break;
+					case RoomConnectionSide.Right:
+						connX = x + room.Width;
+						connY = y + connection.offset;
+						break;
+					case RoomConnectionSide.Top:
+						connX = x + connection.offset;
+						connY = y;
+						break;
+					case RoomConnectionSide.Bottom:
+						connX = x + connection.offset;
+						connY = y + room.Height;
+						break;
+					default:
+						throw new Exception("invalid room connection side");
+				}
 
-        private static void PositionRoomByConnection(Room room, RoomConnection connection, int connX, int connY, out int x, out int y) {
-            switch (connection.side) {
-                case RoomConnectionSide.Left:
-                    x = connX;
-                    y = connY - connection.offset;
-                    break;
-                case RoomConnectionSide.Right:
-                    x = connX - room.Width;
-                    y = connY - connection.offset;
-                    break;
-                case RoomConnectionSide.Top:
-                    x = connX - connection.offset;
-                    y = connY;
-                    break;
-                case RoomConnectionSide.Bottom:
-                    x = connX - connection.offset;
-                    y = connY - room.Height;
-                    break;
-                default:
-                    throw new Exception("invalid room connection side");
-            }
-        }
+				connections.Add(new Connection {
+					x = connX,
+					y = connY,
+					length = connection.length,
+					side = connection.side,
+				});
+			}
 
-        private static bool IsRoomPositionValid(List<RoomRect> roomRects, int x, int y, int width, int height) {
-            // TODO: Also ensure that connections of other rooms are not blocked.
-            foreach (var room in roomRects) {
-                bool separateX = (x + width <= room.x) || (x >= room.x + room.width);
-                bool separateY = (y + height <= room.y) || (y >= room.y + room.height);
+			stack.Push(new RoomGenState {
+				x = x,
+				y = y,
+				roomIndex = index,
+				connections = connections
+			});
+		}
 
-                if (!separateX && !separateY) {
-                    return false;
-                }
-            }
+		private static void PositionRoomByConnection(Room room, RoomConnection connection, int connX, int connY, out int x, out int y) {
+			switch (connection.side) {
+				case RoomConnectionSide.Left:
+					x = connX;
+					y = connY - connection.offset;
+					break;
+				case RoomConnectionSide.Right:
+					x = connX - room.Width;
+					y = connY - connection.offset;
+					break;
+				case RoomConnectionSide.Top:
+					x = connX - connection.offset;
+					y = connY;
+					break;
+				case RoomConnectionSide.Bottom:
+					x = connX - connection.offset;
+					y = connY - room.Height;
+					break;
+				default:
+					throw new Exception("invalid room connection side");
+			}
+		}
 
-            return true;
-        }
+		private static bool IsRoomPositionValid(List<RoomRect> roomRects, int x, int y, int width, int height) {
+			// TODO: Also ensure that connections of other rooms are not blocked.
+			foreach (var room in roomRects) {
+				bool separateX = (x + width <= room.x) || (x >= room.x + room.width);
+				bool separateY = (y + height <= room.y) || (y >= room.y + room.height);
 
-        private struct ValidRoomPosition {
-            public int x;
-            public int y;
-            public int roomIndex;
-            public int connectionIndex;
-        }
+				if (!separateX && !separateY) {
+					return false;
+				}
+			}
 
-        private static List<ValidRoomPosition> GetValidRoomPositionList(List<RoomRect> roomRects, Connection connection) {
+			return true;
+		}
 
-            List<ValidRoomPosition> validRooms = [];
+		private struct ValidRoomPosition {
+			public int x;
+			public int y;
+			public int roomIndex;
+			public int connectionIndex;
+		}
 
-            int roomIndex = 0;
-            foreach (var room in Room.Rooms) {
-                int connectionIndex = 0;
-                foreach (var otherConnection in room.Connections) {
-                    if (connection.length == otherConnection.length && connection.side == otherConnection.side.Opposite()) {
+		private static List<ValidRoomPosition> GetValidRoomPositionList(List<RoomRect> roomRects, Connection connection) {
 
-                        PositionRoomByConnection(room, otherConnection, connection.x, connection.y, out int x, out int y);
+			List<ValidRoomPosition> validRooms = [];
 
-                        if (IsRoomPositionValid(roomRects, x, y, room.Width, room.Height)) {
-                            validRooms.Add(new ValidRoomPosition {
-                                x = x,
-                                y = y,
-                                roomIndex = roomIndex,
-                                connectionIndex = connectionIndex
-                            });
-                        }
+			int roomIndex = 0;
+			foreach (var room in Room.Rooms) {
+				int connectionIndex = 0;
+				foreach (var otherConnection in room.Connections) {
+					if (connection.length == otherConnection.length && connection.side == otherConnection.side.Opposite()) {
 
-                    }
-                    connectionIndex++;
-                }
-                roomIndex++;
-            }
+						PositionRoomByConnection(room, otherConnection, connection.x, connection.y, out int x, out int y);
 
-            return validRooms;
-        }
+						if (IsRoomPositionValid(roomRects, x, y, room.Width, room.Height)) {
+							validRooms.Add(new ValidRoomPosition {
+								x = x,
+								y = y,
+								roomIndex = roomIndex,
+								connectionIndex = connectionIndex
+							});
+						}
 
-        protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration) {
+					}
+					connectionIndex++;
+				}
+				roomIndex++;
+			}
 
-            var logger = ModContent.GetInstance<TerrariaCells>().Logger;
+			return validRooms;
+		}
 
-            progress.Message = "Generating Rooms";
+		protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration) {
 
-            var rand = Terraria.WorldGen.genRand;
+			progress.Message = "Generating Rooms";
 
-            List<RoomRect> rooms = [];
+			var rand = Terraria.WorldGen.genRand;
 
-            var genStates = new Stack<RoomGenState>();
+			List<RoomRect> rooms = [];
 
-            // Push the starting room to the stack.
-            var x = Main.maxTilesX / 2;
-            var y = Main.maxTilesY / 2;
-            var starterRoomIndex = rand.Next(0, Room.RoomNames.Length);
-            PushRoomToStack(genStates, x, y, starterRoomIndex);
-            rooms.Add(new RoomRect { x = x, y = y, roomIndex = starterRoomIndex });
+			var genStates = new Stack<RoomGenState>();
 
-            while (genStates.Count > 0) {
+			// Push the starting room to the stack.
+			var x = Main.maxTilesX / 2;
+			var y = Main.maxTilesY / 2;
+			var starterRoomIndex = rand.Next(0, Room.RoomNames.Length);
+			PushRoomToStack(genStates, x, y, starterRoomIndex);
+			rooms.Add(new RoomRect { x = x, y = y, roomIndex = starterRoomIndex });
 
-                var state = genStates.Peek();
+			// Set spawn point.
+			Main.spawnTileX = x + 2;
+			Main.spawnTileY = y + 3;
 
-                if (state.connections.Count > 0 && genStates.Count < 20) { // arbitrary maximum depth for now
+			// Set world surface height.
+			Main.worldSurface = Main.maxTilesY * 0.17; // TODO: This is just temporary to silence some errors.
 
-                    var connection = state.connections[^1];
-                    state.connections.RemoveAt(state.connections.Count - 1);
+			while (genStates.Count > 0) {
 
-                    var validRoomPositions = GetValidRoomPositionList(rooms, connection);
+				var state = genStates.Peek();
 
-                    if (validRoomPositions.Count > 0) {
+				if (state.connections.Count > 0 && genStates.Count < 20) { // arbitrary maximum depth for now
 
-                        var chosenIndex = rand.Next(0, validRoomPositions.Count);
-                        var roomPos = validRoomPositions[chosenIndex];
+					var connection = state.connections[^1];
+					state.connections.RemoveAt(state.connections.Count - 1);
 
-                        PushRoomToStack(genStates, roomPos.x, roomPos.y, roomPos.roomIndex);
-                        rooms.Add(new RoomRect(roomPos.x, roomPos.y, roomPos.roomIndex));
+					var validRoomPositions = GetValidRoomPositionList(rooms, connection);
 
-                    }
-                    
-                } else {
-                    genStates.Pop();
-                }
-                
-            }
+					if (validRoomPositions.Count > 0) {
 
-            foreach (var roomRect in rooms) {
+						var chosenIndex = rand.Next(0, validRoomPositions.Count);
+						var roomPos = validRoomPositions[chosenIndex];
 
-                var room = Room.Rooms[roomRect.roomIndex];
+						PushRoomToStack(genStates, roomPos.x, roomPos.y, roomPos.roomIndex);
+						rooms.Add(new RoomRect(roomPos.x, roomPos.y, roomPos.roomIndex));
 
-                StructureHelper.Generator.Generate(room.Tag, new Terraria.DataStructures.Point16(roomRect.x, roomRect.y));
-            }
-        }
-    }
+					}
+					
+				} else {
+					genStates.Pop();
+				}
+				
+			}
+
+			foreach (var roomRect in rooms) {
+
+				var room = Room.Rooms[roomRect.roomIndex];
+
+				StructureHelper.Generator.Generate(room.Tag, new Terraria.DataStructures.Point16(roomRect.x, roomRect.y));
+			}
+		}
+	}
 }
