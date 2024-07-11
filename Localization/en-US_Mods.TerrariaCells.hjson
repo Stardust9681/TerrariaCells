@@ -3,4 +3,14 @@ Items: {
 		DisplayName: Room Connector Item
 		Tooltip: ""
 	}
+
+	TestPick: {
+		DisplayName: Test Pick
+		Tooltip: ""
+	}
+
+	BuilderAccessory: {
+		DisplayName: Builder Accessory
+		Tooltip: ""
+	}
 }
