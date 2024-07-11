@@ -10,15 +10,15 @@ namespace TerrariaCells.Common.ModPlayers
 	//ModPlayer handling health and regeneration aspects
 	public class Regenerator : ModPlayer
 	{
-		private const float STAGGER_POTENCY = 3f;
-		private const float INV_STAGGER_POTENCY = 1f / STAGGER_POTENCY;
+		public const float STAGGER_POTENCY = 3f;
+		public const float INV_STAGGER_POTENCY = 1f / STAGGER_POTENCY;
 
 		private int damageBuffer;
 		private int damageTime;
 		private float antiRegen;
 
-		public float TimeAmplitude => damageBuffer * INV_STAGGER_POTENCY;
-		public float MaxTime => damageBuffer * STAGGER_POTENCY;
+		private float TimeAmplitude => damageBuffer * INV_STAGGER_POTENCY;
+		private float MaxTime => damageBuffer * STAGGER_POTENCY;
 		private int DamageLeft => (int)(-MathF.Sqrt(TimeAmplitude * damageTime) + damageBuffer);
 
 		//Mathematics used for Damage Staggering:
@@ -98,14 +98,17 @@ namespace TerrariaCells.Common.ModPlayers
 					return;
 				}
 			}
-			AdjustStaggerDamage(damageTaken+1);
+			AdjustStaggerDamage(damageTaken);
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (damageBuffer > 0)
 			{
-				AdjustStaggerDamage(-damageDone / 2); //Health/rally recovery
+				//Amount for the player to "heal" by
+				int healAmount = damageDone / 2;
+				Player.HealEffect(healAmount);
+				AdjustStaggerDamage(-healAmount);
 			}
 		}
 
