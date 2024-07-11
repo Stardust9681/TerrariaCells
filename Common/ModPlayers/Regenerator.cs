@@ -12,34 +12,40 @@ namespace TerrariaCells.Common.ModPlayers
 		private const float STAGGER_POTENCY = 3f;
 		private const float INV_STAGGER_POTENCY = 1f / STAGGER_POTENCY;
 
+		//Not yet worried about multiplayer sync
 		private int damageBuffer;
 		private int damageTime;
 		private float antiRegen;
 
 		public float TimeAmplitude => damageBuffer * INV_STAGGER_POTENCY;
 		public float MaxTime => damageBuffer * STAGGER_POTENCY;
+		private int DamageLeft => (int)(-MathF.Sqrt(TimeAmplitude * damageTime) + damageBuffer);
 
 		//Mathematics used for Damage Staggering:
 		// Damage Left = -sqrt(TimeAmplitude * damageTime) + damageBuffer
 		// Damage per Tick = -TimeAmplitude / (2 * sqrt(TimeAmplitude * damageTime))
 		//Damage Left approaches 0 when damageTime reaches MaxTime
 
-		private int DamageLeft()
-		{
-			return (int)(-MathF.Sqrt(TimeAmplitude * damageTime) + damageBuffer);
-		}
 		public void SetStaggerDamage(int value)
 		{
 			damageBuffer = value;
+			if (damageBuffer < 0)
+			{
+				damageBuffer = 0;
+			}
 			damageTime = 0;
 		}
 		public void AdjustStaggerDamage(int value)
 		{
-			damageBuffer = DamageLeft() + value;
+			damageBuffer = DamageLeft + value;
+			if (damageBuffer < 0)
+			{
+				damageBuffer = 0;
+			}
 			damageTime = 0;
 		}
 
-		//No health regeneration
+		//Disable health regeneration
 		public override void NaturalLifeRegen(ref float regen)
 		{
 			regen = 0;
@@ -93,12 +99,21 @@ namespace TerrariaCells.Common.ModPlayers
 			AdjustStaggerDamage(damageTaken+1);
 		}
 
-		private void CheckDead(PlayerDeathReason? reason = null)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (damageBuffer > 0)
+			{
+				AdjustStaggerDamage(-damageDone / 2); //Health/rally recovery
+			}
+		}
+
+		//Helper function, modifying health directly a lot here, want to make sure player can't live with 0 hp
+		private void CheckDead(PlayerDeathReason reason = null)
 		{
 			if (Player.statLife <= 0)
 			{
-				if (reason is null)
-					reason = PlayerDeathReason.ByCustomReason($"{Player.name} was beheaded.");
+				reason ??= PlayerDeathReason.ByCustomReason($"{Player.name} was beheaded.");
+
 				Player.KillMe(reason, 1, 0);
 			}
 		}
