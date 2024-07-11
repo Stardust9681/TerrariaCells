@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using TerrariaCells.Content.Tiles;
 
 namespace TerrariaCells.WorldGen {
 
@@ -64,16 +66,14 @@ namespace TerrariaCells.WorldGen {
 
         public TagCompound Tag { get; private set; }
 
-        private static bool IsConnector(IList<TagCompound> data, int width, int height, int x, int y) {
+        private static bool IsConnector(IList<TagCompound> data, int width, int height, int x, int y, Mod mod) {
             if (x < 0 || x >= width) { throw new IndexOutOfRangeException("x is out of range"); }
             if (y < 0 || y >= height) { throw new IndexOutOfRangeException("y is out of range"); }
             
             int index = x * height + y;
             var tile_tag = data[index];
-
-            return tile_tag.GetString("Tile") == "TerrariaCells Connector";
+            return tile_tag.GetString("Tile") == mod.Name + " " + ModContent.GetModTile(ModContent.TileType<RoomConnectorTile>()).Name;
         }
-
         public Room(string path, Mod mod) {
 
             using (var stream = mod.GetFileStream(path)) {
@@ -91,11 +91,11 @@ namespace TerrariaCells.WorldGen {
             // Check for connections at the top.
             int x = 0;
             while (x < width) {
-                if (IsConnector(data, width, height, x, 0)) {
+                if (IsConnector(data, width, height, x, 0, mod)) {
 
                     int end = x + 1;
                     while (end < width) {
-                        if (!IsConnector(data, width, height, end, 0)) {
+                        if (!IsConnector(data, width, height, end, 0, mod)) {
                             break;
                         }
                         end++;
@@ -117,11 +117,11 @@ namespace TerrariaCells.WorldGen {
             // Check for connections at the bottom.
             x = 0;
             while (x < width) {
-                if (IsConnector(data, width, height, x, height - 1)) {
+                if (IsConnector(data, width, height, x, height - 1, mod)) {
 
                     int end = x + 1;
                     while (end < width) {
-                        if (!IsConnector(data, width, height, end, height - 1)) {
+                        if (!IsConnector(data, width, height, end, height - 1, mod)) {
                             break;
                         }
                         end++;
@@ -143,11 +143,11 @@ namespace TerrariaCells.WorldGen {
             // Check for connections at the left.
             int y = 0;
             while (y < height) {
-                if (IsConnector(data, width, height, 0, y)) {
+                if (IsConnector(data, width, height, 0, y, mod)) {
 
                     int end = y + 1;
                     while (end < height) {
-                        if (!IsConnector(data, width, height, 0, end)) {
+                        if (!IsConnector(data, width, height, 0, end, mod)) {
                             break;
                         }
                         end++;
@@ -169,11 +169,11 @@ namespace TerrariaCells.WorldGen {
             // Check for connections at the right.
             y = 0;
             while (y < height) {
-                if (IsConnector(data, width, height, width - 1, y)) {
+                if (IsConnector(data, width, height, width - 1, y, mod)) {
 
                     int end = y + 1;
                     while (end < height) {
-                        if (!IsConnector(data, width, height, width - 1, end)) {
+                        if (!IsConnector(data, width, height, width - 1, end, mod)) {
                             break;
                         }
                         end++;
