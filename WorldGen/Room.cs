@@ -25,7 +25,8 @@ namespace TerrariaCells.WorldGen {
 		}
 	}
 
-	internal class RoomConnection(RoomConnectionSide side, int offset, int length) {
+	internal class RoomConnection(Room room, RoomConnectionSide side, int offset, int length) {
+		public readonly Room Room = room;
 		public readonly RoomConnectionSide Side = side;
 		public readonly int Offset = offset;
 		public readonly int Length = length;
@@ -33,7 +34,7 @@ namespace TerrariaCells.WorldGen {
 
 	internal class Room {
 
-		public static readonly string RoomPrefix = "WorldGen/Rooms/";
+		public const string RoomPrefix = "WorldGen/Rooms/";
 
 		public static readonly string[] RoomNames = [
 			"test_end_l",
@@ -51,19 +52,9 @@ namespace TerrariaCells.WorldGen {
 
 		public List<RoomConnection> Connections { get; private set; } = [];
 
-		public int Width {
-			get {
-				return this.Tag.GetInt("Width") + 1;
-			}
-		}
-
-		public int Height {
-			get {
-				return this.Tag.GetInt("Height") + 1;
-			}
-		}
-
 		public TagCompound Tag { get; private set; }
+		public int Width { get; private set; }
+		public int Height { get; private set; }
 
 		private static bool IsConnector(IList<TagCompound> data, int width, int height, int x, int y, Mod mod) {
 			if (x < 0 || x >= width) { throw new IndexOutOfRangeException("x is out of range"); }
@@ -102,6 +93,9 @@ namespace TerrariaCells.WorldGen {
 			var width = this.Tag.GetInt("Width") + 1;
 			var height = this.Tag.GetInt("Height") + 1;
 			
+			this.Width = width;
+			this.Height = height;
+
 			// Check for connections at the top.
 			int x = 0;
 			while (x < width) {
@@ -117,7 +111,7 @@ namespace TerrariaCells.WorldGen {
 						end++;
 					}
 
-					var connection = new RoomConnection(RoomConnectionSide.Top, x, end - x);
+					var connection = new RoomConnection(this, RoomConnectionSide.Top, x, end - x);
 					this.Connections.Add(connection);
 
 					x = end;
@@ -141,7 +135,7 @@ namespace TerrariaCells.WorldGen {
 						end++;
 					}
 
-					var connection = new RoomConnection(RoomConnectionSide.Bottom, x, end - x);
+					var connection = new RoomConnection(this, RoomConnectionSide.Bottom, x, end - x);
 					this.Connections.Add(connection);
 
 					x = end;
@@ -165,7 +159,7 @@ namespace TerrariaCells.WorldGen {
 						end++;
 					}
 
-					var connection = new RoomConnection(RoomConnectionSide.Left, y, end - y);
+					var connection = new RoomConnection(this, RoomConnectionSide.Left, y, end - y);
 					this.Connections.Add(connection);
 
 					y = end;
@@ -189,7 +183,7 @@ namespace TerrariaCells.WorldGen {
 						end++;
 					}
 
-					var connection = new RoomConnection(RoomConnectionSide.Right, y, end - y);
+					var connection = new RoomConnection(this, RoomConnectionSide.Right, y, end - y);
 					this.Connections.Add(connection);
 
 					y = end;
