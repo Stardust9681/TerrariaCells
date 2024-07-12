@@ -12,14 +12,13 @@ public class InventoryManager : ModSystem
 {
     const int INVENTORY_SLOT_COUNT = 6;
 
-    EntitySource_OverfullInventory entitySource_OverfullInventory;
     Player player;
     InventoryUiConfiguration config;
 
     public override void OnWorldLoad()
     {
-        player = Main.player[Main.myPlayer];
-        entitySource_OverfullInventory = new(player, "TerraCells limit of 6 inventory slots");
+        player = Main.LocalPlayer;
+
         config = (InventoryUiConfiguration)Mod.GetConfig("InventoryUiConfiguration");
         if (config == null)
         {
@@ -34,10 +33,13 @@ public class InventoryManager : ModSystem
         {
             if (config.EnableInventoryLock)
             {
-                if (IsInventoryFull()) { }
-                for (int i = 6; i < 50; i++)
+                if (IsInventoryFull())
                 {
-                    player.inventory[i].TurnToAir();
+                    player.preventAllItemPickups = true; // TODO: Figure out why this doesn't block item pickups
+                }
+                else
+                {
+                    player.preventAllItemPickups = false;
                 }
             }
         }
@@ -47,7 +49,7 @@ public class InventoryManager : ModSystem
     {
         for (int i = 1; i < INVENTORY_SLOT_COUNT; i++)
         {
-            if (player.inventory[i] == new Item())
+            if (player.inventory[i].IsAir)
             {
                 return false;
             }
@@ -57,7 +59,7 @@ public class InventoryManager : ModSystem
 
     public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
     {
-        PostUpdatePlayers();
+        PreUpdatePlayers();
 
         int mouseTextIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Inventory"));
         if (mouseTextIndex == -1)

@@ -23,4 +23,13 @@ Configs: {
 			Tooltip: ""
 		}
 	}
+
+	InventoryUiConfiguration: {
+		DisplayName: Inventory Ui Configuration
+
+		EnableInventoryLock: {
+			Label: Enable Inventory Lock
+			Tooltip: ""
+		}
+	}
 }
