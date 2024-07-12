@@ -7,17 +7,18 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
-using ModTesting.Content.Items;
+using TerrariaCells.Common.GlobalItems;
+using TerrariaCells.Common.GlobalProjectiles;
 
-namespace ModTesting.Content.NPCs
+namespace TerrariaCells.Common.GlobalNPCs
 {
-    public class TerraCellsGlobalNpc : GlobalNPC
+    public class OnHitEffectsGlobalNPC : GlobalNPC
     {
 
         public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
         {
             SourceGlobalProjectile testGlobalProjectile = null;
-            projectile.TryGetGlobalProjectile<SourceGlobalProjectile>(out testGlobalProjectile);
+            projectile.TryGetGlobalProjectile(out testGlobalProjectile);
 
             if (testGlobalProjectile != null)
             {
@@ -38,8 +39,11 @@ namespace ModTesting.Content.NPCs
 
         public void TriggerOnHit(Item sourceItem, NPC npc)
         {
-            ModifierGlobalItem modifierGlobalItem;
-            sourceItem.TryGetGlobalItem<ModifierGlobalItem>(out modifierGlobalItem);
+            ModifierGlobalItem modifierGlobalItem = null;
+            if (sourceItem != null)
+            {
+                sourceItem.TryGetGlobalItem(out modifierGlobalItem);
+            }
 
             if (modifierGlobalItem != null)
             {

@@ -6,13 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using Terraria.WorldBuilding;
-using TerrariaCells.Content;
 
-namespace ModTesting.Content.Items
+namespace TerrariaCells.Common.GlobalItems
 {
     public class ModifierData
     {
@@ -20,11 +17,11 @@ namespace ModTesting.Content.Items
         public string description;
         public Color tooltipColor;
 
-        public ModifierData(string name, string description) 
+        public ModifierData(string name, string description)
         {
             this.name = name;
             this.description = description;
-            this.tooltipColor = Color.White;
+            tooltipColor = Color.White;
         }
 
         public ModifierData(string name, string description, Color tooltipColor)
@@ -81,7 +78,7 @@ namespace ModTesting.Content.Items
 
         public void AddModifiers(List<ModifierSystem.Modifier> modifiers)
         {
-            foreach(ModifierSystem.Modifier modifier in modifiers)
+            foreach (ModifierSystem.Modifier modifier in modifiers)
             {
                 itemModifiers.Add(modifier);
             }
@@ -141,7 +138,7 @@ namespace ModTesting.Content.Items
         {
             if (itemModifiers.Count >= 1)
             {
-                foreach(ModifierSystem.Modifier modifier in itemModifiers)
+                foreach (ModifierSystem.Modifier modifier in itemModifiers)
                 {
                     ModifierData data = ModifierSystem.GetModifierData(modifier);
 

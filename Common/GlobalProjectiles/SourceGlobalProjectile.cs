@@ -7,7 +7,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
-namespace ModTesting.Content.Items
+namespace TerrariaCells.Common.GlobalProjectiles
 {
     public class SourceGlobalProjectile : GlobalProjectile
     {
