@@ -43,15 +43,17 @@ namespace ModTesting.Content.NPCs
 
             if (modifierGlobalItem != null)
             {
-                switch (modifierGlobalItem)
+
+                if (modifierGlobalItem.itemModifiers.Contains(ModifierSystem.Modifier.Burning))
                 {
-                    case var burning when modifierGlobalItem.itemModifiers.Contains(ModifierSystem.Modifier.Burning):
-                        Mod.Logger.Debug("BURN BABY BURN");
-                        break;
-                    case var explosion when modifierGlobalItem.itemModifiers.Contains(ModifierSystem.Modifier.ExplodeOnHit):
-                        Explosion(npc.Center, 20);
-                        break;
+                    Mod.Logger.Debug("BURN BABY BURN");
                 }
+
+                if (modifierGlobalItem.itemModifiers.Contains(ModifierSystem.Modifier.ExplodeOnHit))
+                {
+                    Explosion(npc.Center, 20);
+                }
+
             }
         }
 

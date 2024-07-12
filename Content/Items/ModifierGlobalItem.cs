@@ -18,11 +18,20 @@ namespace ModTesting.Content.Items
     {
         public string name;
         public string description;
+        public Color tooltipColor;
 
         public ModifierData(string name, string description) 
         {
             this.name = name;
             this.description = description;
+            this.tooltipColor = Color.White;
+        }
+
+        public ModifierData(string name, string description, Color tooltipColor)
+        {
+            this.name = name;
+            this.description = description;
+            this.tooltipColor = tooltipColor;
         }
     }
 
@@ -41,9 +50,9 @@ namespace ModTesting.Content.Items
         {
             ModifierInfo = new Dictionary<Modifier, ModifierData>();
 
-            ModifierInfo.Add(Modifier.Burning, new ModifierData("Burning", "Burn your target on hit."));
-            ModifierInfo.Add(Modifier.Electrified, new ModifierData("Electrified", "Electrocute your target on hit."));
-            ModifierInfo.Add(Modifier.ExplodeOnHit, new ModifierData("Exploding", "Explode your target on hit."));
+            ModifierInfo.Add(Modifier.Burning, new ModifierData("Burning", "Burn your target on hit.", Color.Red));
+            ModifierInfo.Add(Modifier.Electrified, new ModifierData("Electrified", "Electrocute your target on hit.", Color.Yellow));
+            ModifierInfo.Add(Modifier.ExplodeOnHit, new ModifierData("Exploding", "Explode your target on hit.", Color.Yellow));
         }
 
         public static ModifierData GetModifierData(Modifier modifier)
@@ -67,6 +76,7 @@ namespace ModTesting.Content.Items
         public override void PostReforge(Item item)
         {
             itemModifiers.Add(ModifierSystem.Modifier.ExplodeOnHit);
+            itemModifiers.Add(ModifierSystem.Modifier.Burning);
         }
 
         public void AddModifiers(List<ModifierSystem.Modifier> modifiers)
@@ -135,7 +145,10 @@ namespace ModTesting.Content.Items
                 {
                     ModifierData data = ModifierSystem.GetModifierData(modifier);
 
-                    tooltips.Add(new TooltipLine(Mod, "Modifer", data.name + ": " + data.description ));
+                    TooltipLine tooltip = new TooltipLine(Mod, "Modifer", data.name + ": " + data.description);
+                    tooltip.OverrideColor = data.tooltipColor;
+
+                    tooltips.Add(tooltip);
                 }
 
             }
