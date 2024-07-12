@@ -234,13 +234,19 @@ namespace TerrariaCells.WorldGen {
 
 					if (validRoomPositions.Count > 0) {
 
-						var chosenIndex = rand.Next(0, validRoomPositions.Count);
-						var roomPos = validRoomPositions[chosenIndex];
+						var sortedRoomPositions = validRoomPositions.OrderBy(roomPos=>Room.Rooms[roomPos.RoomIndex].Connections.Count()).ToList();
+						//weighted random function explanation: last number has weight 1, next last number 3, then 5, 7, 9, etc until most weight is the len of the rooms * 2 + 1
+						//sorted by amount of connections
+						//will probably change later
+						//ask @lunispang for explanation if confused
+						int roomCount = sortedRoomPositions.Count();
+						int chosenIndex = (int)Math.Sqrt(rand.Next(0, roomCount * roomCount)); 
+						var roomPos = sortedRoomPositions[chosenIndex];
 
 						PushRoomToStack(genStates, roomPos.Position, roomPos.RoomIndex);
 						rooms.Add(new RoomRect(roomPos.Position, roomPos.RoomIndex));
 
-					}
+					} 
 
 				} else {
 					genStates.Pop();
