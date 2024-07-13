@@ -15,6 +15,9 @@ using Terraria.Utilities;
 
 namespace TerrariaCells.Common.GlobalItems
 {
+    /// <summary>
+    /// GlobalItem that applies a level to every damage-dealing item, handling relevant weapon scaling and 
+    /// </summary>
     public class TierSystemGlobalItem : GlobalItem
     {
 
@@ -37,9 +40,16 @@ namespace TerrariaCells.Common.GlobalItems
             SetNameWithTier(item);
         }
 
-        public void GainLevels(Item item, int xp)
+        public void AddLevels(Item item, int level)
         {
-            itemLevel += xp;
+            itemLevel += level;
+            SetDefaults(item);
+        }
+
+        public void SetLevel(Item item, int level)
+        {
+            itemLevel = level;
+            SetDefaults(item);
         }
 
         // Modify overrides to set weapon stats based on item level
@@ -66,15 +76,8 @@ namespace TerrariaCells.Common.GlobalItems
             }
         }
 
-        // Occurs immediately following a reforge, currently increases item level when reforged
-        public override void PostReforge(Item item)
-        {
-            GainLevels(item, 1);
-            SetDefaults(item);
-        }
-
         /// <summary>
-        /// Sets the name of the item with the current tier as a suffix
+        /// Resets the name of the item with the current tier as a suffix
         /// </summary>
         /// <param name="item"></param>
         public void SetNameWithTier(Item item)
@@ -91,7 +94,7 @@ namespace TerrariaCells.Common.GlobalItems
         public override void NetReceive(Item item, BinaryReader reader)
         {
             itemLevel = 0;
-            GainLevels(item, reader.ReadInt32());
+            AddLevels(item, reader.ReadInt32());
 
             SetNameWithTier(item);
         }
@@ -104,7 +107,7 @@ namespace TerrariaCells.Common.GlobalItems
         public override void LoadData(Item item, TagCompound tag)
         {
             itemLevel = 0;
-            GainLevels(item, tag.Get<int>("level"));
+            AddLevels(item, tag.Get<int>("level"));
 
             SetNameWithTier(item);
         }
@@ -113,8 +116,6 @@ namespace TerrariaCells.Common.GlobalItems
         /*
         public override GlobalItem Clone(Item item, Item itemClone)
         {
-            ModTesting.Instance.Logger.Debug(item.Name + " cloned with tier " + itemLevel.ToString());
-
             TierSystemGlobalItem myClone = (TierSystemGlobalItem)base.Clone(item, itemClone);
 
             myClone.itemLevel = itemLevel;

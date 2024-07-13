@@ -9,33 +9,34 @@ using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using TerrariaCells.Common.GlobalItems;
 using TerrariaCells.Common.GlobalProjectiles;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Mono.Cecil;
+using TerrariaCells.Content.Projectiles;
+using Terraria.Utilities;
+using log4net.Repository.Hierarchy;
 
 namespace TerrariaCells.Common.GlobalNPCs
 {
+    /// <summary>
+    /// GlobalNPC class responsible for applying on-hit effects
+    /// </summary>
     public class OnHitEffectsGlobalNPC : GlobalNPC
     {
 
         public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
         {
-            SourceGlobalProjectile testGlobalProjectile = null;
-            projectile.TryGetGlobalProjectile(out testGlobalProjectile);
-
-            if (testGlobalProjectile != null)
+            // If we can get the source of our projectile, attempt to trigger the on-hit effects
+            if (projectile.TryGetGlobalProjectile(out SourceGlobalProjectile sourceGlobalProjectile))
             {
-                TriggerOnHit(testGlobalProjectile.itemSource, npc);
-                //Mod.Logger.Debug(projectile.Name + " hit using a " + testGlobalProjectile.itemSource.Name + " with modifiers: ");
+                TriggerOnHit(sourceGlobalProjectile.itemSource, npc);
             }
-
-            base.OnHitByProjectile(npc, projectile, hit, damageDone);
         }
 
         public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
         {
-
+            // Attempt to trigger on-hit effects
             TriggerOnHit(item, npc);
-            //Mod.Logger.Debug(item.Name + " hit");
-
-            base.OnHitByItem(npc, player, item, hit, damageDone);
         }
 
         /// <summary>
@@ -45,50 +46,37 @@ namespace TerrariaCells.Common.GlobalNPCs
         /// <param name="npc"></param>
         public void TriggerOnHit(Item sourceItem, NPC npc)
         {
-            ModifierGlobalItem modifierGlobalItem = null;
-            if (sourceItem != null)
+            // If the modifier can be accessed, trigger the effect based upon the corresponding modifiers below
+            if (sourceItem.TryGetGlobalItem(out ModifierGlobalItem modifierGlobalItem))
             {
-                sourceItem.TryGetGlobalItem(out modifierGlobalItem);
-            }
-
-            if (modifierGlobalItem != null)
-            {
-                // Trigger the right effect based upon the corresponding modifiers below
-
-                if (modifierGlobalItem.itemModifiers.Contains(ModifierSystem.Modifier.Burning))
+                // Burning
+                if (modifierGlobalItem.itemModifiers.Contains(ModifierSystem.Modifier.BurnOnHit))
                 {
-                    npc.AddBuff( BuffID.OnFire, 40);
+                    ModifierData data = ModifierSystem.GetModifierData(ModifierSystem.Modifier.BurnOnHit);
+
+                    // Only trigger the effect(OnFire debuff) if the rng is higher than our effect chance
+                    float rng = FastRandom.CreateWithRandomSeed().NextFloat();
+                    if (rng > data.effectChance)
+                    {
+                        npc.AddBuff(BuffID.OnFire, 60); // Burn for 1 seconds
+                    }
                 }
 
+                // Electrified
                 if (modifierGlobalItem.itemModifiers.Contains(ModifierSystem.Modifier.Electrified))
                 {
-                    npc.AddBuff(BuffID.Electrified, 40);
+                    npc.AddBuff(BuffID.Electrified, 80); // Electrified for 1.33 seconds
                 }
 
+                // Exploding
                 if (modifierGlobalItem.itemModifiers.Contains(ModifierSystem.Modifier.ExplodeOnHit))
                 {
-                    Explosion(npc.Center, 10);
+                    // Spawn explosion as projectile
+                    var source = npc.GetSource_FromAI();
+                    Vector2 position = npc.Center;
+                    Projectile.NewProjectile(source, position, new Vector2(0, 0), ModContent.ProjectileType<ExplosionModProjectile>(), 10, 0f, Main.myPlayer);
                 }
 
-            }
-        }
-
-        // Small explosion effect for the explode on hit effect
-        private void Explosion(Vector2 position, int size)
-        {
-
-            for (int i = 0; i < 10; i++)
-            {
-                int dust = Dust.NewDust(position, size, size, DustID.Smoke, 0f, 0f, 100, default, 1.7f);
-                Main.dust[dust].velocity *= 1.4f;
-            }
-            for (int i = 0; i < 17; i++)
-            {
-                int dust = Dust.NewDust(position, size, size, DustID.Torch, 0f, 0f, 100, default, 2.4f);
-                Main.dust[dust].noGravity = true;
-                Main.dust[dust].velocity *= 5f;
-                dust = Dust.NewDust(position, size, size, DustID.Torch, 0f, 0f, 100, default, 1.6f);
-                Main.dust[dust].velocity *= 3f;
             }
         }
     }

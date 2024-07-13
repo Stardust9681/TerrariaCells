@@ -16,16 +16,16 @@ namespace TerrariaCells.Common.GlobalItems
     /// </summary>
     public class ModifierData
     {
-        public string name;
-        public string tooltip;
-        public Color tooltipColor;
+        public string name = "No Name";
+        public string tooltip = "No Tooltip";
+        public Color tooltipColor = Color.White;
+        public float effectChance = 1f;
 
         // Constructor with white default tooltip color
         public ModifierData(string name, string tooltip)
         {
             this.name = name;
             this.tooltip = tooltip;
-            tooltipColor = Color.White;
         }
 
         // Constructor with specified tooltip color
@@ -35,6 +35,17 @@ namespace TerrariaCells.Common.GlobalItems
             this.tooltip = tooltip;
             this.tooltipColor = tooltipColor;
         }
+
+        // Constructor with specified tooltip color + effect chance
+        public ModifierData(string name, string tooltip, Color tooltipColor, float effectChance)
+        {
+            this.name = name;
+            this.tooltip = tooltip;
+            this.tooltipColor = tooltipColor;
+            this.effectChance = effectChance;
+        }
+
+
     }
 
     /// <summary>
@@ -42,22 +53,30 @@ namespace TerrariaCells.Common.GlobalItems
     /// </summary>
     public class ModifierSystem : ModSystem
     {
+        /// <summary>
+        /// Enum for storing all modifier internal names
+        /// </summary>
         public enum Modifier
         {
-            Burning,
+            // CREATE INTERNAL NAME FOR MODIFIER HERE
+            BurnOnHit,
             Electrified,
             ExplodeOnHit
         }
 
+        /// <summary>
+        /// Dictionary associating the initialized modifier data with each modifier enum
+        /// </summary>
         public static Dictionary<Modifier, ModifierData> ModifierInfo;
 
         public override void Load()
         {
             ModifierInfo = new Dictionary<Modifier, ModifierData>();
 
-            ModifierInfo.Add(Modifier.Burning, new ModifierData("Burning", "Burn your target on hit.", Color.Red));
+            // DEFINE ALL MODIFIER DATA HERE + ASSOCIATE WITH INTERNAL NAME (step 3: profit)
+            ModifierInfo.Add(Modifier.BurnOnHit, new ModifierData("Burning", "Burn your target on hit.", Color.Red, 0.5f));
             ModifierInfo.Add(Modifier.Electrified, new ModifierData("Electrified", "Electrocute your target on hit.", Color.Yellow));
-            ModifierInfo.Add(Modifier.ExplodeOnHit, new ModifierData("Exploding", "Explode your target on hit.", Color.Yellow));
+            ModifierInfo.Add(Modifier.ExplodeOnHit, new ModifierData("Exploding", "Explode your target on hit.", Color.Orange));
         }
 
         /// <summary>
@@ -67,7 +86,15 @@ namespace TerrariaCells.Common.GlobalItems
         /// <returns></returns>
         public static ModifierData GetModifierData(Modifier modifier)
         {
-            return ModifierInfo[modifier];
+            if (ModifierInfo.ContainsKey(modifier))
+            {
+                return ModifierInfo[modifier];
+            }
+            else
+            {
+                return null;
+            }
+
         }
     }
 
@@ -84,13 +111,6 @@ namespace TerrariaCells.Common.GlobalItems
         public override bool AppliesToEntity(Item entity, bool lateInstantiation)
         {
             return lateInstantiation && entity.damage > 0;
-        }
-
-        public override void PostReforge(Item item)
-        {
-            //itemModifiers.Add(ModifierSystem.Modifier.ExplodeOnHit);
-            //itemModifiers.Add(ModifierSystem.Modifier.Burning);
-            itemModifiers.Add(ModifierSystem.Modifier.Electrified);
         }
 
         /// <summary>
@@ -112,6 +132,15 @@ namespace TerrariaCells.Common.GlobalItems
         public void AddModifier(ModifierSystem.Modifier modifier)
         {
             itemModifiers.Add(modifier);
+        }
+
+        /// <summary>
+        /// Removes the given modifier from this item
+        /// </summary>
+        /// <param name="modifier"></param>
+        public void RemoveModifier(ModifierSystem.Modifier modifier)
+        {
+            itemModifiers.Remove(modifier);
         }
 
         public override void NetSend(Item item, BinaryWriter writer)
