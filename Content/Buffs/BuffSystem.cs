@@ -207,7 +207,7 @@ namespace TerrariaCells.Content.Buffs
                 if (BuffData.HasTag(id, BuffData.Poison)) multiplier *= buffNPC.PoisonDebuffResist;
                 if (BuffData.HasTag(id, BuffData.Natural)) multiplier *= buffNPC.NaturalDebuffResist;
                 if (BuffData.HasTag(id, BuffData.Electric)) multiplier *= buffNPC.ElectricDebuffResist;
-                for (int d = 0; d < buffNPC.PlayerTags.Length; i++)
+                for (int d = 0; d < buffNPC.PlayerTags.Length; d++)
                 {
                     if (buffNPC.PlayerTags[i] > 0)
                     {

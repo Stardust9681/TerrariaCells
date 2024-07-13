@@ -15,3 +15,8 @@ Configs: {
 		}
 	}
 }
+
+Projectiles: {
+	Shotgun.DisplayName: Shotgun
+	Bow.DisplayName: Bow
+}
