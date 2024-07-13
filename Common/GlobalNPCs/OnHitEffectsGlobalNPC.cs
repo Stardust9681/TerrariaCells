@@ -31,12 +31,18 @@ namespace TerrariaCells.Common.GlobalNPCs
 
         public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
         {
+
             TriggerOnHit(item, npc);
             //Mod.Logger.Debug(item.Name + " hit");
 
             base.OnHitByItem(npc, player, item, hit, damageDone);
         }
 
+        /// <summary>
+        /// Function that is called when an NPC is hit by an item or projectile
+        /// </summary>
+        /// <param name="sourceItem"></param>
+        /// <param name="npc"></param>
         public void TriggerOnHit(Item sourceItem, NPC npc)
         {
             ModifierGlobalItem modifierGlobalItem = null;
@@ -47,29 +53,36 @@ namespace TerrariaCells.Common.GlobalNPCs
 
             if (modifierGlobalItem != null)
             {
+                // Trigger the right effect based upon the corresponding modifiers below
 
                 if (modifierGlobalItem.itemModifiers.Contains(ModifierSystem.Modifier.Burning))
                 {
-                    Mod.Logger.Debug("BURN BABY BURN");
+                    npc.AddBuff( BuffID.OnFire, 40);
+                }
+
+                if (modifierGlobalItem.itemModifiers.Contains(ModifierSystem.Modifier.Electrified))
+                {
+                    npc.AddBuff(BuffID.Electrified, 40);
                 }
 
                 if (modifierGlobalItem.itemModifiers.Contains(ModifierSystem.Modifier.ExplodeOnHit))
                 {
-                    Explosion(npc.Center, 20);
+                    Explosion(npc.Center, 10);
                 }
 
             }
         }
 
+        // Small explosion effect for the explode on hit effect
         private void Explosion(Vector2 position, int size)
         {
 
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < 10; i++)
             {
                 int dust = Dust.NewDust(position, size, size, DustID.Smoke, 0f, 0f, 100, default, 1.7f);
                 Main.dust[dust].velocity *= 1.4f;
             }
-            for (int i = 0; i < 27; i++)
+            for (int i = 0; i < 17; i++)
             {
                 int dust = Dust.NewDust(position, size, size, DustID.Torch, 0f, 0f, 100, default, 2.4f);
                 Main.dust[dust].noGravity = true;

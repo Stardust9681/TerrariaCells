@@ -98,13 +98,13 @@ namespace TerrariaCells.Common.GlobalItems
 
         public override void SaveData(Item item, TagCompound tag)
         {
-            tag["level"] = itemLevel;//Save experience tag
+            tag["level"] = itemLevel;
         }
 
         public override void LoadData(Item item, TagCompound tag)
         {
             itemLevel = 0;
-            GainLevels(item, tag.Get<int>("level")); //Load experience tag
+            GainLevels(item, tag.Get<int>("level"));
 
             SetNameWithTier(item);
         }
