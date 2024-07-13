@@ -13,6 +13,7 @@ namespace TerrariaCells.Common.GlobalNPCs
     //include special effects of buffs that need more code than what ModBuff.Update can do
     public class BuffNPC : GlobalNPC
     {
+        public override bool InstancePerEntity => true;
         //list indexed by player whoami of timers
         //any index with a value greater than 0 means that player's debuff multipliers will proc on this npc
         //every number here is decremented every frame
