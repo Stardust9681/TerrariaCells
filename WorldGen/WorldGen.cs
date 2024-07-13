@@ -66,7 +66,7 @@ namespace TerrariaCells.WorldGen {
 		private struct ValidRoomPosition {
 			public Point Position;
 			public int RoomIndex;
-			public int ConnectionIndex;
+			public int ConnectionIndex; //unused everywhere?
 		}
 
 		public GenerateRoomsPass() : base("Generate Rooms", 1.0) {}
@@ -235,18 +235,21 @@ namespace TerrariaCells.WorldGen {
 					if (validRoomPositions.Count > 0) {
 
 						var sortedRoomPositions = validRoomPositions.OrderBy(roomPos=>Room.Rooms[roomPos.RoomIndex].Connections.Count()).ToList();
-						//weighted random function explanation: last number has weight 1, next last number 3, then 5, 7, 9, etc until most weight is the len of the rooms * 2 + 1
+						//weighted random function explanation: no
 						//sorted by amount of connections
-						//will probably change later
 						//ask @lunispang for explanation if confused
-						int roomCount = sortedRoomPositions.Count();
+						int roomCount = validRoomPositions.Count;
 						int chosenIndex = (int)Math.Sqrt(rand.Next(0, roomCount * roomCount)); 
+						if (rooms.Count > 20) chosenIndex = roomCount - chosenIndex - 1; // reverse priority to have higher chance of selecting room with few connections
 						var roomPos = sortedRoomPositions[chosenIndex];
 
 						PushRoomToStack(genStates, roomPos.Position, roomPos.RoomIndex);
 						rooms.Add(new RoomRect(roomPos.Position, roomPos.RoomIndex));
 
-					} 
+					} else {
+						// no valid rooms were found, resulting in open connection
+						// TODO: fix this
+					}
 
 				} else {
 					genStates.Pop();
