@@ -71,7 +71,7 @@ namespace TerrariaCells.WorldGen {
 
 		public GenerateRoomsPass() : base("Generate Rooms", 1.0) {}
 
-		private static void PushRoomToStack(Stack<RoomGenState> stack, Point position, int index) {
+		private static void PushRoomToQueue(Queue<RoomGenState> queue, Point position, int index) {
 
 			var room = Room.Rooms[index];
 
@@ -80,7 +80,7 @@ namespace TerrariaCells.WorldGen {
 				connections.Add(new PosConnection(position, room, connection));
 			}
 
-			stack.Push(new RoomGenState {
+			queue.Enqueue(new RoomGenState {
 				RoomIndex = index,
 				Connections = connections
 			});
@@ -205,13 +205,13 @@ namespace TerrariaCells.WorldGen {
 
 			List<RoomRect> rooms = [];
 
-			var genStates = new Stack<RoomGenState>();
+			var genStates = new Queue<RoomGenState>();
 
 			// Push the starting room to the stack.
 			var x = Main.maxTilesX / 2;
 			var y = Main.maxTilesY / 2;
 			var starterRoomIndex = rand.Next(0, Room.RoomNames.Length);
-			PushRoomToStack(genStates, new Point(x, y), starterRoomIndex);
+			PushRoomToQueue(genStates, new Point(x, y), starterRoomIndex);
 			rooms.Add(new RoomRect(new Point(x, y), starterRoomIndex));
 
 			// Set spawn point.
@@ -227,8 +227,8 @@ namespace TerrariaCells.WorldGen {
 
 				if (state.Connections.Count > 0 && genStates.Count < 20) { // arbitrary maximum depth for now
 
-					var connection = state.Connections[^1];
-					state.Connections.RemoveAt(state.Connections.Count - 1);
+					var connection = state.Connections[0];
+					state.Connections.RemoveAt(0);
 
 					var validRoomPositions = GetValidRoomPositionList(rooms, connection);
 
@@ -243,7 +243,7 @@ namespace TerrariaCells.WorldGen {
 						if (rooms.Count > 20) chosenIndex = roomCount - chosenIndex - 1; // reverse priority to have higher chance of selecting room with few connections
 						var roomPos = sortedRoomPositions[chosenIndex];
 
-						PushRoomToStack(genStates, roomPos.Position, roomPos.RoomIndex);
+						PushRoomToQueue(genStates, roomPos.Position, roomPos.RoomIndex);
 						rooms.Add(new RoomRect(roomPos.Position, roomPos.RoomIndex));
 
 					} else {
@@ -252,7 +252,7 @@ namespace TerrariaCells.WorldGen {
 					}
 
 				} else {
-					genStates.Pop();
+					genStates.Dequeue();
 				}
 				
 			}
