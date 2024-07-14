@@ -51,10 +51,24 @@ namespace TerrariaCells.WorldGen {
 					this.Room.Width, this.Room.Height
 				);
 
+				if (this.Room.IsSurface) {
+					roomRect.Y = -(2 << 16);
+					roomRect.Height += (2 << 16) + this.Position.Y;
+				}
+
 				List<Rectangle> rects = [roomRect];
 
 				foreach (var conn in this.ExposedConnections) {
-					rects.Add(conn.GetClearanceRect());
+					var clearanceRect = conn.GetClearanceRect();
+
+					// TODO: This is a hack which extends the clearance of surface connections to (effectively) the top
+					//       of the world, like what is done for the room rectangles.
+					if (this.Room.IsSurface && conn.Connection.Length == 1) {
+						clearanceRect.Height = clearanceRect.Y + (2 << 16);
+						clearanceRect.Y = -(2 << 16);
+					}
+					
+					rects.Add(clearanceRect);
 				}
 
 				return rects;
@@ -249,7 +263,7 @@ namespace TerrariaCells.WorldGen {
 						stackFrame.RoomList.Rooms.Add(room);
 						stack.Push(new StackFrame(stackFrame.RoomList, room));
 
-					} 
+					}
 
 				} else {
 					stack.Pop();

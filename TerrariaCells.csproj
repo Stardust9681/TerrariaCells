@@ -8,13 +8,16 @@
 		
 	</PropertyGroup>
 	<ItemGroup>
+	  <AdditionalFiles Remove="Common\**" />
 	  <AdditionalFiles Remove="Content\Modifiers\**" />
+	  <Compile Remove="Common\**" />
 	  <Compile Remove="Content\Modifiers\**" />
+	  <EmbeddedResource Remove="Common\**" />
 	  <EmbeddedResource Remove="Content\Modifiers\**" />
+	  <None Remove="Common\**" />
 	  <None Remove="Content\Modifiers\**" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Common\" />
 	  <Folder Include="Content\" />
 	</ItemGroup>
 	<ItemGroup>
