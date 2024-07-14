@@ -67,18 +67,20 @@ namespace TerrariaCells.WorldGen {
 		private struct ValidRoomPosition {
 			public Point Position;
 			public int RoomIndex;
-			public int ConnectionIndex; //unused everywhere?
+			public int ConnectionIndex;
 		}
 
 		public GenerateRoomsPass() : base("Generate Rooms", 1.0) {}
 
-		private static void PushRoomToQueue(Queue<RoomGenState> queue, Point position, int index) {
+		private static void PushRoomToQueue(Queue<RoomGenState> queue, Point position, int index, int connectionIndex = -1) {
 
 			var room = Room.Rooms[index];
 
 			List<PosConnection> connections = [];
+			int i = 0;
 			foreach (var connection in room.Connections) {
-				connections.Add(new PosConnection(position, room, connection));
+				if(i!=connectionIndex) connections.Add(new PosConnection(position, room, connection));
+				i++;
 			}
 
 			queue.Enqueue(new RoomGenState {
@@ -245,7 +247,7 @@ namespace TerrariaCells.WorldGen {
 						if (rooms.Count > 20) chosenIndex = roomCount - chosenIndex - 1; // reverse priority to have higher chance of selecting room with few connections
 						var roomPos = sortedRoomPositions[chosenIndex];
 
-						PushRoomToQueue(genStates, roomPos.Position, roomPos.RoomIndex);
+						PushRoomToQueue(genStates, roomPos.Position, roomPos.RoomIndex, roomPos.ConnectionIndex);
 						rooms.Add(new RoomRect(roomPos.Position, roomPos.RoomIndex));
 
 					} else {
@@ -259,6 +261,8 @@ namespace TerrariaCells.WorldGen {
 				
 			}
 
+			Utils.GlobalPlayer.isBuilder = true;
+
 			foreach (var roomRect in rooms) {
 
 				var room = Room.Rooms[roomRect.RoomIndex];
@@ -266,8 +270,27 @@ namespace TerrariaCells.WorldGen {
 				StructureHelper.Generator.Generate(room.Tag, new Terraria.DataStructures.Point16(roomRect.Rect.Location));
 			}
 			foreach (var conn in openConnections) {
-				// todo
+				Point position = conn.Position;
+				switch (conn.Connection.Side) {
+					case RoomConnectionSide.Right:
+						position.X--;
+						break;
+					case RoomConnectionSide.Bottom:
+						position.Y--;
+						break;
+					default: break;
+				}
+				for (int i = 0; i < conn.Connection.Length; i++) {
+					Terraria.WorldGen.PlaceTile(position.X, position.Y, TileID.Obsidian);
+					Terraria.WorldGen.KillWall(position.X, position.Y, false);
+					switch (conn.Connection.Side) {
+						case RoomConnectionSide.Top: case RoomConnectionSide.Bottom: { position.X++; break; }
+						case RoomConnectionSide.Left: case RoomConnectionSide.Right: { position.Y++; break; }
+					}
+				}
 			}
+
+			Utils.GlobalPlayer.isBuilder = false;
 		}
 	}
 }
