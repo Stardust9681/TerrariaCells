@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.IO;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
@@ -71,16 +72,18 @@ namespace TerrariaCells.WorldGen {
 
 		public GenerateRoomsPass() : base("Generate Rooms", 1.0) {}
 
-		private static void PushRoomToStack(Stack<RoomGenState> stack, Point position, int index) {
+		private static void PushRoomToQueue(Queue<RoomGenState> queue, Point position, int index, int connectionIndex = -1) {
 
 			var room = Room.Rooms[index];
 
 			List<PosConnection> connections = [];
+			int i = 0;
 			foreach (var connection in room.Connections) {
-				connections.Add(new PosConnection(position, room, connection));
+				if(i!=connectionIndex) connections.Add(new PosConnection(position, room, connection));
+				i++;
 			}
 
-			stack.Push(new RoomGenState {
+			queue.Enqueue(new RoomGenState {
 				RoomIndex = index,
 				Connections = connections
 			});
@@ -204,14 +207,15 @@ namespace TerrariaCells.WorldGen {
 			var rand = Terraria.WorldGen.genRand;
 
 			List<RoomRect> rooms = [];
+			List<PosConnection> openConnections = [];
 
-			var genStates = new Stack<RoomGenState>();
+			var genStates = new Queue<RoomGenState>();
 
 			// Push the starting room to the stack.
 			var x = Main.maxTilesX / 2;
 			var y = Main.maxTilesY / 2;
 			var starterRoomIndex = rand.Next(0, Room.RoomNames.Length);
-			PushRoomToStack(genStates, new Point(x, y), starterRoomIndex);
+			PushRoomToQueue(genStates, new Point(x, y), starterRoomIndex);
 			rooms.Add(new RoomRect(new Point(x, y), starterRoomIndex));
 
 			// Set spawn point.
@@ -227,26 +231,37 @@ namespace TerrariaCells.WorldGen {
 
 				if (state.Connections.Count > 0 && genStates.Count < 20) { // arbitrary maximum depth for now
 
-					var connection = state.Connections[^1];
-					state.Connections.RemoveAt(state.Connections.Count - 1);
+					var connection = state.Connections[0];
+					state.Connections.RemoveAt(0);
 
 					var validRoomPositions = GetValidRoomPositionList(rooms, connection);
 
 					if (validRoomPositions.Count > 0) {
 
-						var chosenIndex = rand.Next(0, validRoomPositions.Count);
-						var roomPos = validRoomPositions[chosenIndex];
+						var sortedRoomPositions = validRoomPositions.OrderBy(roomPos=>Room.Rooms[roomPos.RoomIndex].Connections.Count()).ToList();
+						//weighted random function explanation: no
+						//sorted by amount of connections
+						//ask @lunispang for explanation if confused
+						int roomCount = validRoomPositions.Count;
+						int chosenIndex = (int)Math.Sqrt(rand.Next(0, roomCount * roomCount)); 
+						if (rooms.Count > 20) chosenIndex = roomCount - chosenIndex - 1; // reverse priority to have higher chance of selecting room with few connections
+						var roomPos = sortedRoomPositions[chosenIndex];
 
-						PushRoomToStack(genStates, roomPos.Position, roomPos.RoomIndex);
+						PushRoomToQueue(genStates, roomPos.Position, roomPos.RoomIndex, roomPos.ConnectionIndex);
 						rooms.Add(new RoomRect(roomPos.Position, roomPos.RoomIndex));
 
+					} else {
+						// no valid rooms were found, resulting in open connection
+						openConnections.Add(connection);	
 					}
 
 				} else {
-					genStates.Pop();
+					genStates.Dequeue();
 				}
 				
 			}
+
+			Utils.GlobalPlayer.isBuilder = true;
 
 			foreach (var roomRect in rooms) {
 
@@ -254,6 +269,28 @@ namespace TerrariaCells.WorldGen {
 
 				StructureHelper.Generator.Generate(room.Tag, new Terraria.DataStructures.Point16(roomRect.Rect.Location));
 			}
+			foreach (var conn in openConnections) {
+				Point position = conn.Position;
+				switch (conn.Connection.Side) {
+					case RoomConnectionSide.Right:
+						position.X--;
+						break;
+					case RoomConnectionSide.Bottom:
+						position.Y--;
+						break;
+					default: break;
+				}
+				for (int i = 0; i < conn.Connection.Length; i++) {
+					Terraria.WorldGen.PlaceTile(position.X, position.Y, TileID.Obsidian);
+					Terraria.WorldGen.KillWall(position.X, position.Y, false);
+					switch (conn.Connection.Side) {
+						case RoomConnectionSide.Top: case RoomConnectionSide.Bottom: { position.X++; break; }
+						case RoomConnectionSide.Left: case RoomConnectionSide.Right: { position.Y++; break; }
+					}
+				}
+			}
+
+			Utils.GlobalPlayer.isBuilder = false;
 		}
 	}
 }
