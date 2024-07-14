@@ -26,8 +26,12 @@ namespace TerrariaCells.Common.GlobalNPCs
 
         public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
         {
+            SourceGlobalProjectile sourceGlobalProjectile = null;
+            projectile.TryGetGlobalProjectile(out sourceGlobalProjectile);
+
+
             // If we can get the source of our projectile, attempt to trigger the on-hit effects
-            if (projectile.TryGetGlobalProjectile(out SourceGlobalProjectile sourceGlobalProjectile))
+            if (sourceGlobalProjectile != null)
             {
                 TriggerOnHit(sourceGlobalProjectile.itemSource, npc);
             }
@@ -46,8 +50,14 @@ namespace TerrariaCells.Common.GlobalNPCs
         /// <param name="npc"></param>
         public void TriggerOnHit(Item sourceItem, NPC npc)
         {
+            ModifierGlobalItem modifierGlobalItem = null;
+            if (sourceItem != null)
+            {
+                sourceItem.TryGetGlobalItem(out modifierGlobalItem);
+            }
+
             // If the modifier can be accessed, trigger the effect based upon the corresponding modifiers below
-            if (sourceItem.TryGetGlobalItem(out ModifierGlobalItem modifierGlobalItem))
+            if (modifierGlobalItem != null)
             {
                 // Burning
                 if (modifierGlobalItem.itemModifiers.Contains(ModifierSystem.Modifier.BurnOnHit))
