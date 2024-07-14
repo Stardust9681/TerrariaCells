@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.IO;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
@@ -204,6 +205,7 @@ namespace TerrariaCells.WorldGen {
 			var rand = Terraria.WorldGen.genRand;
 
 			List<RoomRect> rooms = [];
+			List<PosConnection> openConnections = [];
 
 			var genStates = new Queue<RoomGenState>();
 
@@ -248,7 +250,7 @@ namespace TerrariaCells.WorldGen {
 
 					} else {
 						// no valid rooms were found, resulting in open connection
-						// TODO: fix this
+						openConnections.Add(connection);	
 					}
 
 				} else {
@@ -262,6 +264,9 @@ namespace TerrariaCells.WorldGen {
 				var room = Room.Rooms[roomRect.RoomIndex];
 
 				StructureHelper.Generator.Generate(room.Tag, new Terraria.DataStructures.Point16(roomRect.Rect.Location));
+			}
+			foreach (var conn in openConnections) {
+				// todo
 			}
 		}
 	}
