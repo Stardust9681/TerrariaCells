@@ -24,12 +24,12 @@ namespace TerrariaCells.WorldGen {
 
 	class GenerateRoomsPass : GenPass {
 
-		const int ConnectorFrontClearance = 7;
+		const int ConnectorFrontClearance = 9;
 		const int ConnectorSideClearance = 2;
 
 		private class PlacedRoom {
 			public readonly Room Room;
-			public readonly Point Position;
+			public Point Position;
 			public readonly List<PlacedConnection> ExposedConnections;
 			public bool IsSpawnRoom = false;
 
@@ -288,6 +288,81 @@ namespace TerrariaCells.WorldGen {
 						Main.spawnTileX = x + 2;
 						Main.spawnTileY = y + 3;
 					}
+
+					// TODO: This is a hack to make PlaceFiller work.
+					room.Position += new Point(x, y);
+				}
+
+
+			}
+
+
+
+			PlaceFiller(roomLists[0]);
+
+		}
+
+		private class FillColumnRange(int left, int right, int height) {
+			public int Left = left;
+			public int Right = right;
+			public int Height = height;
+		}
+
+		private static void PlaceFiller(RoomList roomList) {
+
+			// TODO: The contents of this loop can (and probably should) be moved into its own function.
+			foreach (var room in roomList.Rooms) {
+
+				var columnY = room.Position.Y + room.Room.Height;
+
+				var columnRanges = new List<FillColumnRange> {
+					new(room.Position.X, room.Position.X + room.Room.Width, 2 << 16)
+				};
+
+				foreach (var roomBelow in roomList.Rooms) {
+
+					var addColumnRanges = new List<FillColumnRange>();
+
+					foreach (var columnRange in columnRanges) {
+
+						var roomLeft = roomBelow.Position.X;
+						var roomRight = roomBelow.Position.X + roomBelow.Room.Width;
+
+						var inVerticalRange = roomBelow.Position.Y + roomBelow.Room.Height > columnY && roomBelow.Position.Y < columnY + columnRange.Height;
+
+						if (inVerticalRange && roomLeft <= columnRange.Right && roomRight >= columnRange.Left) {
+							// Full or partial overlap; shorten overlapping range.
+
+							var oldHeight = columnRange.Height;
+
+							columnRange.Height = roomBelow.Position.Y - columnY;
+
+							// Partial overlap on the right.
+							if (roomLeft > columnRange.Left) {
+								addColumnRanges.Add(new FillColumnRange(columnRange.Left, roomLeft, oldHeight));
+								columnRange.Left = roomLeft;
+							}
+
+							// Partial overlap on the left.
+							if (roomRight < columnRange.Right) {
+								addColumnRanges.Add(new FillColumnRange(roomRight, columnRange.Right, oldHeight));
+								columnRange.Right = roomRight;
+							}
+						}
+
+					}
+
+					columnRanges.AddRange(addColumnRanges);
+				}
+
+				foreach (var columnRange in columnRanges) {
+
+					for (int y = columnY; y < Math.Min(columnY + columnRange.Height, Main.maxTilesY - 1); y++) {
+						for (int x = columnRange.Left; x < columnRange.Right; x++) {
+							Terraria.WorldGen.PlaceTile(x, y, 0);
+						}
+					}
+
 				}
 
 			}
