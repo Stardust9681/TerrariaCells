@@ -23,9 +23,9 @@ namespace TerrariaCells.Common.ModPlayers
 		private int damageTime;
 		private float antiRegen;
 
-		private float TimeAmplitude => damageBuffer * INV_STAGGER_POTENCY;
-		private float MaxTime => damageBuffer * STAGGER_POTENCY;
-		private int DamageLeft => (int)(-MathF.Sqrt(TimeAmplitude * damageTime) + damageBuffer);
+		private float TimeAmplitude => damageBuffer * INV_STAGGER_POTENCY; //Used for calculations, opposite of MaxTime
+		private float MaxTime => damageBuffer * STAGGER_POTENCY; //Time it will take for damage to stop ticking.
+		private int DamageLeft => (int)(-MathF.Sqrt(TimeAmplitude * damageTime) + damageBuffer); //Remaining amount of damage for the player to take
 
 		//Mathematics used for Damage Staggering:
 			//Damage Left = -sqrt(TimeAmplitude * damageTime) + damageBuffer
@@ -126,6 +126,10 @@ namespace TerrariaCells.Common.ModPlayers
 			}
 		}
 
+		/// <summary>
+		/// Set damage stagger to a flat amount. Will discard current amount.
+		/// </summary>
+		/// <param name="value"></param>
 		internal void SetStaggerDamage(int value)
 		{
 			damageBuffer = value;
@@ -135,6 +139,10 @@ namespace TerrariaCells.Common.ModPlayers
 			}
 			damageTime = 0;
 		}
+		/// <summary>
+		/// Adjust damage stagger by some amount +/-
+		/// </summary>
+		/// <param name="value"></param>
 		internal void AdjustStaggerDamage(int value)
 		{
 			damageBuffer = DamageLeft + value;
@@ -158,7 +166,7 @@ namespace TerrariaCells.Common.ModPlayers
 				UpdateDamageBuffer();
 			}
 		}
-		//Run damage stagger calcs : split into its own function so it can be moved more easily or whatever.
+		//Run damage stagger calcs: split into its own function so it can be moved more easily or whatever.
 		private void UpdateDamageBuffer()
 		{
 			damageTime++;
@@ -213,6 +221,10 @@ namespace TerrariaCells.Common.ModPlayers
 				return;
 			RallyHeal(damageDone);
 		}
+		/// <summary>
+		/// Handle heal proportion and effect for rally heal
+		/// </summary>
+		/// <param name="amount"></param>
 		internal void RallyHeal(int amount)
 		{
 			if (damageBuffer > 0)
