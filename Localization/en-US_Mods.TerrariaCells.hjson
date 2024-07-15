@@ -18,6 +18,11 @@ Items: {
 		DisplayName: Teleport Door
 		Tooltip: ""
 	}
+
+	HivePylonItem: {
+		DisplayName: Hive Pylon
+		Tooltip: ""
+	}
 }
 
 Configs: {
@@ -32,3 +37,4 @@ Configs: {
 }
 
 "Keybinds.Door Interact.DisplayName": Door  Interact
+Tiles.HivePylonTile.MapEntry: Hive Pylon
