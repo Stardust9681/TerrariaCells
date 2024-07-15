@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.IO;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
@@ -32,6 +33,7 @@ namespace TerrariaCells.WorldGen {
 			public Point Position;
 			public readonly List<PlacedConnection> ExposedConnections;
 			public bool IsSpawnRoom = false;
+			public readonly List<PlacedConnection> OpenConnections = [];
 
 			public PlacedRoom(Room room, Point position, RoomConnection coveredConnection = null) {
 				this.Room = room;
@@ -168,7 +170,8 @@ namespace TerrariaCells.WorldGen {
 			}
 		}
 
-		private class StackFrame(RoomList roomList, PlacedRoom room) {
+		// TODO: Come up with a better name than QueueFrame? (it made more sense when it was a stack).
+		private class QueueFrame(RoomList roomList, PlacedRoom room) {
 			public RoomList RoomList = roomList;
 			public PlacedRoom Room = room;
 		}
@@ -222,7 +225,7 @@ namespace TerrariaCells.WorldGen {
 			var rand = Terraria.WorldGen.genRand;
 
 			var roomLists = new List<RoomList>();
-			var stack = new Stack<StackFrame>();
+			var queue = new Queue<QueueFrame>();
 
 			var starterRoomList = new RoomList();
 			roomLists.Add(starterRoomList);
@@ -232,20 +235,20 @@ namespace TerrariaCells.WorldGen {
 			};
 			starterRoomList.Rooms.Add(starterRoom);
 
-			var starterStackFrame = new StackFrame(starterRoomList, starterRoom);
+			var starterQueueFrame = new QueueFrame(starterRoomList, starterRoom);
 
-			stack.Push(starterStackFrame);
+			queue.Enqueue(starterQueueFrame);
 
-			while (stack.Count > 0) {
+			while (queue.Count > 0) {
 
-				var stackFrame = stack.Peek();
+				var queueFrame = queue.Peek();
 
-				if (stackFrame.Room.ExposedConnections.Count > 0 && stack.Count < 20) {
+				if (queueFrame.Room.ExposedConnections.Count > 0 && queue.Count < 20) {
 
-					var connection = stackFrame.Room.ExposedConnections[^1];
-					stackFrame.Room.ExposedConnections.RemoveAt(stackFrame.Room.ExposedConnections.Count - 1);
+					var connection = queueFrame.Room.ExposedConnections[0];
+					queueFrame.Room.ExposedConnections.RemoveAt(0);
 
-					var validRooms = GetValidRoomList(stackFrame.RoomList, connection);
+					var validRooms = GetValidRoomList(queueFrame.RoomList, connection);
 
 					if (validRooms.Count > 0) {
 
@@ -257,21 +260,30 @@ namespace TerrariaCells.WorldGen {
 						// ask @lunispang for explanation if confused
 						int roomCount = validRooms.Count;
 						int chosenIndex = (int)Math.Sqrt(rand.Next(0, roomCount * roomCount));
+						if (queueFrame.RoomList.Rooms.Count > 20) {
+							chosenIndex = roomCount - chosenIndex - 1; // reverse priority to have higher chance of selecting room with few connections
+						}
 
 						var room = validRooms[chosenIndex];
 
-						stackFrame.RoomList.Rooms.Add(room);
-						stack.Push(new StackFrame(stackFrame.RoomList, room));
+						queueFrame.RoomList.Rooms.Add(room);
+						queue.Enqueue(new QueueFrame(queueFrame.RoomList, room));
 
+					} else {
+						// no valid rooms were found, resulting in open connection
+						// TODO: Replace with backtracking?
+						queueFrame.Room.OpenConnections.Add(connection);
 					}
 
 				} else {
-					stack.Pop();
+					queue.Dequeue();
 				}
 			}
 
 			// Set world surface height.
 			Main.worldSurface = Main.maxTilesY * 0.17; // TODO: This is just temporary to silence some errors.
+
+			Utils.GlobalPlayer.isBuilder = true;
 
 			foreach (var roomList in roomLists) {
 
@@ -289,6 +301,29 @@ namespace TerrariaCells.WorldGen {
 						Main.spawnTileY = y + 3;
 					}
 
+					foreach (var conn in room.OpenConnections) {
+
+						Point position = conn.Position;
+						switch (conn.Connection.Side) {
+							case RoomConnectionSide.Right:
+								position.X--;
+								break;
+							case RoomConnectionSide.Bottom:
+								position.Y--;
+								break;
+							default: break;
+						}
+						for (int i = 0; i < conn.Connection.Length; i++) {
+							Terraria.WorldGen.PlaceTile(position.X + x, position.Y + y, TileID.Obsidian);
+							Terraria.WorldGen.KillWall(position.X + x, position.Y + y, false);
+							switch (conn.Connection.Side) {
+								case RoomConnectionSide.Top: case RoomConnectionSide.Bottom: { position.X++; break; }
+								case RoomConnectionSide.Left: case RoomConnectionSide.Right: { position.Y++; break; }
+							}
+						}
+
+					}
+
 					// TODO: This is a hack to make PlaceFiller work.
 					room.Position += new Point(x, y);
 				}
@@ -296,9 +331,9 @@ namespace TerrariaCells.WorldGen {
 
 			}
 
-
-
 			PlaceFiller(roomLists[0]);
+
+			Utils.GlobalPlayer.isBuilder = false;
 
 		}
 
@@ -359,14 +394,13 @@ namespace TerrariaCells.WorldGen {
 
 					for (int y = columnY; y < Math.Min(columnY + columnRange.Height, Main.maxTilesY - 1); y++) {
 						for (int x = columnRange.Left; x < columnRange.Right; x++) {
-							Terraria.WorldGen.PlaceTile(x, y, 0);
+							Terraria.WorldGen.PlaceTile(x, y, TileID.Dirt);
 						}
 					}
 
 				}
 
 			}
-
 		}
 	}
 }

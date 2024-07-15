@@ -7,7 +7,6 @@ using TerrariaCells.WorldGen;
 
 namespace TerrariaCells
 {
-
 	//Contributions already present are by no means absolute, conventions are negotiable.
 	public class TerrariaCells : Mod
 	{
