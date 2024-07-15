@@ -8,8 +8,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent.UI.ResourceSets;
 using ReLogic.Content;
-using Microsoft.Xna.Framework.Graphics.PackedVector;
-using Microsoft.CodeAnalysis.Text;
 
 namespace TerrariaCells.Common.ModPlayers
 {
@@ -30,8 +28,8 @@ namespace TerrariaCells.Common.ModPlayers
 		private int DamageLeft => (int)(-MathF.Sqrt(TimeAmplitude * damageTime) + damageBuffer);
 
 		//Mathematics used for Damage Staggering:
-		//Damage Left = -sqrt(TimeAmplitude * damageTime) + damageBuffer
-		//Damage per Tick = -TimeAmplitude / (2 * sqrt(TimeAmplitude * damageTime))
+			//Damage Left = -sqrt(TimeAmplitude * damageTime) + damageBuffer
+			//Damage per Tick = -TimeAmplitude / (2 * sqrt(TimeAmplitude * damageTime))
 		//Damage Left approaches 0 when damageTime reaches MaxTime
 
 		public override void Load()
@@ -128,7 +126,7 @@ namespace TerrariaCells.Common.ModPlayers
 			}
 		}
 
-		public void SetStaggerDamage(int value)
+		internal void SetStaggerDamage(int value)
 		{
 			damageBuffer = value;
 			if (damageBuffer < 0)
@@ -137,7 +135,7 @@ namespace TerrariaCells.Common.ModPlayers
 			}
 			damageTime = 0;
 		}
-		public void AdjustStaggerDamage(int value)
+		internal void AdjustStaggerDamage(int value)
 		{
 			damageBuffer = DamageLeft + value;
 			if (damageBuffer < 0)
