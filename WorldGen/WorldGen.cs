@@ -4,6 +4,7 @@ using System.Linq;
 using Terraria;
 using Terraria.IO;
 using Terraria.ID;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
@@ -262,13 +263,14 @@ namespace TerrariaCells.WorldGen {
 			}
 
 			Utils.GlobalPlayer.isBuilder = true;
-
+			// generate the roomsj
 			foreach (var roomRect in rooms) {
 
 				var room = Room.Rooms[roomRect.RoomIndex];
 
 				StructureHelper.Generator.Generate(room.Tag, new Terraria.DataStructures.Point16(roomRect.Rect.Location));
 			}
+			// generate the open connection plugs
 			foreach (var conn in openConnections) {
 				Point position = conn.Position;
 				switch (conn.Connection.Side) {
@@ -288,6 +290,41 @@ namespace TerrariaCells.WorldGen {
 						case RoomConnectionSide.Left: case RoomConnectionSide.Right: { position.Y++; break; }
 					}
 				}
+			}
+			// generate the blocks around rooms to fill in gaps
+			int depth = 4;
+			//source, dest, c_depth
+			Stack<(Point, Point, int)> tiles = new();
+
+			foreach (var roomRect in rooms) {
+				Point roomPos = new Point(roomRect.Rect.X, roomRect.Rect.Y);
+
+				//iterate through top&bottom side tiles
+				for (int i = 0; i < roomRect.Rect.Width; i++) {
+					//top
+					if (!Terraria.WorldGen.TileEmpty(roomPos.X + i, roomPos.Y)) {
+						tiles.Push((new Point(roomPos.X + i, roomPos.Y), new Point(roomPos.X + i, roomPos.Y - 1), depth));
+					}
+					//bottom
+					if (!Terraria.WorldGen.TileEmpty(roomPos.X + i, roomPos.Y + roomRect.Rect.Height - 1)) {
+						tiles.Push((new Point(roomPos.X + i, roomPos.Y + roomRect.Rect.Height - 1), new Point(roomPos.X + i, roomPos.Y + roomRect.Rect.Height), depth));
+					}
+				}
+				//iterate through left&right side tiles
+				for (int i = 0; i < roomRect.Rect.Height; i++) {
+					//left
+					if (!Terraria.WorldGen.TileEmpty(roomPos.X, roomPos.Y + i)) {
+						tiles.Push((new Point(roomPos.X, roomPos.Y + i), new Point(roomPos.X, roomPos.Y + i), depth));
+					}
+					//right
+					if (!Terraria.WorldGen.TileEmpty(roomPos.X + roomRect.Rect.Width - 1, roomPos.Y + i)) {
+						tiles.Push((new Point(roomPos.X + roomRect.Rect.Width - 1, roomPos.Y + i), new Point(roomPos.X + roomRect.Rect.Width, roomPos.Y + i), depth));
+					}
+				}
+			}
+			while (tiles.Any()) {
+				var tile = tiles.Pop();
+				// TODO: generate tiles and push new possible tiles if current depth is positive
 			}
 
 			Utils.GlobalPlayer.isBuilder = false;
