@@ -7,7 +7,6 @@ using Terraria.GameContent;
 using Terraria.DataStructures;
 using Terraria.ObjectData;
 using Terraria.Map;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using Terraria.ModLoader.IO;
 
 namespace TerrariaCells.Common.Systems
