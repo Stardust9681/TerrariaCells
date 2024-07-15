@@ -203,14 +203,25 @@ namespace TerrariaCells.Common.ModPlayers
 			AdjustStaggerDamage(damageTaken);
 		}
 
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (!item.DamageType.CountsAsClass(DamageClass.Melee))
+				return;
+			RallyHeal(damageDone);
+		}
+		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (!proj.DamageType.CountsAsClass(DamageClass.Melee))
+				return;
+			RallyHeal(damageDone);
+		}
+		internal void RallyHeal(int amount)
 		{
 			if (damageBuffer > 0)
 			{
-				//Amount for the player to "heal" by
-				int healAmount = damageDone / 2;
-				Player.HealEffect(healAmount);
-				AdjustStaggerDamage(-healAmount);
+				amount /= 2;
+				Player.HealEffect(amount);
+				AdjustStaggerDamage(-amount);
 			}
 		}
 
