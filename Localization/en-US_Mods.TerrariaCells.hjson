@@ -23,6 +23,11 @@ Items: {
 		DisplayName: Hive Pylon
 		Tooltip: ""
 	}
+
+	PylonMarkerItem: {
+		DisplayName: Pylon Marker Item
+		Tooltip: ""
+	}
 }
 
 Configs: {
