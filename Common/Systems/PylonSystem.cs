@@ -127,6 +127,13 @@ namespace TerrariaCells.Common.Systems
 				destinationPylonValid = false;
 				errorKey = "Pylon not yet discovered!";
 			}
+			
+			if (nearbyPylonInfo.TypeOfPylon != destinationPylonInfo.TypeOfPylon)
+			{
+				destinationPylonValid = false;
+				errorKey = "Pylon Type Mismatch.";
+			}
+			
 		}
 		public override bool PreDrawMapIcon(ref MapOverlayDrawContext context, ref string mouseOverText, ref TeleportPylonInfo pylonInfo, ref bool isNearPylon, ref Color drawColor, ref float deselectedScale, ref float selectedScale)
 		{

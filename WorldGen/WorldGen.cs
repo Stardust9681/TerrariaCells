@@ -4,6 +4,7 @@ using System.Linq;
 using Terraria;
 using Terraria.IO;
 using Terraria.ID;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
@@ -323,15 +324,58 @@ namespace TerrariaCells.WorldGen {
 						}
 
 					}
-
-					// TODO: This is a hack to make PlaceFiller work.
-					room.Position += new Point(x, y);
 				}
 
+				// generate the blocks around rooms to fill in gaps
+				int depth = 50;
+				//source, dest, c_depth
+				Queue<(Point, Point, int)> tiles = new();
 
+				foreach (var room in roomList.Rooms) {
+					var roomPos = new Point(room.Position.X + x, room.Position.Y + y);
+
+					//iterate through top&bottom side tiles
+					for (int i = 0; i < room.Room.Width; i++) {
+						//top
+						if (!Terraria.WorldGen.TileEmpty(roomPos.X + i, roomPos.Y)) {
+							tiles.Enqueue((new Point(roomPos.X + i, roomPos.Y), new Point(roomPos.X + i, roomPos.Y - 1), depth));
+						}
+						//bottom
+						if (!Terraria.WorldGen.TileEmpty(roomPos.X + i, roomPos.Y + room.Room.Height - 1)) {
+							tiles.Enqueue((new Point(roomPos.X + i, roomPos.Y + room.Room.Height - 1), new Point(roomPos.X + i, roomPos.Y + room.Room.Height), depth));
+						}
+					}
+					//iterate through left&right side tiles
+					for (int i = 0; i < room.Room.Height; i++) {
+						//left
+						if (!Terraria.WorldGen.TileEmpty(roomPos.X, roomPos.Y + i)) {
+							tiles.Enqueue((new Point(roomPos.X, roomPos.Y + i), new Point(roomPos.X, roomPos.Y + i), depth));
+						}
+						//right
+						if (!Terraria.WorldGen.TileEmpty(roomPos.X + room.Room.Width - 1, roomPos.Y + i)) {
+							tiles.Enqueue((new Point(roomPos.X + room.Room.Width - 1, roomPos.Y + i), new Point(roomPos.X + room.Room.Width, roomPos.Y + i), depth));
+						}
+					}
+				}
+				Point[] directions = [new Point(-1, 0), new Point(1, 0), new Point(0, -1), new Point(0, 1)];
+				while (tiles.Count > 0) {
+					var tile = tiles.Dequeue();
+					// TODO: generate tiles and push new possible tiles if current depth is positive
+					var (source, dest, d) = tile;
+					if (d > 0 && Terraria.WorldGen.TileEmpty(dest.X, dest.Y)) {
+						var tileType = Terraria.WorldGen.TileType(source.X, source.Y);
+						// TODO: Not sure why this is necessary; it seems that TileEmpty can return false even when the tile is inactive.
+						if (tileType == -1) {
+							continue;
+						}
+						Terraria.WorldGen.PlaceTile(dest.X, dest.Y, tileType);
+						foreach (var direction in directions) {
+							Point newTile = dest + direction;
+							tiles.Enqueue((dest, newTile, d - 1));
+						}
+					}
+				}
 			}
-
-			PlaceFiller(roomLists[0]);
 
 			Utils.GlobalPlayer.isBuilder = false;
 
@@ -343,64 +387,5 @@ namespace TerrariaCells.WorldGen {
 			public int Height = height;
 		}
 
-		private static void PlaceFiller(RoomList roomList) {
-
-			// TODO: The contents of this loop can (and probably should) be moved into its own function.
-			foreach (var room in roomList.Rooms) {
-
-				var columnY = room.Position.Y + room.Room.Height;
-
-				var columnRanges = new List<FillColumnRange> {
-					new(room.Position.X, room.Position.X + room.Room.Width, 2 << 16)
-				};
-
-				foreach (var roomBelow in roomList.Rooms) {
-
-					var addColumnRanges = new List<FillColumnRange>();
-
-					foreach (var columnRange in columnRanges) {
-
-						var roomLeft = roomBelow.Position.X;
-						var roomRight = roomBelow.Position.X + roomBelow.Room.Width;
-
-						var inVerticalRange = roomBelow.Position.Y + roomBelow.Room.Height > columnY && roomBelow.Position.Y < columnY + columnRange.Height;
-
-						if (inVerticalRange && roomLeft <= columnRange.Right && roomRight >= columnRange.Left) {
-							// Full or partial overlap; shorten overlapping range.
-
-							var oldHeight = columnRange.Height;
-
-							columnRange.Height = roomBelow.Position.Y - columnY;
-
-							// Partial overlap on the right.
-							if (roomLeft > columnRange.Left) {
-								addColumnRanges.Add(new FillColumnRange(columnRange.Left, roomLeft, oldHeight));
-								columnRange.Left = roomLeft;
-							}
-
-							// Partial overlap on the left.
-							if (roomRight < columnRange.Right) {
-								addColumnRanges.Add(new FillColumnRange(roomRight, columnRange.Right, oldHeight));
-								columnRange.Right = roomRight;
-							}
-						}
-
-					}
-
-					columnRanges.AddRange(addColumnRanges);
-				}
-
-				foreach (var columnRange in columnRanges) {
-
-					for (int y = columnY; y < Math.Min(columnY + columnRange.Height, Main.maxTilesY - 1); y++) {
-						for (int x = columnRange.Left; x < columnRange.Right; x++) {
-							Terraria.WorldGen.PlaceTile(x, y, TileID.Dirt);
-						}
-					}
-
-				}
-
-			}
-		}
 	}
 }
