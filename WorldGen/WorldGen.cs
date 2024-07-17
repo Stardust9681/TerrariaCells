@@ -4,7 +4,6 @@ using System.Linq;
 using Terraria;
 using Terraria.IO;
 using Terraria.ID;
-using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
@@ -26,69 +25,163 @@ namespace TerrariaCells.WorldGen {
 
 	class GenerateRoomsPass : GenPass {
 
-		const int ConnectorFrontClearance = 7;
+		const int ConnectorFrontClearance = 9;
 		const int ConnectorSideClearance = 2;
-		
-		private class RoomRect(Point position, int roomIndex) {
-			public readonly Rectangle Rect = new(
-				position.X, position.Y,
-				Room.Rooms[roomIndex].Width, Room.Rooms[roomIndex].Height
-			);
-			public readonly int RoomIndex = roomIndex;
+
+		private class PlacedRoom {
+			public readonly Room Room;
+			public Point Position;
+			public readonly List<PlacedConnection> ExposedConnections;
+			public bool IsSpawnRoom = false;
+			public readonly List<PlacedConnection> OpenConnections = [];
+
+			public PlacedRoom(Room room, Point position, RoomConnection coveredConnection = null) {
+				this.Room = room;
+				this.Position = position;
+
+				this.ExposedConnections = (
+					from conn in room.Connections
+					where conn != coveredConnection
+					select new PlacedConnection(this, conn)
+				).ToList();
+			}
+
+			public List<Rectangle> GetRectangles() {
+
+				var roomRect = new Rectangle(
+					this.Position.X, this.Position.Y,
+					this.Room.Width, this.Room.Height
+				);
+
+				if (this.Room.IsSurface) {
+					roomRect.Y = -(2 << 16);
+					roomRect.Height += (2 << 16) + this.Position.Y;
+				}
+
+				List<Rectangle> rects = [roomRect];
+
+				foreach (var conn in this.ExposedConnections) {
+					var clearanceRect = conn.GetClearanceRect();
+
+					// TODO: This is a hack which extends the clearance of surface connections to (effectively) the top
+					//       of the world, like what is done for the room rectangles.
+					if (this.Room.IsSurface && conn.Connection.Length == 1) {
+						clearanceRect.Height = clearanceRect.Y + (2 << 16);
+						clearanceRect.Y = -(2 << 16);
+					}
+					
+					rects.Add(clearanceRect);
+				}
+
+				return rects;
+			}
+
+			public bool Intersects(PlacedRoom other) {
+				var thisRects = this.GetRectangles();
+				var otherRects = other.GetRectangles();
+
+				return (
+					from rectA in thisRects
+					from rectB in otherRects
+					where rectA.Intersects(rectB)
+					select new { }
+				).Any();
+			}
+
 		}
 
-		/// <summary>
-		/// Represents a connection along with an absolute position in world space.
-		/// </summary>
-		private readonly struct PosConnection {
+		private class PlacedConnection {
 			public readonly Point Position;
+			public readonly PlacedRoom PlacedRoom;
 			public readonly RoomConnection Connection;
 
-			public PosConnection(Point position, Room room, RoomConnection connection) {
+			public PlacedConnection(PlacedRoom room, RoomConnection connection) {
 
 				var offset = connection.Side switch {
 					RoomConnectionSide.Left => new Point(0, connection.Offset),
-					RoomConnectionSide.Right => new Point(room.Width, connection.Offset),
+					RoomConnectionSide.Right => new Point(room.Room.Width, connection.Offset),
 					RoomConnectionSide.Top => new Point(connection.Offset, 0),
-					RoomConnectionSide.Bottom => new Point(connection.Offset, room.Height),
+					RoomConnectionSide.Bottom => new Point(connection.Offset, room.Room.Height),
 					_ => throw new Exception("invalid room connection side"),
 				};
 
-				this.Position = position + offset;
+				this.Position = room.Position + offset;
+				this.PlacedRoom = room;
 				this.Connection = connection;
 			}
 
+			public Rectangle GetClearanceRect() {
+				return this.Connection.Side switch {
+					RoomConnectionSide.Left => new Rectangle(
+						this.Position.X - ConnectorFrontClearance,
+						this.Position.Y - ConnectorSideClearance,
+						ConnectorFrontClearance,
+						ConnectorSideClearance * 2 + this.Connection.Length
+					),
+					RoomConnectionSide.Right => new Rectangle(
+						this.Position.X,
+						this.Position.Y - ConnectorSideClearance,
+						ConnectorFrontClearance,
+						ConnectorSideClearance * 2 + this.Connection.Length
+					),
+					RoomConnectionSide.Top => new Rectangle(
+						this.Position.X - ConnectorSideClearance,
+						this.Position.Y - ConnectorFrontClearance,
+						ConnectorSideClearance * 2 + this.Connection.Length,
+						ConnectorFrontClearance
+					),
+					RoomConnectionSide.Bottom => new Rectangle(
+						this.Position.X - ConnectorSideClearance,
+						this.Position.Y,
+						ConnectorSideClearance * 2 + this.Connection.Length,
+						ConnectorFrontClearance
+					),
+					_ => throw new Exception("invalid room connection side"),
+				};
+			}
 		}
 
-		private struct RoomGenState {
-			public int RoomIndex;
-			public List<PosConnection> Connections;
-		}
+		private class RoomList {
+			public List<PlacedRoom> Rooms = [];
 
-		private struct ValidRoomPosition {
-			public Point Position;
-			public int RoomIndex;
-			public int ConnectionIndex;
-		}
+			public Rectangle GetBounds() {
 
-		public GenerateRoomsPass() : base("Generate Rooms", 1.0) {}
+				int left = 0;
+				int right = 0;
+				int top = 0;
+				int bottom = 0;
 
-		private static void PushRoomToQueue(Queue<RoomGenState> queue, Point position, int index, int connectionIndex = -1) {
+				foreach (var room in this.Rooms) {
+					if (room.Position.X < left) {
+						left = room.Position.X;
+					}
+					if (room.Position.Y < top) {
+						top = room.Position.Y;
+					}
+					if (room.Position.X + room.Room.Width > right) {
+						right = room.Position.X + room.Room.Width;
+					}
+					if (room.Position.Y + room.Room.Height > bottom) {
+						bottom = room.Position.Y + room.Room.Height;
+					}
+				}
 
-			var room = Room.Rooms[index];
-
-			List<PosConnection> connections = [];
-			int i = 0;
-			foreach (var connection in room.Connections) {
-				if(i!=connectionIndex) connections.Add(new PosConnection(position, room, connection));
-				i++;
+				return new Rectangle(left, top, right - left, bottom - top);
 			}
 
-			queue.Enqueue(new RoomGenState {
-				RoomIndex = index,
-				Connections = connections
-			});
+			public void Offset(int x, int y) {
+				foreach (var room in this.Rooms) {
+					room.Position += new Point(x, y);
+				}
+			}
 		}
+
+		// TODO: Come up with a better name than QueueFrame? (it made more sense when it was a stack).
+		private class QueueFrame(PlacedRoom room) {
+			public PlacedRoom Room = room;
+		}
+
+		public GenerateRoomsPass() : base("Generate Rooms", 1.0) { }
 
 		private static Point PositionRoomByConnection(Room room, RoomConnection connection, Point connPosition) {
 			return connection.Side switch {
@@ -100,102 +193,32 @@ namespace TerrariaCells.WorldGen {
 			};
 		}
 
-		private static Rectangle GetConnectionClearanceRect(PosConnection connection) {
-			return connection.Connection.Side switch {
-				RoomConnectionSide.Left => new Rectangle(
-					connection.Position.X - ConnectorFrontClearance,
-					connection.Position.Y - ConnectorSideClearance,
-					ConnectorFrontClearance,
-					ConnectorSideClearance * 2 + connection.Connection.Length
-				),
-				RoomConnectionSide.Right => new Rectangle(
-					connection.Position.X,
-					connection.Position.Y - ConnectorSideClearance,
-					ConnectorFrontClearance,
-					ConnectorSideClearance * 2 + connection.Connection.Length
-				),
-				RoomConnectionSide.Top => new Rectangle(
-					connection.Position.X - ConnectorSideClearance,
-					connection.Position.Y - ConnectorFrontClearance,
-					ConnectorSideClearance * 2 + connection.Connection.Length,
-					ConnectorFrontClearance
-				),
-				RoomConnectionSide.Bottom => new Rectangle(
-					connection.Position.X - ConnectorSideClearance,
-					connection.Position.Y,
-					ConnectorSideClearance * 2 + connection.Connection.Length,
-					ConnectorFrontClearance
-				),
-				_ => throw new Exception("invalid room connection side"),
-			};
-		}
+		private static List<PlacedRoom> GetValidRoomList(RoomList roomList, PlacedConnection coveredConnection) {
 
-		private static bool IsRoomPositionValid(List<RoomRect> roomRects, Point placingRoomPos, Room placingRoom, PosConnection ignoreConnection, RoomConnection placingIgnoreConnection) {
-			var placingRoomRect = new Rectangle(placingRoomPos.X, placingRoomPos.Y, placingRoom.Width, placingRoom.Height);
+			List<PlacedRoom> validRooms = [];
 
-			var placingConnectionClearances = new List<Rectangle>();
-			foreach (var placingConnection in placingRoom.Connections) {
-				if (placingConnection != placingIgnoreConnection) {
-					var posConnection = new PosConnection(placingRoomPos, placingRoom, placingConnection);
-					placingConnectionClearances.Add(GetConnectionClearanceRect(posConnection));
-				}
-			}
+			foreach (var placingRoom in Room.Rooms) {
+				foreach (var placingRoomConnection in placingRoom.Connections) {
+					if (coveredConnection.Connection.Length == placingRoomConnection.Length && coveredConnection.Connection.Side == placingRoomConnection.Side.Opposite()) {
 
-			foreach (var room in roomRects) {
-				if (placingRoomRect.Intersects(room.Rect)) {
-					return false;
-				}
+						var roomPos = PositionRoomByConnection(placingRoom, placingRoomConnection, coveredConnection.Position);
+						var newPlacedRoom = new PlacedRoom(placingRoom, roomPos, placingRoomConnection);
 
-				foreach (var placingConnectionRect in placingConnectionClearances) {
-					if (placingConnectionRect.Intersects(room.Rect)) {
-						return false;
-					}
-				}
+						bool intersects = false;
 
-				foreach (var connection in Room.Rooms[room.RoomIndex].Connections) {
+						foreach (var exisingRoom in roomList.Rooms) {
+							if (newPlacedRoom.Intersects(exisingRoom)) {
+								intersects = true;
+								break;
+							}
+						}
 
-					var posConnection = new PosConnection(room.Rect.Location, Room.Rooms[room.RoomIndex], connection);
-
-					if (connection == ignoreConnection.Connection && ignoreConnection.Position == posConnection.Position) {
-						continue;
-					}
-
-					var clearanceRect = GetConnectionClearanceRect(posConnection);
-
-					if (placingRoomRect.Intersects(clearanceRect)) {
-						return false;
-					}
-
-				}
-			}
-
-			return true;
-		}
-
-		private static List<ValidRoomPosition> GetValidRoomPositionList(List<RoomRect> roomRects, PosConnection connection) {
-
-			List<ValidRoomPosition> validRooms = [];
-
-			int roomIndex = 0;
-			foreach (var room in Room.Rooms) {
-				int connectionIndex = 0;
-				foreach (var otherConnection in room.Connections) {
-					if (connection.Connection.Length == otherConnection.Length && connection.Connection.Side == otherConnection.Side.Opposite()) {
-
-						var roomPos = PositionRoomByConnection(room, otherConnection, connection.Position);
-
-						if (IsRoomPositionValid(roomRects, roomPos, room, connection, otherConnection)) {
-							validRooms.Add(new ValidRoomPosition {
-								Position = roomPos,
-								RoomIndex = roomIndex,
-								ConnectionIndex = connectionIndex
-							});
+						if (!intersects) {
+							validRooms.Add(newPlacedRoom);
 						}
 
 					}
-					connectionIndex++;
 				}
-				roomIndex++;
 			}
 
 			return validRooms;
@@ -204,132 +227,148 @@ namespace TerrariaCells.WorldGen {
 		protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration) {
 
 			progress.Message = "Generating Rooms";
-
 			var rand = Terraria.WorldGen.genRand;
 
-			List<RoomRect> rooms = [];
-			List<PosConnection> openConnections = [];
+			var queue = new Queue<QueueFrame>();
 
-			var genStates = new Queue<RoomGenState>();
+			var starterRoomIndex = rand.Next(0, Room.Rooms.Count);
+			var starterRoom = new PlacedRoom(Room.Rooms[starterRoomIndex], new Point(0, 0)) {
+				IsSpawnRoom = true
+			};
 
-			// Push the starting room to the stack.
-			var x = Main.maxTilesX / 2;
-			var y = Main.maxTilesY / 2;
-			var starterRoomIndex = rand.Next(0, Room.RoomNames.Length);
-			PushRoomToQueue(genStates, new Point(x, y), starterRoomIndex);
-			rooms.Add(new RoomRect(new Point(x, y), starterRoomIndex));
+			var roomList = new RoomList();
+			roomList.Rooms.Add(starterRoom);
 
-			// Set spawn point.
-			Main.spawnTileX = x + 2;
-			Main.spawnTileY = y + 3;
+			var starterQueueFrame = new QueueFrame(starterRoom);
+
+			queue.Enqueue(starterQueueFrame);
+
+			while (queue.Count > 0) {
+
+				var queueFrame = queue.Peek();
+
+				if (queueFrame.Room.ExposedConnections.Count > 0 && queue.Count < 20) {
+
+					var connection = queueFrame.Room.ExposedConnections[0];
+					queueFrame.Room.ExposedConnections.RemoveAt(0);
+
+					var validRooms = GetValidRoomList(roomList, connection);
+
+					if (validRooms.Count > 0) {
+
+						validRooms.Sort((roomA, roomB) => roomA.Room.Connections.Count.CompareTo(roomB.Room.Connections.Count));
+
+						// weighted random function explanation: last number has weight 1, next last number 3, then 5, 7, 9, etc until most weight is the len of the rooms * 2 + 1
+						// sorted by amount of connections
+						// will probably change later
+						// ask @lunispang for explanation if confused
+						int roomCount = validRooms.Count;
+						int chosenIndex = (int)Math.Sqrt(rand.Next(0, roomCount * roomCount));
+						if (roomList.Rooms.Count > 20) {
+							chosenIndex = roomCount - chosenIndex - 1; // reverse priority to have higher chance of selecting room with few connections
+						}
+
+						var room = validRooms[chosenIndex];
+
+						roomList.Rooms.Add(room);
+						queue.Enqueue(new QueueFrame(room));
+
+					} else {
+						// no valid rooms were found, resulting in open connection
+						// TODO: Replace with backtracking?
+						queueFrame.Room.OpenConnections.Add(connection);
+					}
+
+				} else {
+					queue.Dequeue();
+				}
+			}
 
 			// Set world surface height.
 			Main.worldSurface = Main.maxTilesY * 0.17; // TODO: This is just temporary to silence some errors.
 
-			while (genStates.Count > 0) {
-
-				var state = genStates.Peek();
-
-				if (state.Connections.Count > 0 && genStates.Count < 20) { // arbitrary maximum depth for now
-
-					var connection = state.Connections[0];
-					state.Connections.RemoveAt(0);
-
-					var validRoomPositions = GetValidRoomPositionList(rooms, connection);
-
-					if (validRoomPositions.Count > 0) {
-
-						var sortedRoomPositions = validRoomPositions.OrderBy(roomPos=>Room.Rooms[roomPos.RoomIndex].Connections.Count()).ToList();
-						//weighted random function explanation: no
-						//sorted by amount of connections
-						//ask @lunispang for explanation if confused
-						int roomCount = validRoomPositions.Count;
-						int chosenIndex = (int)Math.Sqrt(rand.Next(0, roomCount * roomCount)); 
-						if (rooms.Count > 20) chosenIndex = roomCount - chosenIndex - 1; // reverse priority to have higher chance of selecting room with few connections
-						var roomPos = sortedRoomPositions[chosenIndex];
-
-						PushRoomToQueue(genStates, roomPos.Position, roomPos.RoomIndex, roomPos.ConnectionIndex);
-						rooms.Add(new RoomRect(roomPos.Position, roomPos.RoomIndex));
-
-					} else {
-						// no valid rooms were found, resulting in open connection
-						openConnections.Add(connection);	
-					}
-
-				} else {
-					genStates.Dequeue();
-				}
-				
-			}
-
 			Utils.GlobalPlayer.isBuilder = true;
-			// generate the roomsj
-			foreach (var roomRect in rooms) {
 
-				var room = Room.Rooms[roomRect.RoomIndex];
+			const int offsetFromOrigin = 100;
 
-				StructureHelper.Generator.Generate(room.Tag, new Terraria.DataStructures.Point16(roomRect.Rect.Location));
-			}
-			// generate the open connection plugs
-			foreach (var conn in openConnections) {
-				Point position = conn.Position;
-				switch (conn.Connection.Side) {
-					case RoomConnectionSide.Right:
-						position.X--;
-						break;
-					case RoomConnectionSide.Bottom:
-						position.Y--;
-						break;
-					default: break;
+			var roomListBounds = roomList.GetBounds();
+			roomList.Offset(offsetFromOrigin - roomListBounds.Left, offsetFromOrigin - roomListBounds.Top);
+
+			foreach (var room in roomList.Rooms) {
+				StructureHelper.Generator.Generate(room.Room.Tag, new Terraria.DataStructures.Point16(room.Position));
+
+				if (room.IsSpawnRoom) {
+					Main.spawnTileX = room.Position.X + 2;
+					Main.spawnTileY = room.Position.Y + 3;
 				}
-				for (int i = 0; i < conn.Connection.Length; i++) {
-					Terraria.WorldGen.PlaceTile(position.X, position.Y, TileID.Obsidian);
-					Terraria.WorldGen.KillWall(position.X, position.Y, false);
+
+				foreach (var conn in room.OpenConnections) {
+
+					Point position = conn.Position;
 					switch (conn.Connection.Side) {
-						case RoomConnectionSide.Top: case RoomConnectionSide.Bottom: { position.X++; break; }
-						case RoomConnectionSide.Left: case RoomConnectionSide.Right: { position.Y++; break; }
+						case RoomConnectionSide.Right:
+							position.X--;
+							break;
+						case RoomConnectionSide.Bottom:
+							position.Y--;
+							break;
+						default: break;
 					}
+					for (int i = 0; i < conn.Connection.Length; i++) {
+						Terraria.WorldGen.PlaceTile(position.X, position.Y, TileID.Obsidian);
+						Terraria.WorldGen.KillWall(position.X, position.Y, false);
+						switch (conn.Connection.Side) {
+							case RoomConnectionSide.Top: case RoomConnectionSide.Bottom: { position.X++; break; }
+							case RoomConnectionSide.Left: case RoomConnectionSide.Right: { position.Y++; break; }
+						}
+					}
+
 				}
 			}
+
 			// generate the blocks around rooms to fill in gaps
 			int depth = 50;
 			//source, dest, c_depth
 			Queue<(Point, Point, int)> tiles = new();
 
-			foreach (var roomRect in rooms) {
-				Point roomPos = new Point(roomRect.Rect.X, roomRect.Rect.Y);
+			foreach (var room in roomList.Rooms) {
+				var roomPos = new Point(room.Position.X, room.Position.Y);
 
 				//iterate through top&bottom side tiles
-				for (int i = 0; i < roomRect.Rect.Width; i++) {
+				for (int i = 0; i < room.Room.Width; i++) {
 					//top
 					if (!Terraria.WorldGen.TileEmpty(roomPos.X + i, roomPos.Y)) {
 						tiles.Enqueue((new Point(roomPos.X + i, roomPos.Y), new Point(roomPos.X + i, roomPos.Y - 1), depth));
 					}
 					//bottom
-					if (!Terraria.WorldGen.TileEmpty(roomPos.X + i, roomPos.Y + roomRect.Rect.Height - 1)) {
-						tiles.Enqueue((new Point(roomPos.X + i, roomPos.Y + roomRect.Rect.Height - 1), new Point(roomPos.X + i, roomPos.Y + roomRect.Rect.Height), depth));
+					if (!Terraria.WorldGen.TileEmpty(roomPos.X + i, roomPos.Y + room.Room.Height - 1)) {
+						tiles.Enqueue((new Point(roomPos.X + i, roomPos.Y + room.Room.Height - 1), new Point(roomPos.X + i, roomPos.Y + room.Room.Height), depth));
 					}
 				}
 				//iterate through left&right side tiles
-				for (int i = 0; i < roomRect.Rect.Height; i++) {
+				for (int i = 0; i < room.Room.Height; i++) {
 					//left
 					if (!Terraria.WorldGen.TileEmpty(roomPos.X, roomPos.Y + i)) {
-						progress.Message = "yes";
-						tiles.Enqueue((new Point(roomPos.X, roomPos.Y + i), new Point(roomPos.X - 1, roomPos.Y + i), depth));
+						tiles.Enqueue((new Point(roomPos.X, roomPos.Y + i), new Point(roomPos.X, roomPos.Y + i), depth));
 					}
 					//right
-					if (!Terraria.WorldGen.TileEmpty(roomPos.X + roomRect.Rect.Width - 1, roomPos.Y + i)) {
-						tiles.Enqueue((new Point(roomPos.X + roomRect.Rect.Width - 1, roomPos.Y + i), new Point(roomPos.X + roomRect.Rect.Width, roomPos.Y + i), depth));
+					if (!Terraria.WorldGen.TileEmpty(roomPos.X + room.Room.Width - 1, roomPos.Y + i)) {
+						tiles.Enqueue((new Point(roomPos.X + room.Room.Width - 1, roomPos.Y + i), new Point(roomPos.X + room.Room.Width, roomPos.Y + i), depth));
 					}
 				}
 			}
 			Point[] directions = [new Point(-1, 0), new Point(1, 0), new Point(0, -1), new Point(0, 1)];
-			while (tiles.Any()) {
+			while (tiles.Count > 0) {
 				var tile = tiles.Dequeue();
 				// TODO: generate tiles and push new possible tiles if current depth is positive
 				var (source, dest, d) = tile;
-				if (d > 0 && Terraria.WorldGen.TileEmpty(dest.X, dest.Y)) {
-					Terraria.WorldGen.PlaceTile(dest.X, dest.Y, Terraria.WorldGen.TileType(source.X, source.Y));
+				if (d > 0 && Terraria.WorldGen.InWorld(dest.X, dest.Y) && Terraria.WorldGen.TileEmpty(dest.X, dest.Y)) {
+					var tileType = Terraria.WorldGen.TileType(source.X, source.Y);
+					// TODO: Not sure why this is necessary; it seems that TileEmpty can return false even when the tile is inactive.
+					if (tileType == -1) {
+						continue;
+					}
+					Terraria.WorldGen.PlaceTile(dest.X, dest.Y, tileType);
 					foreach (var direction in directions) {
 						Point newTile = dest + direction;
 						tiles.Enqueue((dest, newTile, d - 1));
@@ -338,6 +377,8 @@ namespace TerrariaCells.WorldGen {
 			}
 
 			Utils.GlobalPlayer.isBuilder = false;
+
 		}
+
 	}
 }
