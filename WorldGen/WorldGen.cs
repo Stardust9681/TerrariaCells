@@ -4,7 +4,6 @@ using System.Linq;
 using Terraria;
 using Terraria.IO;
 using Terraria.ID;
-using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
@@ -169,6 +168,12 @@ namespace TerrariaCells.WorldGen {
 
 				return new Rectangle(left, top, right - left, bottom - top);
 			}
+
+			public void Offset(int x, int y) {
+				foreach (var room in this.Rooms) {
+					room.Position += new Point(x, y);
+				}
+			}
 		}
 
 		// TODO: Come up with a better name than QueueFrame? (it made more sense when it was a stack).
@@ -284,18 +289,17 @@ namespace TerrariaCells.WorldGen {
 
 			Utils.GlobalPlayer.isBuilder = true;
 
-			// TODO: Right now this just places the room list in the middle of the world.
-			//       We'll also need to allow for extra rooms to be placed which are not directly adjacent to these rooms.
+			const int offsetFromOrigin = 100;
 
-			int x = Main.maxTilesX / 2;
-			int y = Main.maxTilesY / 2;
+			var roomListBounds = roomList.GetBounds();
+			roomList.Offset(offsetFromOrigin - roomListBounds.Left, offsetFromOrigin - roomListBounds.Top);
 
 			foreach (var room in roomList.Rooms) {
-				StructureHelper.Generator.Generate(room.Room.Tag, new Terraria.DataStructures.Point16(room.Position + new Point(x, y)));
+				StructureHelper.Generator.Generate(room.Room.Tag, new Terraria.DataStructures.Point16(room.Position));
 
 				if (room.IsSpawnRoom) {
-					Main.spawnTileX = x + 2;
-					Main.spawnTileY = y + 3;
+					Main.spawnTileX = room.Position.X + 2;
+					Main.spawnTileY = room.Position.Y + 3;
 				}
 
 				foreach (var conn in room.OpenConnections) {
@@ -311,8 +315,8 @@ namespace TerrariaCells.WorldGen {
 						default: break;
 					}
 					for (int i = 0; i < conn.Connection.Length; i++) {
-						Terraria.WorldGen.PlaceTile(position.X + x, position.Y + y, TileID.Obsidian);
-						Terraria.WorldGen.KillWall(position.X + x, position.Y + y, false);
+						Terraria.WorldGen.PlaceTile(position.X, position.Y, TileID.Obsidian);
+						Terraria.WorldGen.KillWall(position.X, position.Y, false);
 						switch (conn.Connection.Side) {
 							case RoomConnectionSide.Top: case RoomConnectionSide.Bottom: { position.X++; break; }
 							case RoomConnectionSide.Left: case RoomConnectionSide.Right: { position.Y++; break; }
@@ -328,7 +332,7 @@ namespace TerrariaCells.WorldGen {
 			Queue<(Point, Point, int)> tiles = new();
 
 			foreach (var room in roomList.Rooms) {
-				var roomPos = new Point(room.Position.X + x, room.Position.Y + y);
+				var roomPos = new Point(room.Position.X, room.Position.Y);
 
 				//iterate through top&bottom side tiles
 				for (int i = 0; i < room.Room.Width; i++) {
@@ -358,7 +362,7 @@ namespace TerrariaCells.WorldGen {
 				var tile = tiles.Dequeue();
 				// TODO: generate tiles and push new possible tiles if current depth is positive
 				var (source, dest, d) = tile;
-				if (d > 0 && Terraria.WorldGen.TileEmpty(dest.X, dest.Y)) {
+				if (d > 0 && Terraria.WorldGen.InWorld(dest.X, dest.Y) && Terraria.WorldGen.TileEmpty(dest.X, dest.Y)) {
 					var tileType = Terraria.WorldGen.TileType(source.X, source.Y);
 					// TODO: Not sure why this is necessary; it seems that TileEmpty can return false even when the tile is inactive.
 					if (tileType == -1) {
@@ -374,12 +378,6 @@ namespace TerrariaCells.WorldGen {
 
 			Utils.GlobalPlayer.isBuilder = false;
 
-		}
-
-		private class FillColumnRange(int left, int right, int height) {
-			public int Left = left;
-			public int Right = right;
-			public int Height = height;
 		}
 
 	}
