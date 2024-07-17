@@ -58,6 +58,16 @@ Configs: {
 		}
 	}
 }
+	PylonMarkerItem: {
+		DisplayName: Pylon Marker Item
+		Tooltip: ""
+	}
+
+	PotMarkerItem: {
+		DisplayName: Pot Marker Item
+		Tooltip: ""
+	}
+}
 
 Projectiles: {
 	Shotgun.DisplayName: Shotgun
