@@ -10,7 +10,7 @@ namespace TerrariaCells.Content.UI;
 [Autoload(Side = ModSide.Client)]
 public class InventoryManager : ModSystem
 {
-    const int INVENTORY_SLOT_COUNT = 6;
+    const int INVENTORY_SLOT_COUNT = 4;
 
     Player player;
     InventoryUiConfiguration config;
@@ -25,6 +25,19 @@ public class InventoryManager : ModSystem
             Logging.PublicLogger.Error("No config file found!");
             return;
         }
+
+        for (int i = INVENTORY_SLOT_COUNT; i < Main.hotbarScale.Length; i++)
+            Main.hotbarScale[i] = 0;
+
+    }
+
+    public override void PreUpdateItems()
+    {
+        if (player.selectedItem < INVENTORY_SLOT_COUNT) return;
+
+        if (player.selectedItem > INVENTORY_SLOT_COUNT - 1 + (10 - INVENTORY_SLOT_COUNT) / 2)
+            player.selectedItem = INVENTORY_SLOT_COUNT - 1;
+        else player.selectedItem = 0;
     }
 
     public override void PreUpdatePlayers()
@@ -47,7 +60,7 @@ public class InventoryManager : ModSystem
 
     private bool IsInventoryFull()
     {
-        for (int i = 1; i < INVENTORY_SLOT_COUNT; i++)
+        for (int i = 0; i < INVENTORY_SLOT_COUNT; i++)
         {
             if (player.inventory[i].IsAir)
             {
