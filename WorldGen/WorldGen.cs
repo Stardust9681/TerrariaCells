@@ -285,7 +285,7 @@ namespace TerrariaCells.WorldGen {
 			}
 
 			// Set world surface height.
-			Main.worldSurface = Main.maxTilesY * 0.17; // TODO: This is just temporary to silence some errors.
+			//Main.worldSurface = Main.maxTilesY * 0.17; // TODO: This is just temporary to silence some errors. // no errors anymore, will comment out for now
 
 			Utils.GlobalPlayer.isBuilder = true;
 
