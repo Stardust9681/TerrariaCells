@@ -294,6 +294,7 @@ namespace TerrariaCells.WorldGen {
 			var roomListBounds = roomList.GetBounds();
 			roomList.Offset(offsetFromOrigin - roomListBounds.Left, offsetFromOrigin - roomListBounds.Top);
 
+			// Fill open connections
 			foreach (var room in roomList.Rooms) {
 				StructureHelper.Generator.Generate(room.Room.Tag, new Terraria.DataStructures.Point16(room.Position));
 
@@ -315,8 +316,10 @@ namespace TerrariaCells.WorldGen {
 						default: break;
 					}
 					for (int i = 0; i < conn.Connection.Length; i++) {
-						Terraria.WorldGen.PlaceTile(position.X, position.Y, TileID.Obsidian);
-						Terraria.WorldGen.KillWall(position.X, position.Y, false);
+						if (Terraria.WorldGen.InWorld(position.X, position.Y)) {
+							Terraria.WorldGen.PlaceTile(position.X, position.Y, TileID.Obsidian);
+							Terraria.WorldGen.KillWall(position.X, position.Y, false);
+						}
 						switch (conn.Connection.Side) {
 							case RoomConnectionSide.Top: case RoomConnectionSide.Bottom: { position.X++; break; }
 							case RoomConnectionSide.Left: case RoomConnectionSide.Right: { position.Y++; break; }
@@ -337,7 +340,7 @@ namespace TerrariaCells.WorldGen {
 				//iterate through top&bottom side tiles
 				for (int i = 0; i < room.Room.Width; i++) {
 					//top
-					if (!Terraria.WorldGen.TileEmpty(roomPos.X + i, roomPos.Y)) {
+					if (!Terraria.WorldGen.TileEmpty(roomPos.X + i, roomPos.Y) &! room.Room.IsSurface) {
 						tiles.Enqueue((new Point(roomPos.X + i, roomPos.Y), new Point(roomPos.X + i, roomPos.Y - 1), depth));
 					}
 					//bottom
@@ -346,14 +349,16 @@ namespace TerrariaCells.WorldGen {
 					}
 				}
 				//iterate through left&right side tiles
-				for (int i = 0; i < room.Room.Height; i++) {
-					//left
-					if (!Terraria.WorldGen.TileEmpty(roomPos.X, roomPos.Y + i)) {
-						tiles.Enqueue((new Point(roomPos.X, roomPos.Y + i), new Point(roomPos.X, roomPos.Y + i), depth));
-					}
-					//right
-					if (!Terraria.WorldGen.TileEmpty(roomPos.X + room.Room.Width - 1, roomPos.Y + i)) {
-						tiles.Enqueue((new Point(roomPos.X + room.Room.Width - 1, roomPos.Y + i), new Point(roomPos.X + room.Room.Width, roomPos.Y + i), depth));
+				if(!room.Room.IsSurface){
+					for (int i = 0; i < room.Room.Height; i++) {
+						//left
+						if (!Terraria.WorldGen.TileEmpty(roomPos.X, roomPos.Y + i)) {
+							tiles.Enqueue((new Point(roomPos.X, roomPos.Y + i), new Point(roomPos.X, roomPos.Y + i), depth));
+						}
+						//right
+						if (!Terraria.WorldGen.TileEmpty(roomPos.X + room.Room.Width - 1, roomPos.Y + i)) {
+							tiles.Enqueue((new Point(roomPos.X + room.Room.Width - 1, roomPos.Y + i), new Point(roomPos.X + room.Room.Width, roomPos.Y + i), depth));
+						}
 					}
 				}
 			}
