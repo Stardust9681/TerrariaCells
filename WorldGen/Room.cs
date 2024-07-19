@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Terraria.ModLoader;
+using Terraria.ID;
 using Terraria.ModLoader.IO;
 using TerrariaCells.Content.Tiles;
 
@@ -73,7 +74,7 @@ namespace TerrariaCells.WorldGen {
 			
 			int index = x * height + y;
 			var tileTag = data[index];
-			return tileTag.GetString("Tile") == mod.Name + " " + ModContent.GetModTile(ModContent.TileType<RoomConnectorTile>()).Name;
+			return (int.TryParse(tileTag.GetString("Tile"), out int tileId) && tileId == TileID.TeamBlockRed)|| (tileTag.GetString("Tile") == mod.Name + " " + ModContent.GetModTile(ModContent.TileType<RoomConnectorTile>()).Name);
 		}
 
 		private static void ClearTile(IList<TagCompound> data, int width, int height, int x, int y) {
