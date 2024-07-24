@@ -1,11 +1,9 @@
-﻿using Stubble.Core.Classes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -69,14 +67,16 @@ namespace TerrariaCells.Common.GlobalItems
         /// </summary>
         public static Dictionary<Modifier, ModifierData> ModifierInfo;
 
-        public override void Load()
+        public override void SetStaticDefaults()
         {
+
             ModifierInfo = new Dictionary<Modifier, ModifierData>();
 
             // DEFINE ALL MODIFIER DATA HERE + ASSOCIATE WITH INTERNAL NAME (step 3: profit)
-            ModifierInfo.Add(Modifier.BurnOnHit, new ModifierData("Burning", "Burn your target on hit.", Color.Red, 0.5f));
-            ModifierInfo.Add(Modifier.Electrified, new ModifierData("Electrified", "Electrocute your target on hit.", Color.Yellow));
-            ModifierInfo.Add(Modifier.ExplodeOnHit, new ModifierData("Exploding", "Explode your target on hit.", Color.Orange));
+
+            ModifierInfo.Add(Modifier.BurnOnHit, new ModifierData(Mod.GetLocalization("BurnOnHit.Name").Value, Mod.GetLocalization("BurnOnHit.Description").Value, Color.Red, 0.5f));
+            ModifierInfo.Add(Modifier.Electrified, new ModifierData(Mod.GetLocalization("Electrified.Name").Value, Mod.GetLocalization("Electrified.Description").Value, Color.Yellow));
+            ModifierInfo.Add(Modifier.ExplodeOnHit, new ModifierData(Mod.GetLocalization("ExplodeOnHit.Name").Value, Mod.GetLocalization("ExplodeOnHit.Description").Value, Color.Orange));
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace TerrariaCells.Common.GlobalItems
             {
                 integerList.Add(reader.ReadInt32());
             }
-            
+
             // Convert integer list back to list of modifiers
             List<ModifierSystem.Modifier> enumList = integerList.Select(x => (ModifierSystem.Modifier)Enum.Parse(typeof(ModifierSystem.Modifier), x.ToString())).ToList();
             itemModifiers = enumList;

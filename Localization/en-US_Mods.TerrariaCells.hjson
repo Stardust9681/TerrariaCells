@@ -15,3 +15,31 @@ Configs: {
 		}
 	}
 }
+
+Projectiles.ExplosionModProjectile.DisplayName: Explosion
+
+Tooltips: {
+	Cooldown: Cooldown
+	SummonTime: Summon Time
+	AttacksPerSecond: Attacks Per Second
+}
+
+Keybinds: {
+	"First Skill.DisplayName": First  Skill
+	"Second Skill.DisplayName": Second  Skill
+}
+
+BurnOnHit: {
+	Name: Burning
+	Description: Burn your target on hit.
+}
+
+Electrified: {
+	Name: Electrified
+	Description: Electrocute your target on hit.
+}
+
+ExplodeOnHit: {
+	Name: Exploding
+	Description: Explode your target on hit.
+}

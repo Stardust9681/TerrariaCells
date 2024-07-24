@@ -1,17 +1,10 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using Terraria;
-using Terraria.Audio;
-using Terraria.DataStructures;
-using Terraria.GameContent;
-using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using Terraria.Utilities;
 
 namespace TerrariaCells.Common.GlobalItems
 {
@@ -23,7 +16,8 @@ namespace TerrariaCells.Common.GlobalItems
 
         public static float damageLevelScaling = 1.2f;
         public static float critLevelScaling = 1.05f;
-        public static float knockbackLevelScaling = 1.125f;
+        public static float knockbackLevelScaling = 1.05f;
+        public static float attackSpeedLevelScaling = 0.02f;
 
         public int itemLevel = 1;
 
@@ -32,12 +26,13 @@ namespace TerrariaCells.Common.GlobalItems
         // Only apply item levels to weapons
         public override bool AppliesToEntity(Item entity, bool lateInstantiation)
         {
-            return lateInstantiation && entity.damage > 0;
+            return lateInstantiation && entity.damage > 0 || lateInstantiation && entity.shoot > 0;
         }
 
         public override void SetDefaults(Item item)
         {
-            SetNameWithTier(item);
+            item.rare = itemLevel;
+            Math.Clamp(item.rare, 0, 10);
         }
 
         public void AddLevels(Item item, int level)
@@ -55,35 +50,65 @@ namespace TerrariaCells.Common.GlobalItems
         // Modify overrides to set weapon stats based on item level
         public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
         {
-            damage *= MathF.Pow(damageLevelScaling, itemLevel);
+            damage *= MathF.Sqrt(itemLevel * damageLevelScaling);
         }
 
         public override void ModifyWeaponCrit(Item item, Player player, ref float crit)
         {
-            crit *= MathF.Pow(critLevelScaling, itemLevel);
+            crit *= MathF.Sqrt(itemLevel * critLevelScaling);
         }
 
         public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback)
         {
-            knockback *= MathF.Pow(knockbackLevelScaling, itemLevel);
+            knockback *= MathF.Sqrt(itemLevel * knockbackLevelScaling);
+        }
+
+        public override float UseSpeedMultiplier(Item item, Player player)
+        {
+            return 1 + MathF.Sqrt((itemLevel - 1) * attackSpeedLevelScaling);
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
-            if (item.damage > 0)
-            {
-                tooltips.Add(new TooltipLine(Mod, "Tier", "[Tier " + itemLevel.ToString() + "]"));
-            }
-        }
 
-        /// <summary>
-        /// Resets the name of the item with the current tier as a suffix
-        /// </summary>
-        /// <param name="item"></param>
-        public void SetNameWithTier(Item item)
-        {
-            item.ClearNameOverride();
-            item.SetNameOverride(item.Name + " [Tier " + itemLevel.ToString() + "]");
+            // Iterate backwards through the list of tooltips so we can change it while we iterate through
+            for (int i = tooltips.Count - 1; i >= 0; i--)
+            {
+                // Alter vanilla tooltips here
+                switch (tooltips[i].Name)
+                {
+                    case "ItemName":
+                        tooltips[i].Text += " [Tier " + itemLevel.ToString() + "]";
+                        break;
+                    case "Speed": // Only works here because this is where the speed multipler calculation is
+
+                        int tempStat = (int)(item.useAnimation * (1 / UseSpeedMultiplier(item, Main.LocalPlayer)));
+
+                        if (tempStat <= 8)
+                            tooltips[i].Text = Lang.tip[6].Value;
+                        else if (tempStat <= 20)
+                            tooltips[i].Text = Lang.tip[7].Value;
+                        else if (tempStat <= 25)
+                            tooltips[i].Text = Lang.tip[8].Value;
+                        else if (tempStat <= 30)
+                            tooltips[i].Text = Lang.tip[9].Value;
+                        else if (tempStat <= 35)
+                            tooltips[i].Text = Lang.tip[10].Value;
+                        else if (tempStat <= 45)
+                            tooltips[i].Text = Lang.tip[11].Value;
+                        else if (tempStat <= 55)
+                            tooltips[i].Text = Lang.tip[12].Value;
+                        else
+                            tooltips[i].Text = Lang.tip[13].Value;
+
+                        tooltips[i].Text += " (" + 60 / tempStat + " " + Mod.GetLocalization("Tooltips.AttacksPerSecond").Value + ")";
+                        break;
+                }
+
+            }
+
+            // Also add the tier at the end of the tooltip
+            tooltips.Add(new TooltipLine(Mod, "Tier", "[Tier " + itemLevel.ToString() + "]"));
         }
 
         public override void NetSend(Item item, BinaryWriter writer)
@@ -95,8 +120,6 @@ namespace TerrariaCells.Common.GlobalItems
         {
             itemLevel = 0;
             AddLevels(item, reader.ReadInt32());
-
-            SetNameWithTier(item);
         }
 
         public override void SaveData(Item item, TagCompound tag)
@@ -108,12 +131,9 @@ namespace TerrariaCells.Common.GlobalItems
         {
             itemLevel = 0;
             AddLevels(item, tag.Get<int>("level"));
-
-            SetNameWithTier(item);
         }
 
         // I thought this was supposed to help with keeping values, according to the Calamity source code, but it didn't seem to help- will revisit if other issues with values transferring over are found.
-        /*
         public override GlobalItem Clone(Item item, Item itemClone)
         {
             TierSystemGlobalItem myClone = (TierSystemGlobalItem)base.Clone(item, itemClone);
@@ -122,7 +142,7 @@ namespace TerrariaCells.Common.GlobalItems
 
             return myClone;
         }
-        */
+
 
     }
 
