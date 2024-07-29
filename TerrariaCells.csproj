@@ -14,6 +14,9 @@
 	  <None Remove="Content\Modifiers\**" />
 	</ItemGroup>
 	<ItemGroup>
+	  <None Remove="Common\UI\Indicator.png" />
+	  <None Remove="Common\UI\ReloadBar.png" />
+	  <None Remove="Common\UI\SuccessRange.png" />
 	  <None Remove="Content\Projectiles\HeldProjectiles\ShotgunShell.png" />
 	</ItemGroup>
 	<ItemGroup>

@@ -14,6 +14,25 @@ Configs: {
 			Tooltip: Disables the >175% cap on the game's zoom
 		}
 	}
+
+	WeaponUIConfig: {
+		DisplayName: Weapon U I Config
+
+		DragUI: {
+			Label: Drag U I
+			Tooltip: ""
+		}
+
+		FadeOut: {
+			Label: Fade Out
+			Tooltip: ""
+		}
+
+		Scale: {
+			Label: Scale
+			Tooltip: ""
+		}
+	}
 }
 
 Projectiles: {
@@ -22,4 +41,11 @@ Projectiles: {
 	Sword.DisplayName: Sword
 	AmmoResidue.DisplayName: Ammo Residue
 	GunExplosion.DisplayName: Gun Explosion
+	ExplosionModProjectile.DisplayName: Explosion Mod Projectile
+	Autorifle.DisplayName: Autorifle
+	Handgun.DisplayName: Handgun
+	Musket.DisplayName: Musket
+	Sniper.DisplayName: Sniper
+	SniperShot.DisplayName: Sniper Shot
+	Guns.DisplayName: Guns
 }

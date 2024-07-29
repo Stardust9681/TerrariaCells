@@ -125,7 +125,7 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
             Projectile.ai[1] = Projectile.AngleTo(Main.MouseWorld);
             Projectile.Center = owner.Center;
             owner.heldProj = Projectile.whoAmI;
-            
+            Projectile.netUpdate = true;
             Timer += 1f;
             float x = Timer / (owner.HeldItem.useAnimation * Projectile.extraUpdates + 1);
             float rotLerper = x < 0.5 ? 16 * x * x * x * x * x : 1 - (float)Math.Pow(-2 * x + 2, 5) / 2;

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Build.Construction;
+using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
@@ -23,9 +24,17 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
         }
         public override bool PreDraw(ref Color lightColor)
         {
+            Asset<Texture2D> t = null;
             if (Projectile.ai[1] == 0)
             {
-                Asset<Texture2D> t = ModContent.Request<Texture2D>("TerrariaCells/Content/Projectiles/HeldProjectiles/ShotgunShell");
+                t = ModContent.Request<Texture2D>("TerrariaCells/Content/Projectiles/HeldProjectiles/ShotgunShell");
+                
+            }else if (Projectile.ai[1] == 1)
+            {
+                t = ModContent.Request<Texture2D>("TerrariaCells/Content/Projectiles/HeldProjectiles/Mag");
+            }
+
+            if (t != null) {
                 Main.EntitySpriteDraw(t.Value, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, t.Size() / 2, Projectile.scale, SpriteEffects.None);
             }
             return false;

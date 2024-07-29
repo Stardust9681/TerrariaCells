@@ -60,7 +60,9 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
             Main.EntitySpriteDraw(t.Value, armPosition + new Vector2(8, -2 * Projectile.spriteDirection).RotatedBy(Projectile.rotation) - Main.screenPosition, null, lightColor, Projectile.rotation, new Vector2(10, t.Height() / 2), new Vector2(MathHelper.Lerp(Projectile.scale + 0.1f, Projectile.scale, lerper), MathHelper.Lerp(min, Projectile.scale , lerper)), Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             if (Projectile.ai[2] == 1)
             {
-                int arrow = GetArrowType();
+                int arrow = (int)owner.HeldItem.shoot;
+                if (owner.HeldItem.type == ItemID.DD2PhoenixBow) arrow = ProjectileID.DD2BetsyArrow;
+                if (owner.HeldItem.type == ItemID.FairyQueenRangedItem) arrow = ProjectileID.JestersArrow;
                 Asset<Texture2D> ar = TextureAssets.Projectile[arrow];
                 Main.instance.LoadProjectile(arrow);
                 Main.EntitySpriteDraw(ar.Value, armPosition + new Vector2(MathHelper.Lerp(8, 5, Projectile.ai[1] / owner.HeldItem.useAnimation), -6 ).RotatedBy(Projectile.rotation) - Main.screenPosition, new Rectangle(0, 0, ar.Width(), ar.Height()/ Main.projFrames[arrow]), lightColor, Projectile.rotation + MathHelper.Pi/2, new Vector2(1, ar.Height() / Main.projFrames[arrow] / 2), Projectile.scale, Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
@@ -87,12 +89,13 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
             owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.ToRadians(90));
             Projectile.Center = owner.Center;
             owner.heldProj = Projectile.whoAmI;
-
+            Projectile.netUpdate = true;
             //autofire arrows with no charge
             if (Projectile.ai[2] == 0)
             {
-                if (Projectile.ai[1] % owner.HeldItem.useTime == 0)
+                if (Projectile.ai[1] == 0)
                 {
+                    
                     //fire using what vanilla does to shoot weapons
                     SoundEngine.PlaySound(owner.HeldItem.UseSound, Projectile.Center);
                     owner.HeldItem.GetGlobalItem<WeaponHoldoutify>().vanillaShoot = true;
@@ -107,6 +110,10 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
                     {
                         Projectile.ai[1] = 0;
                         Projectile.ai[2] = 1;
+                    }
+                    else if (owner.controlUseItem)
+                    {
+                        Projectile.ai[1] = 0;
                     }
                     else
                     {
@@ -152,53 +159,42 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
                 else
                 {
                     Projectile.ai[2] = 0;
-                    
-                    SoundEngine.PlaySound(owner.HeldItem.UseSound, Projectile.Center);
-                    WeaponHoldoutify weapon = owner.HeldItem.GetGlobalItem<WeaponHoldoutify>();
-                    weapon.vanillaShoot = true;
                     float arrowCharge = MathHelper.Lerp(0f, 1f, Projectile.ai[1] / chargeTime);
-                    int originalCrit = owner.HeldItem.crit;
-                    float originalShootSpeed = owner.HeldItem.shootSpeed;
-                    if (arrowCharge == 1)
-                    owner.HeldItem.crit = 100;
+                    SoundEngine.PlaySound(owner.HeldItem.UseSound, Projectile.Center);
+                    //exceptions for weird bows
+                    if (owner.HeldItem.type == ItemID.DD2PhoenixBow)
+                    {
+                        Projectile.NewProjectileDirect(owner.GetSource_ItemUse(owner.HeldItem), owner.Center, Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(10, 20, arrowCharge), ProjectileID.DD2PhoenixBowShot, (int)(owner.HeldItem.damage * MathHelper.Lerp(0.1f, 4, arrowCharge)), owner.HeldItem.knockBack, owner.whoAmI);
+                    }
+                    else if (owner.HeldItem.type == ItemID.FairyQueenRangedItem)
+                    {
+                        Projectile.NewProjectileDirect(owner.GetSource_ItemUse(owner.HeldItem), owner.Center, Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(10, 30, arrowCharge), ProjectileID.FairyQueenRangedItemShot, (int)(owner.HeldItem.damage * MathHelper.Lerp(1, 10, arrowCharge)), owner.HeldItem.knockBack, owner.whoAmI);
+                    }
+                    //shoot vanilla style with some stat edits
+                    else
+                    {
+                        WeaponHoldoutify weapon = owner.HeldItem.GetGlobalItem<WeaponHoldoutify>();
+                        weapon.vanillaShoot = true;
+                        
+                        int originalCrit = owner.HeldItem.crit;
+                        float originalShootSpeed = owner.HeldItem.shootSpeed;
+                        if (arrowCharge == 1)
+                            owner.HeldItem.crit = 100;
 
-                    owner.HeldItem.shootSpeed += arrowCharge*9;
-                    //Main.NewText(owner.HeldItem.shootSpeed);
-                    MethodInfo PlayerItemCheck_Shoot = typeof(Player).GetMethod("ItemCheck_Shoot", BindingFlags.NonPublic | BindingFlags.Instance);
-                    PlayerItemCheck_Shoot.Invoke(owner, [owner.whoAmI, owner.HeldItem, (int)(owner.HeldItem.damage * (arrowCharge + 2f))]);
-                    //owner.HeldItem.damage = originalDamage;
-                    owner.HeldItem.shootSpeed = originalShootSpeed;
-                    owner.HeldItem.crit = originalCrit;
-                    weapon.vanillaShoot = false;
+                        owner.HeldItem.shootSpeed += arrowCharge * 9;
+                        //Main.NewText(owner.HeldItem.shootSpeed);
+                        MethodInfo PlayerItemCheck_Shoot = typeof(Player).GetMethod("ItemCheck_Shoot", BindingFlags.NonPublic | BindingFlags.Instance);
+                        PlayerItemCheck_Shoot.Invoke(owner, [owner.whoAmI, owner.HeldItem, (int)(owner.HeldItem.damage * (arrowCharge + 2f))]);
+                        //owner.HeldItem.damage = originalDamage;
+                        owner.HeldItem.shootSpeed = originalShootSpeed;
+                        owner.HeldItem.crit = originalCrit;
+                        weapon.vanillaShoot = false;
+                    }
                     Projectile.ai[2] = 0; //autofire part of code will handle killing the heldproj once usetime is fulfilled
                     Projectile.ai[1] = 1;
                     return;
                 }
             }
-        }
-        //get which arrow to draw when charging
-        //b/c ammo types, or bows using custom ammos
-        public int GetArrowType()
-        {
-            Player owner = Main.player[Projectile.owner];
-            int bow = owner.HeldItem.type;
-            Item ammo = owner.ChooseAmmo(owner.HeldItem);
-            int type = ammo.shoot;
-            if (type == ProjectileID.WoodenArrowFriendly)
-            {
-                if (bow == ItemID.MoltenFury) type = ProjectileID.FireArrow;
-                if (bow == ItemID.FairyQueenRangedItem) type = ProjectileID.FairyQueenRangedItemShot;
-                if (bow == ItemID.HellwingBow) type = ProjectileID.Hellwing;
-                if (bow == ItemID.BeesKnees) type = ProjectileID.BeeArrow;
-            }
-            if (bow == ItemID.BloodRainBow) type = ProjectileID.BloodRain;
-            if (bow == ItemID.PulseBow) type = ProjectileID.PulseBolt;
-            if (bow == ItemID.IceBow) type = ProjectileID.FrostArrow;
-            if (bow == ItemID.Marrow) type = ProjectileID.BoneArrow;
-            if (bow == ItemID.DD2BetsyBow) type = ProjectileID.DD2BetsyArrow;
-            if (bow == ItemID.ShadowFlameBow) type = ProjectileID.ShadowFlameArrow;
-
-            return type;
         }
     }
 }
