@@ -21,6 +21,10 @@ namespace TerrariaCells.Common.GlobalNPCs
         public override void SetDefaults(NPC entity)
         {
             PlayerTags = new int[Main.maxPlayers];
+            for (int i = 0; i < Main.maxPlayers; i++)
+            {
+                PlayerTags[i] = 0;
+            }
             base.SetDefaults(entity);
         }
         public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
