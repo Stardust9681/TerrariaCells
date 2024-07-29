@@ -30,7 +30,7 @@ public class GlobalGoldArmor : GlobalItem
 
     public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
     {
-        tooltips.Remove(tooltips.Find(x => x.Text.StartsWith("Set bonus")));
+        tooltips.Add(new TooltipLine(Mod, "GoldSetPerk", "Striking an enemy causes them drop 5 Silver"));
         
         switch (item.type)
         {
@@ -47,6 +47,7 @@ public class GlobalGoldArmor : GlobalItem
             Main.LocalPlayer.armor[1].type == ItemID.GoldChainmail &&
             Main.LocalPlayer.armor[2].type == ItemID.GoldGreaves)
         {
+            tooltips.Remove(tooltips.Find(x => x.Text.StartsWith("Set bonus")));
             tooltips.Add(new TooltipLine(Mod, "GoldArmorSet", "Set bonus: 1% increased damage for every gold coin in inventory"));
             tooltips.Add(new TooltipLine(Mod, "GoldArmorSet", "100% increased damage for every platinum coin in inventory"));
         }
