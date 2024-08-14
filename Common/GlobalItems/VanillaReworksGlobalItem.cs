@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.Map;
 using Terraria.ModLoader;
-using static TerrariaCells.Common.GlobalItems.ModifierSystem;
 
 namespace TerrariaCells.Common.GlobalItems
 {
     public class VanillaReworksGlobalItem : GlobalItem
     {
+
+
         public override bool NeedsAmmo(Item item, Player player)
         {
             return false;
@@ -17,14 +17,14 @@ namespace TerrariaCells.Common.GlobalItems
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
 
-            // Iterate backwards through the list of tooltips so we can change it while we iterate through
-            for (int i = tooltips.Count - 1; i >= 0; i--)
+            // Iterate through the list of tooltips so we can change vanilla tooltips
+            foreach (TooltipLine tooltip in tooltips)
             {
                 // Alter vanilla tooltips here
-                switch (tooltips[i].Name)
+                switch (tooltip.Name)
                 {
                     case "Material": // Remove the Material tag in the item tooltip
-                        tooltips.Remove(tooltips[i]);
+                        tooltip.Hide();
                         break;
                     case "Knockback":
                         float knockback = Main.LocalPlayer.GetWeaponKnockback(item, item.knockBack);
@@ -32,17 +32,25 @@ namespace TerrariaCells.Common.GlobalItems
                         knockback = (knockback / 20) * 100;
                         knockback = MathF.Round(knockback);
 
-                        tooltips[i].Text += " (" + knockback + "%)";
+                        tooltip.Text += " (" + knockback + "%)";
                         break;
                     case "UseMana":
-                        tooltips.Remove(tooltips[i]);
+                        tooltip.Hide();
                         break;
                     case "EtherianManaWarning":
-                        tooltips.Remove(tooltips[i]);
+                        tooltip.Hide();
                         break;
                     case "OneDropLogo":
-                        tooltips.Remove(tooltips[i]);
+                        tooltip.Hide();
                         break;
+                        /*
+                    case "Favorite":
+                        tooltip.Hide();
+                        break;
+                    case "FavoriteDesc":
+                        tooltip.Hide();
+                        break;
+                        */
                 }
 
             }

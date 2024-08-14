@@ -70,16 +70,32 @@ namespace TerrariaCells.Common.GlobalNPCs
 
                         case ModifierSystem.Modifier.Electrified:
                             {
-                                npc.AddBuff(BuffID.Electrified, 80); // Electrified for 1.33 seconds
+                                ModifierData data = ModifierSystem.GetModifierData(ModifierSystem.Modifier.BurnOnHit);
+
+                                // Only trigger the effect(OnFire debuff) if the rng is higher than our effect chance
+                                float rng = Terraria.Main.rand.NextFloat();
+
+                                if (rng > data.effectChance)
+                                {
+                                    npc.AddBuff(BuffID.Electrified, 80); // Electrified for 1.33 seconds
+                                }
 
                                 break;
                             }
                         case ModifierSystem.Modifier.ExplodeOnHit:
                             {
-                                // Spawn explosion as projectile
-                                var source = npc.GetSource_FromAI();
-                                Vector2 position = npc.Center;
-                                Projectile.NewProjectile(source, position, new Vector2(0, 0), ModContent.ProjectileType<ExplosionModProjectile>(), 10, 0f, Main.myPlayer);
+                                ModifierData data = ModifierSystem.GetModifierData(ModifierSystem.Modifier.BurnOnHit);
+
+                                // Only trigger the effect(OnFire debuff) if the rng is higher than our effect chance
+                                float rng = Terraria.Main.rand.NextFloat();
+
+                                if (rng > data.effectChance)
+                                {
+                                    // Spawn explosion as projectile
+                                    var source = npc.GetSource_FromAI();
+                                    Vector2 position = npc.Center;
+                                    Projectile.NewProjectile(source, position, new Vector2(0, 0), ModContent.ProjectileType<ExplosionModProjectile>(), 10, 0f, Main.myPlayer);
+                                }
 
                                 break;
                             }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.Chat;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI.Chat;
@@ -26,8 +27,8 @@ namespace TerrariaCells.Common.Commands
             => "modifier";
 
         public override string Usage
-            => "/modifier <add or remove> <slot> <modifier>" +
-            "\n add/remove — add or remove modifiers?" +
+            => "/modifier <'add' or 'remove'> <slot> <modifier>" +
+            "\n 'add' or 'remove' — add or remove modifiers?" +
             "\n slot — inventory slot with weapon to apply modifier on" +
             "\n modifier — modifier enum name or dictionary index" +
             "\n \n '/modifier list' will provide a list of all modifiers" +
@@ -178,8 +179,8 @@ namespace TerrariaCells.Common.Commands
 
 
         public override string Usage
-            => "/level <set or add> <slot> <amount>" +
-            "\n set or add — set the current level or add levels" +
+            => "/level <'set' or 'add'> <slot> <amount>" +
+            "\n 'set' or 'add' — set the current level or add levels" +
             "\n slot — inventory slot with item" +
             "\n amount — amount to add or set level to";
 

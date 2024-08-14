@@ -13,33 +13,47 @@ Configs: {
 			Label: Disable Zoom Cap
 			Tooltip: Disables the >175% cap on the game's zoom
 		}
+
+		Headers.SkillUI: Skills UI
+
+		ShowKeybind: {
+			Label: Show Keybind
+			Tooltip: Displays the keybind that is associated with each skill slot
+		}
+
+		ShowCooldown: {
+			Label: Show Cooldown Text
+			Tooltip: Display the cooldown time left in text
+		}
 	}
 }
 
 Projectiles.ExplosionModProjectile.DisplayName: Explosion
 
 Tooltips: {
-	Cooldown: Cooldown
-	SummonTime: Summon Time
-	AttacksPerSecond: Attacks Per Second
+	ShiftHint: Hold [shift] for Skill Info
+	SkillStats: Skill Stats:
+	Cooldown: Cooldown: {0} Seconds
+	SummonTime: Summon Time: {0} Seconds
+	AttacksPerSecond: " ({0} Attacks Per Second)"
 }
 
 Keybinds: {
-	"First Skill.DisplayName": First  Skill
-	"Second Skill.DisplayName": Second  Skill
+	"First Skill.DisplayName": First Skill
+	"Second Skill.DisplayName": Second Skill
 }
 
 BurnOnHit: {
 	Name: Burning
-	Description: Burn your target on hit.
+	Description: 50% chance to burn your target on hit
 }
 
 Electrified: {
 	Name: Electrified
-	Description: Electrocute your target on hit.
+	Description: 75% chance to electrocute your target on hit
 }
 
 ExplodeOnHit: {
 	Name: Exploding
-	Description: Explode your target on hit.
+	Description: 30% chance to explode your target on hit
 }
