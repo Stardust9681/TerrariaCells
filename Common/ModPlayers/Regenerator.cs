@@ -54,7 +54,7 @@ namespace TerrariaCells.Common.ModPlayers
 			}
 
 			//Assuming that 20 segments is our cap here
-			int segmentSize = player.statLife <= 400 ? 20 : (player.statLife <= 500 ? 25 : (Player.statLife / 20));
+			int segmentSize = player.statLifeMax2 <= 400 ? 20 : (player.statLifeMax2 <= 500 ? 25 : (Player.statLifeMax2 / 20));
 			int endPoint = player.statLife - modPlayer.DamageLeft;
 			if (endPoint < 0)
 				endPoint = 0;
@@ -157,6 +157,12 @@ namespace TerrariaCells.Common.ModPlayers
 		public override void NaturalLifeRegen(ref float regen)
 		{
 			regen = 0;
+			Player.lifeRegenTime = 0;
+		}
+
+		public override void UpdateLifeRegen()
+		{
+			Player.lifeRegen = 0;
 		}
 
 		public override void UpdateBadLifeRegen()
