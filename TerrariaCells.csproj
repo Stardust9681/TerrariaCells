@@ -5,7 +5,6 @@
 
 	<!-- General -->
 	<ItemGroup>
-   <Folder Include="Common\"/>
 	  <Folder Include="Content\" />
 	</ItemGroup>
 	<ItemGroup>

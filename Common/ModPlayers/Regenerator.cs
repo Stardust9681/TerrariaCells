@@ -245,5 +245,28 @@ namespace TerrariaCells.Common.ModPlayers
 				Player.KillMe(reason, 1, 0);
 			}
 		}
+
+		public override bool OnPickup(Item item)
+		{
+			float foodStrength;
+			switch (item.buffType)
+			{
+				case Terraria.ID.BuffID.WellFed:
+					foodStrength = 0.1f;
+					break;
+				case Terraria.ID.BuffID.WellFed2:
+					foodStrength = 0.25f;
+					break;
+				case Terraria.ID.BuffID.WellFed3:
+					foodStrength = 0.5f;
+					break;
+				default:
+					return base.OnPickup(item);
+			}
+			int healing = (int)(foodStrength * Player.statLifeMax2);
+			Player.Heal(healing);
+			SetStaggerDamage(0);
+			return false;
+		}
 	}
 }
