@@ -19,10 +19,10 @@ namespace TerrariaCells.Common.GlobalNPCs
             // If we can get the source of our projectile, attempt to trigger the on-hit effects
             if (projectile.TryGetGlobalProjectile(out SourceGlobalProjectile sourceGlobalProjectile))
             {
-                //if (sourceGlobalProjectile.itemSource != null)
-                //{
+                if (sourceGlobalProjectile.itemSource != null)
+                {
                     TriggerOnHit(sourceGlobalProjectile.itemSource, npc);
-                //}
+                }
             }
         }
 
