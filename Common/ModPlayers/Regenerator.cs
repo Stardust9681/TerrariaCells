@@ -239,13 +239,13 @@ namespace TerrariaCells.Common.ModPlayers
 			switch (item.buffType)
 			{
 				case Terraria.ID.BuffID.WellFed:
-					healthRecovery = 0.1f;
+					healthRecovery = 0.15f;
 					break;
 				case Terraria.ID.BuffID.WellFed2:
-					healthRecovery = 0.25f;
+					healthRecovery = 0.3f;
 					break;
 				case Terraria.ID.BuffID.WellFed3:
-					healthRecovery = 0.5f;
+					healthRecovery = 0.45f;
 					break;
 				default:
 					return base.OnPickup(item);
