@@ -19,7 +19,10 @@ namespace TerrariaCells.Common.GlobalNPCs
             // If we can get the source of our projectile, attempt to trigger the on-hit effects
             if (projectile.TryGetGlobalProjectile(out SourceGlobalProjectile sourceGlobalProjectile))
             {
-                TriggerOnHit(sourceGlobalProjectile.itemSource, npc);
+                //if (sourceGlobalProjectile.itemSource != null)
+                //{
+                    TriggerOnHit(sourceGlobalProjectile.itemSource, npc);
+                //}
             }
         }
 
@@ -36,18 +39,9 @@ namespace TerrariaCells.Common.GlobalNPCs
         /// <param name="npc"></param>
         public void TriggerOnHit(Item sourceItem, NPC npc)
         {
-            ModifierGlobalItem modifierGlobalItem = null;
-            if (sourceItem != null)
-            {
-                sourceItem.TryGetGlobalItem(out modifierGlobalItem);
-            }
-            else
-            {
-                Mod.Logger.Warn("Null sourceItem!");
-            }
 
             // If the modifier can be accessed, trigger the effect based upon the corresponding modifiers below
-            if (modifierGlobalItem != null)
+            if (sourceItem.TryGetGlobalItem(out ModifierGlobalItem modifierGlobalItem))
             {
                 foreach (ModifierSystem.Modifier modifier in modifierGlobalItem.itemModifiers)
                 {

@@ -8,7 +8,7 @@ namespace TerrariaCells.Common.GlobalItems
     public class VanillaReworksGlobalItem : GlobalItem
     {
 
-
+        // Prevents guns from utilizing ammo
         public override bool NeedsAmmo(Item item, Player player)
         {
             return false;
@@ -20,7 +20,7 @@ namespace TerrariaCells.Common.GlobalItems
             // Iterate through the list of tooltips so we can change vanilla tooltips
             foreach (TooltipLine tooltip in tooltips)
             {
-                // Alter vanilla tooltips here
+                // CHANGE VANILLA TOOLTIPS HERE
                 switch (tooltip.Name)
                 {
                     case "Material": // Remove the Material tag in the item tooltip

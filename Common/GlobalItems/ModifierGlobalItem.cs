@@ -1,15 +1,10 @@
-﻿using Humanizer;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria;
-using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Default;
 using Terraria.ModLoader.IO;
-using TerrariaCells.Content.Projectiles;
 
 namespace TerrariaCells.Common.GlobalItems
 {

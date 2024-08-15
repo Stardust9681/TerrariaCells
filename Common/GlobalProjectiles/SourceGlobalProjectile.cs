@@ -1,5 +1,6 @@
 ﻿using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace TerrariaCells.Common.GlobalProjectiles
@@ -8,7 +9,7 @@ namespace TerrariaCells.Common.GlobalProjectiles
     {
         public override bool InstancePerEntity => true;
 
-        public Item itemSource;
+        public Item itemSource = null;
 
         
         public override void SetDefaults(Projectile projectile)

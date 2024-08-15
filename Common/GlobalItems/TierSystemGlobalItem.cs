@@ -15,7 +15,6 @@ namespace TerrariaCells.Common.GlobalItems
     {
 
         public static float damageLevelScaling = 2.2f;
-        public static float critLevelScaling = 0.65f;
         public static float knockbackLevelScaling = 0.35f;
         public static float attackSpeedLevelScaling = 0.125f;
 
@@ -51,11 +50,6 @@ namespace TerrariaCells.Common.GlobalItems
         public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
         {
             damage *= 1 + (MathF.Sqrt(itemLevel - 1) * damageLevelScaling);
-        }
-
-        public override void ModifyWeaponCrit(Item item, Player player, ref float crit)
-        {
-            crit *= 1 + (MathF.Sqrt(itemLevel - 1) * critLevelScaling);
         }
 
         public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback)

@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.Chat;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.UI.Chat;
 using TerrariaCells.Common.GlobalItems;
-using static TerrariaCells.Common.GlobalItems.ModifierSystem;
 
 namespace TerrariaCells.Common.Commands
 {
@@ -75,7 +68,7 @@ namespace TerrariaCells.Common.Commands
                         return;
                     }
 
-                    // Listing all possible modifiers
+                // Listing all possible modifiers
                 case "list":
                     {
                         StringBuilder modifierList = new StringBuilder("Modifiers: \n");
@@ -91,7 +84,7 @@ namespace TerrariaCells.Common.Commands
                         return;
                     }
 
-                    // Adding or removing modifiers
+                // Adding or removing modifiers
                 case "add":
                 case "remove":
 
