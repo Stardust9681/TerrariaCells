@@ -34,6 +34,21 @@ namespace TerrariaCells.Common.Globals
 			GoldenDelight, GrapeJuice, Bacon, BBQRibs, Burger, Hotdog, Milkshake, Pizza,
 			Spaghetti, Steak, ChristmasPudding, GingerbreadCookie, SugarCookie
 		};
+
+		public override void Load()
+		{
+			On_NPC.NPCLoot_DropCommonLifeAndMana += RemoveHealthManaDrops;
+		}
+		public override void Unload()
+		{
+			On_NPC.NPCLoot_DropCommonLifeAndMana -= RemoveHealthManaDrops;
+		}
+
+		private void RemoveHealthManaDrops(On_NPC.orig_NPCLoot_DropCommonLifeAndMana orig, NPC self, Player closestPlayer)
+		{
+			return;
+		}
+
 		public override void ModifyGlobalLoot(GlobalLoot globalLoot)
 		{
 			globalLoot.RemoveWhere(x => true);
