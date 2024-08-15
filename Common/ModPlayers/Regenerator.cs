@@ -14,6 +14,16 @@ namespace TerrariaCells.Common.ModPlayers
 	//ModPlayer handling health and regeneration aspects
 	public class Regenerator : ModPlayer
 	{
+		public override void Load()
+		{
+			On_ResourceDrawSettings.Draw += DrawRallyHealthBar;
+		}
+		public override void Unload()
+		{
+			On_ResourceDrawSettings.Draw -= DrawRallyHealthBar;
+		}
+
+		#region Rally Heal/Mechanic
 		public const float STAGGER_POTENCY = 3f;
 		public const float INV_STAGGER_POTENCY = 1f / STAGGER_POTENCY;
 		public const string BAR_HEALTH_FILL1 = "Images\\UI\\PlayerResourceSets\\HorizontalBars\\HP_Fill";
@@ -32,18 +42,9 @@ namespace TerrariaCells.Common.ModPlayers
 			//Damage per Tick = -TimeAmplitude / (2 * sqrt(TimeAmplitude * damageTime))
 		//Damage Left approaches 0 when damageTime reaches MaxTime
 
-		public override void Load()
-		{
-			On_ResourceDrawSettings.Draw += On_ResourceDrawSettings_Draw;
-		}
-		public override void Unload()
-		{
-			On_ResourceDrawSettings.Draw -= On_ResourceDrawSettings_Draw;
-		}
-
 		//Detour for Health Bar drawing
-		//Handles health indicator for Rally Mechanih
-		private void On_ResourceDrawSettings_Draw(On_ResourceDrawSettings.orig_Draw orig, ref ResourceDrawSettings self, SpriteBatch spriteBatch, ref bool isHovered)
+		//Handles health indicator for Rally Mechanic
+		private void DrawRallyHealthBar(On_ResourceDrawSettings.orig_Draw orig, ref ResourceDrawSettings self, SpriteBatch spriteBatch, ref bool isHovered)
 		{
 			Player player = Main.LocalPlayer;
 			Regenerator modPlayer = player.GetModPlayer<Regenerator>();
@@ -61,6 +62,7 @@ namespace TerrariaCells.Common.ModPlayers
 			int damageInSegment = endPoint % segmentSize;
 			int damageSegmentIndex = endPoint / segmentSize;
 
+			//Borrowed and adapted from Terraria
 			int elementCount = self.ElementCount;
 			Vector2 value = self.TopLeftAnchor;
 			Point value2 = Main.MouseScreen.ToPoint();
@@ -88,13 +90,13 @@ namespace TerrariaCells.Common.ModPlayers
 					isHovered = true;
 				}
 
-				if (elementIndex > damageSegmentIndex)
+				if (elementIndex > damageSegmentIndex) //If entire segment would be lost to damage
 				{
 					float alpha = (MathF.Cos((float)Main.timeForVisualEffects * 0.314f) * 0.25f) + 0.75f;
 
 					spriteBatch.Draw(asset.Value, vector, rectangle2, Color.White * alpha, 0f, vector2, scale, SpriteEffects.None, 0f);
 				}
-				else if (elementIndex == damageSegmentIndex)
+				else if (elementIndex == damageSegmentIndex) //If segment is split (ex: 20 health, take 10 damage, half of segment should flash)
 				{
 					int split = 12 - (damageInSegment * 12 / segmentSize);
 
@@ -118,7 +120,7 @@ namespace TerrariaCells.Common.ModPlayers
 						spriteBatch.Draw(asset.Value, vector, sourceRight, Color.White, 0f, vector2, scale, SpriteEffects.None, 0f);
 					}
 				}
-				else
+				else //If segment is unaffected by rally mechanic
 				{
 					spriteBatch.Draw(asset.Value, vector, rectangle2, Color.White, 0f, vector2, scale, SpriteEffects.None, 0f);
 				}
@@ -151,18 +153,6 @@ namespace TerrariaCells.Common.ModPlayers
 				damageBuffer = 0;
 			}
 			damageTime = 0;
-		}
-
-		//Disable health regeneration
-		public override void NaturalLifeRegen(ref float regen)
-		{
-			regen = 0;
-			Player.lifeRegenTime = 0;
-		}
-
-		public override void UpdateLifeRegen()
-		{
-			Player.lifeRegen = 0;
 		}
 
 		public override void UpdateBadLifeRegen()
@@ -240,6 +230,46 @@ namespace TerrariaCells.Common.ModPlayers
 				AdjustStaggerDamage(-amount);
 			}
 		}
+		#endregion
+
+		#region Healing
+		public override bool OnPickup(Item item)
+		{
+			float healthRecovery;
+			switch (item.buffType)
+			{
+				case Terraria.ID.BuffID.WellFed:
+					healthRecovery = 0.1f;
+					break;
+				case Terraria.ID.BuffID.WellFed2:
+					healthRecovery = 0.25f;
+					break;
+				case Terraria.ID.BuffID.WellFed3:
+					healthRecovery = 0.5f;
+					break;
+				default:
+					return base.OnPickup(item);
+			}
+			int healing = (int)(healthRecovery * Player.statLifeMax2);
+			healing -= DamageLeft;
+			Player.Heal(healing);
+			AdjustStaggerDamage(-healing);
+			return false;
+		}
+		#endregion
+
+		#region Disable Health Regen
+		public override void NaturalLifeRegen(ref float regen)
+		{
+			regen = 0;
+			Player.lifeRegenTime = 0;
+		}
+
+		public override void UpdateLifeRegen()
+		{
+			Player.lifeRegen = 0;
+		}
+		#endregion
 
 		//Make sure player dies when they hit <=0 health
 		private void CheckDead(PlayerDeathReason reason = null)
@@ -250,29 +280,6 @@ namespace TerrariaCells.Common.ModPlayers
 
 				Player.KillMe(reason, 1, 0);
 			}
-		}
-
-		public override bool OnPickup(Item item)
-		{
-			float foodStrength;
-			switch (item.buffType)
-			{
-				case Terraria.ID.BuffID.WellFed:
-					foodStrength = 0.1f;
-					break;
-				case Terraria.ID.BuffID.WellFed2:
-					foodStrength = 0.25f;
-					break;
-				case Terraria.ID.BuffID.WellFed3:
-					foodStrength = 0.5f;
-					break;
-				default:
-					return base.OnPickup(item);
-			}
-			int healing = (int)(foodStrength * Player.statLifeMax2);
-			Player.Heal(healing);
-			SetStaggerDamage(0);
-			return false;
 		}
 	}
 }

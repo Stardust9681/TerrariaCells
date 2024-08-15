@@ -69,17 +69,19 @@ namespace TerrariaCells.Common.Globals
 		private const float TIER_TWO_RATE = 0.195f; //Percent of drops to be Tier 2 foods
 		private const float TIER_THREE_RATE = 0.005f; //Percent of drops to be Tier 3 foods
 
-		public FoodDropRule() { }
+		public FoodDropRule() { } //No extra fields to set
 
-		public List<IItemDropRuleChainAttempt> ChainedRules { get; set; }
+		public List<IItemDropRuleChainAttempt> ChainedRules { get; set; } //Vanilla implementation for some rules
 
-		public bool CanDrop(DropAttemptInfo info)
+		public bool CanDrop(DropAttemptInfo info) //Vanilla just returns true here
 		{
 			return true;
 		}
 
 		public void ReportDroprates(List<DropRateInfo> drops, DropRateInfoChainFeed ratesInfo)
 		{
+			//3 possible tiers of drop, report on all of them
+			//Though none of these are shown ingame so what do we care
 			drops.Add(new DropRateInfo(Apple, 1, 1, DROPRATE * TIER_ONE_RATE));
 			drops.Add(new DropRateInfo(PumpkinPie, 1, 1, DROPRATE * TIER_TWO_RATE));
 			drops.Add(new DropRateInfo(Bacon, 1, 1, DROPRATE * TIER_THREE_RATE));
@@ -98,19 +100,19 @@ namespace TerrariaCells.Common.Globals
 					case < TIER_THREE_RATE: //
 						itemToDrop = info.rng.Next(LootHandler.TIER_THREE_FOOD);
 						break;
-					case < TIER_TWO_RATE + TIER_THREE_RATE: //
+					case < TIER_TWO_RATE + TIER_THREE_RATE: //Sum up weight
 						itemToDrop = info.rng.Next(LootHandler.TIER_TWO_FOOD);
 						break;
-					case < TIER_ONE_RATE + TIER_TWO_RATE + TIER_THREE_RATE: //
+					case < TIER_ONE_RATE + TIER_TWO_RATE + TIER_THREE_RATE: //Sum up weight
 						itemToDrop = info.rng.Next(LootHandler.TIER_ONE_FOOD);
 						break;
 					default:
-						return new ItemDropAttemptResult() { State = ItemDropAttemptResultState.DidNotRunCode };
+						return new ItemDropAttemptResult() { State = ItemDropAttemptResultState.DidNotRunCode }; //Something went wrong
 				}
-				CommonCode.DropItem(info.npc.Center, info.npc.GetSource_Loot(), itemToDrop, 1);
-				return new ItemDropAttemptResult() { State = ItemDropAttemptResultState.Success };
+				CommonCode.DropItem(info.npc.Center, info.npc.GetSource_Loot(), itemToDrop, 1); //Drop item
+				return new ItemDropAttemptResult() { State = ItemDropAttemptResultState.Success }; //Succeeded
 			}
-			return new ItemDropAttemptResult() { State = ItemDropAttemptResultState.FailedRandomRoll };
+			return new ItemDropAttemptResult() { State = ItemDropAttemptResultState.FailedRandomRoll }; //Failed RNG
 		}
 	}
 }
