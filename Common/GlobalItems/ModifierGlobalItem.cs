@@ -1,10 +1,7 @@
-﻿using Stubble.Core.Classes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -69,14 +66,16 @@ namespace TerrariaCells.Common.GlobalItems
         /// </summary>
         public static Dictionary<Modifier, ModifierData> ModifierInfo;
 
-        public override void Load()
+        public override void SetStaticDefaults()
         {
-            ModifierInfo = new Dictionary<Modifier, ModifierData>();
+            ModifierInfo = new Dictionary<Modifier, ModifierData>
+            {
+                // DEFINE ALL MODIFIER DATA HERE + ASSOCIATE WITH INTERNAL NAME (step 3: profit)
 
-            // DEFINE ALL MODIFIER DATA HERE + ASSOCIATE WITH INTERNAL NAME (step 3: profit)
-            ModifierInfo.Add(Modifier.BurnOnHit, new ModifierData("Burning", "Burn your target on hit.", Color.Red, 0.5f));
-            ModifierInfo.Add(Modifier.Electrified, new ModifierData("Electrified", "Electrocute your target on hit.", Color.Yellow));
-            ModifierInfo.Add(Modifier.ExplodeOnHit, new ModifierData("Exploding", "Explode your target on hit.", Color.Orange));
+                { Modifier.BurnOnHit, new ModifierData(Mod.GetLocalization("BurnOnHit.Name").Value, Mod.GetLocalization("BurnOnHit.Description").Value, Color.Red, 0.5f) },
+                { Modifier.Electrified, new ModifierData(Mod.GetLocalization("Electrified.Name").Value, Mod.GetLocalization("Electrified.Description").Value, Color.DeepSkyBlue, 0.75f) },
+                { Modifier.ExplodeOnHit, new ModifierData(Mod.GetLocalization("ExplodeOnHit.Name").Value, Mod.GetLocalization("ExplodeOnHit.Description").Value, Color.Orange, 0.3f)}
+            };
         }
 
         /// <summary>
@@ -88,21 +87,24 @@ namespace TerrariaCells.Common.GlobalItems
         {
             if (ModifierInfo.ContainsKey(modifier))
             {
-                return ModifierInfo[modifier];
+
+                if (ModifierInfo.TryGetValue(modifier, out ModifierData data))
+                {
+                    return data;
+                }
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
 
         }
     }
 
     /// <summary>
-    /// Adds modifiers 
+    /// GlbalItem for adding modifiers to items and handling per-item modifier logic
     /// </summary>
     public class ModifierGlobalItem : GlobalItem
     {
+
         public List<ModifierSystem.Modifier> itemModifiers = new List<ModifierSystem.Modifier>();
 
         public override bool InstancePerEntity => true;
@@ -113,6 +115,55 @@ namespace TerrariaCells.Common.GlobalItems
             return lateInstantiation && entity.damage > 0;
         }
 
+        // Emitting visuals on-swing function to add custom ones
+        public override void MeleeEffects(Item item, Player player, Rectangle hitbox)
+        {
+            foreach (ModifierSystem.Modifier modifier in itemModifiers)
+            {
+                // DEFINE ALL MODIFIER WEAPON SWING VISUAL EFFECTS HERE
+                switch (modifier)
+                {
+                    case ModifierSystem.Modifier.BurnOnHit:
+                        {
+                            // Effect copied from Fiery Greatsword
+                            if (Main.rand.NextBool(2))
+                            {
+                                int num22 = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, 213, player.velocity.X * 0.2f + (float)(player.direction * 3), player.velocity.Y * 0.2f, 180, default(Color), 2.5f);
+                                Main.dust[num22].noGravity = false;
+                                Main.dust[num22].velocity *= 0.3f;
+                                Main.dust[num22].velocity.Y -= 0.5f;
+                            }
+
+                            if (Main.rand.NextBool(2))
+                            {
+                                int num22 = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, 6, player.velocity.X * 0.2f + (float)(player.direction * 3), player.velocity.Y * 0.2f, 100, default(Color), 2.5f);
+                                Main.dust[num22].noGravity = true;
+                                Main.dust[num22].velocity *= 0.7f;
+                                Main.dust[num22].velocity.Y -= 0.5f;
+                            }
+
+                            break;
+                        }
+
+                    case ModifierSystem.Modifier.Electrified:
+                        {
+                            // Effect copied from Influx Waver
+                            if (Main.rand.NextBool(2))
+                            {
+                                int type2 = Utils.SelectRandom<int>(Main.rand, 226, 229);
+                                int num2 = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, type2, player.direction * 2, 0f, 150);
+                                Main.dust[num2].velocity *= 0.2f;
+                                Main.dust[num2].noGravity = true;
+                            }
+
+                            break;
+                        }
+
+                }
+
+            }
+        }
+
         /// <summary>
         /// Adds the given list of modifiers to this item
         /// </summary>
@@ -121,7 +172,7 @@ namespace TerrariaCells.Common.GlobalItems
         {
             foreach (ModifierSystem.Modifier modifier in modifiers)
             {
-                itemModifiers.Add(modifier);
+                AddModifier(modifier);
             }
         }
 
@@ -170,7 +221,7 @@ namespace TerrariaCells.Common.GlobalItems
             {
                 integerList.Add(reader.ReadInt32());
             }
-            
+
             // Convert integer list back to list of modifiers
             List<ModifierSystem.Modifier> enumList = integerList.Select(x => (ModifierSystem.Modifier)Enum.Parse(typeof(ModifierSystem.Modifier), x.ToString())).ToList();
             itemModifiers = enumList;
@@ -201,8 +252,10 @@ namespace TerrariaCells.Common.GlobalItems
                 {
                     ModifierData data = ModifierSystem.GetModifierData(modifier);
 
-                    TooltipLine tooltip = new TooltipLine(Mod, "Modifer", data.name + ": " + data.tooltip);
-                    tooltip.OverrideColor = data.tooltipColor;
+                    TooltipLine tooltip = new TooltipLine(Mod, "Modifer", data.name + ": " + data.tooltip)
+                    {
+                        OverrideColor = data.tooltipColor
+                    };
 
                     tooltips.Add(tooltip);
                 }
