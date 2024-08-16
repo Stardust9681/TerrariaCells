@@ -100,7 +100,7 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
                     SoundEngine.PlaySound(owner.HeldItem.UseSound, Projectile.Center);
                     owner.HeldItem.GetGlobalItem<WeaponHoldoutify>().vanillaShoot = true;
                     MethodInfo PlayerItemCheck_Shoot = typeof(Player).GetMethod("ItemCheck_Shoot", BindingFlags.NonPublic | BindingFlags.Instance);
-                    PlayerItemCheck_Shoot.Invoke(owner, [owner.whoAmI, owner.HeldItem, owner.HeldItem.damage]);
+                    PlayerItemCheck_Shoot.Invoke(owner, [owner.whoAmI, owner.HeldItem, owner.GetWeaponDamage(owner.HeldItem)]);
                     owner.HeldItem.GetGlobalItem<WeaponHoldoutify>().vanillaShoot = false;
                 }
                 Projectile.ai[1]++;
@@ -164,11 +164,11 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
                     //exceptions for weird bows
                     if (owner.HeldItem.type == ItemID.DD2PhoenixBow)
                     {
-                        Projectile.NewProjectileDirect(owner.GetSource_ItemUse(owner.HeldItem), owner.Center, Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(10, 20, arrowCharge), ProjectileID.DD2PhoenixBowShot, (int)(owner.HeldItem.damage * MathHelper.Lerp(0.1f, 4, arrowCharge)), owner.HeldItem.knockBack, owner.whoAmI);
+                        Projectile.NewProjectileDirect(owner.GetSource_ItemUse(owner.HeldItem), owner.Center, Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(10, 20, arrowCharge), ProjectileID.DD2PhoenixBowShot, (int)(owner.GetWeaponDamage(owner.HeldItem) * MathHelper.Lerp(0.1f, 4, arrowCharge)), owner.HeldItem.knockBack, owner.whoAmI);
                     }
                     else if (owner.HeldItem.type == ItemID.FairyQueenRangedItem)
                     {
-                        Projectile.NewProjectileDirect(owner.GetSource_ItemUse(owner.HeldItem), owner.Center, Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(10, 30, arrowCharge), ProjectileID.FairyQueenRangedItemShot, (int)(owner.HeldItem.damage * MathHelper.Lerp(1, 10, arrowCharge)), owner.HeldItem.knockBack, owner.whoAmI);
+                        Projectile.NewProjectileDirect(owner.GetSource_ItemUse(owner.HeldItem), owner.Center, Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(10, 30, arrowCharge), ProjectileID.FairyQueenRangedItemShot, (int)(owner.GetWeaponDamage(owner.HeldItem) * MathHelper.Lerp(1, 10, arrowCharge)), owner.HeldItem.knockBack, owner.whoAmI);
                     }
                     //shoot vanilla style with some stat edits
                     else
@@ -184,7 +184,7 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
                         owner.HeldItem.shootSpeed += arrowCharge * 9;
                         //Main.NewText(owner.HeldItem.shootSpeed);
                         MethodInfo PlayerItemCheck_Shoot = typeof(Player).GetMethod("ItemCheck_Shoot", BindingFlags.NonPublic | BindingFlags.Instance);
-                        PlayerItemCheck_Shoot.Invoke(owner, [owner.whoAmI, owner.HeldItem, (int)(owner.HeldItem.damage * (arrowCharge + 2f))]);
+                        PlayerItemCheck_Shoot.Invoke(owner, [owner.whoAmI, owner.HeldItem, (int)(owner.GetWeaponDamage(owner.HeldItem) * (arrowCharge + 2f))]);
                         //owner.HeldItem.damage = originalDamage;
                         owner.HeldItem.shootSpeed = originalShootSpeed;
                         owner.HeldItem.crit = originalCrit;

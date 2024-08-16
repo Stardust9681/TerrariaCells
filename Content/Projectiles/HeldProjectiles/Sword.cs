@@ -143,7 +143,7 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
                 {
                     owner.HeldItem.GetGlobalItem<WeaponHoldoutify>().vanillaShoot = true;
                     MethodInfo PlayerItemCheck_Shoot = typeof(Player).GetMethod("ItemCheck_Shoot", BindingFlags.NonPublic | BindingFlags.Instance);
-                    PlayerItemCheck_Shoot.Invoke(owner, [owner.whoAmI, owner.HeldItem, owner.HeldItem.damage]);
+                    PlayerItemCheck_Shoot.Invoke(owner, [owner.whoAmI, owner.HeldItem, owner.GetWeaponDamage(owner.HeldItem)]);
                     owner.HeldItem.GetGlobalItem<WeaponHoldoutify>().vanillaShoot = false;
                 }
             }
