@@ -9,6 +9,81 @@ using TerrariaCells.Common.GlobalItems;
 namespace TerrariaCells.Common.Commands
 {
     /// <summary>
+    /// Command for modifying weapons tier, for testing
+    /// </summary>
+    public class DamageCommand : ModCommand
+    {
+        public override CommandType Type => CommandType.Chat;
+
+        public override string Command => "damage";
+
+        public override string Usage => "/damage <value>" +
+            "\ndamage - damage value to give held weapon, or \"reset\" to reset damage";
+        public override string Description => "change or set weapons tier";
+
+        public override void Action(CommandCaller caller, string input, string[] args)
+        {
+            if (args.Length < 1)
+            {
+                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("Too few arguments!"), Color.Yellow);
+                return;
+            }
+            if (args[0] == "reset")
+            {
+                caller.Player.HeldItem.damage = caller.Player.HeldItem.OriginalDamage;
+                return;
+            }
+            try
+            {
+                int dmg = int.Parse(args[0]);
+                caller.Player.HeldItem.damage = dmg;
+            }
+            catch (Exception e)
+            {
+                Main.NewText(e);
+            }
+        }
+    }
+    /// <summary>
+    /// Command for modifying weapons tier, for testing
+    /// </summary>
+    public class TierCommand : ModCommand
+    {
+        public override CommandType Type => CommandType.Chat;
+
+        public override string Command => "tier";
+
+        public override string Usage => "/tier <set or change> <tier>" +
+            "\nset/change - whether to set tier to a number or change it by a number" +
+            "\ntier - tier to set it to or change it by (negative numbers lower tier)";
+        public override string Description => "change or set weapons tier";
+
+        public override void Action(CommandCaller caller, string input, string[] args)
+        {
+            if (args.Length < 2)
+            {
+                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("Too few arguments!"), Color.Yellow);
+                return;
+            }
+            int lvl = -2;
+            try
+            {
+                lvl = int.Parse(args[1]);
+                switch (args[0]) 
+                {
+                    case "change":
+                        lvl += caller.Player.HeldItem.GetGlobalItem<TierSystemGlobalItem>().itemLevel;
+                        break;
+                }
+                caller.Player.HeldItem.GetGlobalItem<TierSystemGlobalItem>().SetLevel(caller.Player.HeldItem, lvl);
+            }
+            catch (Exception e)
+            {
+                Main.NewText(e);
+            }
+        }
+    }
+    /// <summary>
     /// Command for applying modifiers to items in your inventory, for testing purposes
     /// </summary>
     public class ModifierCommand : ModCommand

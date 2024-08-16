@@ -260,11 +260,11 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
         }
         public void Shoot(float EmpoweredSpeedMult = 0, float EmpoweredDamageMult = 0, int EmpoweredCritChance = -1)
         {
-           
+            Player player = Main.player[Projectile.owner];
             weapon.vanillaShoot = true;
             float originalSpeed = item.shootSpeed;
             int originalCritChance = item.crit;
-            int damage = item.damage;
+            int damage = player.GetWeaponDamage(item);
             if (weapon.EmpoweredAmmo > 0)
             {
                 item.shootSpeed *= EmpoweredSpeedMult;
