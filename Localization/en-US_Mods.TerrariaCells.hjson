@@ -26,9 +26,41 @@ Configs: {
 			Tooltip: Display the cooldown time left in text
 		}
 	}
+
+	WeaponUIConfig: {
+		DisplayName: Weapon U I Config
+
+		DragUI: {
+			Label: Drag U I
+			Tooltip: ""
+		}
+
+		FadeOut: {
+			Label: Fade Out
+			Tooltip: ""
+		}
+
+		Scale: {
+			Label: Scale
+			Tooltip: ""
+		}
+	}
 }
 
-Projectiles.ExplosionModProjectile.DisplayName: Explosion
+Projectiles: {
+	Shotgun.DisplayName: Shotgun
+	Bow.DisplayName: Bow
+	Sword.DisplayName: Sword
+	AmmoResidue.DisplayName: Ammo Residue
+	GunExplosion.DisplayName: Gun Explosion
+	Autorifle.DisplayName: Autorifle
+	Handgun.DisplayName: Handgun
+	Musket.DisplayName: Musket
+	Sniper.DisplayName: Sniper
+	SniperShot.DisplayName: Sniper Shot
+	Guns.DisplayName: Guns
+	ExplosionModProjectile.DisplayName: Explosion
+}
 
 Tooltips: {
 	ShiftHint: Hold [shift] for Skill Info

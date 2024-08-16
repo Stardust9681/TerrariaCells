@@ -14,8 +14,8 @@ namespace TerrariaCells.Common.GlobalItems
     public class TierSystemGlobalItem : GlobalItem
     {
 
-        public static float damageLevelScaling = 2.2f;
-        public static float knockbackLevelScaling = 0.35f;
+        public static float damageLevelScaling = 1.30f;
+        public static float knockbackLevelScaling = 1.125f;
         public static float attackSpeedLevelScaling = 0.125f;
 
         public int itemLevel = 1;
@@ -30,6 +30,7 @@ namespace TerrariaCells.Common.GlobalItems
 
         public override void SetDefaults(Item item)
         {
+
             item.rare = itemLevel;
             Math.Clamp(item.rare, 0, 10);
         }
@@ -49,7 +50,9 @@ namespace TerrariaCells.Common.GlobalItems
         // Modify overrides to set weapon stats based on item level
         public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
         {
-            damage *= 1 + (MathF.Sqrt(itemLevel - 1) * damageLevelScaling);
+            // Equation is found using Sorbet's example values.
+            // Graph of tiers vs damage values: https://www.desmos.com/calculator/mz89u5adai
+            damage += MathF.Pow(damageLevelScaling, itemLevel);
         }
 
         public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback)
@@ -73,29 +76,6 @@ namespace TerrariaCells.Common.GlobalItems
                 {
                     case "ItemName":
                         tooltip.Text += " [Tier " + itemLevel.ToString() + "]";
-                        break;
-                    case "Speed": // Only works here because this is where the UseSpeedMultiplier override is
-                        int tempStat = (int)(item.useAnimation * (1 / UseSpeedMultiplier(item, Main.LocalPlayer)));
-
-                        if (tempStat <= 8)
-                            tooltip.Text = Lang.tip[6].Value;
-                        else if (tempStat <= 20)
-                            tooltip.Text = Lang.tip[7].Value;
-                        else if (tempStat <= 25)
-                            tooltip.Text = Lang.tip[8].Value;
-                        else if (tempStat <= 30)
-                            tooltip.Text = Lang.tip[9].Value;
-                        else if (tempStat <= 35)
-                            tooltip.Text = Lang.tip[10].Value;
-                        else if (tempStat <= 45)
-                            tooltip.Text = Lang.tip[11].Value;
-                        else if (tempStat <= 55)
-                            tooltip.Text = Lang.tip[12].Value;
-                        else
-                            tooltip.Text = Lang.tip[13].Value;
-
-                        float attacksPerSecond = MathF.Round(60 / (float)tempStat, 2);
-                        tooltip.Text += Mod.GetLocalization("Tooltips.AttacksPerSecond").Format(attacksPerSecond);
                         break;
                 }
 

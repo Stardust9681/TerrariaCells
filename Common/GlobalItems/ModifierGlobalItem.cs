@@ -5,6 +5,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using Terraria.ID;
 
 namespace TerrariaCells.Common.GlobalItems
 {
@@ -128,7 +129,7 @@ namespace TerrariaCells.Common.GlobalItems
                             // Effect copied from Fiery Greatsword
                             if (Main.rand.NextBool(2))
                             {
-                                int num22 = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, 213, player.velocity.X * 0.2f + (float)(player.direction * 3), player.velocity.Y * 0.2f, 180, default(Color), 2.5f);
+                                int num22 = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustID.MinecartSpark, player.velocity.X * 0.2f + (float)(player.direction * 3), player.velocity.Y * 0.2f, 180, default(Color), 2.5f);
                                 Main.dust[num22].noGravity = false;
                                 Main.dust[num22].velocity *= 0.3f;
                                 Main.dust[num22].velocity.Y -= 0.5f;
@@ -136,7 +137,7 @@ namespace TerrariaCells.Common.GlobalItems
 
                             if (Main.rand.NextBool(2))
                             {
-                                int num22 = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, 6, player.velocity.X * 0.2f + (float)(player.direction * 3), player.velocity.Y * 0.2f, 100, default(Color), 2.5f);
+                                int num22 = Dust.NewDust(new Vector2(hitbox.X, hitbox.Y), hitbox.Width, hitbox.Height, DustID.Torch, player.velocity.X * 0.2f + (float)(player.direction * 3), player.velocity.Y * 0.2f, 100, default(Color), 2.5f);
                                 Main.dust[num22].noGravity = true;
                                 Main.dust[num22].velocity *= 0.7f;
                                 Main.dust[num22].velocity.Y -= 0.5f;
