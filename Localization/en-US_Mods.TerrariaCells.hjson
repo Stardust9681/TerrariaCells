@@ -4,3 +4,8 @@ Items: {
 		Tooltip: ""
 	}
 }
+
+Projectiles: {
+	MummySlam.DisplayName: Mummy Slam
+	PoacherStab.DisplayName: Poacher Stab
+}
