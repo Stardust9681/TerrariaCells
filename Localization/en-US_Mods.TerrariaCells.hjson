@@ -5,6 +5,17 @@ Items: {
 	}
 }
 
+Configs: {
+	TerrariaCellsConfig: {
+		DisplayName: TerraCells Config
+
+		DisableZoom: {
+			Label: Disable Zoom Cap
+			Tooltip: "Disables the >175% cap on the game's zoom"
+		}
+	}
+}
+
 Projectiles: {
 	MummySlam.DisplayName: Mummy Slam
 	PoacherStab.DisplayName: Poacher Stab
