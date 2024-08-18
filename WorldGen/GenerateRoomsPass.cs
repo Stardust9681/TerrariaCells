@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.WorldBuilding;
@@ -196,9 +197,12 @@ class GenerateRoomsPass : GenPass
         }
 
         // generate the blocks around rooms to fill in gaps
-        int depth = 50;
+		// 34 is measured in game as maximum lookable distance with current zoom, as of Aug 18
+        int depth = 34;
         //source, dest, c_depth
         Queue<(Point, Point, int)> tiles = new();
+
+		progress.Message = "Room post-processing";
 
         foreach (var room in roomList.Rooms)
         {
@@ -242,7 +246,23 @@ class GenerateRoomsPass : GenPass
                     }
                 }
             }
+
+			// while we are already iterating through the rooms we might as well do placeholder stuff here
+			for (int i = 0; i < room.Room.Height; i++) {
+				for (int j = 0; j < room.Room.Width; j++) {
+					var point = new Point(room.Position.X + j, room.Position.Y + i);
+					Tile tile = Main.tile[point.X, point.Y];
+					if (tile.TileType == TileID.DefendersForge) {
+						tile.TileType = TileID.TeleportationPylon;
+					}
+					else if (tile.TileType == ModContent.TileType<Content.Tiles.PotMarkerTile>()) {
+						tile.TileType = TileID.Pots;
+					}
+				}
+			}
         }
+
+		progress.Message = "Fill in holes";
 
         Point[] directions = [new Point(-1, 0), new Point(1, 0), new Point(0, -1), new Point(0, 1)];
         while (tiles.Count > 0)
@@ -250,21 +270,18 @@ class GenerateRoomsPass : GenPass
             var tile = tiles.Dequeue();
             // TODO: generate tiles and push new possible tiles if current depth is positive
             var (source, dest, d) = tile;
-            if (d > 0 && Terraria.WorldGen.InWorld(dest.X, dest.Y) && Terraria.WorldGen.TileEmpty(dest.X, dest.Y))
+            if (d > 0 && Terraria.WorldGen.InWorld(dest.X, dest.Y))
             {
-                var tileType = Terraria.WorldGen.TileType(source.X, source.Y);
-                // TODO: Not sure why this is necessary; it seems that TileEmpty can return false even when the tile is inactive.
-                if (tileType == -1)
-                {
-                    continue;
-                }
-
-                Terraria.WorldGen.PlaceTile(dest.X, dest.Y, tileType);
-                foreach (var direction in directions)
-                {
-                    Point newTile = dest + direction;
-                    tiles.Enqueue((dest, newTile, d - 1));
-                }
+				int sourceTile = Terraria.WorldGen.TileType(source.X, source.Y);
+				int destTile = Terraria.WorldGen.TileType(dest.X, dest.Y);
+				if (destTile == -1 && sourceTile != -1) {
+					Terraria.WorldGen.PlaceTile(dest.X, dest.Y, sourceTile);
+					foreach (var direction in directions)
+					{
+						Point newTile = dest + direction;
+						tiles.Enqueue((dest, newTile, d - 1));
+					}
+				}
             }
         }
 
