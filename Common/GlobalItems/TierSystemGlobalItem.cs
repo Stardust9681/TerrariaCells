@@ -82,7 +82,8 @@ namespace TerrariaCells.Common.GlobalItems
 
         public override float UseSpeedMultiplier(Item item, Player player)
         {
-            return 1 + (MathF.Sqrt(itemLevel - 1) * attackSpeedLevelScaling);
+            return 1;
+            //return 1 + (MathF.Sqrt(itemLevel - 1) * attackSpeedLevelScaling);
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
@@ -131,7 +132,7 @@ namespace TerrariaCells.Common.GlobalItems
         {
             item.ClearNameOverride();
             item.SetNameOverride(item.Name + " [Tier " + itemLevel.ToString() + "]");
-            tooltips.Add(new TooltipLine(Mod, "Tier", "[Tier " + itemLevel.ToString() + "]"));
+            //tooltips.Add(new TooltipLine(Mod, "Tier", "[Tier " + itemLevel.ToString() + "]"));
         }
 
         public void SetRarityWithTier(Item item)
