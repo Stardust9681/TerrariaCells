@@ -38,12 +38,18 @@ namespace TerrariaCells.Common.Globals
 		public override void Load()
 		{
 			On_NPC.NPCLoot_DropCommonLifeAndMana += RemoveHealthManaDrops;
+			On_NPC.NPCLoot_DropHeals += ModifyHealDrops;
 		}
 		public override void Unload()
 		{
 			On_NPC.NPCLoot_DropCommonLifeAndMana -= RemoveHealthManaDrops;
+			On_NPC.NPCLoot_DropHeals -= ModifyHealDrops;
 		}
 
+		private void ModifyHealDrops(On_NPC.orig_NPCLoot_DropHeals orig, NPC self, Player closestPlayer)
+		{
+			return;
+		}
 		private void RemoveHealthManaDrops(On_NPC.orig_NPCLoot_DropCommonLifeAndMana orig, NPC self, Player closestPlayer)
 		{
 			return;
@@ -63,7 +69,7 @@ namespace TerrariaCells.Common.Globals
 
 	internal class FoodDropRule : IItemDropRule
 	{
-		private const float DROPRATE = 0.02f; //Base droprate for this rule
+		private const float DROPRATE = 0.05f; //Base droprate for this rule
 		private const float INV_DROPRATE = 1f / DROPRATE; //Used for logic, not necessary but I want to cache this
 		private const float TIER_ONE_RATE = 0.8f; //Percent of drops to be Tier 1 foods
 		private const float TIER_TWO_RATE = 0.195f; //Percent of drops to be Tier 2 foods
@@ -91,19 +97,27 @@ namespace TerrariaCells.Common.Globals
 		public ItemDropAttemptResult TryDroppingItem(DropAttemptInfo info)
 		{
 			float roll = info.rng.NextFloat(); //Chose not to use Player.RollLuck(..) here
+			if (roll > DROPRATE)
+			{
+				//Just.. give players another chance at success if they're low on health
+				if (info.player.statLife < 15)
+				{
+					roll = info.rng.NextFloat();
+				}
+			}
 			if (roll < DROPRATE)
 			{
 				roll *= INV_DROPRATE; //Expand this out to 0-1 (since we reduced range from 0-0.01)
 				int itemToDrop;
 				switch (roll) //Attempt to guarantee that food item is always dropped on success
 				{
-					case < TIER_THREE_RATE: //
+					case < TIER_THREE_RATE:
 						itemToDrop = info.rng.Next(LootHandler.TIER_THREE_FOOD);
 						break;
-					case < TIER_TWO_RATE + TIER_THREE_RATE: //Sum up weight
+					case < TIER_TWO_RATE + TIER_THREE_RATE:
 						itemToDrop = info.rng.Next(LootHandler.TIER_TWO_FOOD);
 						break;
-					case < TIER_ONE_RATE + TIER_TWO_RATE + TIER_THREE_RATE: //Sum up weight
+					case < TIER_ONE_RATE + TIER_TWO_RATE + TIER_THREE_RATE:
 						itemToDrop = info.rng.Next(LootHandler.TIER_ONE_FOOD);
 						break;
 					default:
