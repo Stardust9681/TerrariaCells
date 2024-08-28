@@ -39,8 +39,9 @@ namespace TerrariaCells.Common.GlobalNPCs
             if (npc.type == NPCID.Vulture)
             {
                 VultureAI(npc);
+                return false;
             }
-            return false;
+            return true;
         }
 
         public void Update(NPC npc)

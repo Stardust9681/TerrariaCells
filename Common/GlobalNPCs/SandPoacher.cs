@@ -7,9 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
+using TerrariaCells.Content.Projectiles;
 
 namespace TerrariaCells.Common.GlobalNPCs
 {
@@ -33,10 +36,19 @@ namespace TerrariaCells.Common.GlobalNPCs
                 spriteBatch.Draw(poacher.Value, npc.Center - screenPos + new Vector2(0, MathHelper.Lerp(0, 30, lerp)), new Rectangle(0, CustomFrameY, poacher.Width(), poacher.Height() / 4), drawColor * npc.Opacity, npc.rotation, new Vector2(poacher.Width() / 2, poacher.Height() / 4 / 2), npc.scale, SpriteEffects.None, 1);
                 return false;
             }
+            if (npc.ai[3] == 2)
+            {
+                Asset<Texture2D> poacher = ModContent.Request<Texture2D>("TerrariaCells/Common/Assets/DesertScorpionStab");
+
+                spriteBatch.Draw(poacher.Value, npc.Center - screenPos + new Vector2(-20, -10), new Rectangle(0, CustomFrameY*46, 64, 46), drawColor, npc.rotation, poacher.Size()/6/2, npc.scale, npc.direction == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1);
+                return false;
+            }
+
             return true;
         }
         public void SandPoacherFrame(NPC npc)
         {
+            int stabTime = 30;
             if (npc.ai[3] == 1)
             {
                 CustomFrameCounter++;
@@ -47,11 +59,28 @@ namespace TerrariaCells.Common.GlobalNPCs
                     CustomFrameCounter = 0;
                 }
             }
+
+            if (npc.ai[3] == 2)
+            {
+                CustomFrameCounter++;
+                if (CustomFrameCounter > stabTime / 6)
+                {
+                    CustomFrameY += 1;
+                    if (CustomFrameY >= 6)
+                    {
+                        CustomFrameY = 0;
+                    }
+                    CustomFrameCounter = 0;
+                }
+            }
         }
+
         public void SandPoacherAI(NPC npc, Player target)
         {
             int timeWalking = 200;
             int timeDigging = 100;
+            int stabTime = 30;
+
             npc.ai[2]++;
             //during dig
             if (npc.ai[3] == 1)
@@ -97,7 +126,59 @@ namespace TerrariaCells.Common.GlobalNPCs
                 npc.hide = false;
                 npc.ai[2] = 0;
                 npc.ai[3] = 0;
+                CustomFrameCounter = 0;
+                CustomFrameY = 0;
             }
+
+            //start stab
+            //Conditions: Has a target. Is in walking phase. Is close to target. Is facing target.
+            if (npc.HasValidTarget && npc.ai[3] == 0 && npc.Distance(target.Center) < 80 && ((npc.direction == -1 && npc.Center.X > target.Center.X) || (npc.direction == 1 && npc.Center.X < target.Center.X)))
+            {
+                npc.ai[3] = 2;
+            }
+
+            //stab
+            if (npc.ai[3] == 2)
+            {
+                ShouldWalk = false;
+                npc.velocity.X *= 0.9f;
+                npc.direction = npc.oldDirection;
+                ExtraTimer++;
+                if (ExtraTimer == 20)
+                {
+                    npc.velocity.X = 5 * npc.direction;
+                }
+                if (ExtraTimer == 25)
+                {
+                    
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + new Vector2(0, -20), new Vector2(5 * npc.direction, 0), ModContent.ProjectileType<PoacherStab>(), 25, 1, npc.whoAmI);
+                    SoundEngine.PlaySound(SoundID.Item1, npc.Center);
+                }
+               
+
+                if (ExtraTimer > stabTime)
+                {
+                    npc.ai[3] = 3;
+                    ExtraTimer = 0;
+                    CustomFrameCounter = 0;
+                    CustomFrameY = 0;
+                }
+            }
+
+            //wait
+            if (npc.ai[3] == 3)
+            {
+                ShouldWalk = false;
+                npc.velocity.X *= 0.9f;
+                npc.direction = npc.oldDirection;
+                ExtraTimer++;
+                if (ExtraTimer == 15)
+                {
+                    ExtraTimer = 0;
+                    npc.ai[3] = 0;
+                }
+            }
+
         }
     }
 }

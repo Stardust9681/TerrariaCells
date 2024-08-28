@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.Marshalling;
@@ -12,6 +13,7 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace TerrariaCells.Common.GlobalNPCs
 {
@@ -21,6 +23,7 @@ namespace TerrariaCells.Common.GlobalNPCs
         public int CustomFrameY = 0;
         public int CustomFrameCounter = 0;
         public bool ShouldWalk = false;
+        public int ExtraTimer;
 
         public float WalkSpeed = 2;
         public float Acceleration = 0.1f;
@@ -35,6 +38,7 @@ namespace TerrariaCells.Common.GlobalNPCs
         }
         public override void SetDefaults(NPC entity)
         {
+            entity.damage = 0;
             if (Mummies.Contains(entity.type))
             {
                 entity.scale = 1.5f;
@@ -62,6 +66,10 @@ namespace TerrariaCells.Common.GlobalNPCs
             if (npc.type == NPCID.DesertScorpionWalk)
             {
                 SandPoacherFrame(npc);
+            }
+            if (Mummies.Contains(npc.type))
+            {
+                MummyFrame(npc);
             }
             base.FindFrame(npc, frameHeight);
         }
@@ -98,6 +106,25 @@ namespace TerrariaCells.Common.GlobalNPCs
                 return false;
             }
             return base.PreAI(npc);
+        }
+
+        public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
+        {
+            binaryWriter.Write7BitEncodedInt(CustomFrameY);
+            binaryWriter.Write7BitEncodedInt(CustomFrameCounter);
+            binaryWriter.Write(ShouldWalk);
+            binaryWriter.Write7BitEncodedInt(ExtraTimer);
+
+            base.SendExtraAI(npc, bitWriter, binaryWriter);
+        }
+        public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
+        {
+            CustomFrameY = binaryReader.Read7BitEncodedInt();
+            CustomFrameCounter = binaryReader.Read7BitEncodedInt();
+            ShouldWalk = binaryReader.ReadBoolean();
+            ExtraTimer = binaryReader.Read7BitEncodedInt();
+
+            base.ReceiveExtraAI(npc, bitReader, binaryReader);
         }
     }
 }
