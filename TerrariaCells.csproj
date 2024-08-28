@@ -14,8 +14,9 @@
 	  <None Remove="Content\Modifiers\**" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Common\" />
-	  <Folder Include="Content\" />
+	  <None Remove="Common\Assets\DesertScorpionStab.png" />
+	  <None Remove="Common\Assets\MummyShockwave.png" />
+	  <None Remove="Common\Assets\MummySlam.png" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Reference Include="StructureHelper">

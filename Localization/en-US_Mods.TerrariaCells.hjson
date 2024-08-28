@@ -11,7 +11,14 @@ Configs: {
 
 		DisableZoom: {
 			Label: Disable Zoom Cap
-			Tooltip: "Disables the >175% cap on the game's zoom"
+			Tooltip: Disables the >175% cap on the game's zoom
 		}
 	}
+}
+
+Projectiles: {
+	MummySlam.DisplayName: Mummy Slam
+	PoacherStab.DisplayName: Poacher Stab
+	MummyShockwave.DisplayName: Mummy Shockwave
+	VultureBone.DisplayName: Vulture Bone
 }
