@@ -6,6 +6,7 @@ using static Terraria.ID.ItemID;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent.ItemDropRules;
+using System.Reflection;
 
 namespace TerrariaCells.Common.Globals
 {
@@ -39,7 +40,13 @@ namespace TerrariaCells.Common.Globals
 		{
 			On_NPC.NPCLoot_DropCommonLifeAndMana += RemoveHealthManaDrops;
 			On_NPC.NPCLoot_DropHeals += ModifyHealDrops;
+
+			//I have beef with this event
+			//Literally I thought I removed ALL of the NPC Loot
+			//But it turns out, HEALING POTIONS from BOSSES are handled COMPLETELY DIFFERENTLY
+			On_NPC.DoDeathEvents_DropBossPotionsAndHearts += On_NPC_DoDeathEvents_DropBossPotionsAndHearts;
 		}
+
 		public override void Unload()
 		{
 			On_NPC.NPCLoot_DropCommonLifeAndMana -= RemoveHealthManaDrops;
@@ -54,6 +61,35 @@ namespace TerrariaCells.Common.Globals
 		{
 			return;
 		}
+		private void On_NPC_DoDeathEvents_DropBossPotionsAndHearts(On_NPC.orig_DoDeathEvents_DropBossPotionsAndHearts orig, NPC self, ref string typeName)
+		{
+			if (!self.boss || self.type > Terraria.ID.NPCID.Count) //We don't care if it's not a boss, or if it's a modded one
+			{
+				orig.Invoke(self, ref typeName);
+				return;
+			}
+
+			//Vanilla logic for that hat thing, maintaining this for compatability
+			bool killedEyeOrWall = false; //Save on reflection calls where possible x_x
+			if (self.type == Terraria.ID.NPCID.EyeofCthulhu)
+			{
+				typeof(NPC).GetField("EoWKilledToday", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, true);
+				killedEyeOrWall = true;
+			}
+			else if (self.type == Terraria.ID.NPCID.WallofFlesh)
+			{
+				typeof(NPC).GetField("WoFKilledToday", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, true);
+				killedEyeOrWall = true;
+			}
+
+			if (killedEyeOrWall
+				&& typeof(NPC).GetField("EoWKilledToday", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null).Equals(true)
+				&& typeof(NPC).GetField("WoFKilledToday", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null).Equals(true))
+			{
+				NPC.ResetBadgerHatTime();
+				Item.NewItem(self.GetSource_Loot(), self.position, self.width, self.height, BadgersHat);
+			}
+		}
 
 		public override void ModifyGlobalLoot(GlobalLoot globalLoot)
 		{
@@ -64,6 +100,10 @@ namespace TerrariaCells.Common.Globals
 		public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 		{
 			npcLoot.RemoveWhere(x => true);
+			if (npc.boss)
+			{
+				npcLoot.Add(ItemDropRule.Common(HealingPotion, 1, 2, 3);
+			}
 		}
 	}
 
