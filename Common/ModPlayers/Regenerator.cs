@@ -23,7 +23,17 @@ namespace TerrariaCells.Common.ModPlayers
 			On_ResourceDrawSettings.Draw -= DrawRallyHealthBar;
 		}
 
-		#region Rally Heal/Mechanic
+		public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath)
+		{
+			if (mediumCoreDeath)
+				return base.AddStartingItems(mediumCoreDeath);
+			return new Item[]
+				{
+					new Item(Terraria.ID.ItemID.LesserHealingPotion, 2),
+				};
+		}
+
+		#region Rally Heal Mechanic
 		public const float STAGGER_POTENCY = 3f;
 		public const float INV_STAGGER_POTENCY = 1f / STAGGER_POTENCY;
 		public const string BAR_HEALTH_FILL1 = "Images\\UI\\PlayerResourceSets\\HorizontalBars\\HP_Fill";
@@ -255,6 +265,14 @@ namespace TerrariaCells.Common.ModPlayers
 			Player.Heal(healing);
 			AdjustStaggerDamage(-healing);
 			return false;
+		}
+
+		//Disable Health Potion CD
+		//Game will play quickly, so we don't want 60 sec cooldowns getting in the way
+		public override void PreUpdateBuffs()
+		{
+			Player.ClearBuff(Terraria.ID.BuffID.PotionSickness);
+			Player.potionDelay = 0;
 		}
 		#endregion
 

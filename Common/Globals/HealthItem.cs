@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace TerrariaCells.Common.Globals
 {
-	public class FoodItem : GlobalItem
+	public class HealthItem : GlobalItem
 	{
 		private const bool _DO_FOOD_HIGHLIGHTS = true;
 		public override bool PreDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
@@ -68,6 +68,39 @@ namespace TerrariaCells.Common.Globals
 			{
 				return base.GetAlpha(item, lightColor);
 			}
+		}
+
+		public override void SetDefaults(Item item)
+		{
+			switch (item.type)
+			{
+				case ItemID.LesserHealingPotion:
+					item.healLife = 75;
+					break;
+				case ItemID.HealingPotion:
+					item.healLife = 150;
+					break;
+				case ItemID.GreaterHealingPotion:
+					item.healLife = 250;
+					break;
+				default:
+					break;
+			}
+			if (item.potion && item.healLife > 0)
+			{
+				//Sorbet said 3, I'm gonna set this to 4 for now though because 3 seems too limiting
+				item.maxStack = 4;
+			}
+		}
+
+		public override bool? UseItem(Item item, Player player)
+		{
+			if (item.potion && item.healLife > 0)
+			{
+				player.GetModPlayer<ModPlayers.Regenerator>().SetStaggerDamage(0);
+				return true;
+			}
+			return base.UseItem(item, player);
 		}
 	}
 }
