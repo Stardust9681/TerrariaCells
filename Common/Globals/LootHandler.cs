@@ -15,10 +15,6 @@ namespace TerrariaCells.Common.Globals
 		public override void Load()
 		{
 			On_NPC.NPCLoot_DropHeals += ModifyDropHeals;
-
-			//I have beef with this event
-			//Literally I thought I removed ALL of the NPC Loot
-			//But it turns out, HEALING POTIONS from BOSSES are handled COMPLETELY DIFFERENTLY
 			On_NPC.DoDeathEvents_DropBossPotionsAndHearts += NPCDeathEvents;
 		}
 		public override void Unload()
