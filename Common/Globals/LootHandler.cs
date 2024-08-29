@@ -21,7 +21,6 @@ namespace TerrariaCells.Common.Globals
 			//But it turns out, HEALING POTIONS from BOSSES are handled COMPLETELY DIFFERENTLY
 			On_NPC.DoDeathEvents_DropBossPotionsAndHearts += NPCDeathEvents;
 		}
-
 		public override void Unload()
 		{
 			On_NPC.NPCLoot_DropHeals -= ModifyDropHeals;
@@ -33,40 +32,44 @@ namespace TerrariaCells.Common.Globals
 			_ = DropFoodHeals.TryDroppingHeal(self, closestPlayer);
 			return;
 		}
+		private const bool _DO_BADGERS_HAT = false;
 		private void NPCDeathEvents(On_NPC.orig_DoDeathEvents_DropBossPotionsAndHearts orig, NPC self, ref string typeName)
 		{
-			if (!self.boss || self.type > Terraria.ID.NPCID.Count) //We don't care if it's not a boss, or if it's a modded one
+			//We don't care if it's not a boss (they don't have death events), or if it's a modded one
+			if (!self.boss || self.type > Terraria.ID.NPCID.Count)
 			{
 				orig.Invoke(self, ref typeName);
 				return;
 			}
 
 			//Vanilla logic for that hat thing, maintaining this for compatability
-			bool killedEyeOrWall = false; //Save on reflection calls
-			if (self.type == Terraria.ID.NPCID.EyeofCthulhu)
+			if (_DO_BADGERS_HAT)
 			{
-				typeof(NPC).GetField("EoCKilledToday", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, true);
-				killedEyeOrWall = true;
-			}
-			else if (self.type == Terraria.ID.NPCID.WallofFlesh)
-			{
-				typeof(NPC).GetField("WoFKilledToday", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, true);
-				killedEyeOrWall = true;
-			}
+				bool killedEyeOrWall = false; //Save on reflection calls
+				if (self.type == Terraria.ID.NPCID.EyeofCthulhu)
+				{
+					typeof(NPC).GetField("EoCKilledToday", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, true);
+					killedEyeOrWall = true;
+				}
+				else if (self.type == Terraria.ID.NPCID.WallofFlesh)
+				{
+					typeof(NPC).GetField("WoFKilledToday", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, true);
+					killedEyeOrWall = true;
+				}
 
-			if (killedEyeOrWall
-				&& typeof(NPC).GetField("EoCKilledToday", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null).Equals(true)
-				&& typeof(NPC).GetField("WoFKilledToday", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null).Equals(true))
-			{
-				NPC.ResetBadgerHatTime();
-				Item.NewItem(self.GetSource_Loot(), self.position, self.width, self.height, BadgersHat);
+				if (killedEyeOrWall
+					&& typeof(NPC).GetField("EoCKilledToday", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null).Equals(true)
+					&& typeof(NPC).GetField("WoFKilledToday", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null).Equals(true))
+				{
+					NPC.ResetBadgerHatTime();
+					Item.NewItem(self.GetSource_Loot(), self.position, self.width, self.height, BadgersHat);
+				}
 			}
 		}
 
 		public override void ModifyGlobalLoot(GlobalLoot globalLoot)
 		{
 			globalLoot.RemoveWhere(x => true);
-			//globalLoot.Add(new FoodDropRule());
 		}
 
 		public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
@@ -107,6 +110,10 @@ namespace TerrariaCells.Common.Globals
 		private const float TIER_TWO_RATE = 0.195f; //Percent of drops to be Tier 2 foods
 		private const float TIER_THREE_RATE = 0.005f; //Percent of drops to be Tier 3 foods
 
+		/// <summary> </summary>
+		/// <param name="self">NPC to drop from.</param>
+		/// <param name="interactionPlayer">Player that is used to determine luck.</param>
+		/// <returns>True on success. False on fail.</returns>
 		public static bool TryDroppingHeal(NPC self, Player interactionPlayer)
 		{
 			float roll = Main.rand.NextFloat(); //Chose not to use Player.RollLuck(..) here
