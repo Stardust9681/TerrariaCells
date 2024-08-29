@@ -12,6 +12,71 @@ namespace TerrariaCells.Common.Globals
 {
 	public class LootHandler : GlobalNPC
 	{
+		public override void Load()
+		{
+			On_NPC.NPCLoot_DropHeals += ModifyDropHeals;
+
+			//I have beef with this event
+			//Literally I thought I removed ALL of the NPC Loot
+			//But it turns out, HEALING POTIONS from BOSSES are handled COMPLETELY DIFFERENTLY
+			On_NPC.DoDeathEvents_DropBossPotionsAndHearts += NPCDeathEvents;
+		}
+
+		public override void Unload()
+		{
+			On_NPC.NPCLoot_DropHeals -= ModifyDropHeals;
+			On_NPC.DoDeathEvents_DropBossPotionsAndHearts -= NPCDeathEvents;
+		}
+
+		private void ModifyDropHeals(On_NPC.orig_NPCLoot_DropHeals orig, NPC self, Player closestPlayer)
+		{
+			_ = DropFoodHeals.TryDroppingHeal(self, closestPlayer);
+			return;
+		}
+		private void NPCDeathEvents(On_NPC.orig_DoDeathEvents_DropBossPotionsAndHearts orig, NPC self, ref string typeName)
+		{
+			if (!self.boss || self.type > Terraria.ID.NPCID.Count) //We don't care if it's not a boss, or if it's a modded one
+			{
+				orig.Invoke(self, ref typeName);
+				return;
+			}
+
+			//Vanilla logic for that hat thing, maintaining this for compatability
+			bool killedEyeOrWall = false; //Save on reflection calls
+			if (self.type == Terraria.ID.NPCID.EyeofCthulhu)
+			{
+				typeof(NPC).GetField("EoCKilledToday", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, true);
+				killedEyeOrWall = true;
+			}
+			else if (self.type == Terraria.ID.NPCID.WallofFlesh)
+			{
+				typeof(NPC).GetField("WoFKilledToday", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, true);
+				killedEyeOrWall = true;
+			}
+
+			if (killedEyeOrWall
+				&& typeof(NPC).GetField("EoCKilledToday", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null).Equals(true)
+				&& typeof(NPC).GetField("WoFKilledToday", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null).Equals(true))
+			{
+				NPC.ResetBadgerHatTime();
+				Item.NewItem(self.GetSource_Loot(), self.position, self.width, self.height, BadgersHat);
+			}
+		}
+
+		public override void ModifyGlobalLoot(GlobalLoot globalLoot)
+		{
+			globalLoot.RemoveWhere(x => true);
+			//globalLoot.Add(new FoodDropRule());
+		}
+
+		public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
+		{
+			npcLoot.RemoveWhere(x => true);
+		}
+	}
+
+	internal class DropFoodHeals
+	{
 		public static readonly int[] TIER_ONE_FOOD = new int[] //39 items
 		{
 			CookedMarshmallow, AppleJuice, BloodyMoscato, BunnyStew, CookedFish,
@@ -36,113 +101,21 @@ namespace TerrariaCells.Common.Globals
 			Spaghetti, Steak, ChristmasPudding, GingerbreadCookie, SugarCookie
 		};
 
-		public override void Load()
-		{
-			On_NPC.NPCLoot_DropCommonLifeAndMana += RemoveHealthManaDrops;
-			On_NPC.NPCLoot_DropHeals += ModifyHealDrops;
-
-			//I have beef with this event
-			//Literally I thought I removed ALL of the NPC Loot
-			//But it turns out, HEALING POTIONS from BOSSES are handled COMPLETELY DIFFERENTLY
-			On_NPC.DoDeathEvents_DropBossPotionsAndHearts += On_NPC_DoDeathEvents_DropBossPotionsAndHearts;
-		}
-
-		public override void Unload()
-		{
-			On_NPC.NPCLoot_DropCommonLifeAndMana -= RemoveHealthManaDrops;
-			On_NPC.NPCLoot_DropHeals -= ModifyHealDrops;
-		}
-
-		private void ModifyHealDrops(On_NPC.orig_NPCLoot_DropHeals orig, NPC self, Player closestPlayer)
-		{
-			return;
-		}
-		private void RemoveHealthManaDrops(On_NPC.orig_NPCLoot_DropCommonLifeAndMana orig, NPC self, Player closestPlayer)
-		{
-			return;
-		}
-		private void On_NPC_DoDeathEvents_DropBossPotionsAndHearts(On_NPC.orig_DoDeathEvents_DropBossPotionsAndHearts orig, NPC self, ref string typeName)
-		{
-			if (!self.boss || self.type > Terraria.ID.NPCID.Count) //We don't care if it's not a boss, or if it's a modded one
-			{
-				orig.Invoke(self, ref typeName);
-				return;
-			}
-
-			//Vanilla logic for that hat thing, maintaining this for compatability
-			bool killedEyeOrWall = false; //Save on reflection calls where possible x_x
-			if (self.type == Terraria.ID.NPCID.EyeofCthulhu)
-			{
-				typeof(NPC).GetField("EoWKilledToday", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, true);
-				killedEyeOrWall = true;
-			}
-			else if (self.type == Terraria.ID.NPCID.WallofFlesh)
-			{
-				typeof(NPC).GetField("WoFKilledToday", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, true);
-				killedEyeOrWall = true;
-			}
-
-			if (killedEyeOrWall
-				&& typeof(NPC).GetField("EoWKilledToday", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null).Equals(true)
-				&& typeof(NPC).GetField("WoFKilledToday", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null).Equals(true))
-			{
-				NPC.ResetBadgerHatTime();
-				Item.NewItem(self.GetSource_Loot(), self.position, self.width, self.height, BadgersHat);
-			}
-		}
-
-		public override void ModifyGlobalLoot(GlobalLoot globalLoot)
-		{
-			globalLoot.RemoveWhere(x => true);
-			globalLoot.Add(new FoodDropRule());
-		}
-
-		public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
-		{
-			npcLoot.RemoveWhere(x => true);
-			if (npc.boss)
-			{
-				npcLoot.Add(ItemDropRule.Common(HealingPotion, 1, 2, 3);
-			}
-		}
-	}
-
-	internal class FoodDropRule : IItemDropRule
-	{
 		private const float DROPRATE = 0.05f; //Base droprate for this rule
 		private const float INV_DROPRATE = 1f / DROPRATE; //Used for logic, not necessary but I want to cache this
 		private const float TIER_ONE_RATE = 0.8f; //Percent of drops to be Tier 1 foods
 		private const float TIER_TWO_RATE = 0.195f; //Percent of drops to be Tier 2 foods
 		private const float TIER_THREE_RATE = 0.005f; //Percent of drops to be Tier 3 foods
 
-		public FoodDropRule() { } //No extra fields to set
-
-		public List<IItemDropRuleChainAttempt> ChainedRules { get; set; } //Vanilla implementation for some rules
-
-		public bool CanDrop(DropAttemptInfo info) //Vanilla just returns true here
+		public static bool TryDroppingHeal(NPC self, Player interactionPlayer)
 		{
-			return true;
-		}
-
-		public void ReportDroprates(List<DropRateInfo> drops, DropRateInfoChainFeed ratesInfo)
-		{
-			//3 possible tiers of drop, report on all of them
-			//Though none of these are shown ingame so what do we care
-			drops.Add(new DropRateInfo(Apple, 1, 1, DROPRATE * TIER_ONE_RATE));
-			drops.Add(new DropRateInfo(PumpkinPie, 1, 1, DROPRATE * TIER_TWO_RATE));
-			drops.Add(new DropRateInfo(Bacon, 1, 1, DROPRATE * TIER_THREE_RATE));
-			Chains.ReportDroprates(ChainedRules, DROPRATE, drops, ratesInfo);
-		}
-
-		public ItemDropAttemptResult TryDroppingItem(DropAttemptInfo info)
-		{
-			float roll = info.rng.NextFloat(); //Chose not to use Player.RollLuck(..) here
+			float roll = Main.rand.NextFloat(); //Chose not to use Player.RollLuck(..) here
 			if (roll > DROPRATE)
 			{
 				//Just.. give players another chance at success if they're low on health
-				if (info.player.statLife < 15)
+				if (interactionPlayer.statLife < 15)
 				{
-					roll = info.rng.NextFloat();
+					roll = Main.rand.NextFloat();
 				}
 			}
 			if (roll < DROPRATE)
@@ -152,21 +125,21 @@ namespace TerrariaCells.Common.Globals
 				switch (roll) //Attempt to guarantee that food item is always dropped on success
 				{
 					case < TIER_THREE_RATE:
-						itemToDrop = info.rng.Next(LootHandler.TIER_THREE_FOOD);
+						itemToDrop = Main.rand.Next(TIER_THREE_FOOD);
 						break;
 					case < TIER_TWO_RATE + TIER_THREE_RATE:
-						itemToDrop = info.rng.Next(LootHandler.TIER_TWO_FOOD);
+						itemToDrop = Main.rand.Next(TIER_TWO_FOOD);
 						break;
 					case < TIER_ONE_RATE + TIER_TWO_RATE + TIER_THREE_RATE:
-						itemToDrop = info.rng.Next(LootHandler.TIER_ONE_FOOD);
+						itemToDrop = Main.rand.Next(TIER_ONE_FOOD);
 						break;
 					default:
-						return new ItemDropAttemptResult() { State = ItemDropAttemptResultState.DidNotRunCode }; //Something went wrong
+						return false; //Something went wrong
 				}
-				CommonCode.DropItem(info.npc.Center, info.npc.GetSource_Loot(), itemToDrop, 1); //Drop item
-				return new ItemDropAttemptResult() { State = ItemDropAttemptResultState.Success }; //Succeeded
+				CommonCode.DropItem(self.Center, self.GetSource_Loot(), itemToDrop, 1); //Drop item
+				return true; //Succeeded
 			}
-			return new ItemDropAttemptResult() { State = ItemDropAttemptResultState.FailedRandomRoll }; //Failed RNG
+			return false; //Failed RNG
 		}
 	}
 }
