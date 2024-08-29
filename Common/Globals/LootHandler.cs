@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using static Terraria.ID.ItemID;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent.ItemDropRules;
@@ -71,6 +72,27 @@ namespace TerrariaCells.Common.Globals
 		public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 		{
 			npcLoot.RemoveWhere(x => true);
+			IItemDropRule commonLesserHealthPotion = ItemDropRule.NotScalingWithLuck(LesserHealingPotion, 1, 2, 3);
+			IItemDropRule commonHealthPotion = ItemDropRule.NotScalingWithLuck(HealingPotion, 1, 2, 3);
+			IItemDropRule commonGreaterHealthPotion = ItemDropRule.NotScalingWithLuck(GreaterHealingPotion, 1, 2, 3);
+			switch (npc.type)
+			{
+				case NPCID.EyeofCthulhu:
+				case NPCID.BrainofCthulhu:
+				case NPCID.KingSlime:
+					npcLoot.Add(commonLesserHealthPotion);
+					break;
+				case NPCID.SkeletronHead:
+				case NPCID.QueenBee:
+				case NPCID.Deerclops:
+					npcLoot.Add(commonHealthPotion);
+					break;
+				case NPCID.WallofFlesh:
+					npcLoot.Add(commonGreaterHealthPotion);
+					break;
+				default:
+					break;
+			}
 		}
 	}
 
