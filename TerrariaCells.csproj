@@ -18,6 +18,9 @@
 	  <None Remove="Content\Modifiers\**" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Compile Include="Common\Systems\RemoveThornsDetour.cs" />
+	</ItemGroup>
+	<ItemGroup>
 	  <Folder Include="Content\" />
 	</ItemGroup>
 	<ItemGroup>
