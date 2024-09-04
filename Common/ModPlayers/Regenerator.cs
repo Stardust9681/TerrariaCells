@@ -128,7 +128,7 @@ namespace TerrariaCells.Common.ModPlayers
 				return;
 			}
 
-			int segmentSize = player.statLifeMax2 <= MAX_HEALTHBAR_SIZE ? 20 : ((MAX_HEALTHBAR_SIZE * 20) / player.statLifeMax2);
+			int segmentSize = player.statLifeMax2 <= MAX_HEALTHBAR_SIZE ? 20 : ((player.statLifeMax2 * 20) / MAX_HEALTHBAR_SIZE);
 			if (segmentSize == 0)
 				segmentSize = 1;
 			int endPoint = player.statLife - modPlayer.DamageLeft;
@@ -205,7 +205,7 @@ namespace TerrariaCells.Common.ModPlayers
 		#endregion
 
 		#region Rally Heal Mechanic
-		public const float STAGGER_POTENCY = 3f;
+		public const float STAGGER_POTENCY = 2.5f;
 		public const float INV_STAGGER_POTENCY = 1f / STAGGER_POTENCY;
 		public const string BAR_HEALTH_FILL1 = "Images\\UI\\PlayerResourceSets\\HorizontalBars\\HP_Fill";
 		public const string BAR_HEALTH_FILL2 = "Images\\UI\\PlayerResourceSets\\HorizontalBars\\HP_Fill_Honey";
@@ -263,7 +263,8 @@ namespace TerrariaCells.Common.ModPlayers
 			damageTime++;
 			float timeAmp = TimeAmplitude;
 			float sqrt = MathF.Sqrt(timeAmp * damageTime);
-			antiRegen += (timeAmp / (2f * sqrt));
+			float incrementValue = (timeAmp / (2f * sqrt));
+			antiRegen += incrementValue;
 			int lifeDamage = (int)MathF.Floor(antiRegen);
 			if (lifeDamage != 0)
 			{
