@@ -286,6 +286,7 @@ namespace TerrariaCells.Common.ModPlayers
 			}
 		}
 
+		private const bool SET_DECAY_FLOOR = true;
 		//Run damage stagger calcs: split into its own function so it can be moved more easily or whatever.
 		private void UpdateDamageBuffer()
 		{
@@ -293,6 +294,18 @@ namespace TerrariaCells.Common.ModPlayers
 			float timeAmp = TimeAmplitude;
 			float sqrt = MathF.Sqrt(timeAmp * damageTime);
 			float incrementValue = (timeAmp / (2f * sqrt));
+			if (SET_DECAY_FLOOR)
+			{
+				//Prevents an issue from arising where, if you take exorbitant amounts of damage, the duration/spread of that damage becomes absurdly large
+				//Two caveats to this implementation to fix:
+					//1) It creates VERY noticeable jumps where HP will suddly start decreasing rapidly, then slow down, then speed up again
+					//2) It appears to heal the player slightly :x
+				//Anyway, modify const above if we want to toggle this.
+				if (incrementValue < 0.5f)
+				{
+					SetStaggerDamage(DamageLeft);
+				}
+			}
 			antiRegen += incrementValue;
 			int lifeDamage = (int)MathF.Floor(antiRegen);
 			if (lifeDamage != 0)
