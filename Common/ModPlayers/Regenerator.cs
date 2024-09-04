@@ -20,88 +20,21 @@ namespace TerrariaCells.Common.ModPlayers
 	{
 		public override void Load()
 		{
+			//TODO: Change this to IL Edit
+			// Better for crossmod compatability
+			// Less redundant coding
+			// This is technically improper use of detouring
 			On_ResourceDrawSettings.Draw += DrawRallyHealthBar;
-			//On_HorizontalBarsPlayerResourcesDisplaySet.Draw += DrawHealthbarContainer;
+
 			IL_HorizontalBarsPlayerResourcesDisplaySet.Draw += IL_HorizontalBarsPlayerResourcesDisplaySet_Draw;
-			//On_HorizontalBarsPlayerResourcesDisplaySet.LifeFillingDrawer += HealthbarTextureSelect;
 			IL_HorizontalBarsPlayerResourcesDisplaySet.LifeFillingDrawer += IL_HealthbarTextureSelect;
-		}
-
-		private static void IL_HealthbarTextureSelect(ILContext context)
-		{
-			try
-			{
-				log4net.ILog GetInstanceLogger() => ModContent.GetInstance<TerrariaCells>().Logger;
-				void Debug(object o) => GetInstanceLogger().Debug(o);
-
-				ILCursor cursor = new ILCursor(context);
-
-				ILLabel? IL_001B = null;
-				if (!cursor.TryGotoNext(MoveType.Before,
-					i => i.MatchLdarg1(),
-					i => i.MatchLdarg0(),
-					i => i.MatchLdfld<HorizontalBarsPlayerResourcesDisplaySet>("_hpFruitCount"),
-					i => i.Match(OpCodes.Bge_S, out IL_001B)))
-				{
-					Debug($"Couldn't match to IL_001B");
-					return;
-				}
-				cursor.Emit(OpCodes.Ldarg_1);
-				cursor.EmitDelegate<Func<int, bool>>((int elementIndex) =>
-				{
-					Player player = Main.LocalPlayer;
-					int segmentsX5WithBonusHealth = Math.Max((player.statLifeMax2 - MAX_HEALTHBAR_SIZE), 0);
-					return (elementIndex * 5) >= segmentsX5WithBonusHealth;
-				});
-				ILLabel jumpBack = cursor.MarkLabel();
-				if (!cursor.TryGotoNext(MoveType.Before,
-					i => i.MatchLdarg(4),
-					i => i.MatchLdarg0(),
-					i => i.MatchLdfld<HorizontalBarsPlayerResourcesDisplaySet>("_hpFillHoney"),
-					i => i.MatchStindRef()))
-				{
-					Debug($"Couldn't match to _hpFillHoney");
-					return;
-				}
-				ILLabel honeyFill = cursor.MarkLabel();
-				cursor.GotoLabel(jumpBack, MoveType.Before);
-				cursor.Emit(OpCodes.Brfalse, honeyFill);
-				cursor.Emit(OpCodes.Br, IL_001B);
-			}
-			catch (Exception x)
-			{
-				MonoModHooks.DumpIL(ModContent.GetInstance<TerrariaCells>(), context);
-			}
-		}
-
-		private void IL_HorizontalBarsPlayerResourcesDisplaySet_Draw(ILContext context)
-		{
-			try
-			{
-				ILCursor cursor = new ILCursor(context);
-				cursor.GotoNext(i => i.MatchCall<HorizontalBarsPlayerResourcesDisplaySet>("PrepareFields"));
-				cursor.Index++;
-				//Push HorizontalBars..DisplaySet instance being operated on, onto the Stack
-				cursor.Emit(OpCodes.Ldarg_0);
-				cursor.EmitDelegate((HorizontalBarsPlayerResourcesDisplaySet instance) =>
-				{
-					Player localPlayer = Main.LocalPlayer;
-
-					int numSegments = Math.Clamp(localPlayer.statLifeMax2 / 20, 5, MAX_HEALTHBAR_SIZE / 20);
-					typeof(HorizontalBarsPlayerResourcesDisplaySet).GetField("_hpSegmentsCount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(instance, numSegments);
-				});
-			}
-			catch (Exception x)
-			{
-				MonoModHooks.DumpIL(Mod, context);
-			}
 		}
 
 		public override void Unload()
 		{
 			On_ResourceDrawSettings.Draw -= DrawRallyHealthBar;
+
 			IL_HorizontalBarsPlayerResourcesDisplaySet.Draw -= IL_HorizontalBarsPlayerResourcesDisplaySet_Draw;
-			//On_HorizontalBarsPlayerResourcesDisplaySet.Draw -= DrawHealthbarContainer;
 			IL_HorizontalBarsPlayerResourcesDisplaySet.LifeFillingDrawer -= IL_HealthbarTextureSelect;
 		}
 
@@ -118,7 +51,101 @@ namespace TerrariaCells.Common.ModPlayers
 		#region Healthbar
 		public const int MAX_HEALTHBAR_SIZE = 800;
 
-		private void DrawRallyHealthBar(On_ResourceDrawSettings.orig_Draw orig, ref ResourceDrawSettings self, SpriteBatch spriteBatch, ref bool isHovered)
+		private static void IL_HealthbarTextureSelect(ILContext context)
+		{
+			log4net.ILog GetInstanceLogger() => ModContent.GetInstance<TerrariaCells>().Logger;
+			try
+			{
+				ILCursor cursor = new ILCursor(context);
+
+				ILLabel? IL_001B = null; //IL Instruction 001B (by ilSpy)
+				if (!cursor.TryGotoNext(MoveType.Before,
+					i => i.MatchLdarg1(), //Int32 elementIndex
+					i => i.MatchLdarg0(), //HorizontalBars..DisplaySet self
+					i => i.MatchLdfld<HorizontalBarsPlayerResourcesDisplaySet>("_hpFruitCount"), //Int32 self::_hpFruitCount
+					i => i.Match(OpCodes.Bge_S, out IL_001B))) //Branch to IL_001B if(elementIndex >= _hpFruitcount)
+				{
+					//Couldn't match given instructions, perform no further edits
+					GetInstanceLogger().Error($"Couldn't match IL Patch: {context.Method.Name} @ {cursor.Index}");
+					return;
+				}
+				if (IL_001B == null)
+				{
+					//Matched correctly but didn't get Label ???
+					GetInstanceLogger().Error($"IL Label {nameof(IL_001B)} not found in IL Patch {context.Method.Name} @ {cursor.Index}");
+					return;
+				}
+
+				cursor.Emit(OpCodes.Ldarg_1); //Int32 elementIndex
+											  //bool function for if segment at [elementIndex] should be red or yellow
+				cursor.EmitDelegate<Func<int, bool>>((int elementIndex) =>
+				{
+					Player player = Main.LocalPlayer;
+					int segmentsX5WithBonusHealth = Math.Max((player.statLifeMax2 - MAX_HEALTHBAR_SIZE), 0);
+					return (elementIndex * 5) >= segmentsX5WithBonusHealth;
+				});
+
+				//Create label we can navigate back to later
+				// Note for the future: "DefineLabel()" creates a label with no target, thus we must use "MarkLabel(..)" to be able jump back to it
+				ILLabel jumpBack = cursor.MarkLabel();
+
+				if (!cursor.TryGotoNext(MoveType.Before,
+					i => i.MatchLdarg(4), //Asset<Texture2D> sprite
+					i => i.MatchLdarg0(), //HorizontalBars..DisplaySet self
+					i => i.MatchLdfld<HorizontalBarsPlayerResourcesDisplaySet>("_hpFillHoney"), //Asset<Texture2D> self::_hpFillHoney
+					i => i.MatchStindRef())) //Ref
+				{
+					//Error finding next set of instructions '\_("/)_/`
+					GetInstanceLogger().Error($"Couldn't match IL Patch: {context.Method.Name} @ {cursor.Index}");
+					return;
+				}
+
+				ILLabel honeyFill = cursor.MarkLabel(); //Create label to branch to for our condition
+				cursor.GotoLabel(jumpBack, MoveType.Before); //Return to previous label
+				cursor.Emit(OpCodes.Brfalse, honeyFill); //Branch to honey texture if previous function is true
+				cursor.Emit(OpCodes.Br, IL_001B); //Skip vanilla logic >:3
+			}
+			catch (Exception x)
+			{
+				//Something went wrong! :O
+				GetInstanceLogger().Error($"Something went wrong with IL Patch: {context.Method.Name}");
+				MonoModHooks.DumpIL(ModContent.GetInstance<TerrariaCells>(), context);
+			}
+		}
+
+		private static void IL_HorizontalBarsPlayerResourcesDisplaySet_Draw(ILContext context)
+		{
+			log4net.ILog GetInstanceLogger() => ModContent.GetInstance<TerrariaCells>().Logger;
+			try
+			{
+				ILCursor cursor = new ILCursor(context);
+
+				if (!cursor.TryGotoNext(MoveType.After,
+					i => i.MatchCall<HorizontalBarsPlayerResourcesDisplaySet>("PrepareFields"))) //invoke HorizontalBars..DisplaySet::PrepareFields()
+				{
+					//Couldn't find invokation
+					GetInstanceLogger().Error($"Couldn't match IL Patch: {context.Method.Name} @ {cursor.Index}");
+					return;
+				}
+
+				cursor.Emit(OpCodes.Ldarg_0); //HorizontalBars..DisplaySet self
+
+				cursor.EmitDelegate((HorizontalBarsPlayerResourcesDisplaySet self) =>
+				{
+					Player localPlayer = Main.LocalPlayer;
+
+					int numSegments = Math.Clamp(localPlayer.statLifeMax2 / 20, 5, MAX_HEALTHBAR_SIZE / 20);
+					typeof(HorizontalBarsPlayerResourcesDisplaySet).GetField("_hpSegmentsCount", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(self, numSegments);
+				});
+			}
+			catch (Exception x)
+			{
+				GetInstanceLogger().Error($"Something went wrong with IL Patch: {context.Method.Name}");
+				MonoModHooks.DumpIL(ModContent.GetInstance<TerrariaCells>(), context);
+			}
+		}
+
+		private static void DrawRallyHealthBar(On_ResourceDrawSettings.orig_Draw orig, ref ResourceDrawSettings self, SpriteBatch spriteBatch, ref bool isHovered)
 		{
 			Player player = Main.LocalPlayer;
 			Regenerator modPlayer = player.GetModPlayer<Regenerator>();
@@ -205,7 +232,7 @@ namespace TerrariaCells.Common.ModPlayers
 		#endregion
 
 		#region Rally Heal Mechanic
-		public const float STAGGER_POTENCY = 2.5f;
+		public const float STAGGER_POTENCY = 3f;
 		public const float INV_STAGGER_POTENCY = 1f / STAGGER_POTENCY;
 		public const string BAR_HEALTH_FILL1 = "Images\\UI\\PlayerResourceSets\\HorizontalBars\\HP_Fill";
 		public const string BAR_HEALTH_FILL2 = "Images\\UI\\PlayerResourceSets\\HorizontalBars\\HP_Fill_Honey";
@@ -236,6 +263,7 @@ namespace TerrariaCells.Common.ModPlayers
 			}
 			damageTime = 0;
 		}
+
 		/// <summary>
 		/// Adjust damage stagger by some amount +/-
 		/// </summary>
@@ -257,6 +285,7 @@ namespace TerrariaCells.Common.ModPlayers
 				UpdateDamageBuffer();
 			}
 		}
+
 		//Run damage stagger calcs: split into its own function so it can be moved more easily or whatever.
 		private void UpdateDamageBuffer()
 		{
@@ -354,7 +383,6 @@ namespace TerrariaCells.Common.ModPlayers
 		}
 
 		//Disable Health Potion CD
-		//Game will play quickly, so we don't want 60 sec cooldowns getting in the way
 		public override void PreUpdateBuffs()
 		{
 			Player.ClearBuff(Terraria.ID.BuffID.PotionSickness);
