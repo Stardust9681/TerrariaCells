@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- Import tModLoader mod properties -->
 	<Import Project="..\tModLoader.targets" />
@@ -14,6 +14,7 @@
 	  <None Remove="Content\Modifiers\**" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Folder Include="Content\" />
 	  <None Remove="Common\Assets\DesertScorpionStab.png" />
 	  <None Remove="Common\Assets\GrayscaleExplosion.png" />
 	  <None Remove="Common\Assets\MummyShockwave.png" />
