@@ -15,8 +15,10 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <None Remove="Common\Assets\DesertScorpionStab.png" />
+	  <None Remove="Common\Assets\GrayscaleExplosion.png" />
 	  <None Remove="Common\Assets\MummyShockwave.png" />
 	  <None Remove="Common\Assets\MummySlam.png" />
+	  <None Remove="Content\Projectiles\MummyShockwave.png" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Reference Include="StructureHelper">

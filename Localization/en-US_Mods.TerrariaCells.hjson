@@ -21,4 +21,5 @@ Projectiles: {
 	PoacherStab.DisplayName: Poacher Stab
 	MummyShockwave.DisplayName: Mummy Shockwave
 	VultureBone.DisplayName: Vulture Bone
+	Slash.DisplayName: Slash
 }

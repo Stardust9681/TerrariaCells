@@ -19,22 +19,23 @@ namespace TerrariaCells.Content.Projectiles
         public override void SetDefaults()
         {
             base.SetDefaults();
-            Projectile.width = 76;
+            Projectile.width = 38;
             Projectile.height = 38;
             Projectile.friendly = false;
             Projectile.hostile = true;
             Projectile.timeLeft = 40;
             Projectile.tileCollide = false;
+            Projectile.hide = true;
         }
         public override bool PreDraw(ref Color lightColor)
         {
             Asset<Texture2D> t = TextureAssets.Projectile[Type];
-            Main.EntitySpriteDraw(t.Value, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.height/2 + 2), null, lightColor, Projectile.rotation, new Vector2(t.Width()/2, t.Height()), new Vector2(Projectile.scale, Projectile.scale * (Projectile.ai[1] / 10)), Projectile.ai[0] == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
+            Main.EntitySpriteDraw(t.Value, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.height/2 + 3), null, lightColor, Projectile.rotation, new Vector2(t.Width()/2, t.Height()), new Vector2(Projectile.scale, Projectile.scale * (Projectile.ai[1] / 5)), Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
             return false;
         }
         public override bool CanHitPlayer(Player target)
         {
-            if (Projectile.ai[1] < 10)
+            if (Projectile.ai[1] < 5)
             {
                 return false;
             }
@@ -65,17 +66,25 @@ namespace TerrariaCells.Content.Projectiles
         {
             return base.Colliding(projHitbox, targetHitbox);
         }
-
+        public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+        {
+            behindNPCsAndTiles.Add(index);
+            base.DrawBehind(index, behindNPCsAndTiles, behindNPCs, behindProjectiles, overPlayers, overWiresUI);
+        }
         public override void AI()
         {
-            if (Projectile.ai[1] < 10)
+            if (Projectile.ai[1] == 0)
+            {
+                Projectile.spriteDirection = Main.rand.NextBool() ? 1 : -1;
+            }
+            if (Projectile.ai[1] < 5)
             {
                 Projectile.ai[1]++;
             }
-            if (Projectile.ai[1] == 9 && Projectile.scale < 2)
+            if (Projectile.ai[1] == 4 && Projectile.scale < 2)
             {
-                Projectile proj =  Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(60 * Projectile.ai[0], 0), Vector2.Zero, ModContent.ProjectileType<MummyShockwave>(), Projectile.damage, 1, -1, Projectile.ai[0]);
-                proj.scale = Projectile.scale + 0.5f;
+                Projectile proj =  Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(25 * Projectile.scale * Projectile.ai[0], 0), Vector2.Zero, ModContent.ProjectileType<MummyShockwave>(), Projectile.damage, 1, -1, Projectile.ai[0]);
+                proj.scale = Projectile.scale + 0.2f;
             }
             if (Projectile.timeLeft == 1)
             {

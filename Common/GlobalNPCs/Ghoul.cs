@@ -10,6 +10,9 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
+using TerrariaCells.Common.Utilities;
+using TerrariaCells.Content.Projectiles;
 
 namespace TerrariaCells.Common.GlobalNPCs
 {
@@ -19,12 +22,11 @@ namespace TerrariaCells.Common.GlobalNPCs
         public bool DrawGhoul(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             Asset<Texture2D> t = TextureAssets.Npc[npc.type];
-            int max = (int)npc.localAI[1];
-
-            if (max > npc.oldPos.Length) max = npc.oldPos.Length;
-            for (int i = 0; i < max; i++)
+            
+            if (npc.ai[3] == 1)
             {
-                spriteBatch.Draw(t.Value, npc.oldPos[i] + npc.Size/2 - screenPos, new Rectangle(npc.frame.X, npc.frame.Y, npc.frame.Width, npc.frame.Height), new Color(200, 100, 100) * MathHelper.Lerp(0.7f, 0f, (float)i / max), npc.rotation, new Vector2(t.Width() / 2, 25), npc.scale, npc.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 1);
+                spriteBatch.Draw(t.Value, npc.Center - screenPos, new Rectangle(0, 52 * 3, 36, 52), drawColor, npc.rotation, new Vector2(t.Width(), t.Height() / 8) / 2, npc.scale, npc.direction == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+                return false;
             }
 
             return true;
@@ -33,66 +35,70 @@ namespace TerrariaCells.Common.GlobalNPCs
         {
             if (npc.ai[3] == 1)
             {
-                
+                CustomFrameY = 3;
+            }
+            else
+            {
+                CustomFrameY = 0;
             }
         }
         public void GhoulAI(NPC npc, Player target)
         {
-            int timeWalking = 200;
-            int timeDashing = 30;
-            npc.ai[2]++;
+            int timeWalking = 30;
+            int timeSlashing = 60;
+            int slashDelay = timeSlashing / 3;
 
-            //increase/decrease afterimage smoothly
-            if (npc.localAI[1] < npc.localAI[0])
+            if (!npc.HasValidTarget)
             {
-                npc.localAI[1]++;
-            }else if (npc.localAI[1] > npc.localAI[0])
-            {
-                npc.localAI[1]--;
+                return;
             }
 
-            //dont walk during dash, cancel dash if ram into wall
-            if (npc.ai[3] == 1)
+            
+            
+            if (npc.ai[2] >= timeWalking && target.Distance(npc.Center) < 200 && npc.ai[3] == 0 && (float)Math.Abs(npc.Center.Y - target.Center.Y) < 30)
             {
-                ShouldWalk = false;
-                if (npc.collideX)
-                {
-                    npc.ai[2] = 0;
-                    npc.ai[3] = 0;
-                    npc.localAI[0] = 0;
-                }   
-            }
-
-            //telegraph
-            if (npc.ai[2] == timeWalking - 40 && target != null)
-            {
-                for (int i = 0; i < 10; i++)
-                {
-                    Dust d = Dust.NewDustDirect(npc.Center + new Vector2(5 * npc.direction, -10), 0, 0, DustID.SilverCoin, 0, -5);
-                    d.noGravity = true;
-                }
-                SoundEngine.PlaySound(SoundID.NPCHit37, npc.Center);
-            }
-
-            //start dash
-            if (npc.ai[2] >= timeWalking && npc.ai[3] == 0 && target != null)
-            {
-                int dir = target.Center.X > npc.Center.X ? 1 : -1;
-                npc.velocity = new Vector2(15 * dir, -5);
-
                 npc.ai[2] = 0;
                 npc.ai[3] = 1;
-                npc.localAI[0] = 10;
-                SoundEngine.PlaySound(SoundID.NPCDeath40, npc.Center);
             }
 
-            //end dash
-            else if (npc.ai[2] >= timeDashing && npc.ai[3] == 1)
+            if (npc.ai[0] == 1 && npc.ai[1] == 2)
             {
-                npc.ai[2] = 0;
-                npc.ai[3] = 0;
-                npc.localAI[0] = 0;
+                SoundEngine.PlaySound(SoundID.Item1, npc.Center);
+                Projectile slash = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center, Vector2.Zero, ModContent.ProjectileType<Slash>(), TCellsUtils.ScaledHostileDamage(25), 1, -1, npc.whoAmI, 0, npc.direction);
+                slash.scale = 1;
+                slash.rotation = npc.AngleTo(target.Center);
             }
+
+            if (npc.ai[3] == 1)
+            {
+                npc.velocity.X *= 0.9f;
+                npc.direction = npc.oldDirection;
+                ShouldWalk = false;
+                if (npc.ai[2] % slashDelay == 0 && npc.ai[2] != timeSlashing)
+                {
+                    
+                    if (npc.ai[2] > 0 && ExtraAI[0] == 0 && !FacingPlayer(npc, target))
+                    {
+                        npc.direction = -npc.direction;
+                        npc.oldDirection = npc.direction;
+                        npc.ai[2] = slashDelay;
+                        ExtraAI[0] = 1;
+                    }
+                    SoundEngine.PlaySound(SoundID.Item1, npc.Center);
+                    npc.velocity.X = 10 * npc.direction;
+                    Projectile slash =  Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center, Vector2.Zero, ModContent.ProjectileType<Slash>(), TCellsUtils.ScaledHostileDamage(25), 1, -1, npc.whoAmI, npc.ai[2] == slashDelay ? 1 : 0, npc.direction);
+                    slash.scale = 1;
+                    slash.rotation = npc.direction == 1 ? 0 : MathHelper.Pi;
+                }
+                if (npc.ai[2] >= timeSlashing)
+                {
+                    npc.ai[3] = 0;
+                    npc.ai[2] = 0;
+                    ExtraAI[0] = 0;
+                }
+            }
+
+            npc.ai[2]++;
         }
     }
 }

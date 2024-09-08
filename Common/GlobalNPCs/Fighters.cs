@@ -23,7 +23,8 @@ namespace TerrariaCells.Common.GlobalNPCs
         public int CustomFrameY = 0;
         public int CustomFrameCounter = 0;
         public bool ShouldWalk = false;
-        public int ExtraTimer;
+        public int[] ExtraAI = {0, 0, 0, 0};
+        public bool JustJumped = false;
 
         public float WalkSpeed = 2;
         public float Acceleration = 0.1f;
@@ -42,6 +43,11 @@ namespace TerrariaCells.Common.GlobalNPCs
             if (Mummies.Contains(entity.type))
             {
                 entity.scale = 1.5f;
+            }
+            if (Ghouls.Contains(entity.type))
+            {
+                JumpSpeed = 10;
+                WalkSpeed = 3.5f;
             }
             base.SetDefaults(entity);
         }
@@ -102,7 +108,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                 }
                 if (ShouldWalk)
                     Walk(npc, WalkSpeed, Acceleration);
-
+                JustJumped = false;
                 return false;
             }
             return base.PreAI(npc);
@@ -113,7 +119,9 @@ namespace TerrariaCells.Common.GlobalNPCs
             binaryWriter.Write7BitEncodedInt(CustomFrameY);
             binaryWriter.Write7BitEncodedInt(CustomFrameCounter);
             binaryWriter.Write(ShouldWalk);
-            binaryWriter.Write7BitEncodedInt(ExtraTimer);
+            binaryWriter.Write7BitEncodedInt(ExtraAI.Length);
+            for (int i = 0; i < ExtraAI.Length; i++)
+                binaryWriter.Write7BitEncodedInt(ExtraAI[i]);
 
             base.SendExtraAI(npc, bitWriter, binaryWriter);
         }
@@ -122,9 +130,15 @@ namespace TerrariaCells.Common.GlobalNPCs
             CustomFrameY = binaryReader.Read7BitEncodedInt();
             CustomFrameCounter = binaryReader.Read7BitEncodedInt();
             ShouldWalk = binaryReader.ReadBoolean();
-            ExtraTimer = binaryReader.Read7BitEncodedInt();
+            int length = binaryReader.Read7BitEncodedInt();
+            for (int i = 0; i < length; i++)
+                ExtraAI[i] = binaryReader.Read7BitEncodedInt();
 
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
+        }
+        public bool FacingPlayer(NPC npc, Player target)
+        {
+            return (npc.direction == -1 && npc.Center.X > target.Center.X) || (npc.direction == 1 && npc.Center.X < target.Center.X);
         }
     }
 }

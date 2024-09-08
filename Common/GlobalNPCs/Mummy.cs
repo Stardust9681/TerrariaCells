@@ -12,6 +12,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrariaCells.Common.Utilities;
 using TerrariaCells.Content.Projectiles;
 
 namespace TerrariaCells.Common.GlobalNPCs
@@ -31,7 +32,7 @@ namespace TerrariaCells.Common.GlobalNPCs
             }
             else if (npc.ai[3] == 1)
             {
-                spriteBatch.Draw(slam.Value, npc.Center - screenPos + new Vector2(-10, npc.height + 8), new Rectangle(0, (int)CustomFrameY*54, 52, 54), drawColor, npc.rotation, new Vector2(t.Width() / 2, t.Height() / 12), new Vector2(npc.scale * 1.1f, npc.scale), npc.direction == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+                spriteBatch.Draw(slam.Value, npc.Center - screenPos + new Vector2(-2, npc.height + 14), new Rectangle(0, (int)CustomFrameY*54, 44, 52), drawColor, npc.rotation, new Vector2(t.Width() / 2, t.Height() / 12), new Vector2(npc.scale * 1.1f, npc.scale), npc.direction == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
             }
 
             return false;
@@ -42,11 +43,11 @@ namespace TerrariaCells.Common.GlobalNPCs
             if (npc.ai[3] == 1)
             {
                 CustomFrameCounter++;
-                if (CustomFrameCounter > slamTime/12)
+                if (CustomFrameCounter > slamTime/11)
                 {
                     CustomFrameCounter = 0;
                     CustomFrameY++;
-                    if (CustomFrameY >= 12)
+                    if (CustomFrameY >= 11)
                     {
                         CustomFrameY = 0;
                     }
@@ -88,7 +89,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                 if (npc.ai[2] == 70)
                 {
                     
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + new Vector2(60 * npc.direction, 0), Vector2.Zero, ModContent.ProjectileType<MummyShockwave>(), 30, 1, -1, npc.direction);
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + new Vector2(40 * npc.direction, 0), Vector2.Zero, ModContent.ProjectileType<MummyShockwave>(), TCellsUtils.ScaledHostileDamage(30), 1, -1, npc.direction);
                     SoundEngine.PlaySound(SoundID.Item14, npc.Center);
                 }
             }
