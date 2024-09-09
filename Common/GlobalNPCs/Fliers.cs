@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
@@ -43,7 +44,14 @@ namespace TerrariaCells.Common.GlobalNPCs
             }
             return true;
         }
-
+        public override bool? CanFallThroughPlatforms(NPC npc)
+        {
+            if (npc.type == NPCID.Vulture)
+            {
+                return true;
+            }
+            return base.CanFallThroughPlatforms(npc);
+        }
         public void Update(NPC npc)
         {
 

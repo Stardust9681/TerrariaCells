@@ -115,6 +115,7 @@ namespace TerrariaCells.Common.GlobalNPCs
         {
             if (npc.collideY && npc.ai[0] == 0)
             {
+                JustJumped = true;
                 npc.ai[1] = 0;
                 npc.ai[0] = 1;
                 npc.velocity.Y = -jumpSpeed;

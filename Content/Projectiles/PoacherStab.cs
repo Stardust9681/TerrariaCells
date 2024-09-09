@@ -11,6 +11,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrariaCells.Common.Utilities;
 
 namespace TerrariaCells.Content.Projectiles
 {
@@ -68,16 +69,6 @@ namespace TerrariaCells.Content.Projectiles
         {
             int maxTime = 20;
 
-            float xIn = 1 - ((float)Projectile.timeLeft - maxTime/2) / (maxTime/2);
-            if (Projectile.timeLeft < maxTime / 2) xIn = 1;
-            float xFull = 1 - (float)Projectile.timeLeft / maxTime;
-            float xOut = 1 - ((float)Projectile.timeLeft) / (maxTime * 0.8f);
-            if (Projectile.timeLeft > maxTime * 0.8f) xOut = 0;
-
-            float lerpIn = xIn * xIn * xIn * xIn * xIn;
-            float lerpFull = 1 - (float)Math.Pow(1 - xFull, 5);
-            float lerpOut = 1 - (float)Math.Pow(1 - xOut, 5);
-
             NPC owner = Main.npc[(int)Projectile.ai[0]];
 
             if (owner == null || !owner.active || owner.type != NPCID.DesertScorpionWalk)
@@ -87,18 +78,17 @@ namespace TerrariaCells.Content.Projectiles
             }
 
             Projectile.rotation = MathHelper.PiOver2;
-            Vector2 start = new Vector2(0, -25);
-            Vector2 end = new Vector2(20*owner.direction, -25);
-            Projectile.position = Vector2.Lerp(owner.Center + start, owner.Center + end, lerpFull);
+            Vector2 start = new Vector2(0, -23);
+            Vector2 end = new Vector2(25*owner.direction, -23);
+            Projectile.position = TCellsUtils.LerpVector2(owner.Center + start, owner.Center + end, maxTime - Projectile.timeLeft, maxTime, TCellsUtils.LerpEasing.OutQuint);
 
             if (Projectile.timeLeft < maxTime * 0.8f)
             {
-                Projectile.Opacity = MathHelper.Lerp(1, 0, lerpOut);
+                Projectile.Opacity = TCellsUtils.LerpFloat(1, 0, maxTime - Projectile.timeLeft, maxTime * 0.8f, TCellsUtils.LerpEasing.OutQuint);
             }
             if (Projectile.timeLeft > maxTime * 0.8f)
             {
                 Projectile.Opacity = 1;
-                //Projectile.Opacity = MathHelper.Lerp(0, 1, lerpIn);
             }
 
             base.AI();
