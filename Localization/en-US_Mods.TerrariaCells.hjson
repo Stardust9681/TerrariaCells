@@ -31,5 +31,15 @@ Configs: {
 			Label: Enable Inventory Lock
 			Tooltip: ""
 		}
+
+		EnableInventoryChanges: {
+			Label: Enable Inventory Changes
+			Tooltip: ""
+		}
+
+		HideVanillaInventory: {
+			Label: Hide Vanilla Inventory
+			Tooltip: ""
+		}
 	}
 }
