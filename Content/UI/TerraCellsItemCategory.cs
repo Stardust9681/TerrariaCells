@@ -27,3 +27,9 @@ public enum TerraCellsItemCategory
     /// </summary>
     Storage = 4,
 }
+
+public enum StorageItemSubcategorization {
+    None = 0,
+    Armor = 1,
+    Accessory = 2,
+}

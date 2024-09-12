@@ -141,14 +141,6 @@ public class CustomAccessorySlot2 : ModAccessorySlot
 
 public class LimitedStorageUI : UIState
 {
-    // public override void OnInitialize()
-    // {
-    //     var accessorySlotLoader = LoaderManager.Get<AccessorySlotLoader>();
-    //     accessorySlotLoader.VanillaCount = 0;
-    //     accessorySlotLoader.Register(new CustomAccessorySlot());
-    //     accessorySlotLoader.Register(new CustomAccessorySlot2());
-    // }
-
     public static void CustomGUIHotbarDrawInner()
     {
         if (Main.playerInventory || Main.LocalPlayer.ghost)
