@@ -609,7 +609,7 @@ namespace TerrariaCells.Common.GlobalItems
         {
             instance = item;
 
-            // MAKE CHANGES TO SKILL ITEMS PROPERTIES HERE
+            // MAKE CHANGES TO SKILL ITEM PROPERTIES HERE
             switch (item.type)
             {
                 case ItemID.StormTigerStaff:

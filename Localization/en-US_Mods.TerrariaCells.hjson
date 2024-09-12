@@ -53,16 +53,14 @@ Projectiles: {
 	Sword.DisplayName: Sword
 	AmmoResidue.DisplayName: Ammo Residue
 	GunExplosion.DisplayName: Gun Explosion
-	ExplosionModProjectile.DisplayName: Explosion Mod Projectile
 	Autorifle.DisplayName: Autorifle
 	Handgun.DisplayName: Handgun
 	Musket.DisplayName: Musket
 	Sniper.DisplayName: Sniper
 	SniperShot.DisplayName: Sniper Shot
 	Guns.DisplayName: Guns
+	ExplosionModProjectile.DisplayName: Explosion
 }
-
-Projectiles.ExplosionModProjectile.DisplayName: Explosion
 
 Tooltips: {
 	ShiftHint: Hold [shift] for Skill Info
