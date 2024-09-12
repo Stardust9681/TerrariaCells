@@ -29,7 +29,6 @@ public class UISystem : ModSystem
     internal LimitedStorageUI limitedStorageUI;
     private GameTime _lastUpdateUiGameTime;
     private InventoryUiConfiguration config;
-    public const int SLOT_COUNT = 2;
 
     public override void Load()
     {
@@ -142,39 +141,13 @@ public class CustomAccessorySlot2 : ModAccessorySlot
 
 public class LimitedStorageUI : UIState
 {
-    public override void OnInitialize()
-    {
-        var accessorySlotLoader = LoaderManager.Get<AccessorySlotLoader>();
-        accessorySlotLoader.VanillaCount = 0;
-        accessorySlotLoader.Register(new CustomAccessorySlot());
-        accessorySlotLoader.Register(new CustomAccessorySlot2());
-
-        // UIPanel panel = new UIPanel(
-        //     Main.Assets.Request<Texture2D>("Images/Inventory_Back"),
-        //     null,
-        //     25
-        // )
-        // {
-        //     PaddingLeft = 25,
-        //     PaddingTop = 25,
-        //     MarginLeft = 25,
-        //     MarginTop = 25,
-        //     Width = StyleDimension.FromPixels(52 * 2),
-        //     Height = StyleDimension.FromPixels(52 * 2),
-        // };
-        // Append(panel);
-
-        // Append(new UIItemSlot(Main.LocalPlayer.inventory, 0, ItemSlot.Context.InventoryItem));
-        // Append(new UIItemIcon());
-        // Append(new WeaponHotbarSlot());
-        Append(
-            new CustomItemSlot()
-            {
-                Width = StyleDimension.FromPixels(200),
-                Height = StyleDimension.FromPixels(200),
-            }
-        );
-    }
+    // public override void OnInitialize()
+    // {
+    //     var accessorySlotLoader = LoaderManager.Get<AccessorySlotLoader>();
+    //     accessorySlotLoader.VanillaCount = 0;
+    //     accessorySlotLoader.Register(new CustomAccessorySlot());
+    //     accessorySlotLoader.Register(new CustomAccessorySlot2());
+    // }
 
     public static void CustomGUIHotbarDrawInner()
     {
@@ -323,13 +296,6 @@ public class LimitedStorageUI : UIState
         }
     }
 
-    public enum CustomInventorySlotTypes
-    {
-        Vanilla = 0,
-        WeaponSlot = 1,
-        SkillSlot = 2,
-    }
-
     protected static void DrawInventory()
     {
         Recipe.GetThroughDelayedFindRecipes();
@@ -359,66 +325,113 @@ public class LimitedStorageUI : UIState
             SpriteEffects.None,
             0f
         );
-        Main.inventoryScale = 0.85f;
+        Main.inventoryScale = 1.15f;
         if (
             Main.mouseX > 20
-            && Main.mouseX < (int)(20f + 560f * Main.inventoryScale)
             && Main.mouseY > 20
-            && Main.mouseY < (int)(20f + 280f * Main.inventoryScale)
             && !PlayerInput.IgnoreMouseInterface
+            && Main.mouseX < (int)(20f + 56f * 4 * Main.inventoryScale)
+            && Main.mouseY < (int)(20f + 60f * Main.inventoryScale)
+            && !(
+                Main.mouseX > (int)(20f + 56f * 3 * Main.inventoryScale)
+                && Main.mouseY > (int)(20f + 60f * Main.inventoryScale)
+            )
         )
             Main.player[Main.myPlayer].mouseInterface = true;
 
-        // var inventorySlots = new[] { () };
-
-        for (int i = 0; i < 10; i++)
+        var inventorySlots = new[]
         {
-            for (int j = 0; j < 5; j++)
+            (new Vector2(56f * 0, 0f), 0, TerraCellsItemCategory.Weapon),
+            (new Vector2(56f * 1, 0f), 1, TerraCellsItemCategory.Weapon),
+            (new Vector2(56f * 2, 0f), 2, TerraCellsItemCategory.Skill),
+            (new Vector2(56f * 3, 0f), 3, TerraCellsItemCategory.Skill),
+            (new Vector2(56f * 4, 0f), 4, TerraCellsItemCategory.Potion),
+            (new Vector2(56f * 0, 60f), 10, TerraCellsItemCategory.Storage),
+            (new Vector2(56f * 1, 60f), 11, TerraCellsItemCategory.Storage),
+            (new Vector2(56f * 2, 60f), 12, TerraCellsItemCategory.Storage),
+            (new Vector2(56f * 3, 60f), 13, TerraCellsItemCategory.Storage),
+        };
+
+        // for (int i = 0; i < 10; i++)
+        // {
+        //     for (int j = 0; j < 5; j++)
+        //     {
+        foreach (var slot in inventorySlots)
+        {
+            int xPos = (int)(20f + slot.Item1.X * Main.inventoryScale) + num;
+            int yPos = (int)(20f + slot.Item1.Y * Main.inventoryScale) + num2;
+            int slotNumber = slot.Item2;
+            switch (slot.Item3)
             {
-                int num7 = (int)(20f + i * 56 * Main.inventoryScale) + num;
-                int num8 = (int)(20f + j * 56 * Main.inventoryScale) + num2;
-                int num9 = i + j * 10;
+                case TerraCellsItemCategory.Default:
+                    Main.inventoryBack = new Color(12, 245, 103);
+                    break;
+                case TerraCellsItemCategory.Weapon:
+                    Main.inventoryBack = new Color(150, 245, 150);
+                    break;
+                case TerraCellsItemCategory.Skill:
+                    Main.inventoryBack = new Color(205, 150, 150);
+                    break;
+                case TerraCellsItemCategory.Potion:
+                    Main.inventoryBack = new Color(215, 150, 243);
+                    break;
+                case TerraCellsItemCategory.Storage:
+                    Main.inventoryBack = new Color(254, 255, 255);
+                    break;
+            }
+            if (
+                Main.mouseX >= xPos
+                && Main.mouseX <= xPos + TextureAssets.InventoryBack.Width() * Main.inventoryScale
+                && Main.mouseY >= yPos
+                && Main.mouseY <= yPos + TextureAssets.InventoryBack.Height() * Main.inventoryScale
+                && !PlayerInput.IgnoreMouseInterface
+            )
+            {
                 if (
-                    Main.mouseX >= num7
-                    && Main.mouseX
-                        <= num7 + TextureAssets.InventoryBack.Width() * Main.inventoryScale
-                    && Main.mouseY >= num8
-                    && Main.mouseY
-                        <= num8 + TextureAssets.InventoryBack.Height() * Main.inventoryScale
-                    && !PlayerInput.IgnoreMouseInterface
+                    !(
+                        slot.Item3 != TerraCellsItemCategory.Storage
+                        && InventoryManager.GetItemCategorization(Main.LocalPlayer.inventory[58])
+                            != slot.Item3
+                        && !Main.LocalPlayer.inventory[58].IsAir
+                    )
                 )
                 {
                     Main.player[Main.myPlayer].mouseInterface = true;
-                    ItemSlot.OverrideHover(Main.player[Main.myPlayer].inventory, 0, num9);
+                    ItemSlot.OverrideHover(
+                        Main.player[Main.myPlayer].inventory,
+                        ItemSlot.Context.InventoryItem,
+                        slotNumber
+                    );
                     if (
-                        Main.player[Main.myPlayer].inventoryChestStack[num9]
+                        Main.player[Main.myPlayer].inventoryChestStack[slotNumber]
                         && (
-                            Main.player[Main.myPlayer].inventory[num9].type == ItemID.None
-                            || Main.player[Main.myPlayer].inventory[num9].stack == 0
+                            Main.player[Main.myPlayer].inventory[slotNumber].type == ItemID.None
+                            || Main.player[Main.myPlayer].inventory[slotNumber].stack == 0
                         )
                     )
-                        Main.player[Main.myPlayer].inventoryChestStack[num9] = false;
+                        Main.player[Main.myPlayer].inventoryChestStack[slotNumber] = false;
 
-                    if (!Main.player[Main.myPlayer].inventoryChestStack[num9])
+                    if (!Main.player[Main.myPlayer].inventoryChestStack[slotNumber])
                     {
-                        ItemSlot.LeftClick(Main.player[Main.myPlayer].inventory, 0, num9);
-                        ItemSlot.RightClick(Main.player[Main.myPlayer].inventory, 0, num9);
+                        ItemSlot.LeftClick(Main.player[Main.myPlayer].inventory, 0, slotNumber);
+                        ItemSlot.RightClick(Main.player[Main.myPlayer].inventory, 0, slotNumber);
                         if (Main.mouseLeftRelease && Main.mouseLeft)
                             Recipe.FindRecipes();
                     }
 
-                    ItemSlot.MouseHover(Main.player[Main.myPlayer].inventory, 0, num9);
+                    ItemSlot.MouseHover(Main.player[Main.myPlayer].inventory, 0, slotNumber);
                 }
-
-                ItemSlotDraw(
-                    Main.spriteBatch,
-                    Main.player[Main.myPlayer].inventory,
-                    0,
-                    num9,
-                    new Vector2(num7, num8)
-                );
             }
+
+            ItemSlotDraw(
+                Main.spriteBatch,
+                Main.player[Main.myPlayer].inventory,
+                0,
+                slotNumber,
+                new Vector2(xPos, yPos)
+            );
         }
+        // }
 
         /*
         GetBuilderAccsCountToShow(LocalPlayer, out var _, out var _, out var totalDrawnIcons);
@@ -545,12 +558,6 @@ public class LimitedStorageUI : UIState
                 Main.armorAlpha = 1f;
         }
 
-        new Color(
-            (byte)(Main.mouseTextColor * Main.armorAlpha),
-            (byte)(Main.mouseTextColor * Main.armorAlpha),
-            (byte)(Main.mouseTextColor * Main.armorAlpha),
-            (byte)(Main.mouseTextColor * Main.armorAlpha)
-        );
         Main.armorHide = false;
 
         int mH = 0;
@@ -885,6 +892,12 @@ public class LimitedStorageUI : UIState
             // armor interface logic and draw call
             for (int num40 = 0; num40 < 5; num40++)
             {
+                Main.inventoryBack = new Color(244, 227, 50);
+                if (num40 > 2)
+                {
+                    Main.inventoryBack = new Color(229, 99, 45);
+                }
+
                 if ((num40 == 8 && !flag5) || (num40 == 9 && !flag6))
                     continue;
 
@@ -1112,6 +1125,7 @@ public class LimitedStorageUI : UIState
 
             // Moved from above [[
             var defPos = AccessorySlotLoader.DefenseIconPosition;
+            defPos += new Vector2(360, -180);
             typeof(Main)
                 .GetMethod("DrawDefenseCounter", BindingFlags.NonPublic | BindingFlags.Static)
                 .Invoke(null, [(int)defPos.X, (int)defPos.Y]);
@@ -1122,27 +1136,7 @@ public class LimitedStorageUI : UIState
             Main.inventoryScale = num36;
         }
 
-        // for (int slot = 0; slot < 2; slot++)
-        // {
-        //     ItemSlot.Draw(
-        //         Main.spriteBatch,
-        //         Main.LocalPlayer.armor,
-        //         10,
-        //         3,
-        //         new Vector2(Main.screenWidth - 64 - 28, mH + 300)
-        //     );
-        //     ItemSlot.Draw(
-        //         Main.spriteBatch,
-        //         Main.LocalPlayer.armor,
-        //         10,
-        //         4,
-        //         new Vector2(Main.screenWidth - 64 - 28, mH + 300 + 52)
-        //     );
-        // }
-
-        // LoaderManager.Get<AccessorySlotLoader>().Draw(0, false, 3, Main.inventoryBack);
         // LoaderManager.Get<AccessorySlotLoader>().DrawAccSlots(num20);
-        // LoaderManager.Get<AccessorySlotLoader>().DefenseIconPosition = new Vector2(Main.screenWidth - 64 - 28, DrawVerticalAlignment + (accessoryPerColumn + 2) * 56 * Main.inventoryScale + 4);
 
         int num54 = (Main.screenHeight - 600) / 2;
         int num55 = (int)(Main.screenHeight / 600f * 250f);
@@ -1179,8 +1173,6 @@ public class LimitedStorageUI : UIState
 
         Main.CreativeMenu.Draw(Main.spriteBatch);
         bool flag10 = Main.CreativeMenu.Enabled && !Main.CreativeMenu.Blocked;
-
-        // Added by TML.
         flag10 |= Main.hidePlayerCraftingMenu;
 
         if (!Main.InReforgeMenu && !Main.LocalPlayer.tileEntityAnchor.InUse && !flag10)

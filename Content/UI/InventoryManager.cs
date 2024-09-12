@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Mono.Cecil.Cil;
+using MonoMod.RuntimeDetour;
 using Stubble.Core.Contexts;
 using Terraria;
 using Terraria.DataStructures;
@@ -9,32 +11,40 @@ using TerrariaCells.Common;
 
 namespace TerrariaCells.Content.UI;
 
-[Autoload(Side = ModSide.Server)]
+[Autoload(Side = ModSide.Both)]
 public class InventoryManager : ModSystem, IEntitySource
 {
     public string Context => "TerraCells Inventory Manager";
 
-    const int INVENTORY_SLOT_COUNT = 6;
+    const int INVENTORY_SLOT_COUNT = 5;
     const int WEAPON_SLOT_1 = 0;
     const int WEAPON_SLOT_2 = 1;
     const int SKILL_SLOT_1 = 2;
     const int SKILL_SLOT_2 = 3;
     const int POTION_SLOT = 4;
-    const int STORAGE_SLOT = 5;
+    const int STORAGE_SLOT_1 = 10;
+    const int STORAGE_SLOT_2 = 11;
+    const int STORAGE_SLOT_3 = 12;
+    const int STORAGE_SLOT_4 = 13;
 
-    private static readonly (int, TerraCellsItemCategory)[] slotCategories =
+    private static readonly (int, TerraCellsItemCategory)[] slotCategorizations =
     [
         (0, TerraCellsItemCategory.Weapon),
         (1, TerraCellsItemCategory.Weapon),
         (2, TerraCellsItemCategory.Skill),
         (3, TerraCellsItemCategory.Skill),
         (4, TerraCellsItemCategory.Potion),
-        (5, TerraCellsItemCategory.Storage),
+        (10, TerraCellsItemCategory.Storage),
+        (11, TerraCellsItemCategory.Storage),
+        (12, TerraCellsItemCategory.Storage),
+        (13, TerraCellsItemCategory.Storage),
     ];
 
-    InventoryUiConfiguration config;
+    static InventoryUiConfiguration config;
 
-    private static readonly Dictionary<short, TerraCellsItemCategory> VanillaItemCategories =
+    bool pickupLock = false;
+
+    private static readonly Dictionary<short, TerraCellsItemCategory> VanillaItemCategorizations =
         new()
         {
             { ItemID.GoldBroadsword, TerraCellsItemCategory.Weapon },
@@ -55,10 +65,10 @@ public class InventoryManager : ModSystem, IEntitySource
             { ItemID.None, TerraCellsItemCategory.Default },
         };
 
-    private static TerraCellsItemCategory CategoryOfItem(Item item) =>
+    public static TerraCellsItemCategory GetItemCategorization(Item item) =>
         item is ITerraCellsCategorization categorization
             ? categorization.Category
-            : VanillaItemCategories.GetValueOrDefault(
+            : VanillaItemCategorizations.GetValueOrDefault(
                 (short)item.netID,
                 TerraCellsItemCategory.Default
             );
@@ -72,35 +82,34 @@ public class InventoryManager : ModSystem, IEntitySource
             return;
         }
 
-        if (config.EnableInventoryLock)
+        if (!pickupLock & config.EnableInventoryLock)
         {
+            pickupLock = true;
             On_Player.CanAcceptItemIntoInventory += new(FilterPickups);
+        }
+        else if (pickupLock & !config.EnableInventoryLock)
+        {
+            pickupLock = false;
+            On_Player.CanAcceptItemIntoInventory -= new(FilterPickups);
         }
     }
 
     public override void PreUpdateItems()
     {
-        if (config.EnableInventoryChanges && config.EnableInventoryLock)
+        if (config.EnableInventoryLock)
         {
             foreach (Player player in Main.ActivePlayers)
             {
                 if (player.selectedItem < INVENTORY_SLOT_COUNT)
                     return;
 
-                if (
-                    player.selectedItem
-                    > INVENTORY_SLOT_COUNT - 1 + (10 - INVENTORY_SLOT_COUNT) / 2
-                )
+                if (player.selectedItem > INVENTORY_SLOT_COUNT - 1)
                     player.selectedItem = INVENTORY_SLOT_COUNT - 1;
                 else
                     player.selectedItem = 0;
             }
         }
-    }
-
-    public override void PostUpdateItems()
-    {
-        if (config.EnableInventoryChanges && config.EnableInventoryLock)
+        if (config.EnableInventoryLock)
         {
             foreach (Player player in Main.ActivePlayers)
             {
@@ -109,12 +118,17 @@ public class InventoryManager : ModSystem, IEntitySource
         }
     }
 
+    public override void PostUpdateItems() { }
+
     public void SortInventory(Player player)
     {
-        foreach ((int, TerraCellsItemCategory) slotCategory in slotCategories)
+        foreach ((int, TerraCellsItemCategory) slotCategory in slotCategorizations)
         {
             Item item = player.inventory[slotCategory.Item1];
-            if (CategoryOfItem(item) != slotCategory.Item2)
+            if (
+                GetItemCategorization(item) != slotCategory.Item2
+                && slotCategory.Item2 != TerraCellsItemCategory.Storage
+            )
             {
                 MoveItemToItsDedicatedCategory(player, item, slotCategory.Item1);
             }
@@ -123,10 +137,10 @@ public class InventoryManager : ModSystem, IEntitySource
 
     public bool MoveItemToItsDedicatedCategory(Player player, Item item, int previousInventorySlot)
     {
-        switch (CategoryOfItem(item))
+        switch (GetItemCategorization(item))
         {
             case TerraCellsItemCategory.Default:
-                for (int i = 6; i <= 49; i++)
+                for (int i = 14; i <= 49; i++)
                 {
                     if (player.inventory[i].IsAir)
                     {
@@ -142,8 +156,19 @@ public class InventoryManager : ModSystem, IEntitySource
             case TerraCellsItemCategory.Weapon:
                 if (IsWeaponsSlotsFull(player))
                 {
-                    player.DropItem(this, new Microsoft.Xna.Framework.Vector2(), ref item);
-                    return false;
+                    for (int i = 10; true; i++)
+                    {
+                        if (player.inventory[i].IsAir)
+                        {
+                            player.inventory[i] = item.Clone();
+                            break;
+                        }
+                        if (i >= 13)
+                        {
+                            player.DropItem(this, new Microsoft.Xna.Framework.Vector2(), ref item);
+                            return false;
+                        }
+                    }
                 }
                 else if (player.inventory[WEAPON_SLOT_1].IsAir)
                 {
@@ -153,16 +178,26 @@ public class InventoryManager : ModSystem, IEntitySource
                 {
                     player.inventory[WEAPON_SLOT_2] = item.Clone();
                 }
-                // player.inventory[previousInventorySlot].TurnToAir();
-
+                player.inventory[previousInventorySlot].TurnToAir();
                 return true;
             case TerraCellsItemCategory.Skill:
                 if (IsSkillsSlotsFull(player))
                 {
-                    player.DropItem(this, new Microsoft.Xna.Framework.Vector2(), ref item);
-                    return false;
+                    for (int i = 10; true; i++)
+                    {
+                        if (player.inventory[i].IsAir)
+                        {
+                            player.inventory[i] = item.Clone();
+                            break;
+                        }
+                        if (i >= 13)
+                        {
+                            player.DropItem(this, new Microsoft.Xna.Framework.Vector2(), ref item);
+                            return false;
+                        }
+                    }
                 }
-                if (player.inventory[SKILL_SLOT_1].IsAir)
+                else if (player.inventory[SKILL_SLOT_1].IsAir)
                 {
                     player.inventory[SKILL_SLOT_1] = item.Clone();
                 }
@@ -175,19 +210,36 @@ public class InventoryManager : ModSystem, IEntitySource
             case TerraCellsItemCategory.Potion:
                 if (IsPotionSlotFull(player))
                 {
-                    player.DropItem(this, new Microsoft.Xna.Framework.Vector2(), ref item);
+                    for (int i = 10; true; i++)
+                    {
+                        if (player.inventory[i].IsAir)
+                        {
+                            break;
+                        }
+                        if (i >= 13)
+                        {
+                            player.DropItem(this, new Microsoft.Xna.Framework.Vector2(), ref item);
+                            return false;
+                        }
+                    }
                 }
                 player.inventory[POTION_SLOT] = item.Clone();
                 player.inventory[previousInventorySlot].TurnToAir();
                 return true;
             case TerraCellsItemCategory.Storage:
-                if (IsStorageSlotFull(player))
+                for (int i = 10; true; i++)
                 {
-                    player.DropItem(this, new Microsoft.Xna.Framework.Vector2(), ref item);
+                    if (player.inventory[i].IsAir)
+                    {
+                        player.inventory[i] = item.Clone();
+                        return true;
+                    }
+                    if (i >= 13)
+                    {
+                        player.DropItem(this, new Microsoft.Xna.Framework.Vector2(), ref item);
+                        return false;
+                    }
                 }
-                player.inventory[POTION_SLOT] = item.Clone();
-                player.inventory[previousInventorySlot].TurnToAir();
-                return true;
             default:
                 for (int i = 6; i <= 49; i++)
                 {
@@ -215,14 +267,17 @@ public class InventoryManager : ModSystem, IEntitySource
         Item item
     )
     {
-        return CategoryOfItem(item) switch
+        return GetItemCategorization(item) switch
         {
             TerraCellsItemCategory.Default => false,
-            TerraCellsItemCategory.Weapon => !IsSkillsSlotsFull(player),
-            TerraCellsItemCategory.Skill => !IsSkillsSlotsFull(player),
-            TerraCellsItemCategory.Potion => !IsPotionSlotFull(player),
-            TerraCellsItemCategory.Storage => !IsStorageSlotFull(player),
-            _ => orig.Invoke(player, item),
+            TerraCellsItemCategory.Weapon => !IsWeaponsSlotsFull(player)
+                | !IsStorageSlotsFull(player),
+            TerraCellsItemCategory.Skill => !IsSkillsSlotsFull(player)
+                | !IsStorageSlotsFull(player),
+            TerraCellsItemCategory.Potion => !IsPotionSlotFull(player)
+                | !IsStorageSlotsFull(player),
+            TerraCellsItemCategory.Storage => !IsStorageSlotsFull(player),
+            _ => !config.EnableInventoryLock,
         };
     }
 
@@ -237,5 +292,9 @@ public class InventoryManager : ModSystem, IEntitySource
 
     public static bool IsPotionSlotFull(Player player) => !player.inventory[POTION_SLOT].IsAir;
 
-    public static bool IsStorageSlotFull(Player player) => !player.inventory[STORAGE_SLOT].IsAir;
+    public static bool IsStorageSlotsFull(Player player) =>
+        !player.inventory[STORAGE_SLOT_1].IsAir
+        && !player.inventory[STORAGE_SLOT_2].IsAir
+        && !player.inventory[STORAGE_SLOT_3].IsAir
+        && !player.inventory[STORAGE_SLOT_4].IsAir;
 }
