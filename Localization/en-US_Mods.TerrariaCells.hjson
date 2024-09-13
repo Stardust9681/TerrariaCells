@@ -22,4 +22,8 @@ Projectiles: {
 	MummyShockwave.DisplayName: Mummy Shockwave
 	VultureBone.DisplayName: Vulture Bone
 	Slash.DisplayName: Slash
+	IceArrow.DisplayName: Ice Arrow
+	IceBall.DisplayName: Ice Ball
+	IceShard.DisplayName: Ice Shard
+	IceSpike.DisplayName: Ice Spike
 }
