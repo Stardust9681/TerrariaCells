@@ -44,45 +44,7 @@ namespace TerrariaCells.Common.Commands
             }
         }
     }
-    /// <summary>
-    /// Command for modifying weapons tier, for testing
-    /// </summary>
-    public class TierCommand : ModCommand
-    {
-        public override CommandType Type => CommandType.Chat;
 
-        public override string Command => "tier";
-
-        public override string Usage => "/tier <set or change> <tier>" +
-            "\nset/change - whether to set tier to a number or change it by a number" +
-            "\ntier - tier to set it to or change it by (negative numbers lower tier)";
-        public override string Description => "change or set weapons tier";
-
-        public override void Action(CommandCaller caller, string input, string[] args)
-        {
-            if (args.Length < 2)
-            {
-                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("Too few arguments!"), Color.Yellow);
-                return;
-            }
-            int lvl = -2;
-            try
-            {
-                lvl = int.Parse(args[1]);
-                switch (args[0]) 
-                {
-                    case "change":
-                        lvl += caller.Player.HeldItem.GetGlobalItem<TierSystemGlobalItem>().itemLevel;
-                        break;
-                }
-                caller.Player.HeldItem.GetGlobalItem<TierSystemGlobalItem>().SetLevel(caller.Player.HeldItem, lvl);
-            }
-            catch (Exception e)
-            {
-                Main.NewText(e);
-            }
-        }
-    }
     /// <summary>
     /// Command for applying modifiers to items in your inventory, for testing purposes
     /// </summary>
@@ -235,25 +197,25 @@ namespace TerrariaCells.Common.Commands
     }
 
     /// <summary>
-    /// Command to change or set the level to items in your inventory, for testing purposes
+    /// Command to change or set the tier of items in your inventory, for testing purposes
     /// </summary>
-    public class LevelCommand : ModCommand
+    public class TierCommand : ModCommand
     {
         public override CommandType Type
             => CommandType.Chat;
 
         public override string Command
-            => "level";
+            => "tier";
 
 
         public override string Usage
-            => "/level <'set' or 'add'> <slot> <amount>" +
-            "\n 'set' or 'add' — set the current level or add levels" +
+            => "/tier <'set' or 'add'> <slot> <amount>" +
+            "\n 'set' or 'add' — set the current tier or add tier levels (adding negative numbers lowers tier)" +
             "\n slot — inventory slot with item" +
-            "\n amount — amount to add or set level to";
+            "\n amount — amount to add or set tier to";
 
         public override string Description
-            => "Command used to add or set the level of an item in your inventory";
+            => "Command used to add or set the tier of an item in your inventory";
 
         public override void Action(CommandCaller caller, string input, string[] args)
         {
@@ -293,7 +255,7 @@ namespace TerrariaCells.Common.Commands
                 }
                 else
                 {
-                    ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("Item in slot provided does not have a level"), Color.Yellow);
+                    ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("Item in slot provided does not have a tier"), Color.Yellow);
                 }
 
             }
