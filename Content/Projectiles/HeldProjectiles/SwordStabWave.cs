@@ -9,6 +9,7 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrariaCells.Common.Utilities;
 
 namespace TerrariaCells.Content.Projectiles.HeldProjectiles
 {
@@ -17,8 +18,8 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
         public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.RainbowCrystalExplosion;
         public override void SetDefaults()
         {
-            Projectile.width = 20;
-            Projectile.height = 20;
+            Projectile.width = 30;
+            Projectile.height = 30;
             Projectile.friendly = true;
             Projectile.timeLeft = 1000;
             Projectile.penetrate = -2;
@@ -59,21 +60,21 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
                 return;
             }
             Vector2 armPos = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, rot);
-            //armPos.Y += -20;
-            float x = 1 - Projectile.timeLeft / (Projectile.ai[1]);
-            //Main.NewText(x);
-            float lerper = 1 - (float)Math.Pow(1 - x, 5);
+            
 
             Asset<Texture2D> t = TextureAssets.Item[(int)proj.ai[0]];
-            float distance = t.Size().Length() + 15;
+            float distance = t.Size().Length() + (proj.spriteDirection == -1 ? 15 : 10);
             
 
             Projectile.rotation = proj.rotation;
-            Projectile.Center = Vector2.Lerp(proj.Center, proj.Center - new Vector2(distance, 0).RotatedBy(Projectile.rotation), lerper);
+            
+            //Main.NewText(proj.spriteDirection);
+            int xOff = proj.spriteDirection == -1 ? 8 : 12;
+            Projectile.Center = armPos - TCellsUtils.LerpVector2(new Vector2(distance/2, xOff).RotatedBy(proj.rotation), new Vector2(distance, xOff).RotatedBy(proj.rotation), Projectile.ai[1] - Projectile.timeLeft, Projectile.ai[1], TCellsUtils.LerpEasing.OutQuint);
 
-            float lerp2 = (float)Math.Sin(Math.PI * x);
-            Projectile.scale = MathHelper.Lerp(0.5f, 1, lerp2);
-            Projectile.Opacity = MathHelper.Lerp(0f, 1, lerp2);
+
+            Projectile.scale = TCellsUtils.LerpFloat(0.5f, 1, Projectile.ai[1] - Projectile.timeLeft, Projectile.ai[1], TCellsUtils.LerpEasing.DownParabola);
+            Projectile.Opacity = TCellsUtils.LerpFloat(0f, 1, Projectile.ai[1] - Projectile.timeLeft, Projectile.ai[1], TCellsUtils.LerpEasing.DownParabola);
 
             base.AI();
         }

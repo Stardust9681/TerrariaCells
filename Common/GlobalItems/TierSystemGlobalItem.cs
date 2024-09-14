@@ -14,7 +14,7 @@ namespace TerrariaCells.Common.GlobalItems
     public class TierSystemGlobalItem : GlobalItem
     {
 
-        public static float damageLevelScaling = 1.30f;
+        public static float damageLevelScaling = 1.33f;
         public static float knockbackLevelScaling = 1.125f;
         public static float attackSpeedLevelScaling = 0.125f;
 
@@ -52,7 +52,9 @@ namespace TerrariaCells.Common.GlobalItems
         {
             // Equation is found using Sorbet's example values.
             // Graph of tiers vs damage values: https://www.desmos.com/calculator/mz89u5adai
-            damage += MathF.Pow(damageLevelScaling, itemLevel);
+            //Main.NewText(damage.Additive);
+            damage += MathF.Pow(damageLevelScaling, itemLevel-1)-1;
+            //Main.NewText(damage.Additive);
         }
 
         public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback)

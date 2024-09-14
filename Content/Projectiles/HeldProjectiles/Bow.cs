@@ -13,6 +13,7 @@ using System.Reflection;
 using Terraria.Audio;
 using TerrariaCells.Common.GlobalItems;
 using rail;
+using TerrariaCells.Common.Utilities;
 
 namespace TerrariaCells.Content.Projectiles.HeldProjectiles
 {
@@ -49,15 +50,16 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
             Asset<Texture2D> t = TextureAssets.Item[(int)Projectile.ai[0]];
             Vector2 armPosition = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.Pi / 2); // get position of hand
             armPosition.Y += owner.gfxOffY;
-            float x = Projectile.ai[1] / (owner.HeldItem.useAnimation * 2);
-            float lerper = x == 1 ? 1 : 1 - (float)Math.Pow(2, -10 * x);
-            float min = Projectile.scale - 0.1f;
+           
+            float scaleX = TCellsUtils.LerpFloat(Projectile.scale + 0.1f, Projectile.scale, Projectile.ai[1], (owner.HeldItem.useAnimation * 2), TCellsUtils.LerpEasing.OutQuint);
+            float scaleY = TCellsUtils.LerpFloat(Projectile.scale - 0.1f, Projectile.scale, Projectile.ai[1], (owner.HeldItem.useAnimation * 2), TCellsUtils.LerpEasing.OutQuint);
             if (Projectile.ai[2] == 1)
             {
-                min = Projectile.scale - 0.1f;
-                lerper = 1 - lerper;
+                scaleX = TCellsUtils.LerpFloat( Projectile.scale, Projectile.scale + 0.1f, Projectile.ai[1], (owner.HeldItem.useAnimation * 2), TCellsUtils.LerpEasing.OutQuint);
+                scaleY = TCellsUtils.LerpFloat( Projectile.scale, Projectile.scale - 0.1f, Projectile.ai[1], (owner.HeldItem.useAnimation * 2), TCellsUtils.LerpEasing.OutQuint);
             }
-            Main.EntitySpriteDraw(t.Value, armPosition + new Vector2(8, -2 * Projectile.spriteDirection).RotatedBy(Projectile.rotation) - Main.screenPosition, null, lightColor, Projectile.rotation, new Vector2(10, t.Height() / 2), new Vector2(MathHelper.Lerp(Projectile.scale + 0.1f, Projectile.scale, lerper), MathHelper.Lerp(min, Projectile.scale , lerper)), Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+            Main.EntitySpriteDraw(t.Value, armPosition + new Vector2(8, -2 * Projectile.spriteDirection).RotatedBy(Projectile.rotation) - Main.screenPosition, null, lightColor, Projectile.rotation, new Vector2(10, t.Height() / 2),
+                new Vector2(scaleX, scaleY), Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             if (Projectile.ai[2] == 1)
             {
                 int arrow = (int)owner.HeldItem.shoot;

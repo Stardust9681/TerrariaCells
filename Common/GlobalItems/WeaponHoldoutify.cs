@@ -31,6 +31,11 @@ namespace TerrariaCells.Common.GlobalItems
         public int MaxAmmo;
         public int Ammo;
 
+        //swords
+        public bool Heavyweight = false;
+        public static int[] HeavyweightAnyways = { ItemID.DeathSickle, ItemID.IceSickle, ItemID.BladeofGrass, ItemID.CandyCaneSword, ItemID.ChlorophyteClaymore, ItemID.ChristmasTreeSword, ItemID.TheHorsemansBlade, ItemID.DD2SquireBetsySword };
+
+
         //fixing a sound anamoly
         public SoundStyle? StoreSound;
  
@@ -50,12 +55,13 @@ namespace TerrariaCells.Common.GlobalItems
         public static int[] Guns = Shotguns.Concat(Autorifles).Concat(Handguns).Concat(Muskets).Concat(Snipers).ToArray();
         public bool IsBroadsword(Item item)
         {
-            return ((item.DamageType == DamageClass.Melee || item.DamageType == DamageClass.MeleeNoSpeed) && item.useStyle == ItemUseStyleID.Swing && item.pick == 0 && item.axe == 0 && !item.noMelee && !item.noUseGraphic) || Broadswords.Contains(item.type);
+            return ((item.DamageType == DamageClass.Melee || item.DamageType == DamageClass.MeleeNoSpeed) && item.useStyle == ItemUseStyleID.Swing && item.pick == 0 && item.axe == 0 && item.hammer == 0 && !item.noMelee && !item.noUseGraphic) || Broadswords.Contains(item.type);
             
         }
         
         public override void SetDefaults(Item entity)
         {
+            
             if (entity.type == ItemID.MusketBall)
             {
                 entity.damage = 0;
@@ -82,10 +88,12 @@ namespace TerrariaCells.Common.GlobalItems
                 }
                 if (entity.type == ItemID.OnyxBlaster)
                 {
-                    entity.damage = 4;
-                    MaxAmmo = 4;
-                    ReloadSuccessRange = 0.15f;
-                    ReloadSuccessLocation = 0.7f;
+                    entity.damage = 5;
+                    MaxAmmo = 2;
+                    entity.useTime = entity.useAnimation = 48;
+
+                    //ReloadSuccessRange = 0.15f;
+                    //ReloadSuccessLocation = 0.7f;
                 }
                 ReloadTime = (int)(entity.useTime * MaxAmmo * 0.7f);
                 
@@ -106,6 +114,13 @@ namespace TerrariaCells.Common.GlobalItems
                 if (entity.type == ItemID.PewMaticHorn)
                 {
                     entity.shoot = ProjectileID.PewMaticHornShot;
+                }
+                if (entity.type == ItemID.PhoenixBlaster)
+                {
+                    MaxAmmo = 15;
+                    entity.damage = 8;
+                    entity.useTime = entity.useAnimation = 14;
+
                 }
             }
             if (Autorifles.Contains(entity.type))
@@ -145,8 +160,14 @@ namespace TerrariaCells.Common.GlobalItems
             if (Snipers.Contains(entity.type))
             {
                 MaxAmmo = 1;
-                ReloadTime = entity.useAnimation * 0.8f;
                 
+                if (entity.type == ItemID.SniperRifle)
+                {
+                    entity.useTime = entity.useAnimation = 40;
+                    entity.damage = 25;
+
+                }
+                ReloadTime = entity.useAnimation * 0.8f;
             }
             if (Bows.Contains(entity.type) )
             {
@@ -194,6 +215,11 @@ namespace TerrariaCells.Common.GlobalItems
                 if (entity.shoot == ProjectileID.None) entity.shoot = ModContent.ProjectileType<Sword>();
                 if (!Broadswords.Contains(entity.type))
                     Broadswords = Broadswords.Append(entity.type).ToArray();
+
+                if (entity.useAnimation >= 30 || HeavyweightAnyways.Contains(entity.type))
+                {
+                    Heavyweight = true;
+                }
             }
             if (MaxAmmo > 0) Ammo = MaxAmmo;
             if (ReloadTime > 0) SkillTimer = ReloadTime;
@@ -301,6 +327,19 @@ namespace TerrariaCells.Common.GlobalItems
                     }
                     return false;
                 }
+            }
+            if (item.type == ItemID.OnyxBlaster)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    Projectile.NewProjectile(source, position, velocity.RotatedByRandom(MathHelper.ToRadians(20)) * Main.rand.NextFloat(0.8f, 1.2f), type, damage, knockback);
+                }
+                if (EmpoweredAmmo > 0)
+                {
+                    Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, 661, damage, knockback);
+                    proj.CritChance = 100;
+                }
+                return false;
             }
             return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
         }
