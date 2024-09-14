@@ -44,27 +44,12 @@ public class InventoryManager : ModSystem, IEntitySource
 
     bool pickupLock = false;
 
-    private static readonly Dictionary<short, TerraCellsItemCategory> VanillaItemCategorizations =
-        new()
-        {
-            { ItemID.GoldBroadsword, TerraCellsItemCategory.Weapon },
-            { ItemID.FlowerofFire, TerraCellsItemCategory.Weapon },
-            { ItemID.DirtBlock, TerraCellsItemCategory.Skill },
-            { ItemID.Wood, TerraCellsItemCategory.Skill },
-            { ItemID.LesserHealingPotion, TerraCellsItemCategory.Potion },
-            { ItemID.HealingPotion, TerraCellsItemCategory.Potion },
-            { ItemID.GreaterHealingPotion, TerraCellsItemCategory.Potion },
-            { ItemID.SuperHealingPotion, TerraCellsItemCategory.Potion },
-            { ItemID.GoldHelmet, TerraCellsItemCategory.Storage },
-            { ItemID.GoldChainmail, TerraCellsItemCategory.Storage },
-            { ItemID.GoldGreaves, TerraCellsItemCategory.Storage },
-            { ItemID.JungleHat, TerraCellsItemCategory.Storage },
-            { ItemID.JungleShirt, TerraCellsItemCategory.Storage },
-            { ItemID.JunglePants, TerraCellsItemCategory.Storage },
-            { ItemID.LargeAmethyst, TerraCellsItemCategory.Storage },
-            { ItemID.None, TerraCellsItemCategory.Default },
-        };
-
+    /// <summary>
+    /// Gets the categorization for a given item.
+    /// If the item implements ITerraCellsCategorization, it uses that.
+    /// Otherwise, it checks the list of categorizations for vanilla items.
+    /// If nothing is found, it returns TerraCellsItemCategory.Default
+    /// <summary>
     public static TerraCellsItemCategory GetItemCategorization(Item item) =>
         item is ITerraCellsCategorization categorization
             ? categorization.Category
@@ -72,6 +57,96 @@ public class InventoryManager : ModSystem, IEntitySource
                 (short)item.netID,
                 TerraCellsItemCategory.Default
             );
+
+    /// <summary>
+    /// A list of all of categorizations for vanilla items, including those that get reworked.
+    /// 
+    /// DOES NOT CONTAIN MODDED ITEMS. It only contains categorizations for items with a vanilla ItemID.
+    /// Categorization for modded items are contained within their own classes, using ITerraCellsCategorization
+    /// <summary>
+    private static readonly Dictionary<short, TerraCellsItemCategory> VanillaItemCategorizations =
+        new()
+        {
+            { ItemID.PhoenixBlaster, TerraCellsItemCategory.Weapon }, //219
+            { ItemID.SniperRifle, TerraCellsItemCategory.Weapon }, //1254
+            { ItemID.OnyxBlaster, TerraCellsItemCategory.Weapon }, //
+            { ItemID.RocketLauncher, TerraCellsItemCategory.Weapon }, //759
+            { ItemID.StarCannon, TerraCellsItemCategory.Weapon },
+            { ItemID.PulseBow, TerraCellsItemCategory.Weapon },
+            { ItemID.IceBow, TerraCellsItemCategory.Weapon },
+            { ItemID.Toxikarp, TerraCellsItemCategory.Weapon },
+            { ItemID.Minishark, TerraCellsItemCategory.Weapon },
+            { ItemID.GrenadeLauncher, TerraCellsItemCategory.Weapon },
+            { ItemID.VolcanoLarge, TerraCellsItemCategory.Weapon },
+            { ItemID.Starfury, TerraCellsItemCategory.Weapon },
+            { ItemID.Excalibur, TerraCellsItemCategory.Weapon },
+            { ItemID.NightsEdge, TerraCellsItemCategory.Weapon },
+            { ItemID.TerraBlade, TerraCellsItemCategory.Weapon },
+            { ItemID.ThunderSpear, TerraCellsItemCategory.Weapon }, // storm spear
+            { ItemID.FetidBaghnakhs, TerraCellsItemCategory.Weapon },
+            { ItemID.GolemFist, TerraCellsItemCategory.Weapon },
+            { ItemID.Sunfury, TerraCellsItemCategory.Weapon },
+            { ItemID.DemonScythe, TerraCellsItemCategory.Weapon },
+            { ItemID.Flamelash, TerraCellsItemCategory.Weapon },
+            { ItemID.ShadowbeamStaff, TerraCellsItemCategory.Weapon },
+            { ItemID.VenomStaff, TerraCellsItemCategory.Weapon },
+            { ItemID.FlowerofFrost, TerraCellsItemCategory.Weapon },
+            { ItemID.HeatRay, TerraCellsItemCategory.Weapon },
+            { ItemID.WaterBolt, TerraCellsItemCategory.Weapon },
+            { ItemID.EmeraldStaff, TerraCellsItemCategory.Weapon },
+            { ItemID.LaserRifle, TerraCellsItemCategory.Weapon },
+            { ItemID.SharpTears, TerraCellsItemCategory.Weapon }, // bloodthorn
+            { ItemID.BubbleGun, TerraCellsItemCategory.Weapon },
+            // Skills
+            { ItemID.MolotovCocktail, TerraCellsItemCategory.Skill },
+            { ItemID.StormTigerStaff, TerraCellsItemCategory.Skill },
+            { ItemID.ClingerStaff, TerraCellsItemCategory.Skill },
+            { ItemID.ToxicFlask, TerraCellsItemCategory.Skill },
+            { ItemID.AleThrowingGlove, TerraCellsItemCategory.Skill },
+            { ItemID.DD2ExplosiveTrapT1Popper, TerraCellsItemCategory.Skill }, //explosive cane rod
+            { ItemID.BouncyDynamite, TerraCellsItemCategory.Skill },
+            { ItemID.MedusaHead, TerraCellsItemCategory.Skill },
+            // Potions
+            { ItemID.HealingPotion, TerraCellsItemCategory.Potion },
+            { ItemID.LesserHealingPotion, TerraCellsItemCategory.Potion },
+            { ItemID.GreaterHealingPotion, TerraCellsItemCategory.Potion },
+            { ItemID.SuperHealingPotion, TerraCellsItemCategory.Potion },
+            { ItemID.ManaPotion, TerraCellsItemCategory.Potion },
+            { ItemID.LesserManaPotion, TerraCellsItemCategory.Potion },
+            { ItemID.GreaterManaPotion, TerraCellsItemCategory.Potion },
+            { ItemID.SuperManaPotion, TerraCellsItemCategory.Potion },
+            { ItemID.IronskinPotion, TerraCellsItemCategory.Potion },
+            { ItemID.SwiftnessPotion, TerraCellsItemCategory.Potion },
+            { ItemID.RegenerationPotion, TerraCellsItemCategory.Potion },
+            { ItemID.RedPotion, TerraCellsItemCategory.Potion },
+            // Storage
+            // Armor
+            { ItemID.NinjaHood, TerraCellsItemCategory.Storage },
+            { ItemID.NinjaShirt, TerraCellsItemCategory.Storage },
+            { ItemID.NinjaPants, TerraCellsItemCategory.Storage },
+            { ItemID.GoldHelmet, TerraCellsItemCategory.Storage },
+            { ItemID.GoldChainmail, TerraCellsItemCategory.Storage },
+            { ItemID.GoldGreaves, TerraCellsItemCategory.Storage },
+            // Accessories
+            { ItemID.CelestialMagnet, TerraCellsItemCategory.Storage },
+            { ItemID.NaturesGift, TerraCellsItemCategory.Storage },
+            { ItemID.ArcaneFlower, TerraCellsItemCategory.Storage },
+            { ItemID.BandofStarpower, TerraCellsItemCategory.Storage },
+            { ItemID.MagicCuffs, TerraCellsItemCategory.Storage },
+            { ItemID.BerserkerGlove, TerraCellsItemCategory.Storage },
+            { ItemID.SharkToothNecklace, TerraCellsItemCategory.Storage },
+            { ItemID.Nazar, TerraCellsItemCategory.Storage },
+            { ItemID.FeralClaws, TerraCellsItemCategory.Storage },
+            { ItemID.ThePlan, TerraCellsItemCategory.Storage },
+            { ItemID.ObsidianShield, TerraCellsItemCategory.Storage },
+            { ItemID.FrozenTurtleShell, TerraCellsItemCategory.Storage },
+            { ItemID.BandofRegeneration, TerraCellsItemCategory.Storage },
+            { ItemID.FastClock, TerraCellsItemCategory.Storage },
+            { ItemID.CelestialStone, TerraCellsItemCategory.Storage },
+            //
+            { ItemID.None, TerraCellsItemCategory.Default }
+
+        };
 
     public override void Load()
     {
