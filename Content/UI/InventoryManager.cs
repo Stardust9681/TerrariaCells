@@ -154,7 +154,7 @@ public class InventoryManager : ModSystem, IEntitySource
                 return false;
 
             case TerraCellsItemCategory.Weapon:
-                if (IsWeaponsSlotsFull(player))
+                if (WeaponsSlotsFull(player))
                 {
                     for (int i = 10; true; i++)
                     {
@@ -181,7 +181,7 @@ public class InventoryManager : ModSystem, IEntitySource
                 player.inventory[previousInventorySlot].TurnToAir();
                 return true;
             case TerraCellsItemCategory.Skill:
-                if (IsSkillsSlotsFull(player))
+                if (SkillsSlotsFull(player))
                 {
                     for (int i = 10; true; i++)
                     {
@@ -208,7 +208,7 @@ public class InventoryManager : ModSystem, IEntitySource
                 player.inventory[previousInventorySlot].TurnToAir();
                 return true;
             case TerraCellsItemCategory.Potion:
-                if (IsPotionSlotFull(player))
+                if (PotionSlotFull(player))
                 {
                     for (int i = 10; true; i++)
                     {
@@ -270,13 +270,10 @@ public class InventoryManager : ModSystem, IEntitySource
         return GetItemCategorization(item) switch
         {
             TerraCellsItemCategory.Default => false,
-            TerraCellsItemCategory.Weapon => !IsWeaponsSlotsFull(player)
-                | !IsStorageSlotsFull(player),
-            TerraCellsItemCategory.Skill => !IsSkillsSlotsFull(player)
-                | !IsStorageSlotsFull(player),
-            TerraCellsItemCategory.Potion => !IsPotionSlotFull(player)
-                | !IsStorageSlotsFull(player),
-            TerraCellsItemCategory.Storage => !IsStorageSlotsFull(player),
+            TerraCellsItemCategory.Weapon => !WeaponsSlotsFull(player) | !StorageSlotsFull(player),
+            TerraCellsItemCategory.Skill => !SkillsSlotsFull(player) | !StorageSlotsFull(player),
+            TerraCellsItemCategory.Potion => !PotionSlotFull(player) | !StorageSlotsFull(player),
+            TerraCellsItemCategory.Storage => !StorageSlotsFull(player),
             _ => !config.EnableInventoryLock,
         };
     }
@@ -284,17 +281,20 @@ public class InventoryManager : ModSystem, IEntitySource
     /// <summary>
     /// Checks the two inventory slots that are used for weapons, and returns true if both are occupied.
     /// </summary>
-    public static bool IsWeaponsSlotsFull(Player player) =>
+    public static bool WeaponsSlotsFull(Player player) =>
         !player.inventory[WEAPON_SLOT_1].IsAir && !player.inventory[WEAPON_SLOT_2].IsAir;
 
-    public static bool IsSkillsSlotsFull(Player player) =>
+    public static bool SkillsSlotsFull(Player player) =>
         !player.inventory[SKILL_SLOT_1].IsAir && !player.inventory[SKILL_SLOT_2].IsAir;
 
-    public static bool IsPotionSlotFull(Player player) => !player.inventory[POTION_SLOT].IsAir;
+    public static bool PotionSlotFull(Player player) => !player.inventory[POTION_SLOT].IsAir;
 
-    public static bool IsStorageSlotsFull(Player player) =>
+    public static bool StorageSlotsFull(Player player) =>
         !player.inventory[STORAGE_SLOT_1].IsAir
         && !player.inventory[STORAGE_SLOT_2].IsAir
         && !player.inventory[STORAGE_SLOT_3].IsAir
         && !player.inventory[STORAGE_SLOT_4].IsAir;
+
+    public static bool AccessorySlotsFull(Player player) =>
+        !player.armor[3].IsAir && !player.armor[4].IsAir;
 }

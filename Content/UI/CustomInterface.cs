@@ -2,12 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.CodeAnalysis.FlowAnalysis.DataFlow;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.GameContent.Achievements;
+using Terraria.GameContent.UI.Chat;
 using Terraria.GameContent.UI.States;
 using Terraria.GameInput;
 using Terraria.Graphics.Capture;
@@ -414,7 +418,7 @@ public class LimitedStorageUI : UIState
                     if (!Main.player[Main.myPlayer].inventoryChestStack[slotNumber])
                     {
                         ItemSlot.LeftClick(Main.player[Main.myPlayer].inventory, 0, slotNumber);
-                        ItemSlot.RightClick(Main.player[Main.myPlayer].inventory, 0, slotNumber);
+                        ItemSlotRightClick(Main.player[Main.myPlayer].inventory, 0, slotNumber);
                         if (Main.mouseLeftRelease && Main.mouseLeft)
                             Recipe.FindRecipes();
                     }
@@ -892,10 +896,10 @@ public class LimitedStorageUI : UIState
             // armor interface logic and draw call
             for (int num40 = 0; num40 < 5; num40++)
             {
-                Main.inventoryBack = new Color(244, 227, 50);
+                Main.inventoryBack = new Color(244, 227, 150, 220);
                 if (num40 > 2)
                 {
-                    Main.inventoryBack = new Color(229, 99, 45);
+                    Main.inventoryBack = new Color(229, 99, 145, 220);
                 }
 
                 if ((num40 == 8 && !flag5) || (num40 == 9 && !flag6))
@@ -1646,25 +1650,27 @@ public class LimitedStorageUI : UIState
             }
         }
 
-        Vector2 vector2 = FontAssets.MouseText.Value.MeasureString("Coins");
-        Vector2 vector3 = FontAssets.MouseText.Value.MeasureString(Lang.inter[26].Value);
-        float num96 = vector2.X / vector3.X;
-        Main.spriteBatch.DrawString(
-            FontAssets.MouseText.Value,
-            Lang.inter[26].Value,
-            new Vector2(496f, 84f + (vector2.Y - vector2.Y * num96) / 2f),
-            new Color(
-                Main.mouseTextColor,
-                Main.mouseTextColor,
-                Main.mouseTextColor,
-                Main.mouseTextColor
-            ),
-            0f,
-            default(Vector2),
-            0.75f * num96,
-            SpriteEffects.None,
-            0f
-        );
+        // Vector2 vector2 = FontAssets.MouseText.Value.MeasureString("Coins");
+        // Vector2 vector3 = FontAssets.MouseText.Value.MeasureString(Lang.inter[26].Value);
+        // float num96 = vector2.X / vector3.X;
+        // Main.spriteBatch.DrawString(
+        //     FontAssets.MouseText.Value,
+        //     Lang.inter[26].Value,
+        //     new Vector2(496f, 84f + (vector2.Y - vector2.Y * num96) / 2f),
+        //     new Color(
+        //         Main.mouseTextColor,
+        //         Main.mouseTextColor,
+        //         Main.mouseTextColor,
+        //         Main.mouseTextColor
+        //     ),
+        //     0f,
+        //     default(Vector2),
+        //     0.75f * num96,
+        //     SpriteEffects.None,
+        //     0f
+        // );
+
+        // COIN SLOTS
         Main.inventoryScale = 0.6f;
         for (int num97 = 0; num97 < 4; num97++)
         {
@@ -2711,5 +2717,808 @@ public class LimitedStorageUI : UIState
 
         if (gamepadPointForSlot != -1)
             UILinkPointNavigator.SetPosition(gamepadPointForSlot, position + vector * 0.75f);
+    }
+
+    // a customized version of ItemSlot.LeftClick
+    public static void ItemSlotLeftClick(Item[] inv, int context = 0, int slot = 0)
+    {
+        Player player = Main.player[Main.myPlayer];
+        bool flag = Main.mouseLeftRelease && Main.mouseLeft;
+        if (flag)
+        {
+            if (
+                (
+                    typeof(ItemSlot)
+                        .GetMethod(
+                            "OverrideLeftClick",
+                            BindingFlags.NonPublic | BindingFlags.Static
+                        )
+                        .Invoke(null, [inv, context, slot]) as bool?
+                ).Value
+            )
+                return;
+
+            inv[slot].newAndShiny = false;
+            if (
+                (
+                    typeof(ItemSlot)
+                        .GetMethod(
+                            "OverrideLeftClick",
+                            BindingFlags.NonPublic | BindingFlags.Static
+                        )
+                        .Invoke(null, [inv, context, slot]) as bool?
+                ).Value
+                || player.itemAnimation != 0
+                || player.itemTime != 0
+            )
+                return;
+        }
+
+        int num = ItemSlot.PickItemMovementAction(inv, context, slot, Main.mouseItem);
+        if (num != 3 && !flag)
+            return;
+
+        switch (num)
+        {
+            case 0:
+                if (context == 6 && Main.mouseItem.type != ItemID.None)
+                    inv[slot].SetDefaults();
+
+                if (
+                    (
+                        typeof(ItemSlot)
+                            .GetMethod(
+                                "IsAccessoryContext",
+                                BindingFlags.NonPublic | BindingFlags.Static
+                            )
+                            .Invoke(null, [context]) as bool?
+                    ).Value && !ItemLoader.CanEquipAccessory(inv[slot], slot, context < 0)
+                )
+                    break;
+
+                if (context == 11 && !inv[slot].FitsAccessoryVanitySlot)
+                    break;
+
+                if (
+                    context < 0
+                    && !LoaderManager
+                        .Get<AccessorySlotLoader>()
+                        .CanAcceptItem(slot, inv[slot], context)
+                )
+                    break;
+
+                // #OnStackHook: Prevent swapping items if they will be stacked together.
+                if (
+                    Main.mouseItem.maxStack > 1
+                    && inv[slot].type == Main.mouseItem.type
+                    && inv[slot].stack != inv[slot].maxStack
+                    && Main.mouseItem.stack != Main.mouseItem.maxStack
+                )
+                    goto SkipSwap;
+
+                Utils.Swap(ref inv[slot], ref Main.mouseItem);
+                SkipSwap:
+
+                if (inv[slot].stack > 0)
+                    ItemSlot.AnnounceTransfer(
+                        new ItemSlot.ItemTransferInfo(inv[slot], 21, context, inv[slot].stack)
+                    );
+                else
+                    ItemSlot.AnnounceTransfer(
+                        new ItemSlot.ItemTransferInfo(
+                            Main.mouseItem,
+                            context,
+                            21,
+                            Main.mouseItem.stack
+                        )
+                    );
+                if (inv[slot].stack > 0)
+                {
+                    switch (Math.Abs(context))
+                    {
+                        case 0:
+                            AchievementsHelper.NotifyItemPickup(player, inv[slot]);
+                            break;
+                        case 8:
+                        case 9:
+                        case 10:
+                        case 11:
+                        case 12:
+                        case 16:
+                        case 17:
+                        case 25:
+                        case 27:
+                        case 33:
+                            AchievementsHelper.HandleOnEquip(player, inv[slot], context);
+                            break;
+                    }
+                }
+                if (inv[slot].type == ItemID.None || inv[slot].stack < 1)
+                    inv[slot] = new Item();
+                if (Main.mouseItem.type == inv[slot].type)
+                {
+                    // #OnStackHook: Gameplay impact: The favorited item will now always be the item that has it's stack being increased instead of swapping favorites for consistency with the OnStack() hook.
+                    /*
+                    Utils.Swap(ref inv[slot].favorited, ref Main.mouseItem.favorited);
+                    */
+
+                    if (
+                        inv[slot].stack != inv[slot].maxStack
+                        && Main.mouseItem.stack != Main.mouseItem.maxStack
+                    )
+                    {
+                        if (
+                            ItemLoader.TryStackItems(
+                                inv[slot],
+                                Main.mouseItem,
+                                out int numTransfered
+                            )
+                        )
+                            ItemSlot.AnnounceTransfer(
+                                new ItemSlot.ItemTransferInfo(inv[slot], 21, context, numTransfered)
+                            );
+
+                        /* #OnStackHook
+                        if (Main.mouseItem.stack + inv[slot].stack <= Main.mouseItem.maxStack) {
+                            inv[slot].stack += Main.mouseItem.stack;
+                            Main.mouseItem.stack = 0;
+                            AnnounceTransfer(new ItemTransferInfo(inv[slot], 21, context, inv[slot].stack));
+                        }
+                        else {
+                            int num2 = Main.mouseItem.maxStack - inv[slot].stack;
+                            inv[slot].stack += num2;
+                            Main.mouseItem.stack -= num2;
+                            AnnounceTransfer(new ItemTransferInfo(inv[slot], 21, context, num2));
+                        }
+                        */
+                    }
+                }
+                if (Main.mouseItem.type == ItemID.None || Main.mouseItem.stack < 1)
+                    Main.mouseItem = new Item();
+                if (Main.mouseItem.type > ItemID.None || inv[slot].type > ItemID.None)
+                {
+                    Recipe.FindRecipes();
+                    SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Grab"));
+                }
+                if (context == 3 && Main.netMode == NetmodeID.MultiplayerClient)
+                    NetMessage.SendData(MessageID.SyncChestItem, -1, -1, null, player.chest, slot);
+                break;
+            case 1:
+                if (
+                    Main.mouseItem.stack == 1
+                    && Main.mouseItem.type > ItemID.None
+                    && inv[slot].type > ItemID.None
+                    && inv[slot].type != Main.mouseItem.type
+                    && (context != 11 || Main.mouseItem.FitsAccessoryVanitySlot)
+                )
+                {
+                    if (
+                        Math.Abs(context)
+                            is ItemSlot.Context.EquipAccessory
+                                or ItemSlot.Context.EquipAccessoryVanity
+                        && !ItemLoader.CanEquipAccessory(Main.mouseItem, slot, context < 0)
+                    )
+                        break;
+
+                    if (
+                        Math.Abs(context) == ItemSlot.Context.EquipAccessoryVanity
+                        && !Main.mouseItem.FitsAccessoryVanitySlot
+                    )
+                        break;
+
+                    if (
+                        context < 0
+                        && !LoaderManager
+                            .Get<AccessorySlotLoader>()
+                            .CanAcceptItem(slot, Main.mouseItem, context)
+                    )
+                        break;
+
+                    Utils.Swap(ref inv[slot], ref Main.mouseItem);
+                    SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Grab"));
+                    if (inv[slot].stack > 0)
+                    {
+                        switch (Math.Abs(context))
+                        {
+                            case 0:
+                                AchievementsHelper.NotifyItemPickup(player, inv[slot]);
+                                break;
+                            case 8:
+                            case 9:
+                            case 10:
+                            case 11:
+                            case 12:
+                            case 16:
+                            case 17:
+                            case 25:
+                            case 27:
+                            case 33:
+                                AchievementsHelper.HandleOnEquip(player, inv[slot], context);
+                                break;
+                        }
+                    }
+                }
+                else if (Main.mouseItem.type == ItemID.None && inv[slot].type > ItemID.None)
+                {
+                    Utils.Swap(ref inv[slot], ref Main.mouseItem);
+                    if (inv[slot].type == ItemID.None || inv[slot].stack < 1)
+                        inv[slot] = new Item();
+
+                    if (Main.mouseItem.type == ItemID.None || Main.mouseItem.stack < 1)
+                        Main.mouseItem = new Item();
+
+                    if (Main.mouseItem.type > ItemID.None || inv[slot].type > ItemID.None)
+                    {
+                        Recipe.FindRecipes();
+                        SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Grab"));
+                    }
+                }
+                else if (
+                    Main.mouseItem.type > ItemID.None
+                    && inv[slot].type == ItemID.None
+                    && (context != 11 || Main.mouseItem.FitsAccessoryVanitySlot)
+                )
+                {
+                    if (
+                        Math.Abs(context)
+                            is ItemSlot.Context.EquipAccessory
+                                or ItemSlot.Context.EquipAccessoryVanity
+                        && !ItemLoader.CanEquipAccessory(Main.mouseItem, slot, context < 0)
+                    )
+                        break;
+
+                    if (
+                        Math.Abs(context) == ItemSlot.Context.EquipAccessoryVanity
+                        && !Main.mouseItem.FitsAccessoryVanitySlot
+                    )
+                        break;
+
+                    if (
+                        context < 0
+                        && !LoaderManager
+                            .Get<AccessorySlotLoader>()
+                            .CanAcceptItem(slot, Main.mouseItem, context)
+                    )
+                        break;
+                    /*
+                    if (Main.mouseItem.stack == 1) {
+                        Utils.Swap(ref inv[slot], ref Main.mouseItem);
+                        if (inv[slot].type == 0 || inv[slot].stack < 1)
+                            inv[slot] = new Item();
+
+                        if (Main.mouseItem.type == 0 || Main.mouseItem.stack < 1)
+                            Main.mouseItem = new Item();
+
+                        if (Main.mouseItem.type > 0 || inv[slot].type > 0) {
+                            Recipe.FindRecipes();
+                            SoundEngine.PlaySound(7);
+                        }
+                    }
+                    else {
+                        Main.mouseItem.stack--;
+                        inv[slot].SetDefaults(Main.mouseItem.type);
+                        Recipe.FindRecipes();
+                        SoundEngine.PlaySound(7);
+                    }
+                    */
+                    inv[slot] = ItemLoader.TransferWithLimit(Main.mouseItem, 1);
+                    Recipe.FindRecipes();
+                    SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Grab"));
+
+                    if (inv[slot].stack > 0)
+                    {
+                        switch (Math.Abs(context))
+                        {
+                            case 0:
+                                AchievementsHelper.NotifyItemPickup(player, inv[slot]);
+                                break;
+                            case 8:
+                            case 9:
+                            case 10:
+                            case 11:
+                            case 12:
+                            case 16:
+                            case 17:
+                            case 25:
+                            case 27:
+                            case 33:
+                                AchievementsHelper.HandleOnEquip(player, inv[slot], context);
+                                break;
+                        }
+                    }
+                }
+                if ((context == 23 || context == 24) && Main.netMode == NetmodeID.MultiplayerClient)
+                    NetMessage.SendData(
+                        MessageID.TEDisplayDollItemSync,
+                        -1,
+                        -1,
+                        null,
+                        Main.myPlayer,
+                        player.tileEntityAnchor.interactEntityID,
+                        slot
+                    );
+                if (context == 26 && Main.netMode == NetmodeID.MultiplayerClient)
+                    NetMessage.SendData(
+                        MessageID.TEHatRackItemSync,
+                        -1,
+                        -1,
+                        null,
+                        Main.myPlayer,
+                        player.tileEntityAnchor.interactEntityID,
+                        slot
+                    );
+                break;
+            case 2:
+                if (
+                    Main.mouseItem.stack == 1
+                    && Main.mouseItem.dye > 0
+                    && inv[slot].type > ItemID.None
+                    && inv[slot].type != Main.mouseItem.type
+                )
+                {
+                    Utils.Swap(ref inv[slot], ref Main.mouseItem);
+                    SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Grab"));
+                    if (inv[slot].stack > 0)
+                    {
+                        switch (Math.Abs(context))
+                        {
+                            case 0:
+                                AchievementsHelper.NotifyItemPickup(player, inv[slot]);
+                                break;
+                            case 8:
+                            case 9:
+                            case 10:
+                            case 11:
+                            case 12:
+                            case 16:
+                            case 17:
+                            case 25:
+                            case 27:
+                            case 33:
+                                AchievementsHelper.HandleOnEquip(player, inv[slot], context);
+                                break;
+                        }
+                    }
+                }
+                else if (Main.mouseItem.type == ItemID.None && inv[slot].type > ItemID.None)
+                {
+                    Utils.Swap(ref inv[slot], ref Main.mouseItem);
+                    if (inv[slot].type == ItemID.None || inv[slot].stack < 1)
+                        inv[slot] = new Item();
+
+                    if (Main.mouseItem.type == ItemID.None || Main.mouseItem.stack < 1)
+                        Main.mouseItem = new Item();
+
+                    if (Main.mouseItem.type > ItemID.None || inv[slot].type > ItemID.None)
+                    {
+                        Recipe.FindRecipes();
+                        SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Grab"));
+                    }
+                }
+                else if (Main.mouseItem.dye > 0 && inv[slot].type == ItemID.None)
+                {
+                    /*
+                    if (Main.mouseItem.stack == 1) {
+                        Utils.Swap(ref inv[slot], ref Main.mouseItem);
+                        if (inv[slot].type == 0 || inv[slot].stack < 1)
+                            inv[slot] = new Item();
+
+                        if (Main.mouseItem.type == 0 || Main.mouseItem.stack < 1)
+                            Main.mouseItem = new Item();
+
+                        if (Main.mouseItem.type > 0 || inv[slot].type > 0) {
+                            Recipe.FindRecipes();
+                            SoundEngine.PlaySound(7);
+                        }
+                    }
+                    else {
+                        Main.mouseItem.stack--;
+                        inv[slot].SetDefaults(Main.mouseItem.type);
+                        Recipe.FindRecipes();
+                        SoundEngine.PlaySound(7);
+                    }
+                    */
+                    inv[slot] = ItemLoader.TransferWithLimit(Main.mouseItem, 1);
+                    Recipe.FindRecipes();
+                    SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Grab"));
+
+                    if (inv[slot].stack > 0)
+                    {
+                        switch (Math.Abs(context))
+                        {
+                            case 0:
+                                AchievementsHelper.NotifyItemPickup(player, inv[slot]);
+                                break;
+                            case 8:
+                            case 9:
+                            case 10:
+                            case 11:
+                            case 12:
+                            case 16:
+                            case 17:
+                            case 25:
+                            case 27:
+                            case 33:
+                                AchievementsHelper.HandleOnEquip(player, inv[slot], context);
+                                break;
+                        }
+                    }
+                }
+                if (context == 25 && Main.netMode == NetmodeID.MultiplayerClient)
+                    NetMessage.SendData(
+                        MessageID.TEDisplayDollItemSync,
+                        -1,
+                        -1,
+                        null,
+                        Main.myPlayer,
+                        player.tileEntityAnchor.interactEntityID,
+                        slot,
+                        1f
+                    );
+                if (context == 27 && Main.netMode == NetmodeID.MultiplayerClient)
+                    NetMessage.SendData(
+                        MessageID.TEHatRackItemSync,
+                        -1,
+                        -1,
+                        null,
+                        Main.myPlayer,
+                        player.tileEntityAnchor.interactEntityID,
+                        slot,
+                        1f
+                    );
+                break;
+            case 3:
+                typeof(ItemSlot)
+                    .GetMethod("HandleShopSlot", BindingFlags.NonPublic | BindingFlags.Static)
+                    .Invoke(null, [inv, slot, false, true]);
+                break;
+            case 4:
+            {
+                if (!PlayerLoader.CanSellItem(player, player.TalkNPC, inv, Main.mouseItem))
+                    break;
+
+                Chest chest = Main.instance.shop[Main.npcShop];
+                if (player.SellItem(Main.mouseItem))
+                {
+                    int soldItemIndex = chest.AddItemToShop(Main.mouseItem);
+                    Main.mouseItem.SetDefaults();
+                    SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Coins"));
+                    ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(inv[slot], 21, 15));
+
+                    PlayerLoader.PostSellItem(
+                        player,
+                        player.TalkNPC,
+                        chest.item,
+                        chest.item[soldItemIndex]
+                    );
+                }
+                else if (Main.mouseItem.value == 0)
+                {
+                    int soldItemIndex = chest.AddItemToShop(Main.mouseItem);
+                    Main.mouseItem.SetDefaults();
+                    SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Grab"));
+                    ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(inv[slot], 21, 15));
+
+                    PlayerLoader.PostSellItem(
+                        player,
+                        player.TalkNPC,
+                        chest.item,
+                        chest.item[soldItemIndex]
+                    );
+                }
+
+                Recipe.FindRecipes();
+                Main.stackSplit = 9999;
+                break;
+            }
+            case 5:
+                if (Main.mouseItem.IsAir)
+                {
+                    SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Grab"));
+                    //Main.mouseItem.SetDefaults(inv[slot].netID);
+                    Main.mouseItem = inv[slot].Clone();
+                    Main.mouseItem.stack = Main.mouseItem.maxStack;
+                    Main.mouseItem.OnCreated(new JourneyDuplicationItemCreationContext());
+                    ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(inv[slot], 29, 21));
+                }
+                break;
+        }
+
+        if ((uint)context > 2u && context != 5 && context != 32)
+            inv[slot].favorited = false;
+    }
+
+    // a customized version of ItemSlot.RightClick
+    public static void ItemSlotRightClick(Item[] inv, int context = 0, int slot = 0)
+    {
+        Player player = Main.player[Main.myPlayer];
+        inv[slot].newAndShiny = false;
+        if (player.itemAnimation > 0)
+            return;
+
+        if (context == 15)
+        {
+            typeof(ItemSlot)
+                .GetMethod("HandleShopSlot", BindingFlags.NonPublic | BindingFlags.Static)
+                .Invoke(null, [inv, slot, true, false]);
+        }
+        else
+        {
+            if (!Main.mouseRight)
+                return;
+
+            if (context == 0 && Main.mouseRightRelease) // toggleable inventory items like the encumbering stone or book of critter friendship
+                typeof(ItemSlot)
+                    .GetMethod("TryItemSwap", BindingFlags.NonPublic | BindingFlags.Static)
+                    .Invoke(null, [inv[slot]]);
+
+            /*
+            if (context == 0 && ItemID.Sets.OpenableBag[inv[slot].type]) {
+                if (Main.mouseRightRelease)
+                    TryOpenContainer(inv[slot], player);
+            */
+            if (context == 0 && ItemLoader.CanRightClick(inv[slot]))
+            {
+                if (Main.mouseRightRelease)
+                {
+                    if (Main.ItemDropsDB.GetRulesForItemID(inv[slot].type).Any())
+                        typeof(ItemSlot)
+                            .GetMethod(
+                                "TryOpenContainer",
+                                BindingFlags.NonPublic | BindingFlags.Static
+                            )
+                            .Invoke(null, [inv[slot], player]);
+                    else
+                        ItemLoader.RightClick(inv[slot], player);
+                }
+
+                return;
+            }
+
+            switch (Math.Abs(context))
+            {
+                case 9:
+                case 11:
+                    // if (Main.mouseRightRelease)
+                    // SwapVanityEquip(inv, context, slot, player);
+                    break;
+                case 12:
+                case 25:
+                case 27:
+                case 33:
+                    // if (Main.mouseRightRelease)
+                    // TryPickupDyeToCursor(context, inv, slot, player);
+                    break;
+                case 0:
+                case 3:
+                case 4:
+                case 32:
+                    if (inv[slot].maxStack == 1)
+                    {
+                        if (Main.mouseRightRelease)
+                            ItemSlotSwapEquip(inv, context, slot);
+
+                        break;
+                    }
+                    goto default;
+                default:
+                {
+                    if (Main.stackSplit > 1)
+                        break;
+
+                    bool flag = true;
+                    bool flag2 = inv[slot].maxStack <= 1 && inv[slot].stack <= 1;
+                    if (context == 0 && flag2)
+                        flag = false;
+
+                    if (context == 3 && flag2)
+                        flag = false;
+
+                    if (context == 4 && flag2)
+                        flag = false;
+
+                    if (context == 32 && flag2)
+                        flag = false;
+
+                    if (!flag)
+                        break;
+
+                    int num = Main.superFastStack + 1;
+                    for (int i = 0; i < num; i++)
+                    {
+                        /*
+                        if ((Main.mouseItem.IsTheSameAs(inv[slot]) || Main.mouseItem.type == 0) && (Main.mouseItem.stack < Main.mouseItem.maxStack || Main.mouseItem.type == 0)) {
+                        */
+
+                        if (
+                            (
+                                Main.mouseItem == inv[slot]
+                                    && ItemLoader.CanStack(Main.mouseItem, inv[slot])
+                                || Main.mouseItem.type == ItemID.None
+                            )
+                            && (
+                                Main.mouseItem.stack < Main.mouseItem.maxStack
+                                || Main.mouseItem.type == ItemID.None
+                            )
+                        )
+                        {
+                            ItemSlot.PickupItemIntoMouse(inv, context, slot, player);
+                            SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Menu_Tick"));
+                            ItemSlot.RefreshStackSplitCooldown();
+                        }
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
+
+    // a customized version of ItemSlot.SwapEquip
+    public static void ItemSlotSwapEquip(Item[] inv, int context, int slot)
+    {
+        Player player = Main.player[Main.myPlayer];
+        if (ItemSlot.isEquipLocked(inv[slot].type) || inv[slot].IsAir)
+            return;
+
+        bool success;
+        if (inv[slot].dye > 0)
+        {
+            // inv[slot] = ItemSlot.DyeSwap(inv[slot], out success);
+            // if (success)
+            // {
+            // Main.EquipPageSelected = 0;
+            // AchievementsHelper.HandleOnEquip(player, inv[slot], 12);
+            // }
+        }
+        else if (Main.projHook[inv[slot].shoot])
+        {
+            // inv[slot] = EquipSwap(inv[slot], player.miscEquips, 4, out success);
+            // if (success)
+            // {
+            // Main.EquipPageSelected = 2;
+            // AchievementsHelper.HandleOnEquip(player, inv[slot], 16);
+            // }
+        }
+        else if (inv[slot].mountType != -1 && !MountID.Sets.Cart[inv[slot].mountType])
+        {
+            // inv[slot] = EquipSwap(inv[slot], player.miscEquips, 3, out success);
+            // if (success)
+            // {
+            // Main.EquipPageSelected = 2;
+            // AchievementsHelper.HandleOnEquip(player, inv[slot], 17);
+            // }
+        }
+        else if (inv[slot].mountType != -1 && MountID.Sets.Cart[inv[slot].mountType])
+        {
+            // inv[slot] = EquipSwap(inv[slot], player.miscEquips, 2, out success);
+            // if (success)
+            // Main.EquipPageSelected = 2;
+        }
+        else if (inv[slot].buffType > 0 && Main.lightPet[inv[slot].buffType])
+        {
+            // inv[slot] = EquipSwap(inv[slot], player.miscEquips, 1, out success);
+            // if (success)
+            // Main.EquipPageSelected = 2;
+        }
+        else if (inv[slot].buffType > 0 && Main.vanityPet[inv[slot].buffType])
+        {
+            // inv[slot] = EquipSwap(inv[slot], player.miscEquips, 0, out success);
+            // if (success)
+            // Main.EquipPageSelected = 2;
+        }
+        else
+        {
+            // throw new Exception("test hehe :3");
+            Item item = inv[slot];
+            inv[slot] = ItemSlotArmorSwap(inv[slot], out success);
+            if (success)
+            {
+                Main.EquipPageSelected = 0;
+                AchievementsHelper.HandleOnEquip(
+                    player,
+                    item,
+                    (item.accessory ? 10 : 8) * Math.Sign(context)
+                );
+            }
+        }
+
+        Recipe.FindRecipes();
+        if (context == 3 && Main.netMode == NetmodeID.MultiplayerClient)
+            NetMessage.SendData(MessageID.SyncChestItem, -1, -1, null, player.chest, slot);
+    }
+
+    public static Item ItemSlotArmorSwap(Item item, out bool success)
+    {
+        success = false;
+        if (item.stack < 1)
+            return item;
+
+        if (item.headSlot == -1 && item.bodySlot == -1 && item.legSlot == -1 && !item.accessory)
+            return item;
+
+        Player player = Main.player[Main.myPlayer];
+        int num = ((item.vanity && !item.accessory) ? 10 : 0);
+        item.favorited = false;
+        Item result = item;
+        if (item.headSlot != -1)
+        {
+            result = player.armor[num].Clone();
+            player.armor[num] = item.Clone();
+        }
+        else if (item.bodySlot != -1)
+        {
+            result = player.armor[num + 1].Clone();
+            player.armor[num + 1] = item.Clone();
+        }
+        else if (item.legSlot != -1)
+        {
+            result = player.armor[num + 2].Clone();
+            player.armor[num + 2] = item.Clone();
+        }
+        else if (item.accessory)
+        {
+            if (!ItemSlotAccessorySwap(player, item, ref result))
+                return result;
+        }
+
+        SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Grab"));
+        Recipe.FindRecipes();
+        success = true;
+        return result;
+    }
+
+    private static bool ItemSlotAccessorySwap(Player player, Item item, ref Item result)
+    {
+        //TML: Rewrote ArmorSwap for accessories under the PR #1299 so it was actually readable. No vanilla functionality lost in transition
+        var accSlotToSwapTo = -1;
+
+        //TML: Check if there is an empty slot available in functional slots, and if not, track the last available slot
+        for (int i = 3; i < 5; i++)
+        {
+            if (player.IsItemSlotUnlockedAndUsable(i))
+            {
+                if (ItemLoader.CanEquipAccessory(item, i, false))
+                {
+                    accSlotToSwapTo = i;
+                    break;
+                }
+            }
+        }
+
+        //TML: Check if there is an existing copy of the item in any slot (including vanity)
+        // Will also replace wings with wings
+        for (int j = 3; j < 5; j++)
+        {
+            if (item.type == player.armor[j].type && ItemLoader.CanEquipAccessory(item, j, false))
+                accSlotToSwapTo = j;
+
+            // if (
+            //     j < 10
+            //     && (
+            //         item.wingSlot > 0 && player.armor[j].wingSlot > 0
+            //         || !ItemLoader.CanAccessoryBeEquippedWith(player.armor[j], item)
+            //     )
+            //     && ItemLoader.CanEquipAccessory(item, j, false)
+            // )
+            //     accSlotToSwapTo = j - 3;
+        }
+
+        // No slot found, and it can't go in slot zero, than return
+        if (accSlotToSwapTo == -1 && !ItemLoader.CanEquipAccessory(item, 0, false))
+            return false;
+
+        // accSlotToSwapTo = Math.Max(accSlotToSwapTo, 0);
+
+        if (ItemSlot.isEquipLocked(player.armor[accSlotToSwapTo].type))
+        {
+            result = item;
+            return false;
+        }
+
+        result = player.armor[accSlotToSwapTo].Clone();
+        player.armor[accSlotToSwapTo] = item.Clone();
+
+        return true;
     }
 }
