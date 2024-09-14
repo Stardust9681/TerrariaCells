@@ -14,6 +14,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrariaCells.Common.GlobalItems;
+using TerrariaCells.Common.Utilities;
 
 namespace TerrariaCells.Content.Projectiles.HeldProjectiles
 {
@@ -141,6 +142,7 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
             owner.itemTime = 2;
             owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
             Projectile.netUpdate = true;
+            Projectile.scale = owner.HeldItem.scale;
             if (mode == 0)
             {
                 int[] bigSpreadWeapons = { ItemID.ChainGun, ItemID.Gatligator };
@@ -285,15 +287,13 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
             int recoverTime = owner.HeldItem.useTime / divisor * 2;
             if (timer < recoilTime)
             {
-                float x = timer / recoilTime;
-                float lerper = x == 1 ? 1 : (1 - (float)Math.Pow(2, -10 * x));
-                Projectile.rotation += MathHelper.Lerp(0, MathHelper.ToRadians(-angleDiff * Projectile.spriteDirection), lerper);
+                
+                Projectile.rotation += TCellsUtils.LerpFloat(0, MathHelper.ToRadians(-angleDiff * Projectile.spriteDirection), timer, recoilTime, TCellsUtils.LerpEasing.OutQuint);
             }
             if (timer >= recoilTime && timer < recoilTime + recoverTime)
             {
-                float x = (timer - recoilTime) / recoverTime;
-                float lerper = x < 0.5 ? 8 * x * x * x * x : 1 - (float)Math.Pow(-2 * x + 2, 4) / 2;
-                Projectile.rotation += MathHelper.Lerp(MathHelper.ToRadians(-60 * Projectile.spriteDirection), 0, lerper);
+                
+                Projectile.rotation += TCellsUtils.LerpFloat(MathHelper.ToRadians(-60 * Projectile.spriteDirection), 0, timer, recoverTime, TCellsUtils.LerpEasing.InOutQuint, recoilTime);
             }
             float backArmAngle = Projectile.rotation - MathHelper.Pi / 2;
             if (!handgun)
@@ -304,9 +304,8 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
         {
             if (timer <= trueReloadTime && weapon.Ammo < weapon.MaxAmmo)
             {
-                float x = timer / trueReloadTime;
-                float lerper = (float)Math.Pow(-(2 * x - 1), 2);
-                owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, MathHelper.Lerp(0, MathHelper.Pi / 2 * -Projectile.spriteDirection, lerper));
+                
+                owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, TCellsUtils.LerpFloat( MathHelper.Pi / 2 * -Projectile.spriteDirection, 0, timer, trueReloadTime, TCellsUtils.LerpEasing.DownParabola));
                 
             }
         }
@@ -367,21 +366,20 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
         public void DrawBackwardRecoil(ref Color lightColor, Vector2 offset, Vector2? reloadOffset = null)
         {
             if (mode == 1 && reloadOffset != null) offset = reloadOffset.Value;
-            //weird math to account for weapons like clockwork assault rifle
-            float x = (timer - ((int)(timer / item.useTime)*item.useTime)) / item.useTime;
-            if (timer >= item.useAnimation) x = 0;
-            x = MathHelper.Clamp(x, 0, 1);
-            float lerper = (float)Math.Pow(-(2 * x - 1), 2);
-            Main.EntitySpriteDraw(texture.Value, armPosition + offset.RotatedBy(Projectile.rotation) + new Vector2(MathHelper.Lerp(0, 5f, Projectile.ai[2] == 0 ? lerper : 0), 0).RotatedBy(Projectile.rotation) - Main.screenPosition, null, lightColor, Projectile.rotation, new Vector2(5, texture.Height() / 2), Projectile.scale, Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically);
+            
+            
+            Main.EntitySpriteDraw(texture.Value, armPosition + offset.RotatedBy(Projectile.rotation) +
+                new Vector2(Projectile.ai[2] == 0 ? TCellsUtils.LerpFloat(5f, 0f, timer, item.useTime, TCellsUtils.LerpEasing.DownParabola, ((int)(timer / item.useTime) * item.useTime)) : 0, 0).RotatedBy(Projectile.rotation)
+                - Main.screenPosition,
+                null, lightColor, Projectile.rotation, new Vector2(5, texture.Height() / 2), Projectile.scale, Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
         public void DrawAmmoInHand(ref Color lightColor, int timeStart, Asset<Texture2D> ammoTexture, float scale = 0.8f)
         {
             if (mode == 1 && timer > timeStart)
             {
                 
-                float x = timer / trueReloadTime;
-                float lerper = (float)Math.Pow(-(2 * x - 1), 2);
-                float rot = MathHelper.Lerp(0, MathHelper.Pi / 2 * -Projectile.spriteDirection, lerper);
+                
+                float rot = TCellsUtils.LerpFloat(MathHelper.Pi / 2 * -Projectile.spriteDirection, 0, timer, trueReloadTime, TCellsUtils.LerpEasing.DownParabola);
                 Vector2 armPos = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, rot);
                 armPos.Y += owner.gfxOffY;
                 Main.EntitySpriteDraw(ammoTexture.Value, armPos + new Vector2(-2 * Projectile.spriteDirection, 5).RotatedBy(rot) - Main.screenPosition, null, lightColor, rot - MathHelper.ToRadians(-130 * Projectile.spriteDirection), ammoTexture.Size()/2, scale, SpriteEffects.None);

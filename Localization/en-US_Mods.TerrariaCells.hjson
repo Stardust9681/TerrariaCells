@@ -60,6 +60,7 @@ Projectiles: {
 	SniperShot.DisplayName: Sniper Shot
 	Guns.DisplayName: Guns
 	ExplosionModProjectile.DisplayName: Explosion
+	SwordStabWave.DisplayName: Sword Stab Wave
 }
 
 Tooltips: {
