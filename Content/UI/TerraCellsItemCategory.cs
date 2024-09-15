@@ -26,10 +26,21 @@ public enum TerraCellsItemCategory
     /// This item does not fit into other catagories and mostly stays in the storage area
     /// </summary>
     Storage = 4,
+
+    /// <summary>
+    /// This is treated as an item, but does not go into the inventory when picked up. Example: hearts, mana stars, nebula buffs
+    /// </summary>
+    Pickup = 4,
 }
 
-public enum StorageItemSubcategorization {
+public enum StorageItemSubcategorization
+{
     None = 0,
     Armor = 1,
     Accessory = 2,
+
+    /// <summary>
+    /// This item should actually avoid storage altogether and go into its own slot
+    /// </summary>
+    Coin = 3,
 }
