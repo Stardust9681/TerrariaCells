@@ -14,4 +14,32 @@ Configs: {
 			Tooltip: "Disables the >175% cap on the game's zoom"
 		}
 	}
+
+	InventoryUIConfiguration: {
+		DisplayName: Inventory U I Configuration
+
+		EnableInventoryLock: {
+			Label: Enable Inventory Lock
+			Tooltip: ""
+		}
+	}
+
+	InventoryUiConfiguration: {
+		DisplayName: Inventory Ui Configuration
+
+		EnableInventoryLock: {
+			Label: Enable Inventory Lock
+			Tooltip: ""
+		}
+
+		EnableInventoryChanges: {
+			Label: Enable Inventory Changes
+			Tooltip: ""
+		}
+
+		HideVanillaInventory: {
+			Label: Hide Vanilla Inventory
+			Tooltip: ""
+		}
+	}
 }
