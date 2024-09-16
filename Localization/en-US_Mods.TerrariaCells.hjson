@@ -6,12 +6,12 @@ Items: {
 }
 
 Configs: {
-	TerrariaCellsModConfig: {
-		DisplayName: Terraria Cells Mod Config
+	TerrariaCellsConfig: {
+		DisplayName: TerraCells Config
 
-		EnableInventoryLock: {
-			Label: Enable Inventory Lock
-			Tooltip: ""
+		DisableZoom: {
+			Label: Disable Zoom Cap
+			Tooltip: "Disables the >175% cap on the game's zoom"
 		}
 	}
 
