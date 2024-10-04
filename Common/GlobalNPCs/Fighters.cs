@@ -39,7 +39,7 @@ namespace TerrariaCells.Common.GlobalNPCs
         }
         public override void SetDefaults(NPC entity)
         {
-            entity.damage = 0;
+            //entity.damage = 0; //WHY WAS THIS SET?
             if (Mummies.Contains(entity.type))
             {
                 entity.scale = 1.5f;
