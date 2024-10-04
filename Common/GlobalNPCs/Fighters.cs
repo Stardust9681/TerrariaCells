@@ -138,9 +138,5 @@ namespace TerrariaCells.Common.GlobalNPCs
 
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
         }
-        public bool FacingPlayer(NPC npc, Player target)
-        {
-            return (npc.direction == -1 && npc.Center.X > target.Center.X) || (npc.direction == 1 && npc.Center.X < target.Center.X);
-        }
     }
 }

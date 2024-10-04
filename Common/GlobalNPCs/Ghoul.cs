@@ -14,6 +14,8 @@ using Terraria.ModLoader;
 using TerrariaCells.Common.Utilities;
 using TerrariaCells.Content.Projectiles;
 
+using static TerrariaCells.Common.Utilities.NPCHelpers;
+
 namespace TerrariaCells.Common.GlobalNPCs
 {
     public partial class Fighters
@@ -77,7 +79,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                 if (npc.ai[2] % slashDelay == 0 && npc.ai[2] != timeSlashing)
                 {
                     
-                    if (npc.ai[2] > 0 && ExtraAI[0] == 0 && !FacingPlayer(npc, target))
+                    if (npc.ai[2] > 0 && ExtraAI[0] == 0 && !npc.IsFacingTarget(target))
                     {
                         npc.direction = -npc.direction;
                         npc.oldDirection = npc.direction;

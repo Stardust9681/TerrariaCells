@@ -34,5 +34,20 @@ namespace TerrariaCells.Common.Utilities
 		///<remarks> Shorthand for <c>npc.collideY</c> and <c>npc.oldVel.Y > npc.vel.Y</c> and <c>npc.oldVel.Y > 0</c> </remarks>
 		///<returns>True if NPC is determined to be on ground. False otherwise.</returns>
 		public static bool Grounded(this NPC npc) => npc.collideY && npc.oldVelocity.Y > npc.velocity.Y && npc.oldVelocity.Y > 0;
+
+		//Relocated and refactored from Fighters.cs
+		///<remarks> Shorthand for <c>npc.direction == MathF.Sign(target.pos.X-npc.pos.X)</c></remarks>
+		///<returns>False if NPC has no target. True if NPC direction is towards player target</returns>
+		public static bool IsFacingTarget(this NPC npc)
+		{
+			if (!npc.HasValidTarget) return false;
+			return npc.direction == MathF.Sign(Main.player[npc.target].position.X - npc.position.X);
+		}
+		///<remarks> Shorthand for <c>npc.direction == MathF.Sign(target.pos.X-npc.pos.X)</c></remarks>
+		///<returns>True if NPC direction is towards target. False otherwise</returns>
+		public static bool IsFacingTarget(this NPC npc, Player target)
+		{
+			return npc.direction == MathF.Sign(target.position.X - npc.position.X);
+		}
 	}
 }
