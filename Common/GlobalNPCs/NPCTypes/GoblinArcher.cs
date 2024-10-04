@@ -39,6 +39,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 
 		void ApproachTargetAI(NPC npc) //No hitbox when walking
 		{
+			if (npc.Timer() == 0)
+				CombatNPC.ToggleContactDamage(npc, false);
 			Player target = Main.player[npc.target];
 			int directionToMove = target.position.X < npc.position.X ? -1 : 1;
 			Vector2 distance = new Vector2(MathF.Abs(target.position.X - npc.position.X), MathF.Abs(target.position.Y - npc.position.Y));
@@ -80,6 +82,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		}
 		void JumpAI(NPC npc) //Hitbox when jumping
 		{
+			if (npc.Timer() == 0)
+				CombatNPC.ToggleContactDamage(npc, true);
 			if (npc.Grounded())
 			{
 				if (npc.Timer() == 0)
@@ -99,6 +103,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		}
 		void FireArrowsAI(NPC npc) //No hitbox when firing arrows
 		{
+			if (npc.Timer() == 0)
+				CombatNPC.ToggleContactDamage(npc, false);
 			Player target = Main.player[npc.target];
 			//Just add new projectile types in if you want to adjust this I guess I dunno
 			int[] ArrowsToFire = new int[] { Terraria.ID.ProjectileID.WoodenArrowHostile, Terraria.ID.ProjectileID.FireArrow };
