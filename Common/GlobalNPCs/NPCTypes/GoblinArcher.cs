@@ -12,7 +12,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			return npcType.Equals(Terraria.ID.NPCID.GoblinArcher);
 		}
 
-		const int ApproachPlayer = 0;
+		const int ApproachTarget = 0;
 		const int Jump = 1;
 		const int FireArrows = 2;
 
@@ -22,8 +22,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				npc.TargetClosest();
 			switch (npc.Phase())
 			{
-				case ApproachPlayer:
-					ApproachPlayerAI(npc);
+				case ApproachTarget:
+					ApproachTargetAI(npc);
 					break;
 				case Jump:
 					JumpAI(npc);
@@ -32,12 +32,12 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 					FireArrowsAI(npc);
 					break;
 				default:
-					npc.Phase(ApproachPlayer);
+					npc.Phase(ApproachTarget);
 					break;
 			}
 		}
 
-		void ApproachPlayerAI(NPC npc) //No hitbox when walking
+		void ApproachTargetAI(NPC npc) //No hitbox when walking
 		{
 			Player target = Main.player[npc.target];
 			int directionToMove = target.position.X < npc.position.X ? -1 : 1;
@@ -55,10 +55,15 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				npc.Phase(Jump);
 				return;
 			}
-			if (MathF.Abs(npc.velocity.X) < 2f)
-			{
-				npc.velocity.X += directionToMove * 0.075f; //Still very fast accel, but not instantaneous
-			}
+
+			const float MaxSpeed = 2f;
+			const float Accel = 0.075f;
+			float newVel = npc.velocity.X + directionToMove * Accel;
+			if (MathF.Abs(newVel) < MaxSpeed)
+				npc.velocity.X = newVel;
+			else
+				npc.velocity.X = npc.direction * MaxSpeed;
+
 			if (npc.collideX)
 			{
 				Vector2 oldPos = npc.position;
@@ -83,7 +88,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				}
 				else
 				{
-					npc.Phase(ApproachPlayer);
+					npc.Phase(ApproachTarget);
 					return;
 				}
 			}
@@ -124,7 +129,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				Projectile proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center, vel, Main.rand.Next(ArrowsToFire), npc.damage / 5, 1f, Main.myPlayer);
 				proj.hostile = true;
 				proj.friendly = false;
-				npc.Phase(ApproachPlayer);
+				npc.Phase(ApproachTarget);
 				return;
 			}
 			npc.velocity.X *= 0.9f;
