@@ -88,6 +88,8 @@ namespace TerrariaCells.Common.GlobalNPCs
         }
         public override bool PreAI(NPC npc)
         {
+			if (npc.type.Equals(NPCID.GoblinArcher))
+				return base.PreAI(npc);
             if (npc.aiStyle == NPCAIStyleID.Fighter)
             {
                 Update(npc);

@@ -32,7 +32,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		public virtual bool PreDraw(NPC npc, SpriteBatch spritebatch, Vector2 screenPos, Color lightColor) { return true; }
 	}
 
-	internal class AITypeHelper : GlobalNPC
+	internal class AITypeHandler : GlobalNPC
 	{
 		public override bool PreAI(NPC npc)
 		{

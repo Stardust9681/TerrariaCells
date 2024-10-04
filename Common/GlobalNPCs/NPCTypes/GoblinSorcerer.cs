@@ -24,8 +24,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			if (!npc.HasValidTarget)
 				npc.TargetClosest();
 
-			npc.Timer(npc.Timer() + 1);
-
 			switch (npc.Phase())
 			{
 				case Casting:
@@ -50,6 +48,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			{
 				npc.Phase(Teleporting);
 			}
+			npc.Timer(npc.Timer() + 1);
 		}
 		private void TeleportingAI(NPC npc)
 		{
@@ -116,6 +115,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				}
 				npc.position = new Vector2(npc.ai[2], npc.ai[3] - npc.height);
 				npc.Phase(Casting);
+				return;
 			}
 			else if(npc.Timer() > 5 && MathF.Pow(npc.Timer(), 2) % 60 < 5)
 			{
@@ -123,6 +123,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				d.scale = Main.rand.NextFloat(1.33f, 1.67f);
 				d.velocity.Y = -MathF.Abs(d.velocity.Y) * 0.67f - (1 - MathF.Abs(d.velocity.X));
 			}
+			npc.Timer(npc.Timer() + 1);
 		}
 
 		public override void FindFrame(NPC npc)
