@@ -48,6 +48,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			{
 				npc.Phase(Teleporting);
 			}
+			npc.velocity.X *= 0.8f;
 			npc.Timer(npc.Timer() + 1);
 		}
 		private void TeleportingAI(NPC npc)
@@ -123,6 +124,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				d.scale = Main.rand.NextFloat(1.33f, 1.67f);
 				d.velocity.Y = -MathF.Abs(d.velocity.Y) * 0.67f - (1 - MathF.Abs(d.velocity.X));
 			}
+			npc.velocity.X *= 0.8f;
 			npc.Timer(npc.Timer() + 1);
 		}
 

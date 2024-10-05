@@ -44,18 +44,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			Player target = Main.player[npc.target];
 			int directionToMove = target.position.X < npc.position.X ? -1 : 1;
 			Vector2 distance = new Vector2(MathF.Abs(target.position.X - npc.position.X), MathF.Abs(target.position.Y - npc.position.Y));
-			if ((distance.X < 240 && 80 < distance.X) || distance.Y > 480 || (distance.Y > 240 && distance.X < 80))
+			if ((128 < distance.X && distance.X < 320) || distance.Y > 480 || (distance.Y > 240 && distance.X < 80))
 			{
 				if (npc.LineOfSight(target.position))
 				{
 					npc.Phase(FireArrows);
 					return;
 				}
-			}
-			if (distance.X < 60 && distance.Y < 80)
-			{
-				npc.Phase(Jump);
-				return;
 			}
 
 			const float MaxSpeed = 2f;
@@ -116,12 +111,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				//Didn't want projectile fired DIRECTLY at player, so there's some opportunity to respond
 				(int x, int y) = ((int)(target.Center.X) / 16, (int)(target.Center.Y) / 16);
 				npc.ai[3] = (x << 16) | y;
-				for (int i = 0; i < 3; i++)
+				for (int i = 0; i < 4; i++)
 				{
-					Dust d = Dust.NewDustDirect(npc.Center, 2, 2, Terraria.ID.DustID.Torch);
+					Dust d = Dust.NewDustDirect(npc.Center + new Vector2(0, -4), 4, 4, Terraria.ID.DustID.Torch);
 					d.noGravity = true;
-					d.scale = Main.rand.NextFloat(1.4f, 2f);
-					d.velocity = Vector2.One.RotatedByRandom(MathHelper.TwoPi) * (4 - d.scale);
+					d.scale = Main.rand.NextFloat(1.6f);
+					d.velocity = npc.DirectionTo(target.Center) * (3.5f - d.scale) * i;
+					d.velocity = d.velocity.RotatedByRandom(MathHelper.ToRadians(15));
 				}
 			}
 			else if (time > 90)

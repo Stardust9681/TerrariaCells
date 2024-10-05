@@ -5,11 +5,14 @@ using static TerrariaCells.Common.Utilities.NPCHelpers;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 {
+	/// <remarks>
+	/// Also used for <see cref="Terraria.ID.NPCID.Wolf"/>
+	/// </remarks>
 	public class GoblinThief : AIType
 	{
 		public override bool AppliesToNPC(int npcType)
 		{
-			return npcType.Equals(Terraria.ID.NPCID.GoblinThief);
+			return npcType is Terraria.ID.NPCID.GoblinThief or Terraria.ID.NPCID.Wolf;
 		}
 
 		const int ApproachTarget = 0;
