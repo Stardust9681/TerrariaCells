@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+launch.bat
+.vscode/launch.json
+TerrariaCells.sln
