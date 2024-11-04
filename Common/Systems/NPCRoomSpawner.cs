@@ -10,7 +10,10 @@ using Terraria.ModLoader;
 using Terraria.ID;
 using System.ComponentModel;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.IO;
+
+using static TerrariaCells.Common.Utilities.JsonUtil;
 
 namespace TerrariaCells.Common.Systems
 {
@@ -27,45 +30,47 @@ namespace TerrariaCells.Common.Systems
 			const string path = "SpawnInfo.json";
 			using (StreamReader stream = new StreamReader(Mod.GetFileStream(path)))
 			{
-				string json = stream.ReadToEnd(); //Is this lazy and bad? Maybe. Is someone's computer gonna cry out in pain when we do this in prod? Probably. Do I care right now? No.
-				//Also, apparently dynamic type is black magic. I do quite like fucking around and finding out though.
-				dynamic Root = JsonConvert.DeserializeObject(json); //Get json contents in whole
-				dynamic Biomes = Root.Biomes; //Get biomes from root
-				foreach (dynamic biome in Biomes)
+				string json = stream.ReadToEnd();
+				JObject Root = (JObject)JsonConvert.DeserializeObject(json); //Get json contents in whole
+
+				JArray Biomes = Root.GetItem<JArray>("Biomes", new JArray()); //Get biomes from root
+				foreach (JToken biome in Biomes)
 				{
 					int roomCount = 0;
-					string biomeName = biome.BiomeName; //name from biome
-					dynamic Rooms = biome.Rooms; //Gets rooms from biome
-					foreach (dynamic room in Rooms)
+					string biomeName = biome.GetItem<string>("BiomeName"); //name from biome
+
+					JArray Rooms = biome.GetItem<JArray>("Rooms", new JArray()); //Gets rooms from biome
+					foreach (JToken room in Rooms)
 					{
-						string roomName = room.Name; //name from room
+						string roomName = room.GetItem<string>("Name"); //name from room
 
 						if (!string.IsNullOrEmpty(roomName)) //In case no name provided
-							roomName = $"{biomeName}_{room.Name}"; //Room names will be unique, hopefully
+						{
+							if(!roomName.StartsWith(biomeName))
+								roomName = $"{biomeName}_{roomName}";
+						}
 						else
 						{
-							Mod.Logger.Warn($"No Room Name was provided for Biome:{biomeName} Room:#{roomCount}, one has been automatically created for you.");
 							roomName = $"{biomeName}_roomNo{roomCount}";
+							Mod.Logger.Warn($"JSON: No room name was provided for Biome:{biomeName} Room:#{roomCount}, one has been automatically created for you: {roomName}");
 						}
 						roomCount++;
 
-						//Null checks galore here to have default values.
-						dynamic NPCSpawnInfoArray = room.SpawnInfo??Array.Empty<NPCSpawnInfo>();
-						if (NPCSpawnInfoArray != null) //In case no SpawnInfo provided
+						List<NPCSpawnInfo> spawnInfo = new List<NPCSpawnInfo>();
+
+						JArray NPCSpawnInfoArray = room.GetItem<JArray>("SpawnInfo", new JArray());
+						foreach (JToken npcSpawnInfo in NPCSpawnInfoArray)
 						{
-							List<NPCSpawnInfo> spawnInfo = new List<NPCSpawnInfo>();
-							foreach (dynamic npcSpawnInfo in NPCSpawnInfoArray)
-							{
-								string nameOrType = npcSpawnInfo.NameOrType??"0"; //Name or type is string or int, store as string, parse to int if possible
-								ushort offsetX = npcSpawnInfo.OffsetX??"0";
-								ushort offsetY = npcSpawnInfo.OffsetY??"0";
-								spawnInfo.Add(new NPCSpawnInfo(nameOrType, offsetX, offsetY));
-							}
-							info.Add(roomName, new RoomSpawnInfo(roomName, spawnInfo.ToArray()));
+							string nameOrType = npcSpawnInfo.GetItem<string>("NameOrType", "0");
+							ushort offsetX = npcSpawnInfo.GetItem<ushort>("OffsetX", 0);
+							ushort offsetY = npcSpawnInfo.GetItem<ushort>("OffsetY", 0);
+							spawnInfo.Add(new NPCSpawnInfo(nameOrType, offsetX, offsetY));
 						}
+						info.Add(roomName, new RoomSpawnInfo(roomName, spawnInfo.ToArray()));
 					}
 				}
 			}
+
 			RoomInfo = info;
 		}
 	}
