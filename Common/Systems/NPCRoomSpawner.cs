@@ -84,17 +84,29 @@ namespace TerrariaCells.Common.Systems
 
 		public override void SaveWorldData(TagCompound tag)
 		{
-			tag.Add(nameof(RoomMarkers), RoomMarkers);
+			tag.Add($"{nameof(RoomMarkers)}_Count", RoomMarkers.Count);
+			for(int i = 0; i < RoomMarkers.Count; i++)
+			{
+				RoomMarker marker = RoomMarkers[i];
+				tag.Add($"Room{i}_XY", marker.Anchor);
+				tag.Add($"Room{i}_Name", marker.RoomName);
+			}
 		}
 		public override void LoadWorldData(TagCompound tag)
 		{
-			if (!tag.TryGet<List<RoomMarker>>(nameof(RoomMarkers), out List<RoomMarker> markers))
+			RoomMarkers = new List<RoomMarker>();
+			int roomMarkersCount = tag.Get<int>($"{nameof(RoomMarkers)}_Count");
+			if (roomMarkersCount <= 0)
 			{
-				Mod.Logger.Warn($"No Room Data found for loaded world. Generated blank template data, expect no enemy spawns.");
-				RoomMarkers = new List<RoomMarker>();
+				Mod.Logger.Warn("No Room data found for world.");
 				return;
 			}
-			RoomMarkers = markers;
+			for (int i = 0; i < roomMarkersCount; i++)
+			{
+				Point anchor = tag.Get<Point>($"Room{i}_XY");
+				string name = tag.Get<string>($"Room{i}_Name");
+				RoomMarkers.Add(new RoomMarker(anchor, name));
+			}
 		}
 	}
 
@@ -106,40 +118,40 @@ namespace TerrariaCells.Common.Systems
 		/// <param name="position">Position in TILE COORDINATES (xy/16)</param>
 		/// <param name="size">Size in TILES (xy/16)</param>
 		/// <param name="name">Room name for dictionary access</param>
-		public RoomMarker(Point position, Point16 size, string name)
+		public RoomMarker(Point position, string name)
 		{
 			Anchor = position;
-			Size = size;
 			RoomName = name;
 		}
-		/// <param name="position">Position in TILE COORDINATES (xy/16)</param>
-		/// <param name="width">Width in TILES (x/16)</param>
-		/// <param name="height">Height in TILES (y/16)</param>
-		/// <param name="name">Room name for dictionary access</param>
-		public RoomMarker(Point position, short width, short height, string name) : this(position, new Point16(width, height), name) { }
 		/// <param name="i">Position X in TILE COORDINATES (x/16)</param>
 		/// <param name="j">Position Y in TILE COORDINATES (y/16)</param>
 		/// <param name="size">Size in TILES (xy/16)</param>
 		/// <param name="name">Room name for dictionary access</param>
-		public RoomMarker(int i, int j, Point16 size, string name) : this(new Point(i, j), size, name) { }
-		/// <param name="i">Position X in TILE COORDINATES (x/16)</param>
-		/// <param name="j">Position Y in TILE COORDINATES (y/16)</param>
-		/// <param name="width">Width in TILES (x/16)</param>
-		/// <param name="height">Height in TILES (y/16)</param>
-		/// <param name="name">Room name for dictionary access</param>
-		public RoomMarker(int i, int j, short width, short height, string name) : this(new Point(i, j), new Point16(width, height), name) { }
+		public RoomMarker(int i, int j, string name)
+		{
+			Anchor = new Point(i, j);
+			RoomName = name;
+		}
 
 		public readonly Point Anchor; //Considering making this Point16
-		public readonly Point16 Size; //If we have name, do we have path? Consider replacing with Property/Method() => StructureHelper.Generator.GetDimensions(..)
+		public Point16 Size()
+		{
+			Point16 result = new Point16(0);
+			StructureHelper.Generator.GetDimensions(RoomName, ModContent.GetInstance<TerrariaCells>(), ref result);
+			return result;
+		}
 		public readonly string RoomName;
 		private bool didSpawns;
 
 		//Maybe should be methods? Can't set readonly fields...
-		public Point Center => new Point(Anchor.X + (Size.X / 2), Anchor.Y + (Size.Y / 2));
+		public Point Center => new Point(Anchor.X + (Width / 2), Anchor.Y + (Height / 2));
 		public int Left => Anchor.X;
 		public int Top => Anchor.Y;
-		public int Right => Anchor.X + Size.X;
-		public int Bottom => Anchor.Y + Size.Y;
+		public int Right => Anchor.X + Width;
+		public int Bottom => Anchor.Y + Height;
+
+		public short Width => Size().X;
+		public short Height => Size().Y;
 
 		public RoomSpawnInfo GetNPCSpawns() => NPCRoomSpawner.RoomInfo[RoomName];
 		public bool TryGetNPCSpawns(out RoomSpawnInfo info) => NPCRoomSpawner.RoomInfo.TryGetValue(RoomName, out info);
