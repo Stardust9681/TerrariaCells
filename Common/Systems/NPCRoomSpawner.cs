@@ -90,11 +90,13 @@ namespace TerrariaCells.Common.Systems
 				RoomMarker marker = RoomMarkers[i];
 				tag.Add($"Room{i}_XY", marker.Anchor);
 				tag.Add($"Room{i}_Name", marker.RoomName);
+				tag.Add($"Room{i}_DidSpawns", marker.DidSpawns);
 			}
 		}
 		public override void LoadWorldData(TagCompound tag)
 		{
 			RoomMarkers = new List<RoomMarker>();
+			//TagCompound.Get<T>(..) will return default(T) if key not found
 			int roomMarkersCount = tag.Get<int>($"{nameof(RoomMarkers)}_Count");
 			if (roomMarkersCount <= 0)
 			{
@@ -105,7 +107,8 @@ namespace TerrariaCells.Common.Systems
 			{
 				Point anchor = tag.Get<Point>($"Room{i}_XY");
 				string name = tag.Get<string>($"Room{i}_Name");
-				RoomMarkers.Add(new RoomMarker(anchor, name));
+				bool didSpawns = tag.Get<bool>($"Room{i}_DidSpawns");
+				RoomMarkers.Add(new RoomMarker(anchor, name) { DidSpawns = didSpawns });
 			}
 		}
 	}
@@ -134,29 +137,32 @@ namespace TerrariaCells.Common.Systems
 		}
 
 		public readonly Point Anchor; //Considering making this Point16
+		public readonly string RoomName;
+		private bool didSpawns = false;
+		public bool DidSpawns
+		{
+			get => didSpawns;
+			internal init => didSpawns = value;
+		}
+
 		public Point16 Size()
 		{
 			Point16 result = new Point16(0);
 			StructureHelper.Generator.GetDimensions(RoomName, ModContent.GetInstance<TerrariaCells>(), ref result);
 			return result;
 		}
-		public readonly string RoomName;
-		private bool didSpawns;
+		public short Width => Size().X;
+		public short Height => Size().Y;
 
-		//Maybe should be methods? Can't set readonly fields...
 		public Point Center => new Point(Anchor.X + (Width / 2), Anchor.Y + (Height / 2));
 		public int Left => Anchor.X;
 		public int Top => Anchor.Y;
 		public int Right => Anchor.X + Width;
 		public int Bottom => Anchor.Y + Height;
 
-		public short Width => Size().X;
-		public short Height => Size().Y;
-
 		public RoomSpawnInfo GetNPCSpawns() => NPCRoomSpawner.RoomInfo[RoomName];
 		public bool TryGetNPCSpawns(out RoomSpawnInfo info) => NPCRoomSpawner.RoomInfo.TryGetValue(RoomName, out info);
 
-		//Update the RoomMarker
 		//General update tasks here
 		internal void Update(int playerIndex)
 		{
@@ -166,8 +172,7 @@ namespace TerrariaCells.Common.Systems
 				HandleSpawns();
 			}
 		}
-		//Returns true if player is within a specified distance of all edges (see const: LOAD_RANGE)
-		//Return false otherwise
+		//Returns true if player is within a specified distance of all edges
 		//Used for determining when to spawn room enemies
 		private bool InRange(Vector2 pos)
 		{
@@ -212,7 +217,7 @@ namespace TerrariaCells.Common.Systems
 		public readonly ushort OffsetY;
 		public readonly string NameOrType;
 		private int? npcType;
-		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="ArgumentException"/>
 		public int NPCType
 		{
 			get
