@@ -1,24 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ID;
-using System.ComponentModel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
 
 using static TerrariaCells.Common.Utilities.JsonUtil;
+using Terraria.ModLoader.IO;
 
 namespace TerrariaCells.Common.Systems
 {
 	public class NPCRoomSpawner : ModSystem
 	{
+		/// <summary> Add entries to this list during generation. </summary>
+		internal static List<RoomMarker> RoomMarkers = new List<RoomMarker>();
 		internal static IReadOnlyDictionary<string, RoomSpawnInfo> RoomInfo;
 		public override void SetupContent()
 		{
@@ -72,6 +72,108 @@ namespace TerrariaCells.Common.Systems
 			}
 
 			RoomInfo = info;
+		}
+		public override void PostUpdateNPCs()
+		{
+			for (int i = 0; i < Main.maxPlayers; i++)
+			{
+				if (!Main.player[i].active) continue;
+				foreach (RoomMarker marker in RoomMarkers) marker.Update(i);
+			}
+		}
+
+		public override void SaveWorldData(TagCompound tag)
+		{
+			tag.Add(nameof(RoomMarkers), RoomMarkers);
+		}
+		public override void LoadWorldData(TagCompound tag)
+		{
+			if (!tag.TryGet<List<RoomMarker>>(nameof(RoomMarkers), out List<RoomMarker> markers))
+			{
+				Mod.Logger.Warn($"No Room Data found for loaded world. Generated blank template data, expect no enemy spawns.");
+				RoomMarkers = new List<RoomMarker>();
+				return;
+			}
+			RoomMarkers = markers;
+		}
+	}
+
+	public class RoomMarker
+	{
+		/// <summary> 32 Tiles </summary>
+		public const float LOAD_RANGE = 512;
+
+		/// <param name="position">Position in TILE COORDINATES (xy/16)</param>
+		/// <param name="size">Size in TILES (xy/16)</param>
+		/// <param name="name">Room name for dictionary access</param>
+		public RoomMarker(Point position, Point16 size, string name)
+		{
+			Anchor = position;
+			Size = size;
+			RoomName = name;
+		}
+		/// <param name="position">Position in TILE COORDINATES (xy/16)</param>
+		/// <param name="width">Width in TILES (x/16)</param>
+		/// <param name="height">Height in TILES (y/16)</param>
+		/// <param name="name">Room name for dictionary access</param>
+		public RoomMarker(Point position, short width, short height, string name) : this(position, new Point16(width, height), name) { }
+		/// <param name="i">Position X in TILE COORDINATES (x/16)</param>
+		/// <param name="j">Position Y in TILE COORDINATES (y/16)</param>
+		/// <param name="size">Size in TILES (xy/16)</param>
+		/// <param name="name">Room name for dictionary access</param>
+		public RoomMarker(int i, int j, Point16 size, string name) : this(new Point(i, j), size, name) { }
+		/// <param name="i">Position X in TILE COORDINATES (x/16)</param>
+		/// <param name="j">Position Y in TILE COORDINATES (y/16)</param>
+		/// <param name="width">Width in TILES (x/16)</param>
+		/// <param name="height">Height in TILES (y/16)</param>
+		/// <param name="name">Room name for dictionary access</param>
+		public RoomMarker(int i, int j, short width, short height, string name) : this(new Point(i, j), new Point16(width, height), name) { }
+
+		public readonly Point Anchor; //Considering making this Point16
+		public readonly Point16 Size; //If we have name, do we have path? Consider replacing with Property/Method() => StructureHelper.Generator.GetDimensions(..)
+		public readonly string RoomName;
+		private bool didSpawns;
+
+		//Maybe should be methods? Can't set readonly fields...
+		public Point Center => new Point(Anchor.X + (Size.X / 2), Anchor.Y + (Size.Y / 2));
+		public int Left => Anchor.X;
+		public int Top => Anchor.Y;
+		public int Right => Anchor.X + Size.X;
+		public int Bottom => Anchor.Y + Size.Y;
+
+		public RoomSpawnInfo GetNPCSpawns() => NPCRoomSpawner.RoomInfo[RoomName];
+		public bool TryGetNPCSpawns(out RoomSpawnInfo info) => NPCRoomSpawner.RoomInfo.TryGetValue(RoomName, out info);
+
+		//Update the RoomMarker
+		//General update tasks here
+		internal void Update(int playerIndex)
+		{
+			if (InRange(Main.player[playerIndex].Center))
+			{
+				//Any other room load behaviours to add here?
+				HandleSpawns();
+			}
+		}
+		//Returns true if player is within a specified distance of all edges (see const: LOAD_RANGE)
+		//Return false otherwise
+		//Used for determining when to spawn room enemies
+		private bool InRange(Vector2 pos)
+		{
+			return
+				(Left - LOAD_RANGE) < pos.X
+				&& pos.X < (Right + LOAD_RANGE)
+				&& (Top - LOAD_RANGE) < pos.Y
+				&& pos.Y < (Bottom + LOAD_RANGE);
+		}
+		//Called when Player is InRange(..) to handle enemy spawns. Runs once per room
+		private void HandleSpawns()
+		{
+			if (didSpawns) return;
+			foreach (NPCSpawnInfo info in GetNPCSpawns().NPCs)
+			{
+				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (Left + info.OffsetX)*16, (Top + info.OffsetY)*16, info.NPCType);
+			}
+			didSpawns = true;
 		}
 	}
 
