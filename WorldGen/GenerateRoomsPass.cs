@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Terraria;
-using Terraria.ID;
-using Terraria.IO;
-using Terraria.ModLoader;
+﻿using Terraria.IO;
 using Terraria.WorldBuilding;
 
 namespace TerrariaCells.WorldGen;
@@ -19,9 +14,13 @@ class GenerateRoomsPass : GenPass
         var rand = Terraria.WorldGen.genRand;
 
         progress.Message = "Fill in holes";
-
-        Point[] directions = [new Point(-1, 0), new Point(1, 0), new Point(0, -1), new Point(0, 1)];
-
         Utils.GlobalPlayer.isBuilder = false;
     }
+
+    public void GenerateRooms() { }
+}
+
+enum LevelGenerationMode {
+    Default,
+    
 }
