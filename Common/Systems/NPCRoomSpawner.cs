@@ -17,8 +17,12 @@ namespace TerrariaCells.Common.Systems
 {
 	public class NPCRoomSpawner : ModSystem
 	{
-		/// <summary> Add entries to this list during generation. </summary>
-		internal static List<RoomMarker> RoomMarkers = new List<RoomMarker>();
+		/// <summary> Add entries to this list during biome generation. </summary>
+		public static List<RoomMarker> RoomMarkers = new List<RoomMarker>();
+		/// <summary>
+		/// <para>Keys are room name with biome ( formatted as <c>Biome_room_name</c> ).</para>
+		/// <para>Values are SpawnInfo for corresponding room.</para>
+		/// </summary>
 		internal static IReadOnlyDictionary<string, RoomSpawnInfo> RoomInfo;
 		public override void SetupContent()
 		{
@@ -95,7 +99,7 @@ namespace TerrariaCells.Common.Systems
 		}
 		public override void LoadWorldData(TagCompound tag)
 		{
-			RoomMarkers = new List<RoomMarker>();
+			RoomMarkers ??= new List<RoomMarker>();
 			//TagCompound.Get<T>(..) will return default(T) if key not found
 			int roomMarkersCount = tag.Get<int>($"{nameof(RoomMarkers)}_Count");
 			if (roomMarkersCount <= 0)
@@ -115,6 +119,7 @@ namespace TerrariaCells.Common.Systems
 
 	public class RoomMarker
 	{
+		public static string GetInternalRoomName(string biome, string roomName) => $"{biome}_{roomName}";
 		/// <summary> 32 Tiles </summary>
 		public const float LOAD_RANGE = 512;
 
@@ -148,7 +153,14 @@ namespace TerrariaCells.Common.Systems
 		public Point16 Size()
 		{
 			Point16 result = new Point16(0);
-			StructureHelper.Generator.GetDimensions(RoomName, ModContent.GetInstance<TerrariaCells>(), ref result);
+			try
+			{
+				StructureHelper.Generator.GetDimensions(RoomName, ModContent.GetInstance<TerrariaCells>(), ref result);
+			}
+			catch (Exception e)
+			{
+				ModContent.GetInstance<TerrariaCells>().Logger.Error($"Room: {RoomName} was not found/did not exist");
+			}
 			return result;
 		}
 		public short Width => Size().X;
@@ -177,10 +189,10 @@ namespace TerrariaCells.Common.Systems
 		private bool InRange(Vector2 pos)
 		{
 			return
-				(Left - LOAD_RANGE) < pos.X
-				&& pos.X < (Right + LOAD_RANGE)
-				&& (Top - LOAD_RANGE) < pos.Y
-				&& pos.Y < (Bottom + LOAD_RANGE);
+				((Left*16) - LOAD_RANGE) < pos.X
+				&& pos.X < ((Right*16) + LOAD_RANGE)
+				&& ((Top*16) - LOAD_RANGE) < pos.Y
+				&& pos.Y < ((Bottom*16) + LOAD_RANGE);
 		}
 		//Called when Player is InRange(..) to handle enemy spawns. Runs once per room
 		private void HandleSpawns()
