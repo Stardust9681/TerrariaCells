@@ -22,4 +22,5 @@ Projectiles: {
 	MummyShockwave.DisplayName: Mummy Shockwave
 	VultureBone.DisplayName: Vulture Bone
 	Slash.DisplayName: Slash
+	IllusionBrainHitbox.DisplayName: Illusion Brain Hitbox
 }
