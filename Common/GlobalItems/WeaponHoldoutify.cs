@@ -50,9 +50,10 @@ namespace TerrariaCells.Common.GlobalItems
         public static int[] Broadswords = { ItemID.BluePhasesaber, ItemID.GreenPhasesaber, ItemID.PurplePhasesaber, ItemID.YellowPhasesaber, ItemID.OrangePhasesaber, ItemID.RedPhasesaber, ItemID.WhitePhasesaber,
             ItemID.NightsEdge, ItemID.Excalibur, ItemID.TrueExcalibur, ItemID.TrueNightsEdge, ItemID.TheHorsemansBlade, ItemID.TerraBlade};
         public static int[] Handguns = { ItemID.FlintlockPistol, ItemID.PewMaticHorn, ItemID.PhoenixBlaster, ItemID.Revolver, ItemID.TheUndertaker, ItemID.VenusMagnum, ItemID.Handgun, ItemID.FlareGun, ItemID.PainterPaintballGun };
-        public static int[] Snipers = { ItemID.SniperRifle };
+        public static int[] Snipers = { ItemID.SniperRifle }; 
         public static int[] Muskets = { ItemID.Musket, ItemID.RedRyder, ItemID.Blowpipe, ItemID.Blowgun, ItemID.Sandgun };
-        public static int[] Guns = Shotguns.Concat(Autorifles).Concat(Handguns).Concat(Muskets).Concat(Snipers).ToArray();
+        public static int[] Launchers = { ItemID.RocketLauncher, ItemID.StarCannon, ItemID.GrenadeLauncher };
+        public static int[] Guns = Shotguns.Concat(Autorifles).Concat(Handguns).Concat(Muskets).Concat(Snipers).Concat(Launchers).Append(ItemID.Toxikarp).ToArray();
         public bool IsBroadsword(Item item)
         {
             return ((item.DamageType == DamageClass.Melee || item.DamageType == DamageClass.MeleeNoSpeed) && item.useStyle == ItemUseStyleID.Swing && item.pick == 0 && item.axe == 0 && item.hammer == 0 && !item.noMelee && !item.noUseGraphic) || Broadswords.Contains(item.type);
@@ -78,6 +79,14 @@ namespace TerrariaCells.Common.GlobalItems
                 ReloadSuccessRange = 0.3f;
                 ReloadSuccessLocation = 0.5f;
                 if (entity.type == ItemID.CandyCornRifle) entity.shoot = ProjectileID.CandyCorn;
+                if (entity.type == ItemID.Toxikarp)
+                {
+                    entity.shoot = ProjectileID.ToxicBubble;
+                    MaxAmmo = 20;
+                    entity.useTime = entity.useAnimation = 12;
+                    entity.damage = 2;
+                    ReloadTime = 60;
+                };
             }
             if (Shotguns.Contains(entity.type))
             {
@@ -169,6 +178,37 @@ namespace TerrariaCells.Common.GlobalItems
                 }
                 ReloadTime = entity.useAnimation * 0.8f;
             }
+            if (Launchers.Contains(entity.type))
+            {
+                MaxAmmo = 1;
+                entity.shoot = ProjectileID.RocketI;
+                if (entity.type == ItemID.RocketLauncher)
+                {
+                    MaxAmmo = 4;
+                    entity.useTime = entity.useAnimation = 30;
+                    entity.damage = 25;
+                }
+                if (entity.type == ItemID.GrenadeLauncher)
+                {
+                    MaxAmmo = 5;
+                    entity.damage = 18;
+                    entity.useTime = entity.useAnimation = 20;
+                    entity.shoot = ProjectileID.GrenadeI;
+                }
+                if (entity.type == ItemID.StarCannon)
+                {
+                    entity.useTime = entity.useAnimation = 40;
+                    entity.damage = 15;
+                    MaxAmmo = 3;
+                    entity.shoot = ProjectileID.StarCannonStar;
+                }
+
+                ReloadTime = (int)(entity.useAnimation * MaxAmmo);
+                if (entity.type == ItemID.StarCannon)
+                {
+                    ReloadTime *= 2;
+                }
+            }
             if (Bows.Contains(entity.type) )
             {
                 entity.noUseGraphic = true;
@@ -196,6 +236,17 @@ namespace TerrariaCells.Common.GlobalItems
                     entity.shoot = ProjectileID.DD2BetsyArrow;
                 if (entity.type == ItemID.ShadowFlameBow)
                     entity.shoot = ProjectileID.ShadowFlameArrow;
+
+                if (entity.type == ItemID.IceBow)
+                {
+                    entity.damage = 4;
+                }
+                if (entity.type == ItemID.PulseBow)
+                {
+                    entity.damage = 8;
+                    entity.useTime = entity.useAnimation = 23;
+                }
+
             }
             if (entity.type == ItemID.FairyQueenRangedItem)
             {
@@ -252,6 +303,14 @@ namespace TerrariaCells.Common.GlobalItems
                         EmpoweredAmmo = 3;
                     }
                     if (Muskets.Contains(item.type))
+                    {
+                        EmpoweredAmmo = 1;
+                    }
+                    if (Launchers.Contains(item.type))
+                    {
+                        EmpoweredAmmo = 1;
+                    }
+                    if (item.type == ItemID.Toxikarp)
                     {
                         EmpoweredAmmo = 1;
                     }
@@ -340,6 +399,12 @@ namespace TerrariaCells.Common.GlobalItems
                     proj.CritChance = 100;
                 }
                 return false;
+            }
+            if (item.type == ItemID.StarCannon)
+            {
+                Projectile.NewProjectileDirect(source, position, velocity * 1.1f, type, damage, knockback);
+                Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback);
+                Projectile.NewProjectileDirect(source, position, velocity * 0.9f, type, damage, knockback);
             }
             return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
         }

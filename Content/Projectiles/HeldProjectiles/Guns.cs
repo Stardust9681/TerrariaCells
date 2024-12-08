@@ -49,7 +49,7 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
         public bool sniper => WeaponHoldoutify.Snipers.Contains((int)gunID);
         public bool handgun => WeaponHoldoutify.Handguns.Contains((int)gunID);
         public bool musket => WeaponHoldoutify.Muskets.Contains((int)gunID);
-
+        public bool launcher => WeaponHoldoutify.Launchers.Contains((int)gunID);
         public Vector2 shotgunOffset { get
             {
                 if (mode == 1) return new Vector2(-3, -8 * Projectile.spriteDirection);
@@ -88,7 +88,15 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
                 return new Vector2(-10, -5 * Projectile.spriteDirection);
             }
         }
-
+        public Vector2 LauncherOffset
+        {
+            get
+            {
+                if (mode == 1) new Vector2(-20, -5 * Projectile.spriteDirection);
+                return new Vector2(-20, -5 * Projectile.spriteDirection);
+            }
+        }
+        
         public Vector2 armPosition
         {
             get
@@ -100,7 +108,7 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
         }
          public int trueReloadTime { get
             {
-                if (shotgun || musket || sniper) return (int)weapon.ReloadTime / weapon.MaxAmmo;
+                if (shotgun || musket || sniper || launcher) return (int)weapon.ReloadTime / weapon.MaxAmmo;
                 return (int)weapon.ReloadTime;
             }
         }   
@@ -111,18 +119,25 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
                 return false;
             }
             //gun just moves backward slightly instead of rotating upward
-            if (sniper || autorifle)
+            if (sniper || autorifle || gunID == ItemID.Toxikarp)
                 DrawBackwardRecoil(ref lightColor, sniper ? sniperOffset : autorifleOffset);
-            else if (shotgun || handgun || musket)
+            else if (shotgun || handgun || musket || launcher)
             {
-                DrawNothingSpecial(ref lightColor, shotgun ? shotgunOffset : (handgun ? handgunOffset : musketOffset));
+                DrawNothingSpecial(ref lightColor, shotgun ? shotgunOffset : (handgun ? handgunOffset : (musket ? musketOffset : LauncherOffset)));
             }
             int[] magHandguns = { ItemID.Handgun, ItemID.PhoenixBlaster };
-            if (shotgun || autorifle || (handgun && magHandguns.Contains((int)gunID)))
+            if (shotgun || autorifle || (handgun && magHandguns.Contains((int)gunID)) || launcher)
             {
-                DrawAmmoInHand(ref lightColor, (int)trueReloadTime / 2,
-                    shotgun ? ModContent.Request<Texture2D>("TerrariaCells/Content/Projectiles/HeldProjectiles/ShotgunShell") : ModContent.Request<Texture2D>("TerrariaCells/Content/Projectiles/HeldProjectiles/Mag"),
-                    0.8f);
+                Asset<Texture2D> heldAmmo = ModContent.Request<Texture2D>("TerrariaCells/Content/Projectiles/HeldProjectiles/Mag");
+                if (shotgun) heldAmmo = ModContent.Request<Texture2D>("TerrariaCells/Content/Projectiles/HeldProjectiles/ShotgunShell");
+                if (launcher) heldAmmo = TextureAssets.Projectile[ProjectileID.RocketI];
+                if (gunID == ItemID.GrenadeLauncher) heldAmmo = TextureAssets.Projectile[ProjectileID.GrenadeI];
+                if (gunID == ItemID.StarCannon) heldAmmo = TextureAssets.Projectile[ProjectileID.StarCannonStar];
+                DrawAmmoInHand(ref lightColor, (int)trueReloadTime / 2,heldAmmo,0.8f);
+            }
+            if (launcher)
+            {
+
             }
             return false;
         }
@@ -134,6 +149,10 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
             }
             Projectile.spriteDirection = Main.MouseWorld.X > owner.MountedCenter.X ? 1 : -1;
             Projectile.rotation = (Main.MouseWorld - owner.MountedCenter).ToRotation();
+            if (gunID == ItemID.Toxikarp)
+            {
+                Projectile.rotation += MathHelper.ToRadians(45 * Projectile.spriteDirection);
+            }
             if (ForcedRotation != null) Projectile.rotation = ForcedRotation.Value;
             owner.direction = Projectile.spriteDirection;
             Projectile.Center = owner.Center;
@@ -163,7 +182,7 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
                     SoundEngine.PlaySound(weapon.StoreSound, Projectile.Center);
                 }
                 timer++;
-                if (handgun || shotgun || musket)
+                if (handgun || shotgun || musket || launcher)
                 {
                     UpwardRecoil(handgun ? 4 : 3, handgun ? 30 : 60);
                 }
@@ -201,24 +220,29 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
                     if (Projectile.spriteDirection == 1) Projectile.rotation -= MathHelper.Pi / 2;
                     owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(40 * -Projectile.spriteDirection));
                 }
-                if (handgun)
+                if (handgun || launcher)
                 {
                     Projectile.rotation = MathHelper.ToRadians(30);
                     if (Projectile.spriteDirection == -1) Projectile.rotation = MathHelper.ToRadians(150);
                     owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(40 * -Projectile.spriteDirection));
                 }
-                if (autorifle)
+                if (autorifle )
                 {
                     Projectile.rotation = MathHelper.ToRadians(-30);
                     if (Projectile.spriteDirection == -1) Projectile.rotation = MathHelper.ToRadians(210);
                     owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(40 * -Projectile.spriteDirection));
                 }
-                if (shotgun || autorifle || handgun)
+                if (gunID == ItemID.Toxikarp)
+                {
+                    Projectile.rotation = MathHelper.ToRadians(45);
+                    if (Projectile.spriteDirection == -1) Projectile.rotation = MathHelper.ToRadians(135);
+                }
+                if (shotgun || autorifle || handgun || launcher)
                 {
                     //arm goes down to the players side and then back up to the weapon
                     PocketReload();
                 }
-                else if (sniper)
+                else if (sniper || gunID == ItemID.Toxikarp)
                 {
                     //arm cocks back
                     SniperReload();
@@ -229,9 +253,10 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
                     MusketReload();
                 }
                 //add ammo to the gun, some guns instantly gain full ammo, some add one at a time
+                
                 if (timer == trueReloadTime)
                 {
-                    if (autorifle || handgun) weapon.Ammo = weapon.MaxAmmo;
+                    if (autorifle || handgun || gunID == ItemID.Toxikarp) weapon.Ammo = weapon.MaxAmmo;
                     else weapon.Ammo++;
                     timer = 1;
                     SoundEngine.PlaySound(SoundID.Unlock, Projectile.Center);
@@ -369,7 +394,7 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
             
             
             Main.EntitySpriteDraw(texture.Value, armPosition + offset.RotatedBy(Projectile.rotation) +
-                new Vector2(Projectile.ai[2] == 0 ? TCellsUtils.LerpFloat(5f, 0f, timer, item.useTime, TCellsUtils.LerpEasing.DownParabola, ((int)(timer / item.useTime) * item.useTime)) : 0, 0).RotatedBy(Projectile.rotation)
+                new Vector2(Projectile.ai[2] == 0 ? TCellsUtils.LerpFloat(5f, 0f, timer, item.useTime, TCellsUtils.LerpEasing.DownParabola, ((int)(timer / item.useTime) * item.useTime)) : 0, 0f).RotatedBy(Projectile.rotation - (gunID == ItemID.Toxikarp ? MathHelper.PiOver4 * Projectile.spriteDirection : 0))
                 - Main.screenPosition,
                 null, lightColor, Projectile.rotation, new Vector2(5, texture.Height() / 2), Projectile.scale, Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically);
         }
