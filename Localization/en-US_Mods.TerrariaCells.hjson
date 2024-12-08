@@ -1,13 +1,3 @@
-Items: {
-	RoomConnectorItem: {
-		DisplayName: Room Connector Item
-		Tooltip: ""
-	}
-}
-
-Configs: {
-	TerrariaCellsConfig: {
-		DisplayName: TerraCells Config
 
 		DisableZoom: {
 			Label: Disable Zoom Cap
