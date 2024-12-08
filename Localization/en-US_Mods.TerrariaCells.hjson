@@ -1,20 +1,48 @@
+Configs: {
+	InventoryUiConfiguration: {
+		DisplayName: Inventory Ui Configuration
+
+		EnableInventoryChanges: {
+			Label: Enable Inventory Changes
+			Tooltip: ""
+		}
+
+		EnableInventoryLock: {
+			Label: Enable Inventory Lock
+			Tooltip: ""
+		}
+
+		HideVanillaInventory: {
+			Label: Hide Vanilla Inventory
+			Tooltip: ""
+		}
+	}
+
+	TerrariaCellsConfig: {
+		DisplayName: Terraria Cells Config
 
 		DisableZoom: {
-			Label: Disable Zoom Cap
-			Tooltip: Disables the >175% cap on the game's zoom
+			Label: Disable Zoom
+			Tooltip: ""
 		}
 	}
 }
 
 Projectiles: {
-	MummySlam.DisplayName: Mummy Slam
-	PoacherStab.DisplayName: Poacher Stab
-	MummyShockwave.DisplayName: Mummy Shockwave
 	VultureBone.DisplayName: Vulture Bone
 	Slash.DisplayName: Slash
-	IceArrow.DisplayName: Ice Arrow
-	IceBall.DisplayName: Ice Ball
-	IceShard.DisplayName: Ice Shard
+	PoacherStab.DisplayName: Poacher Stab
+	MummyShockwave.DisplayName: Mummy Shockwave
 	IceSpike.DisplayName: Ice Spike
+	IceShard.DisplayName: Ice Shard
+	IceBall.DisplayName: Ice Ball
+	IceArrow.DisplayName: Ice Arrow
 	IllusionBrainHitbox.DisplayName: Illusion Brain Hitbox
+}
+
+Items: {
+	RoomConnectorItem: {
+		Tooltip: ""
+		DisplayName: Room Connector Item
+	}
 }
