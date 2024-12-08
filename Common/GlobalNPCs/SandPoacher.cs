@@ -15,6 +15,8 @@ using Terraria.ModLoader;
 using TerrariaCells.Common.Utilities;
 using TerrariaCells.Content.Projectiles;
 
+using static TerrariaCells.Common.Utilities.NPCHelpers;
+
 namespace TerrariaCells.Common.GlobalNPCs
 {
     public partial class Fighters
@@ -138,7 +140,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 
             //start stab
             //Conditions: Has a target. Is in walking phase. Is close to target. Is facing target.
-            if (npc.HasValidTarget && npc.ai[3] == 0 && npc.Distance(target.Center) < 80 && FacingPlayer(npc, target))
+            if (npc.HasValidTarget && npc.ai[3] == 0 && npc.Distance(target.Center) < 80 && npc.IsFacingTarget(target))
             {
                 npc.ai[3] = 2;
             }

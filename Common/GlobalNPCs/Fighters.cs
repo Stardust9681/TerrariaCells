@@ -39,7 +39,7 @@ namespace TerrariaCells.Common.GlobalNPCs
         }
         public override void SetDefaults(NPC entity)
         {
-            entity.damage = 0;
+            //entity.damage = 0; //WHY WAS THIS SET?
             if (Mummies.Contains(entity.type))
             {
                 entity.scale = 1.5f;
@@ -103,7 +103,9 @@ namespace TerrariaCells.Common.GlobalNPCs
         }
         public override bool PreAI(NPC npc)
         {
-            if (npc.aiStyle == NPCAIStyleID.Fighter || npc.type == NPCID.CultistArcherBlue)
+			      if (npc.type is NPCID.GoblinArcher or NPCID.GoblinThief)
+				      return base.PreAI(npc);
+            if (npc.aiStyle == NPCAIStyleID.Fighter|| npc.type == NPCID.CultistArcherBlue)
             {
                 Update(npc);
                 Player target = null;
@@ -154,10 +156,6 @@ namespace TerrariaCells.Common.GlobalNPCs
                 ExtraAI[i] = binaryReader.Read7BitEncodedInt();
 
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-        }
-        public bool FacingPlayer(NPC npc, Player target)
-        {
-            return (npc.direction == -1 && npc.Center.X > target.Center.X) || (npc.direction == 1 && npc.Center.X < target.Center.X);
         }
     }
 }

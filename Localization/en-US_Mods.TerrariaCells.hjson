@@ -16,4 +16,5 @@ Projectiles: {
 	IceBall.DisplayName: Ice Ball
 	IceShard.DisplayName: Ice Shard
 	IceSpike.DisplayName: Ice Spike
+	IllusionBrainHitbox.DisplayName: Illusion Brain Hitbox
 }
