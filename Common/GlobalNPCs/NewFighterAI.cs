@@ -54,7 +54,7 @@ namespace TerrariaCells.Common.GlobalNPCs
             if (npc.direction == -1) pos = npc.BottomLeft + new Vector2(-1, -1);
             Tile infront = Main.tile[pos.ToTileCoordinates()];
             //move up a tile if theres only one tile in front of the enemies feet
-            if (infront != null && WorldGen.SolidOrSlopedTile(infront) && npc.collideX)
+            if (infront != null && WorldGen.SolidOrSlopedTile(infront) && npc.collideX && npc.velocity.Y == 0)
             {
                 bool enoughSpace = true;
                 for (int i = 1; i < npc.height / 16 + 1; i++)
@@ -88,9 +88,9 @@ namespace TerrariaCells.Common.GlobalNPCs
                 if (anyTileBlocking)
                 {
                     npc.ai[1]++;
-                    if (npc.ai[1] >= 30)
+                    if (npc.ai[1] >= 5)
                     {
-                        Jump(npc, 10);
+                        Jump(npc, JumpSpeed);
                     }
                 }
             }
@@ -100,6 +100,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                 if (npc.ai[1] < 120) npc.ai[1]++;
                 if (npc.ai[1] >= 120)
                 {
+                    
                     Jump(npc, JumpSpeed);
                 }
             }
@@ -119,6 +120,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                 npc.ai[1] = 0;
                 npc.ai[0] = 1;
                 npc.velocity.Y = -jumpSpeed;
+                
             }
         }
     }

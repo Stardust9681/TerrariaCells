@@ -40,14 +40,11 @@ namespace TerrariaCells.Common.GlobalNPCs
                 }
             }
         }
-        public bool DesertSpiritAI(NPC npc)
+        public bool DesertSpiritAI(NPC npc, Player target)
         {
             int timeRotating = 300;
-
-            Player target = null;
             if (npc.HasValidTarget)
             {
-                target = Main.player[npc.target];
                 npc.direction = npc.Center.X > target.Center.X ? -1 : 1;
                 npc.spriteDirection = npc.direction;
             }

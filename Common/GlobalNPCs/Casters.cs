@@ -34,6 +34,10 @@ namespace TerrariaCells.Common.GlobalNPCs
             {
                 return DesertSpiritDraw(npc, spriteBatch, screenPos, drawColor);
             }
+            if (npc.type == NPCID.CultistDevote)
+            {
+                return DrawCultistDevotee(npc, spriteBatch, screenPos, drawColor);
+            }
             return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
         }
         public override void FindFrame(NPC npc, int frameHeight)
@@ -42,15 +46,28 @@ namespace TerrariaCells.Common.GlobalNPCs
             {
                 DesertSpiritFrame(npc);
             }
+            if (npc.type == NPCID.CultistDevote)
+            {
+                CultistDevoteeFrame(npc);
+            }
             base.FindFrame(npc, frameHeight);
         }
         
         public override bool PreAI(NPC npc)
         {
             npc.TargetClosest();
+            Player target = null;
+            if (npc.HasValidTarget)
+            {
+                target = Main.player[npc.target];
+            }
             if (npc.type == NPCID.DesertDjinn)
             {
-                return DesertSpiritAI(npc);
+                return DesertSpiritAI(npc, target);
+            }
+            if (npc.type == NPCID.CultistDevote)
+            {
+                return CultistDevoteeAI(npc, target);
             }
             return base.PreAI(npc);
         }

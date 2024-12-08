@@ -1,13 +1,3 @@
-Items: {
-	RoomConnectorItem: {
-		DisplayName: Room Connector Item
-		Tooltip: ""
-	}
-}
-
-Configs: {
-	TerrariaCellsConfig: {
-		DisplayName: TerraCells Config
 
 		DisableZoom: {
 			Label: Disable Zoom Cap
@@ -22,5 +12,9 @@ Projectiles: {
 	MummyShockwave.DisplayName: Mummy Shockwave
 	VultureBone.DisplayName: Vulture Bone
 	Slash.DisplayName: Slash
+	IceArrow.DisplayName: Ice Arrow
+	IceBall.DisplayName: Ice Ball
+	IceShard.DisplayName: Ice Shard
+	IceSpike.DisplayName: Ice Spike
 	IllusionBrainHitbox.DisplayName: Illusion Brain Hitbox
 }

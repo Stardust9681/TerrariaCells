@@ -49,6 +49,12 @@ namespace TerrariaCells.Common.GlobalNPCs
                 JumpSpeed = 10;
                 WalkSpeed = 3.5f;
             }
+            if (entity.type == NPCID.CultistArcherBlue)
+            {
+                WalkSpeed = 1;
+                JumpSpeed = 8;
+
+            }
             base.SetDefaults(entity);
         }
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -64,6 +70,10 @@ namespace TerrariaCells.Common.GlobalNPCs
             {
                 return DrawMummy(npc, spriteBatch, screenPos, drawColor);
             }
+            if (npc.type == NPCID.CultistArcherBlue)
+            {
+                return DrawCultistArcher(npc, spriteBatch, screenPos, drawColor);
+            }
             return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
         }
         
@@ -77,6 +87,10 @@ namespace TerrariaCells.Common.GlobalNPCs
             {
                 MummyFrame(npc);
             }
+            if (npc.type == NPCID.CultistArcherBlue)
+            {
+                CultistArcherFrame(npc);
+            }
             base.FindFrame(npc, frameHeight);
         }
         public override void DrawBehind(NPC npc, int index)
@@ -85,12 +99,13 @@ namespace TerrariaCells.Common.GlobalNPCs
             {
                 Main.instance.DrawCacheNPCsBehindNonSolidTiles.Add(index);
             }
+            
         }
         public override bool PreAI(NPC npc)
         {
-			if (npc.type is NPCID.GoblinArcher or NPCID.GoblinThief)
-				return base.PreAI(npc);
-            if (npc.aiStyle == NPCAIStyleID.Fighter)
+			      if (npc.type is NPCID.GoblinArcher or NPCID.GoblinThief)
+				      return base.PreAI(npc);
+            if (npc.aiStyle == NPCAIStyleID.Fighter|| npc.type == NPCID.CultistArcherBlue)
             {
                 Update(npc);
                 Player target = null;
@@ -107,6 +122,10 @@ namespace TerrariaCells.Common.GlobalNPCs
                 if (Mummies.Contains(npc.type))
                 {
                     MummyAI(npc, target);
+                }
+                if (npc.type == NPCID.CultistArcherBlue)
+                {
+                    CultistArcherAI(npc, target);
                 }
                 if (ShouldWalk)
                     Walk(npc, WalkSpeed, Acceleration);
