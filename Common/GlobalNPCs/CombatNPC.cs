@@ -15,6 +15,38 @@ namespace TerrariaCells.Common.GlobalNPCs
 		public override bool InstancePerEntity => true;
 		public bool allowContactDamage;
 
+		public override void SetDefaultsFromNetId(NPC npc)
+		{
+			switch (npc.type)
+			{
+				case NPCID.Wolf:
+					npc.lifeMax = 75;
+					npc.damage = 25;
+					break;
+				case NPCID.Raven:
+					npc.lifeMax = 20;
+					npc.damage = 15;
+					break;
+				case NPCID.CultistDevote:
+					npc.lifeMax = 150;
+					npc.damage = 50;
+					break;
+				case NPCID.CultistArcherBlue:
+					npc.lifeMax = 275;
+					npc.damage = 75;
+					break;
+				case NPCID.IceGolem:
+					npc.lifeMax = 1000;
+					npc.damage = 65;
+					break;
+				case NPCID.IceElemental:
+					npc.lifeMax = 225;
+					npc.damage = 90;
+					break;
+				default: break;
+			}
+		}
+
 		public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
 		{
 			if (!allowContactDamage) return false;
