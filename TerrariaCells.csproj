@@ -4,15 +4,6 @@
 	<Import Project="..\tModLoader.targets" />
 
 	<!-- General -->
-	<PropertyGroup>
-		
-	</PropertyGroup>
-	<ItemGroup>
-	  <AdditionalFiles Remove="Content\Modifiers\**" />
-	  <Compile Remove="Content\Modifiers\**" />
-	  <EmbeddedResource Remove="Content\Modifiers\**" />
-	  <None Remove="Content\Modifiers\**" />
-	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Content\" />
 	</ItemGroup>
