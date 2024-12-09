@@ -107,7 +107,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				npc.ai[2] = ground.X;
 				npc.ai[3] = ground.Y;
 			}
-			if (npc.Timer() > 270)
+			if (npc.Timer() > 210)
 			{
 				for (int i = 0; i < 7; i++)
 				{
@@ -125,12 +125,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				d.velocity.Y = -MathF.Abs(d.velocity.Y) * 0.67f - (1 - MathF.Abs(d.velocity.X));
 			}
 			npc.velocity.X *= 0.8f;
-			npc.Timer(npc.Timer() + 1);
-		}
-
-		public override void FindFrame(NPC npc)
-		{
-			base.FindFrame(npc);
+			npc.DoTimer();
 		}
 	}
 }

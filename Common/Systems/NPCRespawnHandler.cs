@@ -74,7 +74,7 @@ namespace TerrariaCells.Common.Systems
                 return;
 
             List<Rectangle> respawnRects = new List<Rectangle>();
-            Vector2 rectSize = new Vector2(2608f, 1840f);
+            Vector2 rectSize = new Vector2(2608f*0.45f, 1840f*0.45f);
             for (int i = 0; i < Main.maxPlayers; i++)
             {
                 Player player = Main.player[i];
