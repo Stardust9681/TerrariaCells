@@ -115,7 +115,6 @@ namespace TerrariaCells.Common.Systems
                     new EntitySource_RevengeSystem(),
                     marker.RespawnTile.ToWorldCoordinates(),
                     marker.NPCType);
-				Main.NewText(newNPC.FullName);
                 if (marker.HealthLeft != newNPC.lifeMax)
                 {
                     newNPC.life = marker.HealthLeft;
