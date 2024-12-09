@@ -28,3 +28,10 @@ though the subcategorization currently serves no function outside of keeping coi
 
 There is currently no way to categorize an item that doesn't have a vanilla `Terraria.ID.ItemID` and that cannot implement `ITerraCellsCategorization`.
 <!-- TODO: Update once that is implemented, if it ever is. -->
+
+##### Notes for organization
+
+UI code != Inventory managment code
+
+UI code is primarily for rendering the inventory onto the screen and managing user interaction. 
+Anything that categorizes how items are sorted belongs in the Inventory/Items category.

@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Microsoft.CodeAnalysis.FlowAnalysis.DataFlow;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using Terraria;
@@ -15,23 +13,31 @@ using Terraria.GameContent.UI.Chat;
 using Terraria.GameContent.UI.States;
 using Terraria.GameInput;
 using Terraria.Graphics.Capture;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
 using Terraria.UI.Chat;
 using Terraria.UI.Gamepad;
-using TerrariaCells.Common;
+using TerrariaCells.Common.GlobalItems;
+using TerrariaCells.Common.Items;
 
-namespace TerrariaCells.Content.UI;
+namespace TerrariaCells.Common.UI;
 
 [Autoload(Side = ModSide.Client)]
 public class InventoryLockUISystem : ModSystem
 {
+    static readonly string[] filtered_layers =
+        [
+            "Vanilla: Laser Ruler",
+        "Vanilla: Ruler",
+        "Vanilla: Inventory",
+        "Vanilla: Info Accessories Bar",
+        "Vanilla: Hotbar",
+    ];
+
     internal UserInterface userInterface;
     internal LimitedStorageUI limitedStorageUI;
-    private GameTime _lastUpdateUiGameTime;
     private InventoryUiConfiguration config;
 
     public override void Load()
@@ -66,7 +72,6 @@ public class InventoryLockUISystem : ModSystem
             return;
         }
 
-        _lastUpdateUiGameTime = gameTime;
         if (userInterface?.CurrentState == null)
         {
             userInterface.Update(gameTime);
@@ -81,21 +86,12 @@ public class InventoryLockUISystem : ModSystem
         }
 
         layers.RemoveAll(
-            delegate(GameInterfaceLayer layer)
+            delegate (GameInterfaceLayer layer)
             {
                 return filtered_layers.Contains(layer.Name);
             }
         );
     }
-
-    static readonly String[] filtered_layers =
-    [
-        "Vanilla: Laser Ruler",
-        "Vanilla: Ruler",
-        "Vanilla: Inventory",
-        "Vanilla: Info Accessories Bar",
-        "Vanilla: Hotbar",
-    ];
 
     public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
     {
@@ -112,16 +108,11 @@ public class InventoryLockUISystem : ModSystem
             layers.Insert(
                 mouseTextIndex,
                 new LegacyGameInterfaceLayer(
-                    "TerraCells: Inventory",
+                    "TerraCells: InventoryUI",
                     delegate
                     {
-                        // if (_lastUpdateUiGameTime != null && userInterface?.CurrentState != null)
-                        // {
-                        //     userInterface.Draw(Main.spriteBatch, _lastUpdateUiGameTime);
-                        // }
-
-                        LimitedStorageUI.CustomGUIHotbarDrawInner();
-                        LimitedStorageUI.CustomDrawInterface_27_Inventory();
+                        LimitedStorageUI.CustomGUIHotbarDrawInner(); // draws hotbar, aka inventory closed
+                        LimitedStorageUI.CustomDrawInterface_27_Inventory(); // draws inventory, aka inventory open
                         return true;
                     },
                     InterfaceScaleType.UI
@@ -264,6 +255,43 @@ public class LimitedStorageUI : UIState
                 new Vector2(positionX, num3),
                 lightColor
             );
+
+            // Show cooldown ui on hotbar
+            SkillSlotData skillSlotData = SkillModPlayer.GetSkillSlotData(i);
+
+            if (skillSlotData != null && skillSlotData.cooldownTimer > 0)
+            {
+                // Cooldown item slot indicator
+                Main.spriteBatch.Draw(TextureAssets.InventoryBack.Value,
+                    position: new Vector2(positionX, num3) + (Vector2.One * 20),
+                    sourceRectangle: new Rectangle(0, 0, 52, (int)(52 * ((float)skillSlotData.cooldownTimer / skillSlotData.cooldownTotal))),
+                    color: new Color(15, 15, 15, 128),
+                    rotation: 3.14159f,
+                    origin: new Vector2(26, 26),
+                    scale: new Vector2(Main.inventoryScale),
+                    SpriteEffects.None,
+                    layerDepth: 0f);
+
+                // Cooldown countdown text display
+                string currentCooldown = MathF.Ceiling(skillSlotData.cooldownTimer / 60).ToString();
+
+                float width = FontAssets.DeathText.Value.MeasureString(currentCooldown).X;
+                float textScale = Main.inventoryScale * 0.50f;
+
+                if (TerrariaCellsConfig.Instance.ShowCooldown)
+                {
+                    ChatManager.DrawColorCodedStringWithShadow(
+                        Main.spriteBatch,
+                        FontAssets.DeathText.Value,
+                        currentCooldown,
+                        new Vector2(positionX, num3) + (new Vector2(0f - width / 2f, 0f) * textScale) + (Vector2.One * 20),
+                        Color.White, 0,
+                        Vector2.Zero,
+                        new Vector2(textScale, textScale)
+                    );
+                }
+            }
+
             Main.inventoryScale = previousInventoryScale;
             positionX += (int)(TextureAssets.InventoryBack.Width() * Main.hotbarScale[i]) + 4;
         }
@@ -2206,17 +2234,17 @@ public class LimitedStorageUI : UIState
                     value = TextureAssets.InventoryBack7.Value;
                     break;
                 case 13:
-                {
-                    byte b = 200;
-                    if (slot == Main.player[Main.myPlayer].selectedItem)
                     {
-                        value = TextureAssets.InventoryBack14.Value;
-                        b = byte.MaxValue;
-                    }
+                        byte b = 200;
+                        if (slot == Main.player[Main.myPlayer].selectedItem)
+                        {
+                            value = TextureAssets.InventoryBack14.Value;
+                            b = byte.MaxValue;
+                        }
 
-                    color2 = new Color(b, b, b, b);
-                    break;
-                }
+                        color2 = new Color(b, b, b, b);
+                        break;
+                    }
                 case 14:
                 case 21:
                     flag2 = true;
@@ -2453,56 +2481,56 @@ public class LimitedStorageUI : UIState
                 switch (item.type)
                 {
                     case 5324:
-                    {
-                        Texture2D value10 = TextureAssets.Extra[257].Value;
-                        Rectangle rectangle5 = value10.Frame(3, 1, 2);
-                        spriteBatch.Draw(
-                            value10,
-                            position + vector3 + new Vector2(40f, 40f) * inventoryScale,
-                            rectangle5,
-                            color,
-                            0f,
-                            rectangle5.Size() / 2f,
-                            1f,
-                            SpriteEffects.None,
-                            0f
-                        );
-                        break;
-                    }
+                        {
+                            Texture2D value10 = TextureAssets.Extra[257].Value;
+                            Rectangle rectangle5 = value10.Frame(3, 1, 2);
+                            spriteBatch.Draw(
+                                value10,
+                                position + vector3 + new Vector2(40f, 40f) * inventoryScale,
+                                rectangle5,
+                                color,
+                                0f,
+                                rectangle5.Size() / 2f,
+                                1f,
+                                SpriteEffects.None,
+                                0f
+                            );
+                            break;
+                        }
                     case 5329:
-                    {
-                        Texture2D value9 = TextureAssets.Extra[257].Value;
-                        Rectangle rectangle4 = value9.Frame(3, 1, 1);
-                        spriteBatch.Draw(
-                            value9,
-                            position + vector3 + new Vector2(40f, 40f) * inventoryScale,
-                            rectangle4,
-                            color,
-                            0f,
-                            rectangle4.Size() / 2f,
-                            1f,
-                            SpriteEffects.None,
-                            0f
-                        );
-                        break;
-                    }
+                        {
+                            Texture2D value9 = TextureAssets.Extra[257].Value;
+                            Rectangle rectangle4 = value9.Frame(3, 1, 1);
+                            spriteBatch.Draw(
+                                value9,
+                                position + vector3 + new Vector2(40f, 40f) * inventoryScale,
+                                rectangle4,
+                                color,
+                                0f,
+                                rectangle4.Size() / 2f,
+                                1f,
+                                SpriteEffects.None,
+                                0f
+                            );
+                            break;
+                        }
                     case 5330:
-                    {
-                        Texture2D value8 = TextureAssets.Extra[257].Value;
-                        Rectangle rectangle3 = value8.Frame(3);
-                        spriteBatch.Draw(
-                            value8,
-                            position + vector3 + new Vector2(40f, 40f) * inventoryScale,
-                            rectangle3,
-                            color,
-                            0f,
-                            rectangle3.Size() / 2f,
-                            1f,
-                            SpriteEffects.None,
-                            0f
-                        );
-                        break;
-                    }
+                        {
+                            Texture2D value8 = TextureAssets.Extra[257].Value;
+                            Rectangle rectangle3 = value8.Frame(3);
+                            spriteBatch.Draw(
+                                value8,
+                                position + vector3 + new Vector2(40f, 40f) * inventoryScale,
+                                rectangle3,
+                                color,
+                                0f,
+                                rectangle3.Size() / 2f,
+                                1f,
+                                SpriteEffects.None,
+                                0f
+                            );
+                            break;
+                        }
                 }
             }
 
@@ -2787,7 +2815,7 @@ public class LimitedStorageUI : UIState
                     goto SkipSwap;
 
                 Utils.Swap(ref inv[slot], ref Main.mouseItem);
-                SkipSwap:
+            SkipSwap:
 
                 if (inv[slot].stack > 0)
                     ItemSlot.AnnounceTransfer(
@@ -3163,44 +3191,44 @@ public class LimitedStorageUI : UIState
                     .Invoke(null, [inv, slot, false, true]);
                 break;
             case 4:
-            {
-                if (!PlayerLoader.CanSellItem(player, player.TalkNPC, inv, Main.mouseItem))
+                {
+                    if (!PlayerLoader.CanSellItem(player, player.TalkNPC, inv, Main.mouseItem))
+                        break;
+
+                    Chest chest = Main.instance.shop[Main.npcShop];
+                    if (player.SellItem(Main.mouseItem))
+                    {
+                        int soldItemIndex = chest.AddItemToShop(Main.mouseItem);
+                        Main.mouseItem.SetDefaults();
+                        SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Coins"));
+                        ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(inv[slot], 21, 15));
+
+                        PlayerLoader.PostSellItem(
+                            player,
+                            player.TalkNPC,
+                            chest.item,
+                            chest.item[soldItemIndex]
+                        );
+                    }
+                    else if (Main.mouseItem.value == 0)
+                    {
+                        int soldItemIndex = chest.AddItemToShop(Main.mouseItem);
+                        Main.mouseItem.SetDefaults();
+                        SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Grab"));
+                        ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(inv[slot], 21, 15));
+
+                        PlayerLoader.PostSellItem(
+                            player,
+                            player.TalkNPC,
+                            chest.item,
+                            chest.item[soldItemIndex]
+                        );
+                    }
+
+                    Recipe.FindRecipes();
+                    Main.stackSplit = 9999;
                     break;
-
-                Chest chest = Main.instance.shop[Main.npcShop];
-                if (player.SellItem(Main.mouseItem))
-                {
-                    int soldItemIndex = chest.AddItemToShop(Main.mouseItem);
-                    Main.mouseItem.SetDefaults();
-                    SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Coins"));
-                    ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(inv[slot], 21, 15));
-
-                    PlayerLoader.PostSellItem(
-                        player,
-                        player.TalkNPC,
-                        chest.item,
-                        chest.item[soldItemIndex]
-                    );
                 }
-                else if (Main.mouseItem.value == 0)
-                {
-                    int soldItemIndex = chest.AddItemToShop(Main.mouseItem);
-                    Main.mouseItem.SetDefaults();
-                    SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Grab"));
-                    ItemSlot.AnnounceTransfer(new ItemSlot.ItemTransferInfo(inv[slot], 21, 15));
-
-                    PlayerLoader.PostSellItem(
-                        player,
-                        player.TalkNPC,
-                        chest.item,
-                        chest.item[soldItemIndex]
-                    );
-                }
-
-                Recipe.FindRecipes();
-                Main.stackSplit = 9999;
-                break;
-            }
             case 5:
                 if (Main.mouseItem.IsAir)
                 {
@@ -3292,54 +3320,54 @@ public class LimitedStorageUI : UIState
                     }
                     goto default;
                 default:
-                {
-                    if (Main.stackSplit > 1)
-                        break;
-
-                    bool flag = true;
-                    bool flag2 = inv[slot].maxStack <= 1 && inv[slot].stack <= 1;
-                    if (context == 0 && flag2)
-                        flag = false;
-
-                    if (context == 3 && flag2)
-                        flag = false;
-
-                    if (context == 4 && flag2)
-                        flag = false;
-
-                    if (context == 32 && flag2)
-                        flag = false;
-
-                    if (!flag)
-                        break;
-
-                    int num = Main.superFastStack + 1;
-                    for (int i = 0; i < num; i++)
                     {
-                        /*
-                        if ((Main.mouseItem.IsTheSameAs(inv[slot]) || Main.mouseItem.type == 0) && (Main.mouseItem.stack < Main.mouseItem.maxStack || Main.mouseItem.type == 0)) {
-                        */
+                        if (Main.stackSplit > 1)
+                            break;
 
-                        if (
-                            (
-                                Main.mouseItem == inv[slot]
-                                    && ItemLoader.CanStack(Main.mouseItem, inv[slot])
-                                || Main.mouseItem.type == ItemID.None
-                            )
-                            && (
-                                Main.mouseItem.stack < Main.mouseItem.maxStack
-                                || Main.mouseItem.type == ItemID.None
-                            )
-                        )
+                        bool flag = true;
+                        bool flag2 = inv[slot].maxStack <= 1 && inv[slot].stack <= 1;
+                        if (context == 0 && flag2)
+                            flag = false;
+
+                        if (context == 3 && flag2)
+                            flag = false;
+
+                        if (context == 4 && flag2)
+                            flag = false;
+
+                        if (context == 32 && flag2)
+                            flag = false;
+
+                        if (!flag)
+                            break;
+
+                        int num = Main.superFastStack + 1;
+                        for (int i = 0; i < num; i++)
                         {
-                            ItemSlot.PickupItemIntoMouse(inv, context, slot, player);
-                            SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Menu_Tick"));
-                            ItemSlot.RefreshStackSplitCooldown();
-                        }
-                    }
+                            /*
+                            if ((Main.mouseItem.IsTheSameAs(inv[slot]) || Main.mouseItem.type == 0) && (Main.mouseItem.stack < Main.mouseItem.maxStack || Main.mouseItem.type == 0)) {
+                            */
 
-                    break;
-                }
+                            if (
+                                (
+                                    Main.mouseItem == inv[slot]
+                                        && ItemLoader.CanStack(Main.mouseItem, inv[slot])
+                                    || Main.mouseItem.type == ItemID.None
+                                )
+                                && (
+                                    Main.mouseItem.stack < Main.mouseItem.maxStack
+                                    || Main.mouseItem.type == ItemID.None
+                                )
+                            )
+                            {
+                                ItemSlot.PickupItemIntoMouse(inv, context, slot, player);
+                                SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Menu_Tick"));
+                                ItemSlot.RefreshStackSplitCooldown();
+                            }
+                        }
+
+                        break;
+                    }
             }
         }
     }

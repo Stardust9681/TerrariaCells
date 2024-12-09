@@ -1,3 +1,4 @@
+
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
@@ -10,8 +11,9 @@ using Terraria.ModLoader;
 using Terraria.UI;
 using TerrariaCells.Common;
 
-namespace TerrariaCells.Content.UI;
+namespace TerrariaCells.Common.Items;
 
+/// Handles the logic behind locking inventory slots
 [Autoload(Side = ModSide.Both)]
 public class InventoryManager : ModSystem, IEntitySource
 {
