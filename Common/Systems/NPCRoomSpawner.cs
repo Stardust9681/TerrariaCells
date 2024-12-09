@@ -163,6 +163,7 @@ namespace TerrariaCells.Common.Systems
 			}
 			return result;
 		}
+
 		public short Width => Size().X;
 		public short Height => Size().Y;
 
@@ -181,7 +182,7 @@ namespace TerrariaCells.Common.Systems
 			if (InRange(Main.player[playerIndex].Center))
 			{
 				//Any other room load behaviours to add here?
-				HandleSpawns();
+				a_HandleSpawns();
 			}
 		}
 		//Returns true if player is within a specified distance of all edges
@@ -204,6 +205,32 @@ namespace TerrariaCells.Common.Systems
 			}
 			didSpawns = true;
 		}
+
+		#region Alpha Testing Hax
+		public RoomMarker(Point position, string roomName, ushort tileWidth, ushort tileHeight) : this(position, roomName)
+		{
+			a_width = tileWidth;
+			a_height = tileHeight;
+		}
+
+		/// <summary>
+		/// Width in tiles
+		/// </summary>
+		public ushort a_width = 0;
+		/// <summary>
+		/// Height in tiles
+		/// </summary>
+		public ushort a_height = 0;
+		private void a_HandleSpawns()
+		{
+			if (didSpawns) return;
+			foreach (NPCSpawnInfo info in GetNPCSpawns().NPCs)
+			{
+				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (Left + info.OffsetX) * 16, (Top + a_height - info.OffsetY) * 16, info.NPCType);
+			}
+			didSpawns = true;
+		}
+		#endregion
 	}
 
 	public struct RoomSpawnInfo
