@@ -22,10 +22,21 @@ namespace TerrariaCells.Common.GlobalNPCs
 				case NPCID.Wolf:
 					npc.lifeMax = 75;
 					npc.damage = 25;
+					npc.defense = 6;
 					break;
 				case NPCID.Raven:
 					npc.lifeMax = 20;
 					npc.damage = 15;
+					break;
+				case NPCID.Mummy:
+					npc.lifeMax += 25;
+					npc.defense += 6;
+					break;
+				case NPCID.DesertGhoul:
+					npc.defense = 12;
+					break;
+				case NPCID.DesertDjinn:
+					npc.defense = 10;
 					break;
 				case NPCID.CultistDevote:
 					npc.lifeMax = 150;
