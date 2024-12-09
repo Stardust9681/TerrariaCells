@@ -116,4 +116,11 @@ Items: {
 		Tooltip: ""
 		DisplayName: Room Connector Item
 	}
+
+	ExamplePylonItem: {
+		DisplayName: Example Pylon Item
+		Tooltip: ""
+	}
 }
+
+Tiles.ExamplePylonTile.MapEntry: Example Pylon Tile
