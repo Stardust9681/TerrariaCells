@@ -1,4 +1,4 @@
-namespace TerrariaCells.Content.UI;
+namespace TerrariaCells.Common.Items;
 
 public enum TerraCellsItemCategory
 {

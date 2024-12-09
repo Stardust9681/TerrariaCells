@@ -61,7 +61,7 @@ namespace TerrariaCells.Common.GlobalProjectiles
                     Player target = Main.player[(int)projectile.ai[1]];
                     if (owner != null)
                     {
-                        if (owner.ai[3] == 60)
+                        if (owner.ai[3] == 240)
                         {
                             projectile.ai[0] = target.Center.X + Main.rand.Next(-50, 50) + target.velocity.X;
                             projectile.ai[1] = target.Center.Y + Main.rand.Next(-50, 50) + target.velocity.Y;

@@ -17,6 +17,15 @@ namespace TerrariaCells.Common.Systems
 {
 	public class NPCRoomSpawner : ModSystem
 	{
+		public override void ClearWorld()
+		{
+			RoomMarkers ??= new List<RoomMarker>();
+			RoomMarkers.Clear();
+			RoomMarkers.Add(new RoomMarker(new Point(492, 338), RoomMarker.GetInternalRoomName("ForestPremade", "forest_premade"), 700, 70));
+			RoomMarkers.Add(new RoomMarker(new Point(1946, 456), RoomMarker.GetInternalRoomName("DesertPremade", "desert_premade"), 831, 192));
+			RoomMarkers.Add(new RoomMarker(new Point(3475, 368), RoomMarker.GetInternalRoomName("FrozenCityPremade", "frozencity_premade"), 767, 166));
+		}
+
 		/// <summary> Add entries to this list during biome generation. </summary>
 		public static List<RoomMarker> RoomMarkers = new List<RoomMarker>();
 		/// <summary>
@@ -48,12 +57,12 @@ namespace TerrariaCells.Common.Systems
 					{
 						string roomName = room.GetItem<string>("Name"); //name from room
 
-						if (!string.IsNullOrEmpty(roomName)) //In case no name provided
+						if (!string.IsNullOrEmpty(roomName))
 						{
-							if(!roomName.StartsWith(biomeName))
-								roomName = $"{biomeName}_{roomName}";
+							roomName = RoomMarker.GetInternalRoomName(biomeName, roomName);
+							Mod.Logger.Info(roomName);
 						}
-						else
+						else //In case no name provided
 						{
 							roomName = $"{biomeName}_roomNo{roomCount}";
 							Mod.Logger.Warn($"JSON: No room name was provided for Biome:{biomeName} Room:#{roomCount}, one has been automatically created for you: {roomName}");
@@ -82,12 +91,13 @@ namespace TerrariaCells.Common.Systems
 			for (int i = 0; i < Main.maxPlayers; i++)
 			{
 				if (!Main.player[i].active) continue;
-				foreach (RoomMarker marker in RoomMarkers) marker.Update(i);
+				foreach (RoomMarker marker in RoomMarkers) marker.a_Update(i);
 			}
 		}
 
 		public override void SaveWorldData(TagCompound tag)
 		{
+			return;
 			tag.Add($"{nameof(RoomMarkers)}_Count", RoomMarkers.Count);
 			for(int i = 0; i < RoomMarkers.Count; i++)
 			{
@@ -99,6 +109,7 @@ namespace TerrariaCells.Common.Systems
 		}
 		public override void LoadWorldData(TagCompound tag)
 		{
+			return;
 			RoomMarkers ??= new List<RoomMarker>();
 			//TagCompound.Get<T>(..) will return default(T) if key not found
 			int roomMarkersCount = tag.Get<int>($"{nameof(RoomMarkers)}_Count");
@@ -120,8 +131,8 @@ namespace TerrariaCells.Common.Systems
 	public class RoomMarker
 	{
 		public static string GetInternalRoomName(string biome, string roomName) => $"{biome}_{roomName}";
-		/// <summary> 32 Tiles </summary>
-		public const float LOAD_RANGE = 512;
+		/// <summary> 30 Tiles </summary>
+		public const float LOAD_RANGE = 480;
 
 		/// <param name="position">Position in TILE COORDINATES (xy/16)</param>
 		/// <param name="size">Size in TILES (xy/16)</param>
@@ -182,7 +193,7 @@ namespace TerrariaCells.Common.Systems
 			if (InRange(Main.player[playerIndex].Center))
 			{
 				//Any other room load behaviours to add here?
-				a_HandleSpawns();
+				HandleSpawns();
 			}
 		}
 		//Returns true if player is within a specified distance of all edges
@@ -209,6 +220,7 @@ namespace TerrariaCells.Common.Systems
 		#region Alpha Testing Hax
 		public RoomMarker(Point position, string roomName, ushort tileWidth, ushort tileHeight) : this(position, roomName)
 		{
+			ModContent.GetInstance<TerrariaCells>().Logger.Info(roomName);
 			a_width = tileWidth;
 			a_height = tileHeight;
 		}
@@ -221,12 +233,31 @@ namespace TerrariaCells.Common.Systems
 		/// Height in tiles
 		/// </summary>
 		public ushort a_height = 0;
+
+		internal void a_Update(int playerIndex)
+		{
+			if (a_InRange(Main.player[playerIndex].Center))
+			{
+				//Any other room load behaviours to add here?
+				a_HandleSpawns();
+			}
+		}
+
+		private bool a_InRange(Vector2 pos)
+		{
+			return
+				((Left * 16) - LOAD_RANGE) < pos.X
+				&& pos.X < (((Left + a_width) * 16) + LOAD_RANGE)
+				&& ((Top * 16) - LOAD_RANGE) < pos.Y
+				&& pos.Y < (((Top + a_height) * 16) + LOAD_RANGE);
+		}
+
 		private void a_HandleSpawns()
 		{
 			if (didSpawns) return;
 			foreach (NPCSpawnInfo info in GetNPCSpawns().NPCs)
 			{
-				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (Left + info.OffsetX) * 16, (Top + a_height - info.OffsetY) * 16, info.NPCType);
+				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (Left + info.OffsetX) * 16 + 8, (Top + a_height - info.OffsetY) * 16 + 8, info.NPCType);
 			}
 			didSpawns = true;
 		}

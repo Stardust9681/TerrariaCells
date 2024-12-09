@@ -1,3 +1,4 @@
+
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
@@ -10,8 +11,9 @@ using Terraria.ModLoader;
 using Terraria.UI;
 using TerrariaCells.Common;
 
-namespace TerrariaCells.Content.UI;
+namespace TerrariaCells.Common.Items;
 
+/// Handles the logic behind locking inventory slots
 [Autoload(Side = ModSide.Both)]
 public class InventoryManager : ModSystem, IEntitySource
 {
@@ -76,10 +78,11 @@ public class InventoryManager : ModSystem, IEntitySource
     private static readonly Dictionary<short, TerraCellsItemCategory> VanillaItemCategorizations =
         new()
         {
-            { ItemID.PhoenixBlaster, TerraCellsItemCategory.Weapon }, //219
-            { ItemID.SniperRifle, TerraCellsItemCategory.Weapon }, //1254
-            { ItemID.OnyxBlaster, TerraCellsItemCategory.Weapon }, //
-            { ItemID.RocketLauncher, TerraCellsItemCategory.Weapon }, //759
+            // Weapons
+            { ItemID.PhoenixBlaster, TerraCellsItemCategory.Weapon },
+            { ItemID.SniperRifle, TerraCellsItemCategory.Weapon },
+            { ItemID.OnyxBlaster, TerraCellsItemCategory.Weapon },
+            { ItemID.RocketLauncher, TerraCellsItemCategory.Weapon },
             { ItemID.StarCannon, TerraCellsItemCategory.Weapon },
             { ItemID.PulseBow, TerraCellsItemCategory.Weapon },
             { ItemID.IceBow, TerraCellsItemCategory.Weapon },
@@ -190,10 +193,10 @@ public class InventoryManager : ModSystem, IEntitySource
             { ItemID.BandofRegeneration, StorageItemSubcategorization.Accessory },
             { ItemID.FastClock, StorageItemSubcategorization.Accessory },
             { ItemID.CelestialStone, StorageItemSubcategorization.Accessory },
-            { ItemID.CopperCoin, StorageItemSubcategorization.Accessory },
-            { ItemID.SilverCoin, StorageItemSubcategorization.Accessory },
-            { ItemID.GoldCoin, StorageItemSubcategorization.Accessory },
-            { ItemID.PlatinumCoin, StorageItemSubcategorization.Accessory },
+            { ItemID.CopperCoin, StorageItemSubcategorization.Coin },
+            { ItemID.SilverCoin, StorageItemSubcategorization.Coin },
+            { ItemID.GoldCoin, StorageItemSubcategorization.Coin },
+            { ItemID.PlatinumCoin, StorageItemSubcategorization.Coin },
         };
 
     public override void Load()

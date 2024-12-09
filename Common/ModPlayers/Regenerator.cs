@@ -426,5 +426,12 @@ namespace TerrariaCells.Common.ModPlayers
 				Player.KillMe(reason, 1, 0);
 			}
 		}
+
+		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource)
+		{
+			bool result = base.PreKill(damage, hitDirection, pvp, ref playSound, ref genDust, ref damageSource);
+			if (result) SetStaggerDamage(0);
+			return result;
+		}
 	}
 }

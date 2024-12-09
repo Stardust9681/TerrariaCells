@@ -10,6 +10,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Utilities;
 using TerrariaCells.Common.Utilities;
+using TerrariaCells.Content.Projectiles;
 
 namespace TerrariaCells.Common.GlobalNPCs
 {
@@ -26,6 +27,8 @@ namespace TerrariaCells.Common.GlobalNPCs
                 entity.noTileCollide = true;
                 NPCID.Sets.TrailCacheLength[entity.type] = 5;
                 NPCID.Sets.TrailingMode[entity.type] = 1;
+                entity.ai[1] = entity.Center.X;
+                entity.ai[2] = entity.Center.Y;
             }
         }
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -52,7 +55,30 @@ namespace TerrariaCells.Common.GlobalNPCs
             }
             base.FindFrame(npc, frameHeight);
         }
-        
+        public void OnHit(NPC npc, NPC.HitInfo hit, int damageDone)
+        {
+            if (npc.type == NPCID.CultistDevote && npc.GetLifePercent() > 0.5f)
+            {
+                for (int i = 0; i < Main.maxProjectiles; i++)
+                {
+                    if (Main.projectile[i].type == ModContent.ProjectileType<IceBall>() && Main.projectile[i].ai[1] == npc.whoAmI && Main.projectile[i].active && Main.projectile[i].timeLeft > 140)
+                    {
+                        Main.projectile[i].Kill();
+                    }
+                }
+                npc.ai[0] = 0;
+            }
+        }
+        public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
+        {
+            OnHit(npc, hit, damageDone);
+        }
+        public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
+        {
+            OnHit(npc, hit, damageDone);
+            
+        }
+
         public override bool PreAI(NPC npc)
         {
             npc.TargetClosest();

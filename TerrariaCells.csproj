@@ -6,6 +6,10 @@
 
 	<!-- General -->
 	<ItemGroup>
+	  <None Remove="Common\UI\Indicator.png" />
+	  <None Remove="Common\UI\ReloadBar.png" />
+	  <None Remove="Common\UI\SuccessRange.png" />
+	  <None Remove="Content\Projectiles\HeldProjectiles\ShotgunShell.png" />
 	  <None Remove="Common\Assets\DesertScorpionStab.png" />
 	  <None Remove="Common\Assets\GrayscaleExplosion.png" />
 	  <None Remove="Common\Assets\MummyShockwave.png" />

@@ -96,7 +96,14 @@ namespace TerrariaCells.Common.GlobalNPCs
                 npc.velocity.X += 0.2f;
                 
             }
-
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC n = Main.npc[i];
+                if (n.active && n.type == NPCID.Vulture && n.Hitbox.Intersects(npc.Hitbox))
+                {
+                    npc.velocity -= (n.Center - npc.Center).SafeNormalize(Vector2.Zero) * 0.1f;
+                }
+            }
 
         }
     }
