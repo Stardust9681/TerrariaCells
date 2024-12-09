@@ -38,8 +38,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 
 		void ApproachTargetAI(NPC npc) //No hitbox when walking
 		{
-			if (npc.Timer() == 0)
-				CombatNPC.ToggleContactDamage(npc, false);
 			Player target = Main.player[npc.target];
 			npc.direction = npc.velocity.X < 0 ? -1 : 1;
 			Vector2 distance = new Vector2(MathF.Abs(target.position.X - npc.position.X), MathF.Abs(target.position.Y - npc.position.Y));
@@ -63,6 +61,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				npc.velocity.X = newVel;
 			else
 				npc.velocity.X = npc.direction * MaxSpeed;
+
+			CombatNPC.ToggleContactDamage(npc, Math.Abs(npc.velocity.X) > MaxSpeed * 0.67f);
+			if (npc.FindGroundInFront().Y > (npc.Bottom.Y + (npc.height * 2)))
+			{
+				npc.Phase(Jump);
+				return;
+			}
 
 			if (npc.collideX)
 			{

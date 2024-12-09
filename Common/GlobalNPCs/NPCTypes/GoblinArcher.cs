@@ -61,6 +61,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			else
 				npc.velocity.X = npc.direction * MaxSpeed;
 
+			if (npc.FindGroundInFront().Y > (npc.Bottom.Y + (npc.height * 2)))
+			{
+				npc.velocity.X = 0;
+				npc.Phase(FireArrows);
+				return;
+			}
+
 			if (npc.collideX)
 			{
 				Vector2 oldPos = npc.position;
@@ -120,7 +127,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 					d.velocity = d.velocity.RotatedByRandom(MathHelper.ToRadians(15));
 				}
 			}
-			else if (time > 90)
+			else if (time > 60)
 			{
 				int xy = (int)npc.ai[3];
 				(int x, int y) = ((xy & (int.MaxValue << 16)) >> 16, xy & (int.MaxValue >> 16));
@@ -135,7 +142,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				return;
 			}
 			npc.velocity.X *= 0.9f;
-			npc.Timer(time + 1);
+			npc.DoTimer();
 		}
 	}
 }

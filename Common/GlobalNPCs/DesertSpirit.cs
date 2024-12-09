@@ -42,8 +42,7 @@ namespace TerrariaCells.Common.GlobalNPCs
         }
         public bool DesertSpiritAI(NPC npc, Player target)
         {
-            Main.NewText("guh");
-            int timeRotating = 300;
+            const int timeRotating = 300;
             if (npc.HasValidTarget)
             {
                 npc.direction = npc.Center.X > target.Center.X ? -1 : 1;

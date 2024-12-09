@@ -1,28 +1,3 @@
-DisableZoom: {
-	Label: Disable Zoom Cap
-	Tooltip: Disables the >175% cap on the game's zoom
-}
-
-Projectiles: {
-	MummySlam.DisplayName: Mummy Slam
-	PoacherStab.DisplayName: Poacher Stab
-	MummyShockwave.DisplayName: Mummy Shockwave
-	VultureBone.DisplayName: Vulture Bone
-	Slash.DisplayName: Slash
-	IceArrow.DisplayName: Ice Arrow
-	IceBall.DisplayName: Ice Ball
-	IceShard.DisplayName: Ice Shard
-	IceSpike.DisplayName: Ice Spike
-	IllusionBrainHitbox.DisplayName: Illusion Brain Hitbox
-}
-
-Items: {
-	RoomConnectorItem: {
-		DisplayName: Room Connector Item
-		Tooltip: ""
-	}
-}
-
 Configs: {
 	InventoryUiConfiguration: {
 		DisplayName: Inventory Ui Configuration
@@ -47,8 +22,105 @@ Configs: {
 		DisplayName: Terraria Cells Config
 
 		DisableZoom: {
-			Label: Disable Zoom
+			Label: Disable Zoom Cap
+			Tooltip: Disables the >175% cap on the game's zoom
+		}
+
+		Headers.SkillUI: Skills UI
+
+		ShowKeybind: {
+			Label: Show Keybind
+			Tooltip: Displays the keybind that is associated with each skill slot
+		}
+
+		ShowCooldown: {
+			Label: Show Cooldown Text
+			Tooltip: Display the cooldown time left in text
+		}
+	}
+
+	WeaponUIConfig: {
+		DisplayName: Weapon U I Config
+
+		DragUI: {
+			Label: Drag U I
+			Tooltip: ""
+		}
+
+		FadeOut: {
+			Label: Fade Out
+			Tooltip: ""
+		}
+
+		Scale: {
+			Label: Scale
 			Tooltip: ""
 		}
 	}
 }
+
+Projectiles: {
+	Shotgun.DisplayName: Shotgun
+	Bow.DisplayName: Bow
+	Sword.DisplayName: Sword
+	AmmoResidue.DisplayName: Ammo Residue
+	GunExplosion.DisplayName: Gun Explosion
+	Autorifle.DisplayName: Autorifle
+	Handgun.DisplayName: Handgun
+	Musket.DisplayName: Musket
+	Sniper.DisplayName: Sniper
+	SniperShot.DisplayName: Sniper Shot
+	Guns.DisplayName: Guns
+	ExplosionModProjectile.DisplayName: Explosion
+	VultureBone.DisplayName: Vulture Bone
+	Slash.DisplayName: Slash
+	PoacherStab.DisplayName: Poacher Stab
+	MummyShockwave.DisplayName: Mummy Shockwave
+	IceSpike.DisplayName: Ice Spike
+	IceShard.DisplayName: Ice Shard
+	IceBall.DisplayName: Ice Ball
+	IceArrow.DisplayName: Ice Arrow
+	IllusionBrainHitbox.DisplayName: Illusion Brain Hitbox
+}
+
+Tooltips: {
+	ShiftHint: Hold [shift] for Skill Info
+	SkillStats: Skill Stats:
+	Cooldown: Cooldown: {0} Seconds
+	SummonTime: Summon Time: {0} Seconds
+	AttacksPerSecond: " ({0} Attacks Per Second)"
+}
+
+Keybinds: {
+	"First Skill.DisplayName": First Skill
+	"Second Skill.DisplayName": Second Skill
+}
+
+BurnOnHit: {
+	Name: Burning
+	Description: 50% chance to burn your target on hit
+}
+
+Electrified: {
+	Name: Electrified
+	Description: 75% chance to electrocute your target on hit
+}
+
+ExplodeOnHit: {
+	Name: Exploding
+	Description: 30% chance to explode your target on hit
+}
+
+Items: {
+	RoomConnectorItem: {
+		Tooltip: ""
+		DisplayName: Room Connector Item
+	}
+
+	ExamplePylonItem: {
+		DisplayName: Example Pylon Item
+		Tooltip: ""
+	}
+}
+
+Tiles.ExamplePylonTile.MapEntry: Example Pylon Tile

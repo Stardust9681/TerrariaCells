@@ -40,9 +40,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		private void CastingAI(NPC npc)
 		{
 			int timer = npc.Timer();
+			if(timer == 0)
+				CombatNPC.ToggleContactDamage(npc, true);
 			if (timer % 45 == 0)
 			{
-				NPC.NewNPCDirect(npc.GetSource_FromAI(), npc.Center, Terraria.ID.NPCID.ChaosBall).velocity = npc.DirectionTo(Main.player[npc.target].Center) * 6f;
+				NPC ball = NPC.NewNPCDirect(npc.GetSource_FromAI(), npc.Center, Terraria.ID.NPCID.ChaosBall);
+				ball.velocity = npc.DirectionTo(Main.player[npc.target].Center) * 6f;
+				ball.damage = npc.damage / 2;
 			}
 			if (timer > 45 * 3)
 			{
@@ -107,7 +111,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				npc.ai[2] = ground.X;
 				npc.ai[3] = ground.Y;
 			}
-			if (npc.Timer() > 270)
+			if (npc.Timer() > 210)
 			{
 				for (int i = 0; i < 7; i++)
 				{
@@ -115,6 +119,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 					d.scale = Main.rand.NextFloat(1.33f, 1.67f);
 				}
 				npc.position = new Vector2(npc.ai[2], npc.ai[3] - npc.height);
+				CombatNPC.ToggleContactDamage(npc, true);
 				npc.Phase(Casting);
 				return;
 			}
@@ -125,12 +130,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				d.velocity.Y = -MathF.Abs(d.velocity.Y) * 0.67f - (1 - MathF.Abs(d.velocity.X));
 			}
 			npc.velocity.X *= 0.8f;
-			npc.Timer(npc.Timer() + 1);
-		}
-
-		public override void FindFrame(NPC npc)
-		{
-			base.FindFrame(npc);
+			npc.DoTimer();
 		}
 	}
 }
