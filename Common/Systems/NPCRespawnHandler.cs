@@ -74,7 +74,7 @@ namespace TerrariaCells.Common.Systems
                 return;
 
             List<Rectangle> respawnRects = new List<Rectangle>();
-            Vector2 rectSize = new Vector2(2608f*0.45f, 1840f*0.45f);
+            Vector2 rectSize = new Vector2(2608f*0.67f, 1840f*0.67f);
             for (int i = 0; i < Main.maxPlayers; i++)
             {
                 Player player = Main.player[i];
@@ -115,6 +115,7 @@ namespace TerrariaCells.Common.Systems
                     new EntitySource_RevengeSystem(),
                     marker.RespawnTile.ToWorldCoordinates(),
                     marker.NPCType);
+				Main.NewText(newNPC.FullName);
                 if (marker.HealthLeft != newNPC.lifeMax)
                 {
                     newNPC.life = marker.HealthLeft;

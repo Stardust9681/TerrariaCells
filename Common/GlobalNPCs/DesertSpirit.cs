@@ -48,7 +48,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                 npc.direction = npc.Center.X > target.Center.X ? -1 : 1;
                 npc.spriteDirection = npc.direction;
             }
-            if (npc.ai[3] > timeRotating)
+            if (npc.ai[3] <= 0)
             {
                 Vector2 tpos = npc.Center;
                 if (npc.HasValidTarget)
@@ -71,7 +71,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                 Vector2 rotpos = npc.Center - new Vector2(0, 15);
                 npc.ai[1] = rotpos.X;
                 npc.ai[2] = rotpos.Y;
-                npc.ai[3] = 0;
+                npc.ai[3] = timeRotating;
                 
                  
             }
@@ -82,7 +82,7 @@ namespace TerrariaCells.Common.GlobalNPCs
             }
             npc.Center = new Vector2(npc.ai[1], npc.ai[2]) + new Vector2((float)Math.Sin(MathHelper.ToRadians(npc.ai[3] * 2)) * 50, (float)Math.Sin(MathHelper.ToRadians(npc.ai[3]*5))*10);
            
-            npc.ai[3]++;
+            npc.ai[3]--;
             
 
             return false;
