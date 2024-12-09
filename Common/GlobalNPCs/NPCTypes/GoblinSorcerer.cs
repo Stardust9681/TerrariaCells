@@ -77,11 +77,15 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 
 				for (int i = 0; i < RayCount; i++)
 				{
-					Vector2 start = target.Center;
+					Vector2 start = target.Center * rays[i] * (MaxDistance / PxPerTile);
 					for (int j = 0; j < MaxDistance / PxPerTile; j++)
 					{
-						if (Collision.CanHitLine(start, 8, 8, start + rays[i], 8, 8))
-							start += rays[i];
+						Rectangle tpRect = new Rectangle((int)start.X - (npc.width / 2), (int)start.Y - (npc.height / 2), npc.width, npc.height);
+						if (!Collision.SolidTiles(tpRect.Location.ToVector2(), npc.width, npc.height)
+							&& (Utilities.TCellsUtils.FindGround(tpRect).Y < tpRect.Bottom + (npc.height * 2)))
+							start -= rays[i];
+						//if (Collision.CanHitLine(start, 8, 8, start + rays[i], 8, 8))
+						//start += rays[i];
 						else
 						{
 							break;
