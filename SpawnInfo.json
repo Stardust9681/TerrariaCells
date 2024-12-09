@@ -1,0 +1,848 @@
+{
+  "Biomes": [
+    { "BiomeName": "Forest",
+      "Rooms": [
+        { "Name": "forest_medium_scaffolds",
+          "SpawnInfo": [
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "40",
+              "OffsetY": "11"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "23",
+              "OffsetY": "5"
+            }
+          ]
+        },
+        { "Name": "forest_large_cavern",
+          "SpawnInfo": [
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "40",
+              "OffsetY": "31"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "44",
+              "OffsetY": "31"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "100",
+              "OffsetY": "24"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "13",
+              "OffsetY": "28"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "68",
+              "OffsetY": "20"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "25",
+              "OffsetY": "9"
+            }
+          ]
+        },
+        { "Name": "forest_large_ruinedhouse",
+          "SpawnInfo": [
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "20",
+              "OffsetY": "19"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "44",
+              "OffsetY": "17"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "25",
+              "OffsetY": "53"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "103",
+              "OffsetY": "21"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "100",
+              "OffsetY": "39"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "110",
+              "OffsetY": "39"
+            }
+          ]
+        },
+        { "Name": "forest_large_windmill",
+          "SpawnInfo": [
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "17",
+              "OffsetY": "6"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "30",
+              "OffsetY": "13"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "71",
+              "OffsetY": "5"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "30",
+              "OffsetY": "4"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "57",
+              "OffsetY": "13"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "103",
+              "OffsetY": "27"
+            }
+          ]
+        },
+        { "Name": "forest_medium_bigtree",
+          "SpawnInfo": [
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "12",
+              "OffsetY": "7"
+            }
+          ]
+        },
+        { "Name": "forest_medium_log",
+          "SpawnInfo": [
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "22",
+              "OffsetY": "4"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "16",
+              "OffsetY": "16"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "30",
+              "OffsetY": "17"
+            }
+          ]
+        },
+        { "Name": "forest_large_water",
+          "SpawnInfo": [
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "43",
+              "OffsetY": "32"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "28",
+              "OffsetY": "32"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "62",
+              "OffsetY": "27"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "65",
+              "OffsetY": "27"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "57",
+              "OffsetY": "25"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "9",
+              "OffsetY": "30"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "176",
+              "OffsetY": "32"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "170",
+              "OffsetY": "44"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "184",
+              "OffsetY": "45"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "216",
+              "OffsetY": "35"
+            }
+          ]
+        }
+      ]
+    },
+    { "BiomeName": "ForestPremade",
+      "Rooms": [
+        { "Name": "forest_premade",
+          "SpawnInfo": [
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "102",
+              "OffsetY": "32"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "87",
+              "OffsetY": "32"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "121",
+              "OffsetY": "27"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "124",
+              "OffsetY": "27"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "116",
+              "OffsetY": "25"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "69",
+              "OffsetY": "30"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "304",
+              "OffsetY": "43"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "287",
+              "OffsetY": "37"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "359",
+              "OffsetY": "41"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "363",
+              "OffsetY": "41"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "419",
+              "OffsetY": "34"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "332",
+              "OffsetY": "38"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "387",
+              "OffsetY": "30"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "344",
+              "OffsetY": "19"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "450",
+              "OffsetY": "27"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "474",
+              "OffsetY": "25"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "455",
+              "OffsetY": "61"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "533",
+              "OffsetY": "29"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "530",
+              "OffsetY": "47"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "540",
+              "OffsetY": "47"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "658",
+              "OffsetY": "29"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "671",
+              "OffsetY": "36"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "712",
+              "OffsetY": "28"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "671",
+              "OffsetY": "7"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "697",
+              "OffsetY": "36"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "744",
+              "OffsetY": "50"
+            }
+          ]
+        }
+      ]
+    },
+    { "BiomeName": "FrozenCityPremade",
+      "Rooms": [
+        { "Name": "frozencity_premade",
+          "SpawnInfo": [
+            {
+              "NameOrType": "IceGolem",
+              "OffsetX": "138",
+              "OffsetY": "107"
+            },
+            {
+              "NameOrType": "CultistArcher",
+              "OffsetX": "157",
+              "OffsetY": "118"
+            },
+            {
+              "NameOrType": "CultistArcher",
+              "OffsetX": "162",
+              "OffsetY": "113"
+            },
+            {
+              "NameOrType": "IceElemental",
+              "OffsetX": "179",
+              "OffsetY": "93"
+            },
+            {
+              "NameOrType": "IceElemental",
+              "OffsetX": "217",
+              "OffsetY": "114"
+            },
+            {
+              "NameOrType": "IceElemental",
+              "OffsetX": "215",
+              "OffsetY": "123"
+            },
+            {
+              "NameOrType": "CultistMage",
+              "OffsetX": "221",
+              "OffsetY": "104"
+            },
+            {
+              "NameOrType": "CultistArcher",
+              "OffsetX": "238",
+              "OffsetY": "125"
+            },
+            {
+              "NameOrType": "CultistArcher",
+              "OffsetX": "237",
+              "OffsetY": "113"
+            },
+            {
+              "NameOrType": "CultistMage",
+              "OffsetX": "251",
+              "OffsetY": "107"
+            },
+            {
+              "NameOrType": "IceElemental",
+              "OffsetX": "250",
+              "OffsetY": "119"
+            },
+            {
+              "NameOrType": "IceElemental",
+              "OffsetX": "244",
+              "OffsetY": "119"
+            },
+            {
+              "NameOrType": "CultistMage",
+              "OffsetX": "283",
+              "OffsetY": "83"
+            },
+            {
+              "NameOrType": "CultistMage",
+              "OffsetX": "306",
+              "OffsetY": "71"
+            },
+            {
+              "NameOrType": "CultistArcher",
+              "OffsetX": "289",
+              "OffsetY": "73"
+            },
+            {
+              "NameOrType": "CultistArcher",
+              "OffsetX": "325",
+              "OffsetY": "91"
+            },
+            {
+              "NameOrType": "CultistArcher",
+              "OffsetX": "351",
+              "OffsetY": "114"
+            },
+            {
+              "NameOrType": "IceElemental",
+              "OffsetX": "365",
+              "OffsetY": "116"
+            },
+            {
+              "NameOrType": "IceElemental",
+              "OffsetX": "369",
+              "OffsetY": "114"
+            },
+            {
+              "NameOrType": "IceGolem",
+              "OffsetX": "408",
+              "OffsetY": "46"
+            },
+            {
+              "NameOrType": "CultistArcher",
+              "OffsetX": "413",
+              "OffsetY": "71"
+            },
+            {
+              "NameOrType": "CultistArcher",
+              "OffsetX": "428",
+              "OffsetY": "46"
+            },
+            {
+              "NameOrType": "CultistMage",
+              "OffsetX": "426",
+              "OffsetY": "121"
+            },
+            {
+              "NameOrType": "CultistMage",
+              "OffsetX": "434",
+              "OffsetY": "121"
+            },
+            {
+              "NameOrType": "CultistMage",
+              "OffsetX": "440",
+              "OffsetY": "121"
+            },
+            {
+              "NameOrType": "CultistArcher",
+              "OffsetX": "446",
+              "OffsetY": "122"
+            },
+            {
+              "NameOrType": "CultistMage",
+              "OffsetX": "443",
+              "OffsetY": "150"
+            },
+            {
+              "NameOrType": "CultistMage",
+              "OffsetX": "442",
+              "OffsetY": "152"
+            },
+            {
+              "NameOrType": "IceElemental",
+              "OffsetX": "441",
+              "OffsetY": "155"
+            },
+            {
+              "NameOrType": "CultistArcher",
+              "OffsetX": "535",
+              "OffsetY": "112"
+            },
+            {
+              "NameOrType": "CultistMage",
+              "OffsetX": "530",
+              "OffsetY": "118"
+            },
+            {
+              "NameOrType": "CultistMage",
+              "OffsetX": "660",
+              "OffsetY": "110"
+            },
+            {
+              "NameOrType": "CultistMage",
+              "OffsetX": "666",
+              "OffsetY": "114"
+            },
+            {
+              "NameOrType": "CultistMage",
+              "OffsetX": "666",
+              "OffsetY": "120"
+            },
+            {
+              "NameOrType": "CultistMage",
+              "OffsetX": "666",
+              "OffsetY": "126"
+            },
+            {
+              "NameOrType": "CultistArcher",
+              "OffsetX": "660",
+              "OffsetY": "130"
+            },
+            {
+              "NameOrType": "CultistArcher",
+              "OffsetX": "645",
+              "OffsetY": "114"
+            },
+            {
+              "NameOrType": "IceElemental",
+              "OffsetX": "657",
+              "OffsetY": "120"
+            },
+            {
+              "NameOrType": "IceElemental",
+              "OffsetX": "666",
+              "OffsetY": "124"
+            },
+            {
+              "NameOrType": "CultistArcher",
+              "OffsetX": "675",
+              "OffsetY": "132"
+            }
+          ]
+        }
+      ]
+    },
+    { "BiomeName": "DesertPremade",
+      "Rooms": [
+        { "Name": "desert_premade",
+          "SpawnInfo": [
+            {
+              "NameOrType": "Vulture",
+              "OffsetX": "179",
+              "OffsetY": "165"
+            },
+            {
+              "NameOrType": "Vulture",
+              "OffsetX": "201",
+              "OffsetY": "169"
+            },
+            {
+              "NameOrType": "Vulture",
+              "OffsetX": "226",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "Vulture",
+              "OffsetX": "234",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "Scorpion",
+              "OffsetX": "257",
+              "OffsetY": "153"
+            },
+            {
+              "NameOrType": "Scorpion",
+              "OffsetX": "272",
+              "OffsetY": "153"
+            },
+            {
+              "NameOrType": "Scorpion",
+              "OffsetX": "304",
+              "OffsetY": "125"
+            },
+            {
+              "NameOrType": "Scorpion",
+              "OffsetX": "319",
+              "OffsetY": "124"
+            },
+            {
+              "NameOrType": "Scorpion",
+              "OffsetX": "338",
+              "OffsetY": "125"
+            },
+            {
+              "NameOrType": "Scorpion",
+              "OffsetX": "345",
+              "OffsetY": "127"
+            },
+            {
+              "NameOrType": "Scorpion",
+              "OffsetX": "367",
+              "OffsetY": "153"
+            },
+            {
+              "NameOrType": "Scorpion",
+              "OffsetX": "482",
+              "OffsetY": "153"
+            },
+            {
+              "NameOrType": "Scorpion",
+              "OffsetX": "527",
+              "OffsetY": "153"
+            },
+            {
+              "NameOrType": "Vulture",
+              "OffsetX": "524",
+              "OffsetY": "165"
+            },
+            {
+              "NameOrType": "Ghoul",
+              "OffsetX": "504",
+              "OffsetY": "116"
+            },
+            {
+              "NameOrType": "Ghoul",
+              "OffsetX": "506",
+              "OffsetY": "116"
+            },
+            {
+              "NameOrType": "Mummy",
+              "OffsetX": "531",
+              "OffsetY": "118"
+            },
+            {
+              "NameOrType": "Mummy",
+              "OffsetX": "489",
+              "OffsetY": "95"
+            },
+            {
+              "NameOrType": "Ghoul",
+              "OffsetX": "519",
+              "OffsetY": "95"
+            },
+            {
+              "NameOrType": "Ghoul",
+              "OffsetX": "530",
+              "OffsetY": "96"
+            },
+            {
+              "NameOrType": "DesertMage",
+              "OffsetX": "545",
+              "OffsetY": "102"
+            },
+            {
+              "NameOrType": "Scorpion",
+              "OffsetX": "563",
+              "OffsetY": "95"
+            },
+            {
+              "NameOrType": "Ghoul",
+              "OffsetX": "602",
+              "OffsetY": "69"
+            },
+            {
+              "NameOrType": "Ghoul",
+              "OffsetX": "606",
+              "OffsetY": "69"
+            },
+            {
+              "NameOrType": "FlameWheel",
+              "OffsetX": "505",
+              "OffsetY": "116"
+            },
+            {
+              "NameOrType": "SpikeBall",
+              "OffsetX": "603",
+              "OffsetY": "56"
+            },
+            {
+              "NameOrType": "DesertMage",
+              "OffsetX": "601",
+              "OffsetY": "57"
+            },
+            {
+              "NameOrType": "DesertMage",
+              "OffsetX": "586",
+              "OffsetY": "39"
+            },
+            {
+              "NameOrType": "Scorpion",
+              "OffsetX": "617",
+              "OffsetY": "45"
+            },
+            {
+              "NameOrType": "Scorpion",
+              "OffsetX": "601",
+              "OffsetY": "39"
+            },
+            {
+              "NameOrType": "Mummy",
+              "OffsetX": "593",
+              "OffsetY": "89"
+            },
+            {
+              "NameOrType": "Ghoul",
+              "OffsetX": "600",
+              "OffsetY": "89"
+            },
+            {
+              "NameOrType": "SpikeWheel",
+              "OffsetX": "642",
+              "OffsetY": "79"
+            },
+            {
+              "NameOrType": "Mummy",
+              "OffsetX": "593",
+              "OffsetY": "89"
+            },
+            {
+              "NameOrType": "DesertMage",
+              "OffsetX": "673",
+              "OffsetY": "80"
+            },
+            {
+              "NameOrType": "DesertMage",
+              "OffsetX": "675",
+              "OffsetY": "68"
+            },
+            {
+              "NameOrType": "Scorpion",
+              "OffsetX": "690",
+              "OffsetY": "68"
+            },
+            {
+              "NameOrType": "DesertMage",
+              "OffsetX": "720",
+              "OffsetY": "75"
+            }
+          ]
+        }
+      ]
+    },
+    { "BiomeName": "HivePremade",
+      "Rooms": [
+        { "Name": "hive_premade",
+          "SpawnInfo": [
+            {
+              "NameOrType": "HornetGun",
+              "OffsetX": "86",
+              "OffsetY": "105"
+            },
+            {
+              "NameOrType": "HornetGun",
+              "OffsetX": "99",
+              "OffsetY": "104"
+            },
+            {
+              "NameOrType": "HornetGun",
+              "OffsetX": "111",
+              "OffsetY": "94"
+            },
+            {
+              "NameOrType": "Hornet",
+              "OffsetX": "179",
+              "OffsetY": "89"
+            },
+            {
+              "NameOrType": "Hornet",
+              "OffsetX": "173",
+              "OffsetY": "79"
+            },
+            {
+              "NameOrType": "HornetGun",
+              "OffsetX": "154",
+              "OffsetY": "70"
+            },
+            {
+              "NameOrType": "Hornet",
+              "OffsetX": "154",
+              "OffsetY": "60"
+            },
+            {
+              "NameOrType": "HornetGun",
+              "OffsetX": "220",
+              "OffsetY": "79"
+            },
+            {
+              "NameOrType": "Hornet",
+              "OffsetX": "224",
+              "OffsetY": "75"
+            },
+            {
+              "NameOrType": "HornetGun",
+              "OffsetX": "128",
+              "OffsetY": "33"
+            },
+            {
+              "NameOrType": "HornetGun",
+              "OffsetX": "140",
+              "OffsetY": "32"
+            },
+            {
+              "NameOrType": "Hornet",
+              "OffsetX": "135",
+              "OffsetY": "33"
+            },
+            {
+              "NameOrType": "Hornet",
+              "OffsetX": "65",
+              "OffsetY": "31"
+            },
+            {
+              "NameOrType": "Hornet",
+              "OffsetX": "60",
+              "OffsetY": "35"
+            },
+            {
+              "NameOrType": "Hornet",
+              "OffsetX": "63",
+              "OffsetY": "33"
+            },
+            {
+              "NameOrType": "HornetGun",
+              "OffsetX": "92",
+              "OffsetY": "42"
+            },
+            {
+              "NameOrType": "HornetGun",
+              "OffsetX": "216",
+              "OffsetY": "25"
+            },
+            {
+              "NameOrType": "HornetGun",
+              "OffsetX": "209",
+              "OffsetY": "25"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
