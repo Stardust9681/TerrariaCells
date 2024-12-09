@@ -23,6 +23,7 @@ using Terraria.UI;
 using Terraria.UI.Chat;
 using Terraria.UI.Gamepad;
 using TerrariaCells.Common;
+using TerrariaCells.Common.GlobalItems;
 
 namespace TerrariaCells.Content.UI;
 
@@ -112,7 +113,7 @@ public class InventoryLockUISystem : ModSystem
             layers.Insert(
                 mouseTextIndex,
                 new LegacyGameInterfaceLayer(
-                    "TerraCells: Inventory",
+                    "TerraCells: InventoryUI",
                     delegate
                     {
                         // if (_lastUpdateUiGameTime != null && userInterface?.CurrentState != null)
@@ -120,8 +121,8 @@ public class InventoryLockUISystem : ModSystem
                         //     userInterface.Draw(Main.spriteBatch, _lastUpdateUiGameTime);
                         // }
 
-                        LimitedStorageUI.CustomGUIHotbarDrawInner();
-                        LimitedStorageUI.CustomDrawInterface_27_Inventory();
+                        LimitedStorageUI.CustomGUIHotbarDrawInner(); // draws hotbar, aka inventory closed
+                        LimitedStorageUI.CustomDrawInterface_27_Inventory(); // draws inventory, aka inventory open
                         return true;
                     },
                     InterfaceScaleType.UI
@@ -264,6 +265,43 @@ public class LimitedStorageUI : UIState
                 new Vector2(positionX, num3),
                 lightColor
             );
+
+            // Show cooldown ui on hotbar
+            SkillSlotData skillSlotData = SkillModPlayer.GetSkillSlotData(i);
+
+            if (skillSlotData != null && skillSlotData.cooldownTimer > 0)
+            {
+                // Cooldown item slot indicator
+                Main.spriteBatch.Draw(TextureAssets.InventoryBack.Value,
+                    position: new Vector2(positionX, num3) + (Vector2.One * 20),
+                    sourceRectangle: new Rectangle(0, 0, 52, (int)(52 * ((float)skillSlotData.cooldownTimer / skillSlotData.cooldownTotal))),
+                    color: new Color(15, 15, 15, 128),
+                    rotation: 3.14159f,
+                    origin: new Vector2(26, 26),
+                    scale: new Vector2(Main.inventoryScale),
+                    SpriteEffects.None,
+                    layerDepth: 0f);
+
+                // Cooldown countdown text display
+                string currentCooldown = MathF.Ceiling(skillSlotData.cooldownTimer / 60).ToString();
+
+                float width = FontAssets.DeathText.Value.MeasureString(currentCooldown).X;
+                float textScale = Main.inventoryScale * 0.50f;
+
+                if (TerrariaCellsConfig.Instance.ShowCooldown)
+                {
+                    ChatManager.DrawColorCodedStringWithShadow(
+                        Main.spriteBatch, 
+                        FontAssets.DeathText.Value, 
+                        currentCooldown, 
+                        new Vector2(positionX, num3) + (new Vector2(0f - width / 2f, 0f) * textScale) + (Vector2.One * 20), 
+                        Color.White, 0, 
+                        Vector2.Zero, 
+                        new Vector2(textScale, textScale)
+                    );
+                }
+            }
+
             Main.inventoryScale = previousInventoryScale;
             positionX += (int)(TextureAssets.InventoryBack.Width() * Main.hotbarScale[i]) + 4;
         }

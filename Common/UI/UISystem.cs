@@ -51,7 +51,7 @@ namespace TerrariaCells.Common.UI
             if (mouseTextIndex != -1)
             {
                 layers.Insert(mouseTextIndex, new LegacyGameInterfaceLayer(
-                    "TerrariaCells: ReloadUI",
+                    "TerraCells: ReloadUI",
                     delegate
                     {
                         if (_lastUpdateUiGameTime != null && ReloadInterface?.CurrentState != null)

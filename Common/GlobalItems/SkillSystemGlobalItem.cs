@@ -479,15 +479,15 @@ namespace TerrariaCells.Common.GlobalItems
         /// <returns></returns>
         public static SkillSlotData GetSkillSlotData(int inventorySlot)
         {
-            if (SkillSlots.ContainsKey(inventorySlot))
+            // if (SkillSlots.ContainsKey(inventorySlot))
+            // {
+
+            if (SkillSlots.TryGetValue(inventorySlot, out SkillSlotData slotData))
             {
-
-                if (SkillSlots.TryGetValue(inventorySlot, out SkillSlotData slotData))
-                {
-                    return slotData;
-                }
-
+                return slotData;
             }
+
+            // }
 
             return null;
 
@@ -837,71 +837,74 @@ namespace TerrariaCells.Common.GlobalItems
             return false;
         }
 
+        // why is there ui code buried so deep in a GlobalItem file
+        // syviery, love what you did for this mod, but whyyyyyyyy
         public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
             //// IsInSlot is unnecessary here, but does provide extra protection for not showing the cooldown when not equipped
 
-            if (!SkillModPlayer.IsInSlot(item))
-            {
-                return;
-            }
+            // if (!SkillModPlayer.IsInSlot(item))
+            // {
+            //     return;
+            // }
 
-            SkillSlotData data = SkillModPlayer.GetSkillSlotData(item);
+
+            // SkillSlotData data = SkillModPlayer.GetSkillSlotData(item);
 
             // Show cooldown ui on hotbar
-            if (onCooldown)
-            {
+            // if (onCooldown)
+            // {
                 // Cooldown item slot indicator
-                spriteBatch.Draw(TextureAssets.InventoryBack.Value,
-                    position: new Vector2(position.X, position.Y),
-                    sourceRectangle: new Rectangle(0, 0, 52, (int)(52 * ((float)data.cooldownTimer / data.cooldownTotal))),
-                    color: new Color(15, 15, 15, 128),
-                    rotation: 3.14159f,
-                    origin: new Vector2(26, 26),
-                    scale: new Vector2(Main.inventoryScale, Main.inventoryScale),
-                    SpriteEffects.None,
-                    layerDepth: 0f);
+                // spriteBatch.Draw(TextureAssets.InventoryBack.Value,
+                //     position: new Vector2(position.X, position.Y),
+                //     sourceRectangle: new Rectangle(0, 0, 52, (int)(52 * ((float)data.cooldownTimer / data.cooldownTotal))),
+                //     color: new Color(15, 15, 15, 128),
+                //     rotation: 3.14159f,
+                //     origin: new Vector2(26, 26),
+                //     scale: new Vector2(Main.inventoryScale, Main.inventoryScale),
+                //     SpriteEffects.None,
+                //     layerDepth: 0f);
 
                 // Cooldown countdown text display
-                string currentCooldown = MathF.Ceiling(data.cooldownTimer / 60).ToString();
+                // string currentCooldown = MathF.Ceiling(data.cooldownTimer / 60).ToString();
 
-                float width = FontAssets.DeathText.Value.MeasureString(currentCooldown).X;
-                float textScale = Main.inventoryScale * 0.50f;
+                // float width = FontAssets.DeathText.Value.MeasureString(currentCooldown).X;
+                // float textScale = Main.inventoryScale * 0.50f;
 
-                if (TerrariaCellsConfig.Instance.ShowCooldown)
-                {
-                    ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.DeathText.Value, currentCooldown, position + new Vector2(0f - width / 2f, 0f) * textScale, Color.White, 0, Vector2.Zero, new Vector2(textScale, textScale));
-                }
-            }
+                // if (TerrariaCellsConfig.Instance.ShowCooldown)
+                // {
+                //     ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.DeathText.Value, currentCooldown, position + new Vector2(0f - width / 2f, 0f) * textScale, Color.White, 0, Vector2.Zero, new Vector2(textScale, textScale));
+                // }
+            // }
 
             // Show slot keybind, if toggled in settings
-            if (data.keybind != null && TerrariaCellsConfig.Instance.ShowKeybind)
-            {
-                string text = data.keybind.GetAssignedKeys()[0];
-                float width = FontAssets.ItemStack.Value.MeasureString(text).X;
-                float textScale = Main.inventoryScale * 0.75f;
-                Vector2 textPosition = position + new Vector2(20f - width / 2f, -27f) * textScale;
+            // if (data.keybind != null && TerrariaCellsConfig.Instance.ShowKeybind)
+            // {
+            //     string text = data.keybind.GetAssignedKeys()[0];
+            //     float width = FontAssets.ItemStack.Value.MeasureString(text).X;
+            //     float textScale = Main.inventoryScale * 0.75f;
+            //     Vector2 textPosition = position + new Vector2(20f - width / 2f, -27f) * textScale;
 
-                Color color = Main.inventoryBack;
+            //     Color color = Main.inventoryBack;
 
 
-                // Change color when inventory is open or when selected, to match hotbar numbers
-                if (!Main.playerInventory)
-                {
-                    color = Color.White;
-                }
-                else
-                {
-                    if (Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem] == instance)
-                    {
-                        color = Color.White;
-                        color.A = 200;
-                        textPosition.Y -= 2;
-                    }
-                }
+            //     // Change color when inventory is open or when selected, to match hotbar numbers
+            //     if (!Main.playerInventory)
+            //     {
+            //         color = Color.White;
+            //     }
+            //     else
+            //     {
+            //         if (Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem] == instance)
+            //         {
+            //             color = Color.White;
+            //             color.A = 200;
+            //             textPosition.Y -= 2;
+            //         }
+            //     }
 
-                ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, text, textPosition, color, new Color(68, 68, 45), 0, Vector2.Zero, new Vector2(textScale, textScale), -1, 2);
-            }
+            //     ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, text, textPosition, color, new Color(68, 68, 45), 0, Vector2.Zero, new Vector2(textScale, textScale), -1, 2);
+            // }
 
         }
 
