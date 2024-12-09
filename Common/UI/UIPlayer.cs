@@ -5,6 +5,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrariaCells.Common.GlobalItems;
@@ -30,5 +31,11 @@ namespace TerrariaCells.Common.UI
             }
         }
         
+
+        public override void HideDrawLayers(PlayerDrawSet drawInfo)
+		{
+			PlayerDrawLayers.CaptureTheGem.Hide();
+		}
+
     }
 }

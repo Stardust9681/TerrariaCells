@@ -72,8 +72,7 @@ Projectiles: {
 	SniperShot.DisplayName: Sniper Shot
 	Guns.DisplayName: Guns
 	ExplosionModProjectile.DisplayName: Explosion
-  
-  VultureBone.DisplayName: Vulture Bone
+	VultureBone.DisplayName: Vulture Bone
 	Slash.DisplayName: Slash
 	PoacherStab.DisplayName: Poacher Stab
 	MummyShockwave.DisplayName: Mummy Shockwave

@@ -27,7 +27,7 @@ using TerrariaCells.Common;
 namespace TerrariaCells.Content.UI;
 
 [Autoload(Side = ModSide.Client)]
-public class UISystem : ModSystem
+public class InventoryLockUISystem : ModSystem
 {
     internal UserInterface userInterface;
     internal LimitedStorageUI limitedStorageUI;
