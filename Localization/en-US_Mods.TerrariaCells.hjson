@@ -22,8 +22,8 @@ Configs: {
 		DisplayName: Terraria Cells Config
 
 		DisableZoom: {
-			Label: Disable Zoom
-			Tooltip: ""
+			Label: Disable Zoom Cap
+			Tooltip: Disables the >175% cap on the game's zoom
 		}
 	}
 }
