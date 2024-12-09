@@ -48,7 +48,7 @@ namespace TerrariaCells.Common.Systems
         {
             bool wasActive = self.active;
             orig.Invoke(self);
-            if (wasActive && !self.active)
+            if (self.life > 1 && !NPCID.Sets.ProjectileNPC[self.type] && wasActive && !self.active)
             {
                 RespawnMarkers.Add(
                     new NPCRespawnMarker(
