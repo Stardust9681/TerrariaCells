@@ -25,7 +25,7 @@ using TerrariaCells.Common.Items;
 namespace TerrariaCells.Common.UI;
 
 [Autoload(Side = ModSide.Client)]
-public class InventoryLockUISystem : ModSystem
+public class DeadCellsUISystem : ModSystem
 {
     static readonly string[] filtered_layers =
         [
@@ -95,16 +95,20 @@ public class InventoryLockUISystem : ModSystem
 
     public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
     {
-        HideVanillaInventoryLayers(layers);
+        // called here before the filtering of vanilla inventory layers since somethign dumb happens when filtering and idk what
+        ModContent.GetInstance<UISystem>().ModifyInterfaceLayers(layers);
 
-        if (!config.EnableInventoryChanges)
-        {
-            return;
-        }
+        HideVanillaInventoryLayers(layers);
 
         int mouseTextIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
         if (mouseTextIndex != -1)
         {
+
+            if (!config.EnableInventoryChanges)
+            {
+                return;
+            }
+
             layers.Insert(
                 mouseTextIndex,
                 new LegacyGameInterfaceLayer(
@@ -118,6 +122,8 @@ public class InventoryLockUISystem : ModSystem
                     InterfaceScaleType.UI
                 )
             );
+
+
         }
     }
 }
