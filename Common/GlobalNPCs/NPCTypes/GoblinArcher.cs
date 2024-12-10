@@ -24,6 +24,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		{
 			if (!npc.HasValidTarget)
 				npc.TargetClosest();
+
+			//This gets continually recalculated, so I need to continually reset it :(
+			npc.stairFall = false;
+
 			switch (npc.Phase())
 			{
 				case ApproachTarget:
@@ -59,7 +63,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				}
 			}
 
-			npc.stairFall = target.position.X > npc.position.X;
+			//npc.stairFall = target.position.Y > npc.position.Y;
 
 			float newVel = npc.velocity.X + directionToMove * Accel;
 			if (MathF.Abs(newVel) < MaxSpeed)
@@ -67,7 +71,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			else
 				npc.velocity.X = npc.direction * MaxSpeed;
 
-			if (npc.FindGroundInFront().Y > (npc.Bottom.Y + (npc.height * 2)))
+			if (npc.FindGroundInFront().Y > (npc.Bottom.Y + npc.height))
 			{
 				if (npc.LineOfSight(target.position))
 				{
