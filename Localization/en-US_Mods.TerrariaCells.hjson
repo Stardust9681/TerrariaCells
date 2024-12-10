@@ -58,14 +58,21 @@ Configs: {
 		}
 	}
 }
-	PylonMarkerItem: {
-		DisplayName: Pylon Marker Item
+
+Items: {
+	RoomConnectorItem: {
+		Tooltip: ""
+		DisplayName: Room Connector Item
+	}
+
+	ExamplePylonItem: {
+		DisplayName: Example Pylon Item
 		Tooltip: ""
 	}
 
 	PotMarkerItem: {
-		DisplayName: Pot Marker Item
 		Tooltip: ""
+		DisplayName: Pot Marker Item
 	}
 }
 
@@ -119,18 +126,6 @@ Electrified: {
 ExplodeOnHit: {
 	Name: Exploding
 	Description: 30% chance to explode your target on hit
-}
-
-Items: {
-	RoomConnectorItem: {
-		Tooltip: ""
-		DisplayName: Room Connector Item
-	}
-
-	ExamplePylonItem: {
-		DisplayName: Example Pylon Item
-		Tooltip: ""
-	}
 }
 
 Tiles.ExamplePylonTile.MapEntry: Example Pylon Tile
