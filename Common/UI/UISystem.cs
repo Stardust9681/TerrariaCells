@@ -36,7 +36,7 @@ namespace TerrariaCells.Common.UI
         {
             ReloadInterface?.SetState(null);
         }
-        private GameTime _lastUpdateUiGameTime;
+        internal GameTime _lastUpdateUiGameTime;
         public override void UpdateUI(GameTime gameTime)
         {
             _lastUpdateUiGameTime = gameTime;
@@ -45,7 +45,9 @@ namespace TerrariaCells.Common.UI
                 ReloadInterface.Update(gameTime);
             }
         }
-        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
+
+        // removed override since CustomInterface.ModifyInterfaceLayers now effectively manages calling this.
+        public new void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
         {
             int mouseTextIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Inventory"));
             if (mouseTextIndex != -1)

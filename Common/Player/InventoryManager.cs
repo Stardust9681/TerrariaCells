@@ -45,8 +45,6 @@ public class InventoryManager : ModSystem, IEntitySource
 
     static InventoryUiConfiguration config;
 
-    bool pickupLock = false;
-
     /// <summary>
     /// Gets the categorization for a given item.
     /// If the item implements ITerraCellsCategorization, it uses that.
@@ -208,17 +206,8 @@ public class InventoryManager : ModSystem, IEntitySource
             return;
         }
 
-        if (!pickupLock & config.EnableInventoryLock)
-        {
-            pickupLock = true;
-            On_Player.CanAcceptItemIntoInventory += new(FilterPickups);
-        }
-        else if (pickupLock & !config.EnableInventoryLock)
-        {
-            pickupLock = false;
-            On_Player.CanAcceptItemIntoInventory -= new(FilterPickups);
-            On_Player.PickupItem += new(OnItemPickup);
-        }
+        On_Player.CanAcceptItemIntoInventory += new(FilterPickups);
+        On_Player.PickupItem += new(OnItemPickup);
     }
 
     public override void PostUpdateWorld()
@@ -442,15 +431,21 @@ public class InventoryManager : ModSystem, IEntitySource
         Item item
     )
     {
+        if (!config.EnableInventoryLock)
+        {
+            return true;
+        }
+
         return GetItemCategorization(item) switch
         {
-            TerraCellsItemCategory.Default => false,
+            TerraCellsItemCategory.Default => true,
             TerraCellsItemCategory.Weapon => !WeaponsSlotsFull(player) | !StorageSlotsFull(player),
             TerraCellsItemCategory.Skill => !SkillsSlotsFull(player) | !StorageSlotsFull(player),
             TerraCellsItemCategory.Potion => !PotionSlotFull(player) | !StorageSlotsFull(player),
             TerraCellsItemCategory.Storage => !StorageSlotsFull(player)
                 | !ItemGoesIntoInventory(GetStorageItemSubcategorization(item)),
-            _ => !config.EnableInventoryLock,
+            TerraCellsItemCategory.Pickup => true,
+            _ => throw new System.Exception("Missing Item category check (I hate runtime exceptions but i cant think of a better solution atm)")
         };
     }
 
@@ -462,7 +457,11 @@ public class InventoryManager : ModSystem, IEntitySource
         Item itemToPickUp
     )
     {
-        MoveItemToItsDedicatedCategory(Main.player[playerIndex], itemToPickUp, 13);
+        if (config.EnableInventoryLock)
+        {
+            MoveItemToItsDedicatedCategory(Main.player[playerIndex], itemToPickUp, 13);
+        }
+
         return itemToPickUp;
     }
 
