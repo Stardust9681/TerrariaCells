@@ -110,12 +110,17 @@ namespace TerrariaCells.Common.GlobalItems
             }
             if (Autorifles.Contains(entity.type))
             {
-                MaxAmmo = 30;
                 ReloadTime = entity.useAnimation * 7;
                 if (entity.type == ItemID.CoinGun)
                 {
+                    MaxAmmo = 30;
                     entity.damage = 20;
                     entity.shoot = ProjectileID.SilverCoin;
+                }
+                if (entity.type == ItemID.Minishark)
+                {
+                    MaxAmmo = 60;
+                    entity.useTime = entity.useAnimation = 6;
                 }
                 if (entity.type == ItemID.VortexBeater)
                 {

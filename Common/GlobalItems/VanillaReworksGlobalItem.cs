@@ -29,6 +29,10 @@ namespace TerrariaCells.Common.GlobalItems
                     // dps ~28, with reloading ~32
                     item.damage = 4;
                     break;
+                case ItemID.Minishark:
+                    // dps ~60, with reloading ~90, tapers off to 70
+                    item.damage = 3;
+                    break;
                 case ItemID.SniperRifle:
                     // dps: ~19, with reloading: ~40
                     item.damage = 18;
