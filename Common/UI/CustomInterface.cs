@@ -1034,59 +1034,61 @@ public class LimitedStorageUI : UIState
 
             num39 = -1;
 
-            // vanity slots
-            // for (int num46 = 10; num46 < 13; num46++)
-            // {
-            //     if ((num46 == 18 && !flag5) || (num46 == 19 && !flag6))
-            //         continue;
+            /*
+            vanity slots
+            for (int num46 = 10; num46 < 13; num46++)
+            {
+                if ((num46 == 18 && !flag5) || (num46 == 19 && !flag6))
+                    continue;
 
-            //     num39++;
-            //     bool num47 = Main.LocalPlayer.IsItemSlotUnlockedAndUsable(num46);
-            //     flag4 = !num47;
-            //     bool flag8 = !num47 && !Main.mouseItem.IsAir;
-            //     int num48 = Main.screenWidth - 64 - 28 - 47;
-            //     int num49 = (int)(num20 + num39 * 56 * Main.inventoryScale);
-            //     // _ = new Color(100, 100, 100, 100);
-            //     if (num46 > 12)
-            //         num49 += num35;
+                num39++;
+                bool num47 = Main.LocalPlayer.IsItemSlotUnlockedAndUsable(num46);
+                flag4 = !num47;
+                bool flag8 = !num47 && !Main.mouseItem.IsAir;
+                int num48 = Main.screenWidth - 64 - 28 - 47;
+                int num49 = (int)(num20 + num39 * 56 * Main.inventoryScale);
+                // _ = new Color(100, 100, 100, 100);
+                if (num46 > 12)
+                    num49 += num35;
 
-            //     int context3 = 9;
-            //     if (num46 > 12)
-            //         context3 = 11;
+                int context3 = 9;
+                if (num46 > 12)
+                    context3 = 11;
 
-            //     if (
-            //         Main.mouseX >= num48
-            //         && Main.mouseX
-            //             <= num48 + TextureAssets.InventoryBack.Width() * Main.inventoryScale
-            //         && Main.mouseY >= num49
-            //         && Main.mouseY
-            //             <= num49 + TextureAssets.InventoryBack.Height() * Main.inventoryScale
-            //         && !PlayerInput.IgnoreMouseInterface
-            //     )
-            //     {
-            //         Main.player[Main.myPlayer].mouseInterface = true;
-            //         Main.armorHide = true;
-            //         ItemSlot.OverrideHover(Main.player[Main.myPlayer].armor, context3, num46);
-            //         if (!flag8)
-            //         {
-            //             ItemSlot.LeftClick(Main.player[Main.myPlayer].armor, context3, num46);
-            //             ItemSlot.RightClick(Main.player[Main.myPlayer].armor, context3, num46);
-            //         }
+                if (
+                    Main.mouseX >= num48
+                    && Main.mouseX
+                        <= num48 + TextureAssets.InventoryBack.Width() * Main.inventoryScale
+                    && Main.mouseY >= num49
+                    && Main.mouseY
+                        <= num49 + TextureAssets.InventoryBack.Height() * Main.inventoryScale
+                    && !PlayerInput.IgnoreMouseInterface
+                )
+                {
+                    Main.player[Main.myPlayer].mouseInterface = true;
+                    Main.armorHide = true;
+                    ItemSlot.OverrideHover(Main.player[Main.myPlayer].armor, context3, num46);
+                    if (!flag8)
+                    {
+                        ItemSlot.LeftClick(Main.player[Main.myPlayer].armor, context3, num46);
+                        ItemSlot.RightClick(Main.player[Main.myPlayer].armor, context3, num46);
+                    }
 
-            //         ItemSlot.MouseHover(Main.player[Main.myPlayer].armor, context3, num46);
-            //     }
+                    ItemSlot.MouseHover(Main.player[Main.myPlayer].armor, context3, num46);
+                }
 
-            //     if (flag4)
-            //         Main.inventoryBack = color2;
+                if (flag4)
+                    Main.inventoryBack = color2;
 
-            //     ItemSlot.Draw(
-            //         Main.spriteBatch,
-            //         Main.player[Main.myPlayer].armor,
-            //         context3,
-            //         num46,
-            //         new Vector2(num48, num49)
-            //     );
-            // }
+                ItemSlot.Draw(
+                    Main.spriteBatch,
+                    Main.player[Main.myPlayer].armor,
+                    context3,
+                    num46,
+                    new Vector2(num48, num49)
+                );
+            }
+            */
 
             Main.inventoryBack = color;
             if (
@@ -1103,58 +1105,59 @@ public class LimitedStorageUI : UIState
             // Vanilla acc (not armor) slot drawing moved to AccessorySlotLoader.DrawAccSlots
             /*
             for (int num50 = 0; num50 < 10; num50++) {
+            
+            dyes
+            for (int num50 = 0; num50 < 3; num50++)
+            {
+                if ((num50 == 8 && !flag5) || (num50 == 9 && !flag6))
+                    continue;
+
+                num39++;
+                bool num51 = Main.LocalPlayer.IsItemSlotUnlockedAndUsable(num50);
+                flag4 = !num51;
+                bool flag9 = !num51 && !Main.mouseItem.IsAir;
+                int num52 = Main.screenWidth - 64 - 28 - 47 - 47;
+                int num53 = (int)(num20 + num39 * 56 * Main.inventoryScale);
+                _ = new Color(100, 100, 100, 100);
+                if (num50 > 2)
+                    num53 += num35;
+
+                if (
+                    Main.mouseX >= num52
+                    && Main.mouseX
+                        <= num52 + TextureAssets.InventoryBack.Width() * Main.inventoryScale
+                    && Main.mouseY >= num53
+                    && Main.mouseY
+                        <= num53 + TextureAssets.InventoryBack.Height() * Main.inventoryScale
+                    && !PlayerInput.IgnoreMouseInterface
+                )
+                {
+                    Main.player[Main.myPlayer].mouseInterface = true;
+                    Main.armorHide = true;
+                    ItemSlot.OverrideHover(Main.player[Main.myPlayer].dye, 12, num50);
+                    if (!flag9)
+                    {
+                        if (Main.mouseRightRelease && Main.mouseRight)
+                            ItemSlot.RightClick(Main.player[Main.myPlayer].dye, 12, num50);
+
+                        ItemSlot.LeftClick(Main.player[Main.myPlayer].dye, 12, num50);
+                    }
+
+                    ItemSlot.MouseHover(Main.player[Main.myPlayer].dye, 12, num50);
+                }
+
+                if (flag4)
+                    Main.inventoryBack = color2;
+
+                ItemSlot.Draw(
+                    Main.spriteBatch,
+                    Main.player[Main.myPlayer].dye,
+                    12,
+                    num50,
+                    new Vector2(num52, num53)
+                );
+            }
             */
-            // dyes
-            // for (int num50 = 0; num50 < 3; num50++)
-            // {
-            //     if ((num50 == 8 && !flag5) || (num50 == 9 && !flag6))
-            //         continue;
-
-            //     num39++;
-            //     bool num51 = Main.LocalPlayer.IsItemSlotUnlockedAndUsable(num50);
-            //     flag4 = !num51;
-            //     bool flag9 = !num51 && !Main.mouseItem.IsAir;
-            //     int num52 = Main.screenWidth - 64 - 28 - 47 - 47;
-            //     int num53 = (int)(num20 + num39 * 56 * Main.inventoryScale);
-            //     _ = new Color(100, 100, 100, 100);
-            //     if (num50 > 2)
-            //         num53 += num35;
-
-            //     if (
-            //         Main.mouseX >= num52
-            //         && Main.mouseX
-            //             <= num52 + TextureAssets.InventoryBack.Width() * Main.inventoryScale
-            //         && Main.mouseY >= num53
-            //         && Main.mouseY
-            //             <= num53 + TextureAssets.InventoryBack.Height() * Main.inventoryScale
-            //         && !PlayerInput.IgnoreMouseInterface
-            //     )
-            //     {
-            //         Main.player[Main.myPlayer].mouseInterface = true;
-            //         Main.armorHide = true;
-            //         ItemSlot.OverrideHover(Main.player[Main.myPlayer].dye, 12, num50);
-            //         if (!flag9)
-            //         {
-            //             if (Main.mouseRightRelease && Main.mouseRight)
-            //                 ItemSlot.RightClick(Main.player[Main.myPlayer].dye, 12, num50);
-
-            //             ItemSlot.LeftClick(Main.player[Main.myPlayer].dye, 12, num50);
-            //         }
-
-            //         ItemSlot.MouseHover(Main.player[Main.myPlayer].dye, 12, num50);
-            //     }
-
-            //     if (flag4)
-            //         Main.inventoryBack = color2;
-
-            //     ItemSlot.Draw(
-            //         Main.spriteBatch,
-            //         Main.player[Main.myPlayer].dye,
-            //         12,
-            //         num50,
-            //         new Vector2(num52, num53)
-            //     );
-            // }
 
             Main.inventoryBack = color;
 
@@ -1703,36 +1706,36 @@ public class LimitedStorageUI : UIState
 
         // COIN SLOTS
         Main.inventoryScale = 0.6f;
-        for (int num97 = 0; num97 < 4; num97++)
+        for (int coinSlotIndex = 0; coinSlotIndex < 4; coinSlotIndex++)
         {
-            int num98 = 497;
-            int num99 = (int)(85f + num97 * 56 * Main.inventoryScale + 20f);
-            int slot = num97 + 50;
+            int slotPositionX = 350;
+            int slotPositionY = (int)(20f + coinSlotIndex * 56 * Main.inventoryScale + 20f);
+            int inventoryCoinSlotIndex = coinSlotIndex + 50;
             new Color(100, 100, 100, 100);
             if (
-                Main.mouseX >= num98
-                && Main.mouseX <= num98 + TextureAssets.InventoryBack.Width() * Main.inventoryScale
-                && Main.mouseY >= num99
-                && Main.mouseY <= num99 + TextureAssets.InventoryBack.Height() * Main.inventoryScale
+                Main.mouseX >= slotPositionX
+                && Main.mouseX <= slotPositionX + TextureAssets.InventoryBack.Width() * Main.inventoryScale
+                && Main.mouseY >= slotPositionY
+                && Main.mouseY <= slotPositionY + TextureAssets.InventoryBack.Height() * Main.inventoryScale
                 && !PlayerInput.IgnoreMouseInterface
             )
             {
                 Main.player[Main.myPlayer].mouseInterface = true;
-                ItemSlot.OverrideHover(Main.player[Main.myPlayer].inventory, 1, slot);
-                ItemSlot.LeftClick(Main.player[Main.myPlayer].inventory, 1, slot);
-                ItemSlot.RightClick(Main.player[Main.myPlayer].inventory, 1, slot);
+                ItemSlot.OverrideHover(Main.player[Main.myPlayer].inventory, 1, inventoryCoinSlotIndex);
+                ItemSlot.LeftClick(Main.player[Main.myPlayer].inventory, 1, inventoryCoinSlotIndex);
+                ItemSlot.RightClick(Main.player[Main.myPlayer].inventory, 1, inventoryCoinSlotIndex);
                 if (Main.mouseLeftRelease && Main.mouseLeft)
                     Recipe.FindRecipes();
 
-                ItemSlot.MouseHover(Main.player[Main.myPlayer].inventory, 1, slot);
+                ItemSlot.MouseHover(Main.player[Main.myPlayer].inventory, 1, inventoryCoinSlotIndex);
             }
 
             ItemSlot.Draw(
                 Main.spriteBatch,
                 Main.player[Main.myPlayer].inventory,
                 1,
-                slot,
-                new Vector2(num98, num99)
+                inventoryCoinSlotIndex,
+                new Vector2(slotPositionX, slotPositionY)
             );
         }
 
@@ -1833,26 +1836,26 @@ public class LimitedStorageUI : UIState
             }
         }
 
-        var tilemapReflection = typeof(Tilemap);
-        if (
-            Main.player[Main.myPlayer].chest > -1
-            && !Main.tileContainer[
-                (
-                    tilemapReflection
-                        .GetField("type")
-                        .GetValue(
-                            Main.tile[
-                                Main.player[Main.myPlayer].chestX,
-                                Main.player[Main.myPlayer].chestY
-                            ]
-                        ) as int?
-                ).Value
-            ]
-        )
-        {
-            Main.player[Main.myPlayer].chest = -1;
-            Recipe.FindRecipes();
-        }
+        // var tilemapReflection = typeof(Tilemap);
+        // if (
+        //     Main.player[Main.myPlayer].chest > -1
+        //     && !Main.tileContainer[
+        //         (
+        //             tilemapReflection
+        //                 .GetField("type")
+        //                 .GetValue(
+        //                     Main.tile[
+        //                         Main.player[Main.myPlayer].chestX,
+        //                         Main.player[Main.myPlayer].chestY
+        //                     ]
+        //                 ) as int?
+        //         ).Value
+        //     ]
+        // )
+        // {
+        //     Main.player[Main.myPlayer].chest = -1;
+        //     Recipe.FindRecipes();
+        // }
 
         int offsetDown = 0;
         UIVirtualKeyboard.ShouldHideText = !PlayerInput.SettingsForUI.ShowGamepadHints;
@@ -1863,7 +1866,7 @@ public class LimitedStorageUI : UIState
         ChestUI.Draw(Main.spriteBatch);
         Main.LocalPlayer.tileEntityAnchor.GetTileEntity()
             ?.OnInventoryDraw(Main.LocalPlayer, Main.spriteBatch);
-        if (Main.player[Main.myPlayer].chest == -1 && Main.npcShop == 0)
+        if (Main.player[Main.myPlayer].chest == -1 && Main.npcShop == 0 && false)
         {
             int num108 = 0;
             int num109 = 498;
