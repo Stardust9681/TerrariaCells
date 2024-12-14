@@ -26,7 +26,8 @@ namespace TerrariaCells.Common.Globals
 
 		private void ModifyDropHeals(On_NPC.orig_NPCLoot_DropHeals orig, NPC self, Player closestPlayer)
 		{
-			_ = DropFoodHeals.TryDroppingHeal(self, closestPlayer);
+			if(self.lifeMax > 5 && !self.friendly && self.CanBeChasedBy() && !NPCID.Sets.ProjectileNPC[self.type])
+				DropFoodHeals.TryDroppingHeal(self, closestPlayer);
 			return;
 		}
 		private const bool _DO_BADGERS_HAT = false;
