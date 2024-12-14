@@ -325,6 +325,10 @@ namespace TerrariaCells.Common.ModPlayers
 				damageTime = 0;
 				damageBuffer = 0;
 			}
+			if (damageTime == 0)
+			{
+				deathReason = null;
+			}
 		}
 
 		public override void OnHurt(Player.HurtInfo info)
@@ -343,6 +347,7 @@ namespace TerrariaCells.Common.ModPlayers
 				}
 			}
 			AdjustStaggerDamage(damageTaken);
+			deathReason = info.DamageSource.GetDeathText(Player.name).ToString();
 		}
 
 		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
@@ -418,14 +423,17 @@ namespace TerrariaCells.Common.ModPlayers
 		}
 		#endregion
 
+
+		#region Player Death
+		private string? deathReason = null;
 		//Make sure player dies when they hit <=0 health
-		private void CheckDead(PlayerDeathReason reason = null)
+		private void CheckDead()
 		{
 			if (Player.statLife <= 0)
 			{
-				reason ??= PlayerDeathReason.ByCustomReason($"{Player.name} was beheaded.");
+				deathReason ??= $"{Player.name} was beheaded.";
 
-				Player.KillMe(reason, 1, 0);
+				Player.KillMe(PlayerDeathReason.ByCustomReason(deathReason), 1, 0);
 			}
 		}
 
@@ -435,5 +443,6 @@ namespace TerrariaCells.Common.ModPlayers
 			if (result) SetStaggerDamage(0);
 			return result;
 		}
+		#endregion
 	}
 }
