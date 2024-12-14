@@ -158,7 +158,7 @@ namespace TerrariaCells.Common.ModPlayers
 			int segmentSize = player.statLifeMax2 <= MAX_HEALTHBAR_SIZE ? 20 : ((player.statLifeMax2 * 20) / MAX_HEALTHBAR_SIZE);
 			if (segmentSize == 0)
 				segmentSize = 1;
-			int endPoint = player.statLife - modPlayer.DamageLeft;
+			int endPoint = (int)(player.statLife - modPlayer.DamageLeft);
 			if (endPoint < 0)
 				endPoint = 0;
 			int damageInSegment = endPoint % segmentSize;
@@ -237,13 +237,13 @@ namespace TerrariaCells.Common.ModPlayers
 		public const string BAR_HEALTH_FILL1 = "Images\\UI\\PlayerResourceSets\\HorizontalBars\\HP_Fill";
 		public const string BAR_HEALTH_FILL2 = "Images\\UI\\PlayerResourceSets\\HorizontalBars\\HP_Fill_Honey";
 
-		private int damageBuffer;
+		private float damageBuffer;
 		private int damageTime;
 		private float antiRegen;
 
 		private float TimeAmplitude => damageBuffer * INV_STAGGER_POTENCY; //Used for calculations, opposite of MaxTime
 		private float MaxTime => damageBuffer * STAGGER_POTENCY; //Time it will take for damage to stop ticking.
-		private int DamageLeft => (int)(-MathF.Sqrt(TimeAmplitude * damageTime) + damageBuffer); //Remaining amount of damage for the player to take
+		private float DamageLeft => -MathF.Sqrt(TimeAmplitude * damageTime) + damageBuffer; //Remaining amount of damage for the player to take
 
 		//Mathematics used for Damage Staggering:
 			//Damage Left = -sqrt(TimeAmplitude * damageTime) + damageBuffer
@@ -254,7 +254,7 @@ namespace TerrariaCells.Common.ModPlayers
 		/// Set damage stagger to a flat amount. Will discard current amount.
 		/// </summary>
 		/// <param name="value"></param>
-		internal void SetStaggerDamage(int value)
+		internal void SetStaggerDamage(float value)
 		{
 			damageBuffer = value;
 			if (damageBuffer < 0)
@@ -268,9 +268,9 @@ namespace TerrariaCells.Common.ModPlayers
 		/// Adjust damage stagger by some amount +/-
 		/// </summary>
 		/// <param name="value"></param>
-		internal void AdjustStaggerDamage(int value)
+		internal void AdjustStaggerDamage(float value)
 		{
-			damageBuffer = DamageLeft + value;
+			damageBuffer = DamageLeft + value + 1;
 			if (damageBuffer < 0)
 			{
 				damageBuffer = 0;
@@ -286,7 +286,9 @@ namespace TerrariaCells.Common.ModPlayers
 			}
 		}
 
-		private const bool SET_DECAY_FLOOR = true;
+		//Player unlikely to encounter such high amounts of damage that they see issues with this, disabled for now
+		private const bool SET_DECAY_FLOOR = false;
+
 		//Run damage stagger calcs: split into its own function so it can be moved more easily or whatever.
 		private void UpdateDamageBuffer()
 		{
@@ -388,9 +390,9 @@ namespace TerrariaCells.Common.ModPlayers
 				default:
 					return base.OnPickup(item);
 			}
-			int healing = (int)(healthRecovery * Player.statLifeMax2);
+			float healing = healthRecovery * Player.statLifeMax2;
 			healing -= DamageLeft;
-			Player.Heal(healing);
+			Player.Heal((int)healing);
 			AdjustStaggerDamage(-healing);
 			return false;
 		}
