@@ -1,9 +1,6 @@
-
-		DisableZoom: {
-			Label: Disable Zoom Cap
-			Tooltip: Disables the >175% cap on the game's zoom
-		}
-	}
+DisableZoom: {
+	Label: Disable Zoom Cap
+	Tooltip: Disables the >175% cap on the game's zoom
 }
 
 Projectiles: {
@@ -17,4 +14,41 @@ Projectiles: {
 	IceShard.DisplayName: Ice Shard
 	IceSpike.DisplayName: Ice Spike
 	IllusionBrainHitbox.DisplayName: Illusion Brain Hitbox
+}
+
+Items: {
+	RoomConnectorItem: {
+		DisplayName: Room Connector Item
+		Tooltip: ""
+	}
+}
+
+Configs: {
+	InventoryUiConfiguration: {
+		DisplayName: Inventory Ui Configuration
+
+		EnableInventoryChanges: {
+			Label: Enable Inventory Changes
+			Tooltip: ""
+		}
+
+		EnableInventoryLock: {
+			Label: Enable Inventory Lock
+			Tooltip: ""
+		}
+
+		HideVanillaInventory: {
+			Label: Hide Vanilla Inventory
+			Tooltip: ""
+		}
+	}
+
+	TerrariaCellsConfig: {
+		DisplayName: Terraria Cells Config
+
+		DisableZoom: {
+			Label: Disable Zoom
+			Tooltip: ""
+		}
+	}
 }
