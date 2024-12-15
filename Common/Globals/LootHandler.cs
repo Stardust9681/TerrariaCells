@@ -17,11 +17,23 @@ namespace TerrariaCells.Common.Globals
 		{
 			On_NPC.NPCLoot_DropHeals += ModifyDropHeals;
 			On_NPC.DoDeathEvents_DropBossPotionsAndHearts += NPCDeathEvents;
+			On_NPC.CountKillForBannersAndDropThem += NPCHandleBanners;
 		}
+
 		public override void Unload()
 		{
 			On_NPC.NPCLoot_DropHeals -= ModifyDropHeals;
 			On_NPC.DoDeathEvents_DropBossPotionsAndHearts -= NPCDeathEvents;
+			On_NPC.CountKillForBannersAndDropThem -= NPCHandleBanners;
+		}
+
+		private void NPCHandleBanners(On_NPC.orig_CountKillForBannersAndDropThem orig, NPC self)
+		{
+			int bannerID = Item.NPCtoBanner(self.BannerID());
+			if (bannerID <= 0 || self.ExcludedFromDeathTally()) return;
+			NPC.killCount[bannerID]++;
+			//Not sure if this is necessary
+			//if (Main.netMode == 2) NetMessage.SendData(MessageID.NPCKillCountDeathTally, -1, -1, null, bannerID);
 		}
 
 		private void ModifyDropHeals(On_NPC.orig_NPCLoot_DropHeals orig, NPC self, Player closestPlayer)
