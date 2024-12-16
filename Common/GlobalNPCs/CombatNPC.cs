@@ -13,7 +13,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 	public class CombatNPC : GlobalNPC
 	{
 		public override bool InstancePerEntity => true;
-		public bool allowContactDamage;
+		public bool allowContactDamage = true;
 
 		public override void SetDefaultsFromNetId(NPC npc)
 		{

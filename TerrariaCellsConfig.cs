@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Terraria.ModLoader.Config;
 
 namespace TerrariaCells
@@ -9,5 +10,14 @@ namespace TerrariaCells
         public static TerrariaCellsConfig Instance;
 
         public bool DisableZoom;
+
+        [Header("SkillUI")]
+
+        [DefaultValue(true)]
+        public bool ShowKeybind;
+
+        [DefaultValue(true)]
+        public bool ShowCooldown;
+
     }
 }
