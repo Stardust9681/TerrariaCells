@@ -1,13 +1,25 @@
-Items: {
-	RoomConnectorItem: {
-		DisplayName: Room Connector Item
-		Tooltip: ""
-	}
-}
-
 Configs: {
+	InventoryUiConfiguration: {
+		DisplayName: Inventory Ui Configuration
+
+		EnableInventoryChanges: {
+			Label: Enable Inventory Changes
+			Tooltip: ""
+		}
+
+		EnableInventoryLock: {
+			Label: Enable Inventory Lock
+			Tooltip: ""
+		}
+
+		HideVanillaInventory: {
+			Label: Hide Vanilla Inventory
+			Tooltip: ""
+		}
+	}
+
 	TerrariaCellsConfig: {
-		DisplayName: TerraCells Config
+		DisplayName: Terraria Cells Config
 
 		DisableZoom: {
 			Label: Disable Zoom Cap
@@ -60,6 +72,16 @@ Projectiles: {
 	SniperShot.DisplayName: Sniper Shot
 	Guns.DisplayName: Guns
 	ExplosionModProjectile.DisplayName: Explosion
+  
+  VultureBone.DisplayName: Vulture Bone
+	Slash.DisplayName: Slash
+	PoacherStab.DisplayName: Poacher Stab
+	MummyShockwave.DisplayName: Mummy Shockwave
+	IceSpike.DisplayName: Ice Spike
+	IceShard.DisplayName: Ice Shard
+	IceBall.DisplayName: Ice Ball
+	IceArrow.DisplayName: Ice Arrow
+	IllusionBrainHitbox.DisplayName: Illusion Brain Hitbox
 }
 
 Tooltips: {
@@ -90,9 +112,18 @@ ExplodeOnHit: {
 	Description: 30% chance to explode your target on hit
 }
 
+
 Buffs: {
 	FrozenEnemyDebuff: {
 		DisplayName: Frozen Enemy Debuff
 		Description: Mods.TerrariaCells.Buffs.FrozenEnemyDebuff.Description
+    }
+}
+
+Items: {
+	RoomConnectorItem: {
+		Tooltip: ""
+		DisplayName: Room Connector Item
+
 	}
 }
