@@ -15,7 +15,6 @@ namespace TerrariaCells.Common.GlobalNPCs
 
         public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
         {
-
             // If we can get the source of our projectile, attempt to trigger the on-hit effects
             if (projectile.TryGetGlobalProjectile(out SourceGlobalProjectile sourceGlobalProjectile))
             {
