@@ -89,3 +89,10 @@ ExplodeOnHit: {
 	Name: Exploding
 	Description: 30% chance to explode your target on hit
 }
+
+Buffs: {
+	FrozenEnemyDebuff: {
+		DisplayName: Frozen Enemy Debuff
+		Description: Mods.TerrariaCells.Buffs.FrozenEnemyDebuff.Description
+	}
+}

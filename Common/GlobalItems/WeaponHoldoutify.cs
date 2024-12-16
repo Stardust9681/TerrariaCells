@@ -175,6 +175,8 @@ namespace TerrariaCells.Common.GlobalItems
                     entity.shoot = ProjectileID.DD2BetsyArrow;
                 if (entity.type == ItemID.ShadowFlameBow)
                     entity.shoot = ProjectileID.ShadowFlameArrow;
+                if (entity.type == ItemID.RocketLauncher)
+                    entity.shoot = ProjectileID.RocketI;
             }
             if (entity.type == ItemID.FairyQueenRangedItem)
             {

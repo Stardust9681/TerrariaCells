@@ -46,7 +46,7 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
             }
             MethodInfo PlayerItemCheck_Shoot = typeof(Player).GetMethod("ApplyNPCOnHitEffects", BindingFlags.NonPublic | BindingFlags.Instance);
             PlayerItemCheck_Shoot.Invoke(owner, [owner.HeldItem, target.Hitbox, hit.SourceDamage, hit.Knockback, target.whoAmI, 1, damageDone]);
-            
+
         }
         public override bool PreDraw(ref Color lightColor)
         {
@@ -77,7 +77,7 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
             }
             if (Projectile.ai[2] == 1)
             {
-               
+
                 Main.EntitySpriteDraw(t.Value, armPosition + new Vector2(MathHelper.Lerp(-15, -25, scaleLerper), -5 * Projectile.spriteDirection).RotatedBy(Projectile.rotation) - Main.screenPosition,
                     null, lightColor,
                     Projectile.rotation + MathHelper.ToRadians(Projectile.spriteDirection == 1 ? -40 : 40),
@@ -104,7 +104,7 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
             //float scaleLerper = -(float)Math.Pow((2 * x - 1), 2) + 1;
             float scaleLerper = (float)(Math.Sin(2 * Math.PI * x - Math.PI * 0.5f) / 2) + 0.5f;
             float scale = Projectile.scale * MathHelper.Lerp(0.8f, 1.1f, scaleLerper) + 0.2f;
-            return Collision.CheckAABBvLineCollision(targetHitbox.Location.ToVector2(), targetHitbox.Size(), armPosition, armPosition + new Vector2(t.Width(), t.Height()).RotatedBy(Projectile.rotation + MathHelper.ToRadians(130 + (Projectile.spriteDirection == -1 ? 5 : 15)))* scale );
+            return Collision.CheckAABBvLineCollision(targetHitbox.Location.ToVector2(), targetHitbox.Size(), armPosition, armPosition + new Vector2(t.Width(), t.Height()).RotatedBy(Projectile.rotation + MathHelper.ToRadians(130 + (Projectile.spriteDirection == -1 ? 5 : 15))) * scale);
         }
         public float Timer = 0;
         //ai[0] = item to clone
@@ -134,8 +134,8 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
                 rotLerper = 1 - rotLerper;
             }
             Projectile.rotation = MathHelper.Lerp(Projectile.ai[1] + MathHelper.ToRadians(180 - 120 * Projectile.spriteDirection), Projectile.ai[1] + MathHelper.ToRadians(180 + 60 * Projectile.spriteDirection), rotLerper);
-            
-            owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.ToRadians(-90) );
+
+            owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.ToRadians(-90));
             if (Timer == (int)((owner.HeldItem.useAnimation * Projectile.extraUpdates + 1) * 0.4f))
             {
                 SoundEngine.PlaySound(owner.HeldItem.GetGlobalItem<WeaponHoldoutify>().StoreSound, Projectile.Center);
@@ -149,12 +149,12 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
             }
             if (Timer >= (owner.HeldItem.useAnimation * Projectile.extraUpdates + 1))
             {
-                
+
                 if (owner.controlUseItem)
                 {
-                   
+
                     Timer = 0;
-                    
+
                     Projectile.ai[2] = Projectile.ai[2] == 0 ? 1 : 0;
                     Projectile.ResetLocalNPCHitImmunity();
                     FieldInfo VolcanoExplosions = typeof(Player).GetField("_spawnVolcanoExplosion", BindingFlags.NonPublic | BindingFlags.Instance);
