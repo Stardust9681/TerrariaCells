@@ -13,6 +13,8 @@ namespace TerrariaCells
     {
         public override void Load()
         {
+            Room.LoadRooms(this);
+
             IL_Player.Update += PatchPlayerSpaceGravity;
         }
 
