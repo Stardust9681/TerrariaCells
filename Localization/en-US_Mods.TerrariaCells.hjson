@@ -40,10 +40,10 @@ Configs: {
 	}
 
 	WeaponUIConfig: {
-		DisplayName: Weapon U I Config
+		DisplayName: Weapon UI Config
 
 		DragUI: {
-			Label: Drag U I
+			Label: Drag UI
 			Tooltip: ""
 		}
 
@@ -56,6 +56,26 @@ Configs: {
 			Label: Scale
 			Tooltip: ""
 		}
+	}
+
+	DevConfig: {
+		BuilderMode: {
+			Label: Builder Mode
+			Tooltip: Toggle ability to build. Also allows tiles to be interacted with normally.
+		}
+
+		DoPylonDiscoveries: {
+			Label: Do Pylon Discoveries
+			Tooltip: Toggles intended Pylon mechanics.
+		}
+
+		PreventExplosionDamage: {
+			Label: Prevent Explosion Damage
+			Tooltip: Prevents tile damage from explosives.
+		}
+
+		DisplayName: Dev Config
+		Headers.BuilderConfig: Builder Config Header
 	}
 }
 

@@ -109,6 +109,12 @@ namespace TerrariaCells.Common.Systems
 
 		public override void PostValidTeleportCheck(TeleportPylonInfo destinationPylonInfo, TeleportPylonInfo nearbyPylonInfo, ref bool destinationPylonValid, ref bool validNearbyPylonFound, ref string errorKey)
 		{
+			if (!DevConfig.Instance.DoPylonDiscoveries)
+			{
+				base.PostValidTeleportCheck(destinationPylonInfo, nearbyPylonInfo, ref destinationPylonValid, ref validNearbyPylonFound, ref errorKey);
+				return;
+			}
+
 			Point16 pos = WorldPylonSystem.NearestPylonToPlayer(Main.LocalPlayer, out int compareDist);
 
 			if (compareDist <= WorldPylonSystem.MAX_PYLON_RANGE)
@@ -122,21 +128,25 @@ namespace TerrariaCells.Common.Systems
 				errorKey = "Not close enough to interact with pylon.";
 			}
 
-			if (!WorldPylonSystem.PylonFound(destinationPylonInfo.PositionInTiles))
-			{
-				destinationPylonValid = false;
-				errorKey = "Pylon not yet discovered!";
-			}
-
 			if (nearbyPylonInfo.TypeOfPylon != destinationPylonInfo.TypeOfPylon)
 			{
 				destinationPylonValid = false;
 				errorKey = "Pylon Type Mismatch.";
 			}
 
+			if (!WorldPylonSystem.PylonFound(destinationPylonInfo.PositionInTiles))
+			{
+				destinationPylonValid = false;
+				errorKey = "Pylon not yet discovered!";
+			}
 		}
 		public override bool PreDrawMapIcon(ref MapOverlayDrawContext context, ref string mouseOverText, ref TeleportPylonInfo pylonInfo, ref bool isNearPylon, ref Color drawColor, ref float deselectedScale, ref float selectedScale)
 		{
+			if (!DevConfig.Instance.DoPylonDiscoveries)
+			{
+				return base.PreDrawMapIcon(ref context, ref mouseOverText, ref pylonInfo, ref isNearPylon, ref drawColor, ref deselectedScale, ref selectedScale);
+			}
+
 			isNearPylon = true;
 			drawColor = Color.White;
 			if (WorldPylonSystem.PylonFound(pylonInfo.PositionInTiles))
