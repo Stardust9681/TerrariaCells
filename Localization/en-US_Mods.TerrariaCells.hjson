@@ -1,23 +1,4 @@
 Configs: {
-	InventoryUiConfiguration: {
-		DisplayName: Inventory Ui Configuration
-
-		EnableInventoryChanges: {
-			Label: Enable Inventory Changes
-			Tooltip: ""
-		}
-
-		EnableInventoryLock: {
-			Label: Enable Inventory Lock
-			Tooltip: ""
-		}
-
-		HideVanillaInventory: {
-			Label: Hide Vanilla Inventory
-			Tooltip: ""
-		}
-	}
-
 	TerrariaCellsConfig: {
 		DisplayName: Terraria Cells Config
 
@@ -75,7 +56,26 @@ Configs: {
 		}
 
 		DisplayName: Dev Config
-		Headers.BuilderConfig: Builder Config Header
+
+		Headers: {
+			BuilderSettings: Builder Settings
+			InventorySettings: Inventory Settings
+		}
+
+		EnableInventoryChanges: {
+			Label: Enable Inventory Changes
+			Tooltip: ""
+		}
+
+		EnableInventoryLock: {
+			Label: Enable Inventory Lock
+			Tooltip: ""
+		}
+
+		HideVanillaInventory: {
+			Label: Hide Vanilla Inventory
+			Tooltip: ""
+		}
 	}
 }
 

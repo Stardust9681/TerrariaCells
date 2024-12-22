@@ -27,11 +27,11 @@ namespace TerrariaCells.Common.GlobalItems
 			}
 			if (item.type == ItemID.BallOfFuseWire)
 			{
-				item.shoot = 0;
+				item.shoot = ProjectileID.None;
 				item.buffType = 0;
 				item.useAnimation = 0;
 				item.useTime = 0;
-				item.useStyle = 0;
+				item.useStyle = ItemUseStyleID.None;
 				item.UseSound = null;
 			}
 		}

@@ -8,10 +8,11 @@ using Terraria.DataStructures;
 using Terraria.ObjectData;
 using Terraria.Map;
 using Terraria.ModLoader.IO;
+using TerrariaCells.Common.Configs;
 
 namespace TerrariaCells.Common.Systems
 {
-	public class WorldPylonSystem : ModSystem
+    public class WorldPylonSystem : ModSystem
 	{
 		private static Dictionary<Point16, bool>? _pylonDiscoveries;
 		private static Dictionary<Point16, bool> _PylonDiscoveries

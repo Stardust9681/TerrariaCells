@@ -9,7 +9,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
-using TerrariaCells.Common;
+using TerrariaCells.Common.Configs;
 
 namespace TerrariaCells.Common.Items;
 
@@ -42,8 +42,6 @@ public class InventoryManager : ModSystem, IEntitySource
         (12, TerraCellsItemCategory.Storage),
         (13, TerraCellsItemCategory.Storage),
     ];
-
-    static InventoryUiConfiguration config;
 
     /// <summary>
     /// Gets the categorization for a given item.
@@ -199,20 +197,13 @@ public class InventoryManager : ModSystem, IEntitySource
 
     public override void Load()
     {
-        config = (InventoryUiConfiguration)Mod.GetConfig("InventoryUiConfiguration");
-        if (config == null)
-        {
-            Logging.PublicLogger.Error("Missing Inventory/UI Config! (This is a dev issue)");
-            return;
-        }
-
         On_Player.CanAcceptItemIntoInventory += new(FilterPickups);
         // On_Player.PickupItem += new(OnItemPickup);
     }
 
     public override void PostUpdateWorld()
     {
-        if (config.EnableInventoryLock)
+        if (DevConfig.Instance.EnableInventoryLock)
         {
             foreach (Player player in Main.ActivePlayers)
             {
@@ -435,7 +426,7 @@ public class InventoryManager : ModSystem, IEntitySource
         Item item
     )
     {
-        if (!config.EnableInventoryLock)
+        if (!DevConfig.Instance.EnableInventoryLock)
         {
             return true;
         }

@@ -3,6 +3,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrariaCells.Common.Configs;
 
 namespace TerrariaCells.Common.GlobalTiles
 {

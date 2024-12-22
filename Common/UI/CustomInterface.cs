@@ -19,6 +19,7 @@ using Terraria.ModLoader;
 using Terraria.UI;
 using Terraria.UI.Chat;
 using Terraria.UI.Gamepad;
+using TerrariaCells.Common.Configs;
 using TerrariaCells.Common.GlobalItems;
 using TerrariaCells.Common.Items;
 
@@ -28,8 +29,8 @@ namespace TerrariaCells.Common.UI;
 public class DeadCellsUISystem : ModSystem
 {
     static readonly string[] filtered_layers =
-        [
-            "Vanilla: Laser Ruler",
+    [
+        "Vanilla: Laser Ruler",
         "Vanilla: Ruler",
         "Vanilla: Inventory",
         "Vanilla: Info Accessories Bar",
@@ -38,17 +39,9 @@ public class DeadCellsUISystem : ModSystem
 
     internal UserInterface userInterface;
     internal LimitedStorageUI limitedStorageUI;
-    private InventoryUiConfiguration config;
 
     public override void Load()
     {
-        config = (InventoryUiConfiguration)Mod.GetConfig("InventoryUiConfiguration");
-        if (config == null)
-        {
-            Logging.PublicLogger.Error("Missing Inventory/UI Config! (This is a dev issue)");
-            return;
-        }
-
         if (Main.dedServ)
         {
             return;
@@ -67,7 +60,7 @@ public class DeadCellsUISystem : ModSystem
 
     public override void UpdateUI(GameTime gameTime)
     {
-        if (!config.EnableInventoryChanges)
+        if (!DevConfig.Instance.EnableInventoryChanges)
         {
             return;
         }
@@ -80,7 +73,7 @@ public class DeadCellsUISystem : ModSystem
 
     public void HideVanillaInventoryLayers(List<GameInterfaceLayer> layers)
     {
-        if (!config.HideVanillaInventory)
+        if (!DevConfig.Instance.HideVanillaInventory)
         {
             return;
         }
@@ -104,7 +97,7 @@ public class DeadCellsUISystem : ModSystem
         if (mouseTextIndex != -1)
         {
 
-            if (!config.EnableInventoryChanges)
+            if (!DevConfig.Instance.EnableInventoryChanges)
             {
                 return;
             }

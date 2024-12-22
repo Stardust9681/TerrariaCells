@@ -15,6 +15,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 using Terraria.UI.Chat;
+using TerrariaCells.Common.Configs;
 using TerrariaCells.Common.GlobalItems;
 
 namespace TerrariaCells.Common.UI

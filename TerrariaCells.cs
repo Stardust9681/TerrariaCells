@@ -3,6 +3,7 @@ using System;
 using Terraria;
 using Terraria.Graphics;
 using Terraria.ModLoader;
+using TerrariaCells.Common.Configs;
 
 namespace TerrariaCells
 {
