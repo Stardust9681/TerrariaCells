@@ -41,7 +41,7 @@ namespace TerrariaCells.Common.GlobalItems
 			{
 				case ItemID.FastClock: FastClock(player); break;
 				case ItemID.BandofRegeneration: BandOfRegeneration(player); break;
-				case ItemID.FrozenShield: FrozenShield(player, item); break;
+				case ItemID.FrozenTurtleShell: FrozenShield(player, item); break;
 				case ItemID.ObsidianShield: ObsidianShield(player); break;
 				case ItemID.ThePlan: ThePlan(player); break;
 				case ItemID.FeralClaws: FeralClaws(player); break;
