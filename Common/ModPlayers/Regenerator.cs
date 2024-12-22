@@ -354,11 +354,15 @@ namespace TerrariaCells.Common.ModPlayers
 		{
 			if (!item.DamageType.CountsAsClass(DamageClass.Melee))
 				return;
+			if (target.lifeMax < 5 || Terraria.ID.NPCID.Sets.ProjectileNPC[target.type] || !target.CanBeChasedBy())
+				return;
 			RallyHeal(damageDone);
 		}
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (!proj.DamageType.CountsAsClass(DamageClass.Melee))
+				return;
+			if (target.lifeMax < 5 || Terraria.ID.NPCID.Sets.ProjectileNPC[target.type] || !target.CanBeChasedBy())
 				return;
 			RallyHeal(damageDone);
 		}
