@@ -266,7 +266,25 @@ namespace TerrariaCells.Common.ModPlayers
 				genDust = false;
 				Player.immuneTime = 4 * 60; //4 sec
 				frozenShield = true;
+				int itemIndex = -1;
+				foreach (Item item in Player.armor[13..19])
+				{
+					itemIndex++;
+					if (item.Equals(frozenShieldItem))
+						break;
+				}
 				frozenShieldItem.TurnToAir();
+				Player.UpdateVisibleAccessory(itemIndex, frozenShieldItem);
+				int dustCount = 14 + Main.rand.Next(7);
+				for (int i = 0; i < dustCount; i++)
+				{
+					Dust dust = Dust.NewDustDirect(Player.Center + (Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi) * 8), 1, 1, DustID.FrostHydra);
+					dust.noGravity = true;
+					dust.velocity = Player.Center.DirectionTo(dust.position) * Main.rand.NextFloat(3f, 5f);
+					dust.scale = Main.rand.NextFloat(0.9f, 1.1f);
+				}
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item27);
+				Player.GetModPlayer<Regenerator>().SetStaggerDamage(0);
 				return false;
 			}
 			return base.PreKill(damage, hitDirection, pvp, ref playSound, ref genDust, ref damageSource);
@@ -320,7 +338,11 @@ namespace TerrariaCells.Common.ModPlayers
 			if (target.life - damageDone < 1) OnKill(target, hit, damageDone);
 			if (hit.DamageType.CountsAsClass(DamageClass.Melee))
 			{
-				if (nazar) Player.statMana += 20;
+				if (nazar)
+				{
+					Player.statMana += 20;
+					Player.ManaEffect(20);
+				}
 				if (sharktooth)	target.AddBuff(BuffID.Bleeding, 360); //Replace with modded debuff? 6 sec duration.
 				if (bersGlove)
 				{
