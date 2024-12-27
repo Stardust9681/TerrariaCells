@@ -76,6 +76,11 @@ Configs: {
 			Label: Hide Vanilla Inventory
 			Tooltip: ""
 		}
+
+		EnableChestChanges: {
+			Label: Enable Chest Changes
+			Tooltip: ""
+		}
 	}
 }
 

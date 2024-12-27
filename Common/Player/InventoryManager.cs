@@ -56,6 +56,11 @@ public class InventoryManager : ModSystem, IEntitySource
                 (short)item.netID,
                 TerraCellsItemCategory.Default
             );
+    public static TerraCellsItemCategory GetItemCategorization(int type) =>
+        VanillaItemCategorizations.GetValueOrDefault(
+                (short)type,
+                TerraCellsItemCategory.Default
+            );
 
     public static StorageItemSubcategorization GetStorageItemSubcategorization(Item item) =>
         GetItemCategorization(item) is TerraCellsItemCategory.Storage
@@ -64,6 +69,27 @@ public class InventoryManager : ModSystem, IEntitySource
                 StorageItemSubcategorization.None
             )
             : StorageItemSubcategorization.None;
+    public static StorageItemSubcategorization GetStorageItemSubcategorization(int type) =>
+        GetItemCategorization(type) is TerraCellsItemCategory.Storage
+            ? StorageSubcategorizations.GetValueOrDefault(
+                (short)type,
+                StorageItemSubcategorization.None
+            )
+            : StorageItemSubcategorization.None;
+
+    public static int GetRandomItem(TerraCellsItemCategory category)
+    {
+
+        while (true)
+        {
+            int id = (int)(Main.rand.NextFloat() * 3400);
+            if (GetItemCategorization(id) == category)
+            {
+                return id;
+            }
+        };
+    }
+
 
     /// <summary>
     /// A list of all of categorizations for vanilla items, including those that get reworked.
