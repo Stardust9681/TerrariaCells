@@ -54,5 +54,12 @@ namespace TerrariaCells.Common.Utilities
 		///<returns>True if NPC direction is towards target. False otherwise</returns>
 		public static bool IsFacingTarget(this NPC npc, Player target)
 			=> npc.direction == MathF.Sign(target.position.X - npc.position.X);
+
+		public static Vector2 FindGroundInFront(this NPC npc)
+		{
+			Rectangle rect = npc.getRect();
+			rect.X += (npc.direction * npc.width);
+			return TCellsUtils.FindGround(rect);
+		}
 	}
 }

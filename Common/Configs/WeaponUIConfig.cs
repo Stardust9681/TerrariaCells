@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria.ModLoader.Config;
 
-namespace TerrariaCells.Common
+namespace TerrariaCells.Common.Configs
 {
     public class WeaponUIConfig : ModConfig
     {

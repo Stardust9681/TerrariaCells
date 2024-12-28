@@ -1,3 +1,4 @@
+
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
@@ -8,10 +9,11 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
-using TerrariaCells.Common;
+using TerrariaCells.Common.Configs;
 
-namespace TerrariaCells.Content.UI;
+namespace TerrariaCells.Common.Items;
 
+/// Handles the logic behind locking inventory slots
 [Autoload(Side = ModSide.Both)]
 public class InventoryManager : ModSystem, IEntitySource
 {
@@ -41,10 +43,6 @@ public class InventoryManager : ModSystem, IEntitySource
         (13, TerraCellsItemCategory.Storage),
     ];
 
-    static InventoryUiConfiguration config;
-
-    bool pickupLock = false;
-
     /// <summary>
     /// Gets the categorization for a given item.
     /// If the item implements ITerraCellsCategorization, it uses that.
@@ -58,6 +56,11 @@ public class InventoryManager : ModSystem, IEntitySource
                 (short)item.netID,
                 TerraCellsItemCategory.Default
             );
+    public static TerraCellsItemCategory GetItemCategorization(int type) =>
+        VanillaItemCategorizations.GetValueOrDefault(
+                (short)type,
+                TerraCellsItemCategory.Default
+            );
 
     public static StorageItemSubcategorization GetStorageItemSubcategorization(Item item) =>
         GetItemCategorization(item) is TerraCellsItemCategory.Storage
@@ -66,6 +69,27 @@ public class InventoryManager : ModSystem, IEntitySource
                 StorageItemSubcategorization.None
             )
             : StorageItemSubcategorization.None;
+    public static StorageItemSubcategorization GetStorageItemSubcategorization(int type) =>
+        GetItemCategorization(type) is TerraCellsItemCategory.Storage
+            ? StorageSubcategorizations.GetValueOrDefault(
+                (short)type,
+                StorageItemSubcategorization.None
+            )
+            : StorageItemSubcategorization.None;
+
+    public static int GetRandomItem(TerraCellsItemCategory category)
+    {
+
+        while (true)
+        {
+            int id = (int)(Main.rand.NextFloat() * 3400);
+            if (GetItemCategorization(id) == category)
+            {
+                return id;
+            }
+        };
+    }
+
 
     /// <summary>
     /// A list of all of categorizations for vanilla items, including those that get reworked.
@@ -199,43 +223,28 @@ public class InventoryManager : ModSystem, IEntitySource
 
     public override void Load()
     {
-        config = (InventoryUiConfiguration)Mod.GetConfig("InventoryUiConfiguration");
-        if (config == null)
-        {
-            Logging.PublicLogger.Error("Missing Inventory/UI Config! (This is a dev issue)");
-            return;
-        }
-
-        if (!pickupLock & config.EnableInventoryLock)
-        {
-            pickupLock = true;
-            On_Player.CanAcceptItemIntoInventory += new(FilterPickups);
-        }
-        else if (pickupLock & !config.EnableInventoryLock)
-        {
-            pickupLock = false;
-            On_Player.CanAcceptItemIntoInventory -= new(FilterPickups);
-            On_Player.PickupItem += new(OnItemPickup);
-        }
+        On_Player.CanAcceptItemIntoInventory += new(FilterPickups);
+        // On_Player.PickupItem += new(OnItemPickup);
     }
 
     public override void PostUpdateWorld()
     {
-        if (config.EnableInventoryLock)
+        if (DevConfig.Instance.EnableInventoryLock)
         {
             foreach (Player player in Main.ActivePlayers)
             {
                 if (player.selectedItem < INVENTORY_SLOT_COUNT)
-                    return;
+                    continue;
 
-                if (player.selectedItem > INVENTORY_SLOT_COUNT - 1)
-                    player.selectedItem = INVENTORY_SLOT_COUNT - 1;
-                else
+                if (player.selectedItem > INVENTORY_SLOT_COUNT + 2)
                     player.selectedItem = 0;
+                else
+                    player.selectedItem = INVENTORY_SLOT_COUNT - 1;
             }
-        }
-        if (config.EnableInventoryLock)
-        {
+            // }
+
+            // if (config.EnableInventoryLock)
+            // {
             foreach (Player player in Main.player)
             {
                 SortInventory(player);
@@ -243,55 +252,54 @@ public class InventoryManager : ModSystem, IEntitySource
         }
     }
 
-    public override void PostUpdateItems() { }
-
     public void SortInventory(Player player)
     {
-        var openSlots = 4;
-        for (int i = 10; i < 14; i++)
-        {
-            if (!player.inventory[i].IsAir)
-            {
-                openSlots--;
-            }
-        }
+        // var openSlots = 4;
+        // for (int i = 10; i < 14; i++)
+        // {
+        //     if (!player.inventory[i].IsAir)
+        //     {
+        //         openSlots--;
+        //     }
+        // }
         for (int i = 5; i < 50; i++)
         {
-            if (i >= 10 && i < 14)
+            if (i >= 10 & i < 14)
             {
                 continue;
             }
-            if (openSlots == 0)
+            if (DoesStorageItemGoIntoRegularInventory(GetStorageItemSubcategorization(player.inventory[i])))
             {
-                player.DropItem(this, player.position, ref player.inventory[i]);
-                continue;
-            }
-            switch (GetItemCategorization(player.inventory[i]))
-            {
-                case TerraCellsItemCategory.Default:
-                    continue;
-                case TerraCellsItemCategory.Storage:
-                    if (
-                        GetStorageItemSubcategorization(player.inventory[i])
-                        == StorageItemSubcategorization.Coin
-                    )
-                    {
-                        player.GetItem(0, player.inventory[i], GetItemSettings.PickupItemFromWorld);
-                        continue;
-                    }
-                    break;
-            }
-            if (ItemGoesIntoInventory(GetStorageItemSubcategorization(player.inventory[i])))
-            {
-                openSlots--;
                 for (int i2 = 10; i2 < 14; i2++)
                 {
                     if (player.inventory[i2].IsAir)
                     {
                         Utils.Swap(ref player.inventory[i], ref player.inventory[i2]);
+                        break;
                     }
                 }
             }
+            // if (openSlots == 0)
+            // {
+            //     player.DropItem(this, player.position, ref player.inventory[i]);
+            //     continue;
+            // }
+            // switch (GetItemCategorization(player.inventory[i]))
+            // {
+            //     case TerraCellsItemCategory.Default:
+            //         continue;
+            //     case TerraCellsItemCategory.Storage:
+            //         if (
+            //             GetStorageItemSubcategorization(player.inventory[i])
+            //             == StorageItemSubcategorization.Coin
+            //         )
+            //         {
+            //             player.GetItem(0, player.inventory[i], GetItemSettings.PickupItemFromWorld);
+            //             continue;
+            //         }
+            //         break;
+            // }
+
         }
 
         foreach ((int, TerraCellsItemCategory) slotCategory in slotCategorizations)
@@ -400,6 +408,10 @@ public class InventoryManager : ModSystem, IEntitySource
                 player.inventory[previousInventorySlot].TurnToAir();
                 return true;
             case TerraCellsItemCategory.Storage:
+                // if (GetStorageItemSubcategorization(item) == StorageItemSubcategorization.Coin)
+                // {
+                //     return true;
+                // }
                 for (int i = 10; true; i++)
                 {
                     if (player.inventory[i].IsAir)
@@ -423,7 +435,7 @@ public class InventoryManager : ModSystem, IEntitySource
                         return true;
                     }
                 }
-                player.DropItem(this, new Microsoft.Xna.Framework.Vector2(), ref item);
+                player.DropItem(this, new Vector2(), ref item);
                 return false;
         }
     }
@@ -440,15 +452,21 @@ public class InventoryManager : ModSystem, IEntitySource
         Item item
     )
     {
+        if (!DevConfig.Instance.EnableInventoryLock)
+        {
+            return true;
+        }
+
         return GetItemCategorization(item) switch
         {
-            TerraCellsItemCategory.Default => false,
+            TerraCellsItemCategory.Default => true,
+            TerraCellsItemCategory.Pickup => true,
             TerraCellsItemCategory.Weapon => !WeaponsSlotsFull(player) | !StorageSlotsFull(player),
             TerraCellsItemCategory.Skill => !SkillsSlotsFull(player) | !StorageSlotsFull(player),
             TerraCellsItemCategory.Potion => !PotionSlotFull(player) | !StorageSlotsFull(player),
             TerraCellsItemCategory.Storage => !StorageSlotsFull(player)
-                | !ItemGoesIntoInventory(GetStorageItemSubcategorization(item)),
-            _ => !config.EnableInventoryLock,
+                | !DoesStorageItemGoIntoRegularInventory(GetStorageItemSubcategorization(item)),
+            _ => throw new System.Exception("Missing Item category check (I hate runtime exceptions but i cant think of a better solution atm)")
         };
     }
 
@@ -460,16 +478,22 @@ public class InventoryManager : ModSystem, IEntitySource
         Item itemToPickUp
     )
     {
-        MoveItemToItsDedicatedCategory(Main.player[playerIndex], itemToPickUp, 13);
+        // if (config.EnableInventoryLock)
+        // {
+        //     MoveItemToItsDedicatedCategory(Main.player[playerIndex], itemToPickUp, 13);
+        // }
+
+
+
         return itemToPickUp;
     }
 
-    public static bool ItemGoesIntoInventory(StorageItemSubcategorization subcategorization)
+    public static bool DoesStorageItemGoIntoRegularInventory(StorageItemSubcategorization subcategorization)
     {
         return subcategorization switch
         {
-            StorageItemSubcategorization.Armor => true,
-            StorageItemSubcategorization.Accessory => true,
+            // StorageItemSubcategorization.Armor => true,
+            // StorageItemSubcategorization.Accessory => true,
             StorageItemSubcategorization.Coin => false,
             _ => true,
         };

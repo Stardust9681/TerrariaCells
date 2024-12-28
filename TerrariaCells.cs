@@ -1,14 +1,9 @@
 global using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using Terraria;
 using Terraria.Graphics;
-using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Config;
-using TerrariaCells.Content.UI;
+using TerrariaCells.Common.Configs;
 
 namespace TerrariaCells
 {

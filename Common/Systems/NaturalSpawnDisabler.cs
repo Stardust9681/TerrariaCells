@@ -8,8 +8,8 @@ using Terraria.ID;
 namespace TerrariaCells.Common.Systems
 {
 	//Disable natural NPC spawns since we'll be handling spawns separately
-	//TODO
-		//Disable natural boss spawns (EOC when > 200 hp, Deerclops when > 200 hp or 9 def, etc)
+	//TODO:
+		//Disable invasion spawns? Shouldn't be able to occur normally...
 	public class NaturalSpawnDisabler : GlobalNPC
 	{
 		//Set max natural spawns to 0; prevents anything from spawning

@@ -16,10 +16,18 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		const int Jump = 1;
 		const int FireArrows = 2;
 
+		const float MaxSpeed = 2f;
+		const float Accel = 0.075f;
+		const float JumpStrength = 5.5f;
+
 		public override void Behaviour(NPC npc)
 		{
 			if (!npc.HasValidTarget)
 				npc.TargetClosest();
+
+			//This gets continually recalculated, so I need to continually reset it :(
+			npc.stairFall = false;
+
 			switch (npc.Phase())
 			{
 				case ApproachTarget:
@@ -44,7 +52,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			Player target = Main.player[npc.target];
 			int directionToMove = target.position.X < npc.position.X ? -1 : 1;
 			Vector2 distance = new Vector2(MathF.Abs(target.position.X - npc.position.X), MathF.Abs(target.position.Y - npc.position.Y));
-			if ((128 < distance.X && distance.X < 320) || distance.Y > 480 || (distance.Y > 240 && distance.X < 80))
+			float additiveDist = distance.X + distance.Y;
+			//Within ~5 tiles or between 15-20 tiles away, try to fire arrows instead
+			if(additiveDist < 80 || (240 < additiveDist && additiveDist < 320))
 			{
 				if (npc.LineOfSight(target.position))
 				{
@@ -53,20 +63,34 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				}
 			}
 
-			const float MaxSpeed = 2f;
-			const float Accel = 0.075f;
+			//npc.stairFall = target.position.Y > npc.position.Y;
+
 			float newVel = npc.velocity.X + directionToMove * Accel;
 			if (MathF.Abs(newVel) < MaxSpeed)
 				npc.velocity.X = newVel;
 			else
 				npc.velocity.X = npc.direction * MaxSpeed;
 
+			if (npc.FindGroundInFront().Y > (npc.Bottom.Y + npc.height))
+			{
+				if (npc.LineOfSight(target.position))
+				{
+					npc.velocity.X = 0;
+					npc.Phase(FireArrows);
+				}
+				else
+				{
+					npc.Phase(Jump);
+				}
+				return;
+			}
+
 			if (npc.collideX)
 			{
-				Vector2 oldPos = npc.position;
-				Vector2 oldVel = npc.velocity;
+				//Vector2 oldPos = npc.position;
+				//Vector2 oldVel = npc.velocity;
 				Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
-				if (oldPos == npc.position && oldVel == npc.velocity && npc.Grounded())
+				if (npc.Grounded())
 				{
 					npc.Phase(Jump);
 					return;
@@ -83,13 +107,17 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			{
 				if (npc.Timer() == 0)
 				{
-					npc.velocity.Y -= 5.5f;
+					npc.velocity.Y -= JumpStrength;
 				}
 				else
 				{
 					npc.Phase(ApproachTarget);
 					return;
 				}
+			}
+			if (npc.collideX)
+			{
+				Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
 			}
 			if (MathF.Abs(npc.velocity.X) < 1.4f)
 				npc.velocity.X += npc.direction * 0.014f;
@@ -101,17 +129,14 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			if (npc.Timer() == 0)
 				CombatNPC.ToggleContactDamage(npc, false);
 			Player target = Main.player[npc.target];
-			//Just add new projectile types in if you want to adjust this I guess I dunno
-			int[] ArrowsToFire = new int[] { Terraria.ID.ProjectileID.WoodenArrowHostile, Terraria.ID.ProjectileID.FireArrow };
+			
 			int time = npc.Timer();
-			if (40 < time && time < 45)
+			if (50 < time && time < 55)
 			{
-				//Lossy compression because for some reason 'npc.ai[2]' turns the archer INVISIBLE when used ???
-				//Couldn't find anything elsewhere that would cause this
+				//Lossy compression into only ai[3] because for some reason ai[2] turns the archer INVISIBLE when used ???
 				//Didn't want projectile fired DIRECTLY at player, so there's some opportunity to respond
-				(int x, int y) = ((int)(target.Center.X) / 16, (int)(target.Center.Y) / 16);
-				npc.ai[3] = (x << 16) | y;
-				for (int i = 0; i < 4; i++)
+				npc.ai[3] = Pack(target.Center.ToTileCoordinates16());
+				for (int i = 0; i < 5; i++)
 				{
 					Dust d = Dust.NewDustDirect(npc.Center + new Vector2(0, -4), 4, 4, Terraria.ID.DustID.Torch);
 					d.noGravity = true;
@@ -120,22 +145,25 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 					d.velocity = d.velocity.RotatedByRandom(MathHelper.ToRadians(15));
 				}
 			}
-			else if (time > 90)
+			else if (time > 75)
 			{
+				//Just add new projectile types in if you want to adjust this I guess I dunno
+				int[] arrowsToFire = new int[] { Terraria.ID.ProjectileID.WoodenArrowHostile, Terraria.ID.ProjectileID.FireArrow };
+
 				int xy = (int)npc.ai[3];
-				(int x, int y) = ((xy & (int.MaxValue << 16)) >> 16, xy & (int.MaxValue >> 16));
-				Vector2 vel = new Vector2(x * 16, y * 16);
-				vel = npc.DirectionTo(vel) * 8;
+				(ushort x, ushort y) = Common.Utilities.NPCHelpers.Unpack(xy);
+				Vector2 vel = new Vector2(x * 16 + 8, y * 16 + 8);
+				vel = npc.DirectionTo(vel) * 8.5f;
 				vel.Y *= 1.075f;
-				vel.Y += -MathF.Abs(vel.X * 0.1f);
-				Projectile proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center, vel, Main.rand.Next(ArrowsToFire), npc.damage / 5, 1f, Main.myPlayer);
+				vel.Y += -MathF.Abs(vel.X * 0.08f);
+				Projectile proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center, vel, Main.rand.Next(arrowsToFire), npc.damage / 5, 1f, Main.myPlayer);
 				proj.hostile = true;
 				proj.friendly = false;
 				npc.Phase(ApproachTarget);
 				return;
 			}
 			npc.velocity.X *= 0.9f;
-			npc.Timer(time + 1);
+			npc.DoTimer();
 		}
 	}
 }

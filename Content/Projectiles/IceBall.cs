@@ -20,7 +20,7 @@ namespace TerrariaCells.Content.Projectiles
         public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.CultistBossIceMist;
         public override void SetDefaults()
         {
-            Projectile.timeLeft = 300;
+            Projectile.timeLeft = 200;
             Projectile.width = Projectile.height = 20;
             Projectile.hostile = true;
             Projectile.friendly = false;
@@ -36,7 +36,7 @@ namespace TerrariaCells.Content.Projectiles
         public override void AI()
         {
 
-            int maxTimeLeft = 300;
+            int maxTimeLeft = 200;
             int timeCharging = 60;
             int numShards = 5;
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Frost);
@@ -74,9 +74,9 @@ namespace TerrariaCells.Content.Projectiles
                 for (int i = 0; i < numShards; i++)
                 {
                     Vector2 vel = new Vector2(0, -10).RotatedBy(MathHelper.ToRadians((float)i / numShards * 360));
-                    Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center,  vel, ModContent.ProjectileType<IceShard>(), TCellsUtils.ScaledHostileDamage(25), 1, ai1: vel.ToRotation());
+                    //Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center,  vel, ModContent.ProjectileType<IceShard>(), TCellsUtils.ScaledHostileDamage(25), 1, ai1: vel.ToRotation());
                 }
-                SoundEngine.PlaySound(SoundID.Item28, Projectile.Center);
+                //SoundEngine.PlaySound(SoundID.Item28, Projectile.Center);
             }
             if (Projectile.timeLeft < 10)
             {

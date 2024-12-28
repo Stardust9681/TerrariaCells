@@ -38,7 +38,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                 CustomFrameY = 54;
             }
         }
-
+        
         public bool CultistDevoteeAI(NPC npc, Player target)
         {
             if (npc.HasValidTarget)

@@ -47,23 +47,47 @@ namespace TerrariaCells.Common.GlobalProjectiles
 		internal static bool IsARocket(int projType) => RocketTypes.Contains(projType);
 		internal static bool IsABullet(int projType) => BulletTypes.Contains(projType);
 		internal static bool IsAnArrow(int projType) => ArrowTypes.Contains(projType);
-		public override void OnKill(Projectile projectile, int timeLeft)
+		public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (projectile.friendly && Main.player[projectile.owner].GetModPlayer<ModPlayers.AccessoryPlayer>().fuseKitten && IsARocket(projectile.type))
+			{
+				target.immune[projectile.owner] = 2;
+			}
+		}
+		public override bool PreKill(Projectile projectile, int timeLeft)
 		{
 			if (projectile.friendly && Main.player[projectile.owner].GetModPlayer<ModPlayers.AccessoryPlayer>().fuseKitten && IsARocket(projectile.type))
 			{
 				const int NEWSIZE = 256;
 				projectile.Resize(NEWSIZE, NEWSIZE);
 				projectile.Damage();
-				int dustCount = 6 + Main.rand.Next(4);
-				int[] dustTypes = new int[] { Terraria.ID.DustID.MartianSaucerSpark, Terraria.ID.DustID.Electric };
+				int dustCount = 10 + Main.rand.Next(5);
+				int[] dustTypes = new int[] { Terraria.ID.DustID.FireworkFountain_Yellow, Terraria.ID.DustID.Electric };
 				for (int i = 0; i < dustCount; i++)
 				{
-					Dust d = Dust.NewDustDirect(projectile.Center - new Vector2(NEWSIZE*0.25f), NEWSIZE/2, NEWSIZE/2, dustTypes[Main.rand.Next(3)/2]);
+					Dust d = Dust.NewDustDirect(projectile.Center - new Vector2(NEWSIZE * 0.25f), NEWSIZE / 2, NEWSIZE / 2, dustTypes[Main.rand.Next(3) / 2]);
 					d.noGravity = false;
-					d.velocity = projectile.DirectionTo(d.position) * Main.rand.NextFloat(2.5f, 5f);
+					d.velocity = projectile.Center.DirectionTo(d.position) * Main.rand.NextFloat(3f, 6f);
 					d.scale = Main.rand.NextFloat(1.1f, 1.4f);
 				}
+
+				int goreCount = 12 + Main.rand.Next(6);
+				int[] goreTypes = new int[] { Terraria.ID.GoreID.Smoke1, Terraria.ID.GoreID.Smoke2, Terraria.ID.GoreID.Smoke3 };
+				for (int i = 0; i < goreCount; i++)
+				{
+					Vector2 pos = projectile.Center + (Vector2.UnitX.RotateRandom(MathHelper.TwoPi) * Main.rand.NextFloat(8f));
+					Gore.NewGore(projectile.GetSource_Death(), pos, projectile.Center.DirectionTo(pos) * 2f, Main.rand.Next(goreTypes));
+					if (i % 2 == 0)
+					{
+						Dust dust = Dust.NewDustDirect(projectile.position, projectile.width, projectile.height, Terraria.ID.DustID.Firefly);
+						dust.noGravity = true;
+						dust.velocity = new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-2, 2));
+						dust.scale = Main.rand.NextFloat(1.2f, 1.6f);
+					}
+				}
+				return false;
 			}
+			return base.PreKill(projectile, timeLeft);
 		}
 	}
 }

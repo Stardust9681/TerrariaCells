@@ -1,9 +1,9 @@
-namespace TerrariaCells.Content.UI;
+namespace TerrariaCells.Common.Items;
 
 public enum TerraCellsItemCategory
 {
     /// <summary>
-    /// This item works with the default properties
+    /// This item has a category
     /// </summary>
     Default = 0,
 
@@ -30,7 +30,7 @@ public enum TerraCellsItemCategory
     /// <summary>
     /// This is treated as an item, but does not go into the inventory when picked up. Example: hearts, mana stars, nebula buffs
     /// </summary>
-    Pickup = 4,
+    Pickup = 5,
 }
 
 public enum StorageItemSubcategorization

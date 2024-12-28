@@ -42,7 +42,12 @@ namespace TerrariaCells.Common.GlobalNPCs
         }
         public bool DesertSpiritAI(NPC npc, Player target)
         {
-            int timeRotating = 300;
+            if (npc.ai[1] == 0)
+            {
+                npc.ai[1] = npc.Center.X;
+                    npc.ai[2] = npc.Center.Y;
+            }
+            const int timeRotating = 300;
             if (npc.HasValidTarget)
             {
                 npc.direction = npc.Center.X > target.Center.X ? -1 : 1;
@@ -76,7 +81,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                  
             }
 
-            if (npc.ai[3] > 100 && npc.ai[3] % 10 == 0 && npc.HasValidTarget && npc.ai[3] < timeRotating - 100)
+            if (npc.ai[3] < 200 && npc.ai[3] % 10 == 0 && npc.HasValidTarget && npc.ai[3] >  100)
             {
                 Projectile.NewProjectileDirect(npc.GetSource_FromAI(), target.Center + new Vector2(Main.rand.Next(20, 100), 0).RotatedByRandom(MathHelper.TwoPi), Vector2.Zero, ProjectileID.DesertDjinnCurse, 0, 1, -1, npc.whoAmI, target.whoAmI);
             }

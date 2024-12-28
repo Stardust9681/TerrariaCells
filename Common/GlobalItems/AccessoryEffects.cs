@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
-using Microsoft.Xna.Framework;
 
 namespace TerrariaCells.Common.GlobalItems
 {
@@ -29,11 +27,11 @@ namespace TerrariaCells.Common.GlobalItems
 			}
 			if (item.type == ItemID.BallOfFuseWire)
 			{
-				item.shoot = 0;
+				item.shoot = ProjectileID.None;
 				item.buffType = 0;
 				item.useAnimation = 0;
 				item.useTime = 0;
-				item.useStyle = 0;
+				item.useStyle = ItemUseStyleID.None;
 				item.UseSound = null;
 			}
 		}
@@ -43,7 +41,7 @@ namespace TerrariaCells.Common.GlobalItems
 			{
 				case ItemID.FastClock: FastClock(player); break;
 				case ItemID.BandofRegeneration: BandOfRegeneration(player); break;
-				case ItemID.FrozenShield: FrozenShield(player, item); break;
+				case ItemID.FrozenTurtleShell: FrozenShield(player, item); break;
 				case ItemID.ObsidianShield: ObsidianShield(player); break;
 				case ItemID.ThePlan: ThePlan(player); break;
 				case ItemID.FeralClaws: FeralClaws(player); break;

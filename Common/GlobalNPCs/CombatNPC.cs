@@ -13,38 +13,18 @@ namespace TerrariaCells.Common.GlobalNPCs
 	public class CombatNPC : GlobalNPC
 	{
 		public override bool InstancePerEntity => true;
-		public bool allowContactDamage;
+		public bool allowContactDamage = true;
 
-		public override void SetDefaultsFromNetId(NPC npc)
+		public override void SetDefaults(NPC npc)
 		{
 			switch (npc.type)
 			{
-				case NPCID.Wolf:
-					npc.lifeMax = 75;
-					npc.damage = 25;
+				case NPCID.BrainofCthulhu:
+					npc.knockBackResist = 0f; //0 effect from knockback
 					break;
-				case NPCID.Raven:
-					npc.lifeMax = 20;
-					npc.damage = 15;
-					break;
-				case NPCID.CultistDevote:
-					npc.lifeMax = 150;
-					npc.damage = 50;
-					break;
-				case NPCID.CultistArcherBlue:
-					npc.lifeMax = 275;
-					npc.damage = 75;
-					break;
-				case NPCID.IceGolem:
-					npc.lifeMax = 1000;
-					npc.damage = 65;
-					break;
-				case NPCID.IceElemental:
-					npc.lifeMax = 225;
-					npc.damage = 90;
-					break;
-				default: break;
 			}
+
+			SetEnemyStats(npc);
 		}
 
 		public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
@@ -54,16 +34,6 @@ namespace TerrariaCells.Common.GlobalNPCs
 		}
 
 		public static void ToggleContactDamage(NPC npc, bool value) => npc.GetGlobalNPC<CombatNPC>().allowContactDamage = value;
-
-		public override void SetDefaults(NPC entity)
-		{
-			switch (entity.type)
-			{
-				case NPCID.BrainofCthulhu:
-					entity.knockBackResist = 0f; //0 effect from knockback
-					break;
-			}
-		}
 
 		public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
@@ -113,6 +83,51 @@ namespace TerrariaCells.Common.GlobalNPCs
 					return true;
 				default:
 					return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
+			}
+		}
+
+
+
+		//Just so it's not taking space at the top of the file tbh
+		private void SetEnemyStats(NPC npc)
+		{
+			switch (npc.type)
+			{
+				case NPCID.Wolf:
+					npc.lifeMax = 70;
+					npc.damage = 25;
+					npc.defense = 6;
+					break;
+				case NPCID.Raven:
+					npc.lifeMax = 20;
+					npc.damage = 15;
+					break;
+				case NPCID.Mummy:
+					npc.lifeMax = 150;
+					npc.defense = 20;
+					break;
+				case NPCID.DesertGhoul:
+					npc.defense = 12;
+					break;
+				case NPCID.DesertDjinn:
+					npc.defense = 10;
+					break;
+				case NPCID.CultistDevote:
+					npc.lifeMax = 150;
+					npc.damage = 50;
+					break;
+				case NPCID.CultistArcherBlue:
+					npc.lifeMax = 275;
+					npc.damage = 75;
+					break;
+				case NPCID.IceGolem:
+					npc.lifeMax = 1000;
+					npc.damage = 65;
+					break;
+				case NPCID.IceElemental:
+					npc.lifeMax = 225;
+					npc.damage = 90;
+					break;
 			}
 		}
 	}

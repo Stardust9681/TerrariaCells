@@ -48,7 +48,7 @@ namespace TerrariaCells.Common.Systems
         {
             bool wasActive = self.active;
             orig.Invoke(self);
-            if (wasActive && !self.active)
+            if (self.life > 1 && !NPCID.Sets.ProjectileNPC[self.type] && wasActive && !self.active)
             {
                 RespawnMarkers.Add(
                     new NPCRespawnMarker(
@@ -74,7 +74,7 @@ namespace TerrariaCells.Common.Systems
                 return;
 
             List<Rectangle> respawnRects = new List<Rectangle>();
-            Vector2 rectSize = new Vector2(2608f, 1840f);
+            Vector2 rectSize = new Vector2(2608f*0.67f, 1840f*0.67f);
             for (int i = 0; i < Main.maxPlayers; i++)
             {
                 Player player = Main.player[i];
