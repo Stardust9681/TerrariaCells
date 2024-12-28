@@ -1,5 +1,8 @@
+using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace TerrariaCells.Common.ModPlayers 
 {
@@ -10,6 +13,14 @@ namespace TerrariaCells.Common.ModPlayers
 			mana = mod;
 			mod.Flat = (float)extraHealth;
 			health = mod;
+		}
+
+		public override void SaveData(TagCompound tag) {
+			tag.Add("extraHealth", extraHealth);
+		}
+
+		public override void LoadData(TagCompound tag) {
+			extraHealth = tag.GetInt("extraHealth");
 		}
 	}
 }
