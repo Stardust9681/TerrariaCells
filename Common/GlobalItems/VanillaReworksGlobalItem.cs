@@ -78,7 +78,7 @@ namespace TerrariaCells.Common.GlobalItems
             return false;
         }
 
-        
+
         public override void ModifyWeaponCrit(Item item, Player player, ref float crit)
         {
             // Disable crits for all weapons by default

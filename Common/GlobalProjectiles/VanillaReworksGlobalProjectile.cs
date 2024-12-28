@@ -145,7 +145,7 @@ namespace TerrariaCells.Common.GlobalProjectiles
             {
                 projectile.Kill();
             }
-            else if (projectile.type == ProjectileID.Starfury && projectile.ai[1] != 1) 
+            else if (projectile.type == ProjectileID.Starfury && projectile.ai[1] != 1)
             {
                 projectile.Kill();
             }
@@ -158,7 +158,7 @@ namespace TerrariaCells.Common.GlobalProjectiles
                 if (targetID >= 0)
                 {
                     Vector2 directionToTarget = projectile.DirectionTo(Main.npc[targetID].position);
-                    
+
                 }
             }
         }

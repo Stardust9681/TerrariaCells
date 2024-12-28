@@ -12,7 +12,7 @@
 *.sln
 *.generated.sln
 .config/
-Localization/
+# Localization/
 Properties/
 .config/
 .vscode/
