@@ -1,8 +1,5 @@
 
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Reflection;
 using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.RuntimeDetour;
@@ -80,10 +77,8 @@ public class InventoryManager : ModSystem, IEntitySource
             )
             : StorageItemSubcategorization.None;
 
-
     public static int GetRandomItem(TerraCellsItemCategory category)
     {
-
 
         while (true)
         {
@@ -94,13 +89,6 @@ public class InventoryManager : ModSystem, IEntitySource
             }
         };
     }
-
-    public static readonly Dictionary<string, ItemID> ItemIDNames = typeof(ItemID).GetFields(BindingFlags.Public | BindingFlags.Static |
-        BindingFlags.FlattenHierarchy)
-        .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
-        .ToDictionary(x => x.Name)
-        .Select(x => KeyValuePair.Create(x.Key, (ItemID)x.Value.GetRawConstantValue()))
-        .ToDictionary();
 
 
     /// <summary>
