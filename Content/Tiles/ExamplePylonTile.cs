@@ -23,12 +23,11 @@ public class TeleportTracker : ModSystem
 
     public override void OnModLoad()
     {
-        On_Player.UpdateDead += Reset;
 
         base.OnModLoad();
     }
 
-    public void Reset(On_Player.orig_UpdateDead orig, Player player)
+    public void Reset()
     {
         teleports = 0;
     }

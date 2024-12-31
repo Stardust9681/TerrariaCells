@@ -1,15 +1,16 @@
-
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Mono.Cecil.Cil;
-using MonoMod.RuntimeDetour;
-using Stubble.Core.Contexts;
+using System.Collections.Immutable;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text.Json;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.UI;
+using Terraria.ModLoader.IO;
 using TerrariaCells.Common.Configs;
+using TerrariaCells.Common.Items;
 
 namespace TerrariaCells.Common.Items;
 
@@ -30,7 +31,7 @@ public class InventoryManager : ModSystem, IEntitySource
     const int STORAGE_SLOT_3 = 12;
     const int STORAGE_SLOT_4 = 13;
 
-    private static readonly (int, TerraCellsItemCategory)[] slotCategorizations =
+    internal static readonly (int, TerraCellsItemCategory)[] slotCategorizations =
     [
         (0, TerraCellsItemCategory.Weapon),
         (1, TerraCellsItemCategory.Weapon),
@@ -56,11 +57,9 @@ public class InventoryManager : ModSystem, IEntitySource
                 (short)item.netID,
                 TerraCellsItemCategory.Default
             );
+
     public static TerraCellsItemCategory GetItemCategorization(int type) =>
-        VanillaItemCategorizations.GetValueOrDefault(
-                (short)type,
-                TerraCellsItemCategory.Default
-            );
+        VanillaItemCategorizations.GetValueOrDefault((short)type, TerraCellsItemCategory.Default);
 
     public static StorageItemSubcategorization GetStorageItemSubcategorization(Item item) =>
         GetItemCategorization(item) is TerraCellsItemCategory.Storage
@@ -69,6 +68,7 @@ public class InventoryManager : ModSystem, IEntitySource
                 StorageItemSubcategorization.None
             )
             : StorageItemSubcategorization.None;
+
     public static StorageItemSubcategorization GetStorageItemSubcategorization(int type) =>
         GetItemCategorization(type) is TerraCellsItemCategory.Storage
             ? StorageSubcategorizations.GetValueOrDefault(
@@ -79,7 +79,6 @@ public class InventoryManager : ModSystem, IEntitySource
 
     public static int GetRandomItem(TerraCellsItemCategory category)
     {
-
         while (true)
         {
             int id = (int)(Main.rand.NextFloat() * 3400);
@@ -87,9 +86,20 @@ public class InventoryManager : ModSystem, IEntitySource
             {
                 return id;
             }
-        };
+        }
+        ;
     }
 
+    public static readonly Dictionary<string, short> ItemIDNames = typeof(ItemID)
+        .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+        .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
+        .ToDictionary(x => x.Name)
+        .Select(x => KeyValuePair.Create(x.Key, (short)x.Value.GetRawConstantValue()))
+        .ToDictionary();
+
+    public static readonly Dictionary<short, string> ItemNameIDs = ItemIDNames
+        .Select(x => KeyValuePair.Create(x.Value, x.Key))
+        .ToDictionary();
 
     /// <summary>
     /// A list of all of categorizations for vanilla items, including those that get reworked.
@@ -97,141 +107,42 @@ public class InventoryManager : ModSystem, IEntitySource
     /// DOES NOT CONTAIN MODDED ITEMS. It only contains categorizations for items with a vanilla ItemID.
     /// Categorization for modded items are contained within their own classes, using ITerraCellsCategorization
     /// <summary>
-    private static readonly Dictionary<short, TerraCellsItemCategory> VanillaItemCategorizations =
-        new()
-        {
-            // Weapons
-            { ItemID.PhoenixBlaster, TerraCellsItemCategory.Weapon },
-            { ItemID.SniperRifle, TerraCellsItemCategory.Weapon },
-            { ItemID.OnyxBlaster, TerraCellsItemCategory.Weapon },
-            { ItemID.RocketLauncher, TerraCellsItemCategory.Weapon },
-            { ItemID.StarCannon, TerraCellsItemCategory.Weapon },
-            { ItemID.PulseBow, TerraCellsItemCategory.Weapon },
-            { ItemID.IceBow, TerraCellsItemCategory.Weapon },
-            { ItemID.Toxikarp, TerraCellsItemCategory.Weapon },
-            { ItemID.Minishark, TerraCellsItemCategory.Weapon },
-            { ItemID.GrenadeLauncher, TerraCellsItemCategory.Weapon },
-            { ItemID.VolcanoLarge, TerraCellsItemCategory.Weapon },
-            { ItemID.Starfury, TerraCellsItemCategory.Weapon },
-            { ItemID.Excalibur, TerraCellsItemCategory.Weapon },
-            { ItemID.NightsEdge, TerraCellsItemCategory.Weapon },
-            { ItemID.TerraBlade, TerraCellsItemCategory.Weapon },
-            { ItemID.ThunderSpear, TerraCellsItemCategory.Weapon }, // storm spear
-            { ItemID.FetidBaghnakhs, TerraCellsItemCategory.Weapon },
-            { ItemID.GolemFist, TerraCellsItemCategory.Weapon },
-            { ItemID.Sunfury, TerraCellsItemCategory.Weapon },
-            { ItemID.DemonScythe, TerraCellsItemCategory.Weapon },
-            { ItemID.Flamelash, TerraCellsItemCategory.Weapon },
-            { ItemID.ShadowbeamStaff, TerraCellsItemCategory.Weapon },
-            { ItemID.VenomStaff, TerraCellsItemCategory.Weapon },
-            { ItemID.FlowerofFrost, TerraCellsItemCategory.Weapon },
-            { ItemID.HeatRay, TerraCellsItemCategory.Weapon },
-            { ItemID.WaterBolt, TerraCellsItemCategory.Weapon },
-            { ItemID.EmeraldStaff, TerraCellsItemCategory.Weapon },
-            { ItemID.LaserRifle, TerraCellsItemCategory.Weapon },
-            { ItemID.SharpTears, TerraCellsItemCategory.Weapon }, // bloodthorn
-            { ItemID.BubbleGun, TerraCellsItemCategory.Weapon },
-            // Skills
-            { ItemID.MolotovCocktail, TerraCellsItemCategory.Skill },
-            { ItemID.StormTigerStaff, TerraCellsItemCategory.Skill },
-            { ItemID.ClingerStaff, TerraCellsItemCategory.Skill },
-            { ItemID.ToxicFlask, TerraCellsItemCategory.Skill },
-            { ItemID.AleThrowingGlove, TerraCellsItemCategory.Skill },
-            { ItemID.DD2ExplosiveTrapT1Popper, TerraCellsItemCategory.Skill }, //explosive cane rod
-            { ItemID.BouncyDynamite, TerraCellsItemCategory.Skill },
-            { ItemID.MedusaHead, TerraCellsItemCategory.Skill },
-            // Potions
-            { ItemID.HealingPotion, TerraCellsItemCategory.Potion },
-            { ItemID.LesserHealingPotion, TerraCellsItemCategory.Potion },
-            { ItemID.GreaterHealingPotion, TerraCellsItemCategory.Potion },
-            { ItemID.SuperHealingPotion, TerraCellsItemCategory.Potion },
-            { ItemID.ManaPotion, TerraCellsItemCategory.Potion },
-            { ItemID.LesserManaPotion, TerraCellsItemCategory.Potion },
-            { ItemID.GreaterManaPotion, TerraCellsItemCategory.Potion },
-            { ItemID.SuperManaPotion, TerraCellsItemCategory.Potion },
-            { ItemID.IronskinPotion, TerraCellsItemCategory.Potion },
-            { ItemID.SwiftnessPotion, TerraCellsItemCategory.Potion },
-            { ItemID.RegenerationPotion, TerraCellsItemCategory.Potion },
-            { ItemID.RedPotion, TerraCellsItemCategory.Potion },
-            // Storage
-            // Armor
-            { ItemID.NinjaHood, TerraCellsItemCategory.Storage },
-            { ItemID.NinjaShirt, TerraCellsItemCategory.Storage },
-            { ItemID.NinjaPants, TerraCellsItemCategory.Storage },
-            { ItemID.GoldHelmet, TerraCellsItemCategory.Storage },
-            { ItemID.GoldChainmail, TerraCellsItemCategory.Storage },
-            { ItemID.GoldGreaves, TerraCellsItemCategory.Storage },
-            // Accessories
-            { ItemID.CelestialMagnet, TerraCellsItemCategory.Storage },
-            { ItemID.NaturesGift, TerraCellsItemCategory.Storage },
-            { ItemID.ArcaneFlower, TerraCellsItemCategory.Storage },
-            { ItemID.BandofStarpower, TerraCellsItemCategory.Storage },
-            { ItemID.MagicCuffs, TerraCellsItemCategory.Storage },
-            { ItemID.BerserkerGlove, TerraCellsItemCategory.Storage },
-            { ItemID.SharkToothNecklace, TerraCellsItemCategory.Storage },
-            { ItemID.Nazar, TerraCellsItemCategory.Storage },
-            { ItemID.FeralClaws, TerraCellsItemCategory.Storage },
-            { ItemID.ThePlan, TerraCellsItemCategory.Storage },
-            { ItemID.ObsidianShield, TerraCellsItemCategory.Storage },
-            { ItemID.FrozenTurtleShell, TerraCellsItemCategory.Storage },
-            { ItemID.BandofRegeneration, TerraCellsItemCategory.Storage },
-            { ItemID.FastClock, TerraCellsItemCategory.Storage },
-            { ItemID.CelestialStone, TerraCellsItemCategory.Storage },
-            { ItemID.CopperCoin, TerraCellsItemCategory.Storage },
-            { ItemID.SilverCoin, TerraCellsItemCategory.Storage },
-            { ItemID.GoldCoin, TerraCellsItemCategory.Storage },
-            { ItemID.PlatinumCoin, TerraCellsItemCategory.Storage },
-            // Pickups
-            { ItemID.Heart, TerraCellsItemCategory.Pickup },
-            { ItemID.Star, TerraCellsItemCategory.Pickup },
-            //
-            { ItemID.None, TerraCellsItemCategory.Default },
-        };
+    private static Dictionary<short, TerraCellsItemCategory> VanillaItemCategorizations;
 
-    private static readonly Dictionary<
-        short,
-        StorageItemSubcategorization
-    > StorageSubcategorizations =
-        new()
-        {
-            { ItemID.NinjaHood, StorageItemSubcategorization.Armor },
-            { ItemID.NinjaShirt, StorageItemSubcategorization.Armor },
-            { ItemID.NinjaPants, StorageItemSubcategorization.Armor },
-            { ItemID.GoldHelmet, StorageItemSubcategorization.Armor },
-            { ItemID.GoldChainmail, StorageItemSubcategorization.Armor },
-            { ItemID.GoldGreaves, StorageItemSubcategorization.Armor },
-            { ItemID.CelestialMagnet, StorageItemSubcategorization.Accessory },
-            { ItemID.NaturesGift, StorageItemSubcategorization.Accessory },
-            { ItemID.ArcaneFlower, StorageItemSubcategorization.Accessory },
-            { ItemID.BandofStarpower, StorageItemSubcategorization.Accessory },
-            { ItemID.MagicCuffs, StorageItemSubcategorization.Accessory },
-            { ItemID.BerserkerGlove, StorageItemSubcategorization.Accessory },
-            { ItemID.SharkToothNecklace, StorageItemSubcategorization.Accessory },
-            { ItemID.Nazar, StorageItemSubcategorization.Accessory },
-            { ItemID.FeralClaws, StorageItemSubcategorization.Accessory },
-            { ItemID.ThePlan, StorageItemSubcategorization.Accessory },
-            { ItemID.ObsidianShield, StorageItemSubcategorization.Accessory },
-            { ItemID.FrozenTurtleShell, StorageItemSubcategorization.Accessory },
-            { ItemID.BandofRegeneration, StorageItemSubcategorization.Accessory },
-            { ItemID.FastClock, StorageItemSubcategorization.Accessory },
-            { ItemID.CelestialStone, StorageItemSubcategorization.Accessory },
-            { ItemID.CopperCoin, StorageItemSubcategorization.Coin },
-            { ItemID.SilverCoin, StorageItemSubcategorization.Coin },
-            { ItemID.GoldCoin, StorageItemSubcategorization.Coin },
-            { ItemID.PlatinumCoin, StorageItemSubcategorization.Coin },
-        };
+    private static Dictionary<short, StorageItemSubcategorization> StorageSubcategorizations;
 
-    public override void Load()
+    public override void SetStaticDefaults()
     {
+        Dictionary<string, string> deserialized;
+
+        deserialized = JsonSerializer.Deserialize<Dictionary<string, string>>(
+            Mod.GetFileBytes("categorizations.json")
+        );
+
+        VanillaItemCategorizations = deserialized
+            .Select(x =>
+                KeyValuePair.Create(ItemIDNames[x.Key], Categorization.FromString(x.Value))
+            )
+            .ToDictionary();
+
+        StorageSubcategorizations = VanillaItemCategorizations
+            .Where(x => x.Value == TerraCellsItemCategory.Storage)
+            .Select(x =>
+                KeyValuePair.Create(
+                    x.Key,
+                    Categorization.SubcategorizationFromString(deserialized[ItemNameIDs[x.Key]])
+                )
+            )
+            .ToDictionary();
+
         On_Player.CanAcceptItemIntoInventory += new(FilterPickups);
-        // On_Player.PickupItem += new(OnItemPickup);
     }
 
     public override void PostUpdateWorld()
     {
         if (DevConfig.Instance.EnableInventoryLock)
         {
-            foreach (Player player in Main.ActivePlayers)
+            foreach (Terraria.Player player in Main.ActivePlayers)
             {
                 if (player.selectedItem < INVENTORY_SLOT_COUNT)
                     continue;
@@ -245,14 +156,14 @@ public class InventoryManager : ModSystem, IEntitySource
 
             // if (config.EnableInventoryLock)
             // {
-            foreach (Player player in Main.player)
+            foreach (Terraria.Player player in Main.player)
             {
                 SortInventory(player);
             }
         }
     }
 
-    public void SortInventory(Player player)
+    public void SortInventory(Terraria.Player player)
     {
         // var openSlots = 4;
         // for (int i = 10; i < 14; i++)
@@ -268,7 +179,11 @@ public class InventoryManager : ModSystem, IEntitySource
             {
                 continue;
             }
-            if (DoesStorageItemGoIntoRegularInventory(GetStorageItemSubcategorization(player.inventory[i])))
+            if (
+                DoesStorageItemGoIntoRegularInventory(
+                    GetStorageItemSubcategorization(player.inventory[i])
+                )
+            )
             {
                 for (int i2 = 10; i2 < 14; i2++)
                 {
@@ -299,7 +214,6 @@ public class InventoryManager : ModSystem, IEntitySource
             //         }
             //         break;
             // }
-
         }
 
         foreach ((int, TerraCellsItemCategory) slotCategory in slotCategorizations)
@@ -316,7 +230,11 @@ public class InventoryManager : ModSystem, IEntitySource
         }
     }
 
-    public bool MoveItemToItsDedicatedCategory(Player player, Item item, int previousInventorySlot)
+    public bool MoveItemToItsDedicatedCategory(
+        Terraria.Player player,
+        Item item,
+        int previousInventorySlot
+    )
     {
         switch (GetItemCategorization(item))
         {
@@ -331,7 +249,7 @@ public class InventoryManager : ModSystem, IEntitySource
                         return true;
                     }
                 }
-                player.DropItem(this, new Microsoft.Xna.Framework.Vector2(), ref item);
+                player.DropItem(this, new Vector2(), ref item);
                 return false;
 
             case TerraCellsItemCategory.Weapon:
@@ -346,7 +264,7 @@ public class InventoryManager : ModSystem, IEntitySource
                         }
                         if (i >= 13)
                         {
-                            player.DropItem(this, new Microsoft.Xna.Framework.Vector2(), ref item);
+                            player.DropItem(this, new Vector2(), ref item);
                             return false;
                         }
                     }
@@ -373,7 +291,7 @@ public class InventoryManager : ModSystem, IEntitySource
                         }
                         if (i >= 13)
                         {
-                            player.DropItem(this, new Microsoft.Xna.Framework.Vector2(), ref item);
+                            player.DropItem(this, new Vector2(), ref item);
                             return false;
                         }
                     }
@@ -399,7 +317,7 @@ public class InventoryManager : ModSystem, IEntitySource
                         }
                         if (i >= 13)
                         {
-                            player.DropItem(this, new Microsoft.Xna.Framework.Vector2(), ref item);
+                            player.DropItem(this, new Vector2(), ref item);
                             return false;
                         }
                     }
@@ -421,7 +339,7 @@ public class InventoryManager : ModSystem, IEntitySource
                     }
                     if (i >= 13)
                     {
-                        player.DropItem(this, new Microsoft.Xna.Framework.Vector2(), ref item);
+                        player.DropItem(this, new Vector2(), ref item);
                         return false;
                     }
                 }
@@ -448,7 +366,7 @@ public class InventoryManager : ModSystem, IEntitySource
     /// </summary>
     private static bool FilterPickups(
         On_Player.orig_CanAcceptItemIntoInventory orig,
-        Player player,
+        Terraria.Player player,
         Item item
     )
     {
@@ -466,13 +384,15 @@ public class InventoryManager : ModSystem, IEntitySource
             TerraCellsItemCategory.Potion => !PotionSlotFull(player) | !StorageSlotsFull(player),
             TerraCellsItemCategory.Storage => !StorageSlotsFull(player)
                 | !DoesStorageItemGoIntoRegularInventory(GetStorageItemSubcategorization(item)),
-            _ => throw new System.Exception("Missing Item category check (I hate runtime exceptions but i cant think of a better solution atm)")
+            _ => throw new System.Exception(
+                "Missing Item category check (I hate runtime exceptions but i cant think of a better solution atm)"
+            ),
         };
     }
 
     public Item OnItemPickup(
         On_Player.orig_PickupItem orig,
-        Player self,
+        Terraria.Player self,
         int playerIndex,
         int worldItemArrayIndex,
         Item itemToPickUp
@@ -488,7 +408,9 @@ public class InventoryManager : ModSystem, IEntitySource
         return itemToPickUp;
     }
 
-    public static bool DoesStorageItemGoIntoRegularInventory(StorageItemSubcategorization subcategorization)
+    public static bool DoesStorageItemGoIntoRegularInventory(
+        StorageItemSubcategorization subcategorization
+    )
     {
         return subcategorization switch
         {
@@ -502,20 +424,21 @@ public class InventoryManager : ModSystem, IEntitySource
     /// <summary>
     /// Checks the two inventory slots that are used for weapons, and returns true if both are occupied.
     /// </summary>
-    public static bool WeaponsSlotsFull(Player player) =>
+    public static bool WeaponsSlotsFull(Terraria.Player player) =>
         !player.inventory[WEAPON_SLOT_1].IsAir && !player.inventory[WEAPON_SLOT_2].IsAir;
 
-    public static bool SkillsSlotsFull(Player player) =>
+    public static bool SkillsSlotsFull(Terraria.Player player) =>
         !player.inventory[SKILL_SLOT_1].IsAir && !player.inventory[SKILL_SLOT_2].IsAir;
 
-    public static bool PotionSlotFull(Player player) => !player.inventory[POTION_SLOT].IsAir;
+    public static bool PotionSlotFull(Terraria.Player player) =>
+        !player.inventory[POTION_SLOT].IsAir;
 
-    public static bool StorageSlotsFull(Player player) =>
+    public static bool StorageSlotsFull(Terraria.Player player) =>
         !player.inventory[STORAGE_SLOT_1].IsAir
         && !player.inventory[STORAGE_SLOT_2].IsAir
         && !player.inventory[STORAGE_SLOT_3].IsAir
         && !player.inventory[STORAGE_SLOT_4].IsAir;
 
-    public static bool AccessorySlotsFull(Player player) =>
+    public static bool AccessorySlotsFull(Terraria.Player player) =>
         !player.armor[3].IsAir && !player.armor[4].IsAir;
 }

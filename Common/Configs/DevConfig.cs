@@ -45,6 +45,10 @@ namespace TerrariaCells.Common.Configs
 		[DefaultValue(true)]
 		public bool EnableInventoryLock;
 
+		/// <summary>When active, drops all of the players items onto the ground on death.</summary>
+		[DefaultValue(true)]
+		public bool DropItems;
+
 		/// <summary>
 		/// Disables the interfaces that show the inventory.
 		/// <para>Note that this disables the functionality of the visible inventory as well.</para>

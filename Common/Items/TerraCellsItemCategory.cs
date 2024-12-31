@@ -33,6 +33,38 @@ public enum TerraCellsItemCategory
     Pickup = 5,
 }
 
+public static class Categorization
+{
+    public static TerraCellsItemCategory FromString(string value)
+    {
+        return value.ToLower() switch
+        {
+            "default" => TerraCellsItemCategory.Default,
+            "weapon" => TerraCellsItemCategory.Weapon,
+            "skill" => TerraCellsItemCategory.Skill,
+            "potion" => TerraCellsItemCategory.Potion,
+            "storage" => TerraCellsItemCategory.Storage,
+            "armor" => TerraCellsItemCategory.Storage,
+            "accessory" => TerraCellsItemCategory.Storage,
+            "coin" => TerraCellsItemCategory.Storage,
+            "pickup" => TerraCellsItemCategory.Pickup,
+            _ => throw new System.NotImplementedException(value),
+        };
+    }
+
+    public static StorageItemSubcategorization SubcategorizationFromString(string value)
+    {
+        return value.ToLower() switch
+        {
+            "accessory" => StorageItemSubcategorization.Accessory,
+            "armor" => StorageItemSubcategorization.Armor,
+            "coin" => StorageItemSubcategorization.Coin,
+            _ => StorageItemSubcategorization.None,
+        };
+
+    }
+}
+
 public enum StorageItemSubcategorization
 {
     None = 0,
