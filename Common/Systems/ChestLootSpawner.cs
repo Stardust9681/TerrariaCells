@@ -14,6 +14,8 @@ namespace TerrariaCells.Common.Systems
 {
     public class ChestLootSpawner : ModSystem, IEntitySource
     {
+        Dictionary<string, int[]> ChestLootTables;
+
         public List<int> lootedChests = [];
 
         public string Context => "TerrariaCells.ChestLootSpawner.OnChestOpen";
@@ -21,10 +23,9 @@ namespace TerrariaCells.Common.Systems
         public override void SetStaticDefaults()
         {
             On_Player.OpenChest += OnChestOpen;
-            On_Player.UpdateDead += OnUpdateDead;
         }
 
-        public void OnUpdateDead(On_Player.orig_UpdateDead orig, Player self)
+        public void Reset()
         {
             if (DevConfig.Instance.EnableChestChanges)
             {

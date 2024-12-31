@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
@@ -9,6 +8,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using TerrariaCells.Common.Configs;
 using TerrariaCells.Common.Items;
 
@@ -57,11 +57,9 @@ public class InventoryManager : ModSystem, IEntitySource
                 (short)item.netID,
                 TerraCellsItemCategory.Default
             );
+
     public static TerraCellsItemCategory GetItemCategorization(int type) =>
-        VanillaItemCategorizations.GetValueOrDefault(
-                (short)type,
-                TerraCellsItemCategory.Default
-            );
+        VanillaItemCategorizations.GetValueOrDefault((short)type, TerraCellsItemCategory.Default);
 
     public static StorageItemSubcategorization GetStorageItemSubcategorization(Item item) =>
         GetItemCategorization(item) is TerraCellsItemCategory.Storage
@@ -70,6 +68,7 @@ public class InventoryManager : ModSystem, IEntitySource
                 StorageItemSubcategorization.None
             )
             : StorageItemSubcategorization.None;
+
     public static StorageItemSubcategorization GetStorageItemSubcategorization(int type) =>
         GetItemCategorization(type) is TerraCellsItemCategory.Storage
             ? StorageSubcategorizations.GetValueOrDefault(
@@ -80,7 +79,6 @@ public class InventoryManager : ModSystem, IEntitySource
 
     public static int GetRandomItem(TerraCellsItemCategory category)
     {
-
         while (true)
         {
             int id = (int)(Main.rand.NextFloat() * 3400);
@@ -88,11 +86,12 @@ public class InventoryManager : ModSystem, IEntitySource
             {
                 return id;
             }
-        };
+        }
+        ;
     }
 
-    public static readonly Dictionary<string, short> ItemIDNames = typeof(ItemID).GetFields(BindingFlags.Public | BindingFlags.Static |
-        BindingFlags.FlattenHierarchy)
+    public static readonly Dictionary<string, short> ItemIDNames = typeof(ItemID)
+        .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
         .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
         .ToDictionary(x => x.Name)
         .Select(x => KeyValuePair.Create(x.Key, (short)x.Value.GetRawConstantValue()))
@@ -101,7 +100,6 @@ public class InventoryManager : ModSystem, IEntitySource
     public static readonly Dictionary<short, string> ItemNameIDs = ItemIDNames
         .Select(x => KeyValuePair.Create(x.Value, x.Key))
         .ToDictionary();
-
 
     /// <summary>
     /// A list of all of categorizations for vanilla items, including those that get reworked.
@@ -115,34 +113,29 @@ public class InventoryManager : ModSystem, IEntitySource
 
     public override void SetStaticDefaults()
     {
-        try
-        {
-            Dictionary<string, string> deserialized;
-            using (Stream stream = Mod.GetFileStream("item categorization.json"))
-            {
-                byte[] buf = new byte[stream.Length];
-                stream.Read(buf);
-                deserialized = JsonSerializer.Deserialize<Dictionary<string, string>>(buf);
-            }
-            VanillaItemCategorizations = deserialized
-                .Select(x => KeyValuePair.Create(
-                    ItemIDNames[x.Key],
-                    Categorization.FromString(x.Value)
-                    ))
-                .ToDictionary();
-            StorageSubcategorizations = VanillaItemCategorizations
-                .Where(x => x.Value == TerraCellsItemCategory.Storage)
-                .Select(x => KeyValuePair.Create(x.Key, Categorization.SubcategorizationFromString(deserialized[ItemNameIDs[x.Key]])))
-                .ToDictionary();
-        }
-        catch
-        {
-            throw;
-        }
+        Dictionary<string, string> deserialized;
 
+        deserialized = JsonSerializer.Deserialize<Dictionary<string, string>>(
+            Mod.GetFileBytes("categorizations.json")
+        );
+
+        VanillaItemCategorizations = deserialized
+            .Select(x =>
+                KeyValuePair.Create(ItemIDNames[x.Key], Categorization.FromString(x.Value))
+            )
+            .ToDictionary();
+
+        StorageSubcategorizations = VanillaItemCategorizations
+            .Where(x => x.Value == TerraCellsItemCategory.Storage)
+            .Select(x =>
+                KeyValuePair.Create(
+                    x.Key,
+                    Categorization.SubcategorizationFromString(deserialized[ItemNameIDs[x.Key]])
+                )
+            )
+            .ToDictionary();
 
         On_Player.CanAcceptItemIntoInventory += new(FilterPickups);
-        // On_Player.PickupItem += new(OnItemPickup);
     }
 
     public override void PostUpdateWorld()
@@ -186,7 +179,11 @@ public class InventoryManager : ModSystem, IEntitySource
             {
                 continue;
             }
-            if (DoesStorageItemGoIntoRegularInventory(GetStorageItemSubcategorization(player.inventory[i])))
+            if (
+                DoesStorageItemGoIntoRegularInventory(
+                    GetStorageItemSubcategorization(player.inventory[i])
+                )
+            )
             {
                 for (int i2 = 10; i2 < 14; i2++)
                 {
@@ -217,7 +214,6 @@ public class InventoryManager : ModSystem, IEntitySource
             //         }
             //         break;
             // }
-
         }
 
         foreach ((int, TerraCellsItemCategory) slotCategory in slotCategorizations)
@@ -234,7 +230,11 @@ public class InventoryManager : ModSystem, IEntitySource
         }
     }
 
-    public bool MoveItemToItsDedicatedCategory(Terraria.Player player, Item item, int previousInventorySlot)
+    public bool MoveItemToItsDedicatedCategory(
+        Terraria.Player player,
+        Item item,
+        int previousInventorySlot
+    )
     {
         switch (GetItemCategorization(item))
         {
@@ -384,7 +384,9 @@ public class InventoryManager : ModSystem, IEntitySource
             TerraCellsItemCategory.Potion => !PotionSlotFull(player) | !StorageSlotsFull(player),
             TerraCellsItemCategory.Storage => !StorageSlotsFull(player)
                 | !DoesStorageItemGoIntoRegularInventory(GetStorageItemSubcategorization(item)),
-            _ => throw new System.Exception("Missing Item category check (I hate runtime exceptions but i cant think of a better solution atm)")
+            _ => throw new System.Exception(
+                "Missing Item category check (I hate runtime exceptions but i cant think of a better solution atm)"
+            ),
         };
     }
 
@@ -406,7 +408,9 @@ public class InventoryManager : ModSystem, IEntitySource
         return itemToPickUp;
     }
 
-    public static bool DoesStorageItemGoIntoRegularInventory(StorageItemSubcategorization subcategorization)
+    public static bool DoesStorageItemGoIntoRegularInventory(
+        StorageItemSubcategorization subcategorization
+    )
     {
         return subcategorization switch
         {
@@ -426,7 +430,8 @@ public class InventoryManager : ModSystem, IEntitySource
     public static bool SkillsSlotsFull(Terraria.Player player) =>
         !player.inventory[SKILL_SLOT_1].IsAir && !player.inventory[SKILL_SLOT_2].IsAir;
 
-    public static bool PotionSlotFull(Terraria.Player player) => !player.inventory[POTION_SLOT].IsAir;
+    public static bool PotionSlotFull(Terraria.Player player) =>
+        !player.inventory[POTION_SLOT].IsAir;
 
     public static bool StorageSlotsFull(Terraria.Player player) =>
         !player.inventory[STORAGE_SLOT_1].IsAir
