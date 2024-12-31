@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -42,11 +43,12 @@ public class ChestLootSpawner : ModSystem, IEntitySource
 
     public void OnChestOpen(On_Player.orig_OpenChest orig, Player self, int x, int y, int newChest)
     {
-        System.IO.Stream stream = Mod.GetFileStream("chest loot tables.json");
-        var buf = new byte[stream.Length];
-        stream.Read(buf);
-        stream.Close();
-        ChestLootTables = JsonSerializer.Deserialize<Dictionary<string, int[]>>(buf);
+        using (Stream stream = Mod.GetFileStream("chest loot tables.json"))
+        {
+            var buf = new byte[stream.Length];
+            stream.Read(buf);
+            ChestLootTables = JsonSerializer.Deserialize<Dictionary<string, int[]>>(buf);
+        }
 
         bool isNewChest = !lootedChests.Contains(newChest);
 
