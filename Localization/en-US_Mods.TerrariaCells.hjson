@@ -104,6 +104,11 @@ Items: {
 		Tooltip: ""
 		DisplayName: Pot Marker Item
 	}
+
+	ClickableCrystalItem: {
+		DisplayName: Clickable Crystal Item
+		Tooltip: ""
+	}
 }
 
 Projectiles: {

@@ -78,10 +78,8 @@ public class InventoryManager : ModSystem, IEntitySource
             )
             : StorageItemSubcategorization.None;
 
-
     public static int GetRandomItem(TerraCellsItemCategory category)
     {
-
 
         while (true)
         {
