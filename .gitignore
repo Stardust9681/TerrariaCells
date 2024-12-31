@@ -12,9 +12,7 @@
 *.sln
 *.generated.sln
 .config/
-# Localization/
 Properties/
-.config/
 .vscode/
 
 # User-specific files (MonoDevelop/Xamarin Studio)

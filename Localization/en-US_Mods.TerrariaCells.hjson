@@ -81,6 +81,11 @@ Configs: {
 			Label: Enable Chest Changes
 			Tooltip: ""
 		}
+
+		DropItems: {
+			Label: Drop Items
+			Tooltip: ""
+		}
 	}
 }
 
@@ -98,6 +103,11 @@ Items: {
 	ExamplePylonItem: {
 		Tooltip: ""
 		DisplayName: Example Pylon Item
+	}
+
+	ClickableCrystalItem: {
+		DisplayName: Clickable Crystal Item
+		Tooltip: ""
 	}
 }
 
