@@ -81,6 +81,11 @@ Configs: {
 			Label: Enable Chest Changes
 			Tooltip: ""
 		}
+
+		DropItems: {
+			Label: Drop Items
+			Tooltip: ""
+		}
 	}
 }
 
