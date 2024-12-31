@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using Terraria.ModLoader.Config;
 
-namespace TerrariaCells
+namespace TerrariaCells.Common.Configs
 {
     public class TerrariaCellsConfig : ModConfig
     {

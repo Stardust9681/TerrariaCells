@@ -23,7 +23,7 @@ public class TeleportTracker : ModSystem
 
     public override void OnModLoad()
     {
-        // On_Player.UpdateDead += Reset;
+        On_Player.UpdateDead += Reset;
 
         base.OnModLoad();
     }

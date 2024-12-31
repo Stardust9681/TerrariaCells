@@ -1,9 +1,9 @@
 using System.ComponentModel;
 using Terraria.ModLoader.Config;
 
-namespace TerrariaCells.Common;
+namespace TerrariaCells.Common.Configs;
 
-public class InventoryUiConfiguration : ModConfig
+/*public class InventoryUiConfiguration : ModConfig
 {
     public override ConfigScope Mode => ConfigScope.ServerSide;
 
@@ -26,4 +26,4 @@ public class InventoryUiConfiguration : ModConfig
     /// </summary>
     [DefaultValue(true)]
     public bool HideVanillaInventory;
-}
+}*/

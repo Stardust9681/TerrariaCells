@@ -1,35 +1,32 @@
 <!-- VS encountered an error with csproj file, elected to allow for tML to repair project -->
 <Project Sdk="Microsoft.NET.Sdk">
-  
-	<!-- Import tModLoader mod properties -->
-	<Import Project="..\tModLoader.targets" />
-
-	<!-- General -->
-	<ItemGroup>
-	  <None Remove="Common\UI\Indicator.png" />
-	  <None Remove="Common\UI\ReloadBar.png" />
-	  <None Remove="Common\UI\SuccessRange.png" />
-	  <None Remove="Content\Projectiles\HeldProjectiles\ShotgunShell.png" />
-	  <None Remove="Common\Assets\DesertScorpionStab.png" />
-	  <None Remove="Common\Assets\GrayscaleExplosion.png" />
-	  <None Remove="Common\Assets\MummyShockwave.png" />
-	  <None Remove="Common\Assets\MummySlam.png" />
-	  <None Remove="Content\Projectiles\MummyShockwave.png" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Reference Include="StructureHelper">
-	    <HintPath>..\ModAssemblies\StructureHelper_v2.5.2.dll</HintPath>
-	  </Reference>
-	</ItemGroup>
-	<PropertyGroup>
-		
-	</PropertyGroup>
-
-	<!-- References -->
-	<ItemGroup>
-   <Reference Include="StructureHelper">
-     <HintPath>..\ModAssemblies\StructureHelper_v2.5.2.dll</HintPath>
-   </Reference>
-	</ItemGroup>
-
+    <!-- Import tModLoader mod properties -->
+    <Import Project="..\tModLoader.targets" />
+    <!-- General -->
+    <ItemGroup>
+        <None Remove="Common\UI\Indicator.png" />
+        <None Remove="Common\UI\ReloadBar.png" />
+        <None Remove="Common\UI\SuccessRange.png" />
+        <None Remove="Content\Projectiles\HeldProjectiles\ShotgunShell.png" />
+        <None Remove="Common\Assets\DesertScorpionStab.png" />
+        <None Remove="Common\Assets\GrayscaleExplosion.png" />
+        <None Remove="Common\Assets\MummyShockwave.png" />
+        <None Remove="Common\Assets\MummySlam.png" />
+        <None Remove="Content\Projectiles\MummyShockwave.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Common\" />
+        <Folder Include="Content\" />
+    </ItemGroup>
+    <ItemGroup>
+        <Reference Include="StructureHelper">
+            <HintPath>..\ModAssemblies\StructureHelper_v2.5.2.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+    <!-- References -->
+    <ItemGroup>
+        <Reference Include="StructureHelper">
+            <HintPath>..\ModAssemblies\StructureHelper_v2.5.2.dll</HintPath>
+        </Reference>
+    </ItemGroup>
 </Project>

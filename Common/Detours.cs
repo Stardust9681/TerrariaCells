@@ -31,10 +31,10 @@ namespace TerrariaCells.Common
         //kill scope effect
         private void On_Main_DoDraw_UpdateCameraPosition(Terraria.On_Main.orig_DoDraw_UpdateCameraPosition orig)
         {
-            int originalType = Main.player[Main.myPlayer].inventory[Main.player[Main.myPlayer].selectedItem].type;
-            Main.player[Main.myPlayer].inventory[Main.player[Main.myPlayer].selectedItem].type = 0;
+            int originalType = Main.LocalPlayer.HeldItem.type;
+			Main.LocalPlayer.HeldItem.type = ItemID.None;
             orig();
-            Main.player[Main.myPlayer].inventory[Main.player[Main.myPlayer].selectedItem].type = originalType;
+			Main.LocalPlayer.HeldItem.type = originalType;
         }
     }
 }
