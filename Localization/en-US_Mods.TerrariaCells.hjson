@@ -1,17 +1,161 @@
+Configs: {
+	TerrariaCellsConfig: {
+		DisplayName: Terraria Cells Config
+
+		DisableZoom: {
+			Label: Disable Zoom Cap
+			Tooltip: Disables the >175% cap on the game's zoom
+		}
+
+		Headers.SkillUI: Skills UI
+
+		ShowKeybind: {
+			Label: Show Keybind
+			Tooltip: Displays the keybind that is associated with each skill slot
+		}
+
+		ShowCooldown: {
+			Label: Show Cooldown Text
+			Tooltip: Display the cooldown time left in text
+		}
+	}
+
+	WeaponUIConfig: {
+		DisplayName: Weapon UI Config
+
+		DragUI: {
+			Label: Drag UI
+			Tooltip: ""
+		}
+
+		FadeOut: {
+			Label: Fade Out
+			Tooltip: ""
+		}
+
+		Scale: {
+			Label: Scale
+			Tooltip: ""
+		}
+	}
+
+	DevConfig: {
+		BuilderMode: {
+			Label: Builder Mode
+			Tooltip: Toggle ability to build. Also allows tiles to be interacted with normally.
+		}
+
+		DoPylonDiscoveries: {
+			Label: Do Pylon Discoveries
+			Tooltip: Toggles intended Pylon mechanics.
+		}
+
+		PreventExplosionDamage: {
+			Label: Prevent Explosion Damage
+			Tooltip: Prevents tile damage from explosives.
+		}
+
+		DisplayName: Dev Config
+
+		Headers: {
+			BuilderSettings: Builder Settings
+			InventorySettings: Inventory Settings
+		}
+
+		EnableInventoryChanges: {
+			Label: Enable Inventory Changes
+			Tooltip: ""
+		}
+
+		EnableInventoryLock: {
+			Label: Enable Inventory Lock
+			Tooltip: ""
+		}
+
+		HideVanillaInventory: {
+			Label: Hide Vanilla Inventory
+			Tooltip: ""
+		}
+
+		EnableChestChanges: {
+			Label: Enable Chest Changes
+			Tooltip: ""
+		}
+	}
+}
+
 Items: {
 	RoomConnectorItem: {
+		Tooltip: ""
 		DisplayName: Room Connector Item
+	}
+
+	ExamplePylonItem: {
+		DisplayName: Example Pylon Item
+		Tooltip: ""
+	}
+
+	PotMarkerItem: {
+		Tooltip: ""
+		DisplayName: Pot Marker Item
+	}
+
+	ClickableCrystalItem: {
+		DisplayName: Clickable Crystal Item
 		Tooltip: ""
 	}
 }
 
-Configs: {
-	TerrariaCellsConfig: {
-		DisplayName: TerraCells Config
-
-		DisableZoom: {
-			Label: Disable Zoom Cap
-			Tooltip: "Disables the >175% cap on the game's zoom"
-		}
-	}
+Projectiles: {
+	Shotgun.DisplayName: Shotgun
+	Bow.DisplayName: Bow
+	Sword.DisplayName: Sword
+	AmmoResidue.DisplayName: Ammo Residue
+	GunExplosion.DisplayName: Gun Explosion
+	Autorifle.DisplayName: Autorifle
+	Handgun.DisplayName: Handgun
+	Musket.DisplayName: Musket
+	Sniper.DisplayName: Sniper
+	SniperShot.DisplayName: Sniper Shot
+	Guns.DisplayName: Guns
+	ExplosionModProjectile.DisplayName: Explosion
+	VultureBone.DisplayName: Vulture Bone
+	Slash.DisplayName: Slash
+	PoacherStab.DisplayName: Poacher Stab
+	MummyShockwave.DisplayName: Mummy Shockwave
+	IceSpike.DisplayName: Ice Spike
+	IceShard.DisplayName: Ice Shard
+	IceBall.DisplayName: Ice Ball
+	IceArrow.DisplayName: Ice Arrow
+	IllusionBrainHitbox.DisplayName: Illusion Brain Hitbox
 }
+
+Tooltips: {
+	ShiftHint: Hold [shift] for Skill Info
+	SkillStats: Skill Stats:
+	Cooldown: Cooldown: {0} Seconds
+	SummonTime: Summon Time: {0} Seconds
+	AttacksPerSecond: " ({0} Attacks Per Second)"
+}
+
+Keybinds: {
+	"First Skill.DisplayName": First Skill
+	"Second Skill.DisplayName": Second Skill
+}
+
+BurnOnHit: {
+	Name: Burning
+	Description: 50% chance to burn your target on hit
+}
+
+Electrified: {
+	Name: Electrified
+	Description: 75% chance to electrocute your target on hit
+}
+
+ExplodeOnHit: {
+	Name: Exploding
+	Description: 30% chance to explode your target on hit
+}
+
+Tiles.ExamplePylonTile.MapEntry: Example Pylon Tile

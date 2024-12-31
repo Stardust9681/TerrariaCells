@@ -9,6 +9,13 @@
 *.user
 *.userosscache
 *.sln.docstates
+*.sln
+*.generated.sln
+.config/
+Localization/
+Properties/
+.config/
+.vscode/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -97,6 +104,7 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
+*.sln
 
 # Chutzpah Test files
 _Chutzpah*
@@ -361,3 +369,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+TerrariaCells.sln
+launch.bat
