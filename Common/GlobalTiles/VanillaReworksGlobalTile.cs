@@ -16,6 +16,13 @@ namespace TerrariaCells.Common.GlobalTiles
 			On_Player.InInteractionRange += On_Player_InInteractionRange;
         }
 
+		public override void Unload()
+		{
+			On_Projectile.ExplodeTiles -= On_Projectile_ExplodeTiles;
+			On_Player.TileInteractionsUse -= On_Player_TileInteractionsUse;
+			On_Player.InInteractionRange -= On_Player_InInteractionRange;
+		}
+
 		private bool On_Player_InInteractionRange(On_Player.orig_InInteractionRange orig, Player self, int interactX, int interactY, Terraria.DataStructures.TileReachCheckSettings settings)
 		{
 			if (DevConfig.Instance.BuilderMode)
@@ -58,16 +65,14 @@ namespace TerrariaCells.Common.GlobalTiles
 		// Prevent explosions from destroying tiles
 		private void On_Projectile_ExplodeTiles(On_Projectile.orig_ExplodeTiles orig, Projectile self, Vector2 compareSpot, int radius, int minI, int maxI, int minJ, int maxJ, bool wallSplode)
         {
-			if (DevConfig.Instance.PreventExplosionDamage)
+			if (!DevConfig.Instance.PreventExplosionDamage)
 			{
 				orig.Invoke(self, compareSpot, radius, minI, maxI, minJ, maxJ, wallSplode);
 			}
-
-            return;
         }
 
-        // Stop tiles from dropping any items when destroyed
-        public override bool CanDrop(int i, int j, int type)
+		// Stop tiles from dropping any items when destroyed
+		public override bool CanDrop(int i, int j, int type)
         {
 			if (DevConfig.Instance.BuilderMode)
 			{
