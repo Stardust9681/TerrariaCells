@@ -3,6 +3,9 @@ using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
+using Terraria.DataStructures;
+using Terraria.Localization;
+using System.Collections.Generic;
 
 namespace TerrariaCells.Common.GlobalItems
 {
@@ -55,6 +58,72 @@ namespace TerrariaCells.Common.GlobalItems
 				case ItemID.StalkersQuiver: StalkerQuiver(player); break;
 			}
 		}
+
+		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
+			if (item.type == ItemID.Nazar)
+			{
+                tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
+
+                TooltipLine line = new TooltipLine(Mod, "Tooltip0", "Melee attacks restore 20 mana ");
+                tooltips.Add(line);
+            }
+            if (item.type == ItemID.ArcaneFlower)
+            {
+                tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
+
+                TooltipLine line = new TooltipLine(Mod, "Tooltip0", "Increases damage and mana cost by 50%");
+                tooltips.Add(line);
+            }
+            if (item.type == ItemID.FrozenTurtleShell)
+            {
+                tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
+
+                TooltipLine line = new TooltipLine(Mod, "Tooltip0", "If you would die, instead survive with 1 HP. Consumed on use");
+                tooltips.Add(line);
+            }
+            if (item.type == ItemID.BallOfFuseWire)
+            {
+                tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
+
+                TooltipLine line = new TooltipLine(Mod, "Tooltip0", "Explosions are more powerful");
+                tooltips.Add(line);
+            }
+            if (item.type == ItemID.StalkersQuiver)
+            {
+                tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
+
+                TooltipLine line = new TooltipLine(Mod, "Tooltip0", "Arrow attacks create spectral arrows to hunt the target");
+                tooltips.Add(line);
+            }
+            if (item.type == ItemID.BandofRegeneration)
+            {
+                tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
+
+                TooltipLine line = new TooltipLine(Mod, "Tooltip0", "Killing an enemy restores 1% of your max HP");
+                tooltips.Add(line);
+            }
+            if (item.type == ItemID.FastClock)
+            {
+                tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
+
+                TooltipLine line = new TooltipLine(Mod, "Tooltip0", "Killing an enemy provides a temporary speed buff");
+                tooltips.Add(line);
+            }
+            if (item.type == ItemID.ChlorophyteDye)
+            {
+                tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
+
+                TooltipLine line = new TooltipLine(Mod, "Tooltip0", "Bullets and Arrows are covered with chlorophyte");
+                tooltips.Add(line);
+            }
+            if (item.type == ItemID.NaturesGift)
+            {
+                tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
+
+                TooltipLine line = new TooltipLine(Mod, "Tooltip0", "Reduces mana cost by 25% ");
+                tooltips.Add(line);
+            }
+        }
 
 		private void CelestialStone(Player player)
 		{
