@@ -70,9 +70,11 @@ namespace TerrariaCells.Common.Utilities
 			return TCellsUtils.FindGround(rect);
 		}
 
-		public static bool TargetInAggroRange(this NPC npc, float range = 240)
+		public static bool TargetInAggroRange(this NPC npc, float range = 240, bool lineOfSight = true)
 		{
 			if (!npc.TryGetTarget(out Entity target))
+				return false;
+			if (lineOfSight && !npc.LineOfSight(target.position))
 				return false;
 			return npc.DistanceSQ(target.position) < MathF.Pow(range, 2);
 		}

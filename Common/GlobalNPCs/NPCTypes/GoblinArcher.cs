@@ -12,9 +12,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			return npcType.Equals(Terraria.ID.NPCID.GoblinArcher);
 		}
 
-		const int ApproachTarget = 0;
-		const int Jump = 1;
-		const int FireArrows = 2;
+		const int Idle = 0;
+		const int ApproachTarget = 1;
+		const int Jump = 2;
+		const int FireArrows = 3;
 
 		const float MaxSpeed = 2f;
 		const float Accel = 0.075f;
@@ -23,13 +24,16 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		public override void Behaviour(NPC npc)
 		{
 			if (!npc.HasValidTarget)
-				npc.TargetClosest();
+				npc.TargetClosest(false);
 
 			//This gets continually recalculated, so I need to continually reset it :(
 			npc.stairFall = false;
 
 			switch (npc.Phase())
 			{
+				case Idle:
+					IdleAI(npc);
+					break;
 				case ApproachTarget:
 					ApproachTargetAI(npc);
 					break;
@@ -40,11 +44,74 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 					FireArrowsAI(npc);
 					break;
 				default:
-					npc.Phase(ApproachTarget);
+					npc.Phase(Idle);
 					break;
 			}
 		}
 
+		void IdleAI(NPC npc)
+		{
+			if (npc.TargetInAggroRange())
+			{
+				npc.Phase(ApproachTarget);
+				return;
+			}
+
+			npc.direction = MathF.Sign(npc.ai[1]);
+
+			float newVel = npc.velocity.X + (npc.direction * Accel);
+			if (npc.direction == 0)
+			{
+				newVel = npc.velocity.X + (npc.spriteDirection * Accel);
+				npc.direction = MathF.Sign(newVel);
+			}
+			const float IdleMaxSpeed = MaxSpeed * 0.67f;
+			if (MathF.Abs(newVel) < IdleMaxSpeed)
+				npc.velocity.X = newVel;
+			else
+				npc.velocity.X = npc.direction * IdleMaxSpeed;
+
+			if (npc.collideX)
+			{
+				Vector2 oldPos = npc.position;
+				Vector2 oldVel = npc.velocity;
+				Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
+				if (npc.position.Equals(oldPos))
+				{
+					npc.position -= npc.oldVelocity * 2;
+					npc.ai[1] = -npc.direction;
+					npc.Phase(Idle);
+					return;
+				}
+				else
+				{
+					if (MathF.Abs(npc.velocity.X) < MathF.Abs(oldVel.X))
+					{
+						npc.velocity.X = (npc.velocity.X + oldVel.X) * 0.5f;
+					}
+					npc.DoTimer(-3);
+				}
+			}
+
+			Vector2 nextGround = npc.FindGroundInFront();
+			if (npc.Grounded() && nextGround.Y > (npc.Bottom.Y + npc.height))
+			{
+				npc.velocity.X *= 0.5f;
+				npc.ai[1] = -npc.direction;
+				npc.Phase(Idle);
+				return;
+			}
+
+			if (npc.Timer() > 150)
+			{
+				npc.ai[1] = -npc.direction;
+				npc.Phase(Idle);
+				return;
+			}
+
+			npc.velocity.Y += 0.036f; //Apply gravity
+			npc.DoTimer();
+		} //Hitbox doesn't matter, target not near enough to take contact damage
 		void ApproachTargetAI(NPC npc) //No hitbox when walking
 		{
 			if (npc.Timer() == 0)
@@ -65,7 +132,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 
 			//npc.stairFall = target.position.Y > npc.position.Y;
 
-			float newVel = npc.velocity.X + directionToMove * Accel;
+			float newVel = npc.velocity.X + (directionToMove * Accel);
 			if (MathF.Abs(newVel) < MaxSpeed)
 				npc.velocity.X = newVel;
 			else
@@ -73,7 +140,12 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 
 			if (npc.FindGroundInFront().Y > (npc.Bottom.Y + npc.height))
 			{
-				if (npc.LineOfSight(target.position))
+				if (!npc.TargetInAggroRange())
+				{
+					npc.ai[1] = -npc.direction;
+					npc.Phase(Idle);
+				}
+				else if (npc.LineOfSight(target.position))
 				{
 					npc.velocity.X = 0;
 					npc.Phase(FireArrows);
@@ -97,7 +169,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				}
 			}
 			npc.velocity.Y += 0.036f; //Apply gravity
-			npc.Timer(npc.Timer() + 1);
+			npc.DoTimer();
 		}
 		void JumpAI(NPC npc) //Hitbox when jumping
 		{
@@ -111,7 +183,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				}
 				else
 				{
-					npc.Phase(ApproachTarget);
+					npc.Phase(Idle);
 					return;
 				}
 			}
@@ -122,7 +194,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			if (MathF.Abs(npc.velocity.X) < 1.4f)
 				npc.velocity.X += npc.direction * 0.014f;
 			npc.velocity.Y += 0.036f;
-			npc.Timer(npc.Timer() + 1);
+			npc.DoTimer();
 		}
 		void FireArrowsAI(NPC npc) //No hitbox when firing arrows
 		{
@@ -159,7 +231,16 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				Projectile proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center, vel, Main.rand.Next(arrowsToFire), npc.damage / 5, 1f, Main.myPlayer);
 				proj.hostile = true;
 				proj.friendly = false;
-				npc.Phase(ApproachTarget);
+
+				if (npc.TargetInAggroRange())
+				{
+					npc.Phase(ApproachTarget);
+				}
+				else
+				{
+					npc.ai[1] = -npc.direction;
+					npc.Phase(Idle);
+				}
 				return;
 			}
 			npc.velocity.X *= 0.9f;
