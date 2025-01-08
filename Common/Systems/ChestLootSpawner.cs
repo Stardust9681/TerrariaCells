@@ -1,63 +1,107 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.ID;
 using Terraria.ModLoader;
 using TerrariaCells.Common.Configs;
-using TerrariaCells.Common.Items;
 
-namespace TerrariaCells.Common.Systems
+namespace TerrariaCells.Common.Systems;
+
+public class ChestLootSpawner : ModSystem, IEntitySource
 {
-    public class ChestLootSpawner : ModSystem, IEntitySource
+    Dictionary<string, int[]> ChestLootTables;
+
+    public List<int> lootedChests = [];
+
+    public string Context => "TerrariaCells.ChestLootSpawner.OnChestOpen";
+
+    public override void SetStaticDefaults()
     {
-        public List<int> lootedChests = [];
+        On_Player.OpenChest += OnChestOpen;
+    }
 
-        public string Context => "TerrariaCells.ChestLootSpawner.OnChestOpen";
+    public override void OnWorldLoad()
+    {
+        Reset();
+    }
 
-        public override void SetStaticDefaults()
+    public void Reset()
+    {
+        if (DevConfig.Instance.EnableChestChanges)
         {
-            On_Player.OpenChest += OnChestOpen;
-            On_Player.UpdateDead += OnUpdateDead;
+            foreach (int chest in lootedChests)
+            {
+                Main.chest[chest].frame = 0;
+                Main.chest[chest].frameCounter = 0;
+            }
+        }
+        lootedChests.Clear();
+    }
+
+    public override void PostUpdateWorld()
+    {
+        foreach (int chest in lootedChests)
+        {
+            if (Main.chest[chest] == null)
+            {
+                continue;
+            }
+            Main.chest[chest].frame = 2;
+            Main.chest[chest].frameCounter = 10;
+        }
+    }
+
+    public void OnChestOpen(On_Player.orig_OpenChest orig, Player self, int x, int y, int newChest)
+    {
+        using (Stream stream = Mod.GetFileStream("chest loot tables.json"))
+        {
+            var buf = new byte[stream.Length];
+            stream.Read(buf);
+            ChestLootTables = JsonSerializer.Deserialize<Dictionary<string, int[]>>(buf);
         }
 
-        public void OnUpdateDead(On_Player.orig_UpdateDead orig, Player self)
-        {
-            if (DevConfig.Instance.EnableChestChanges)
-            {
-                foreach (int chest in lootedChests)
-                {
-                    Main.chest[chest].frame = 0;
-                    Main.chest[chest].frameCounter = 0;
-                }
-            }
-            lootedChests.Clear();
+        bool isNewChest = !lootedChests.Contains(newChest);
 
+        Tile tile = Main.tile[x, y];
+
+        string tileFrameX = (tile.TileFrameX / 36).ToString();
+        string tileFrameY = tile.TileFrameY.ToString();
+        if (tileFrameY == "0")
+        {
+            tileFrameY = "";
         }
-
-        public void OnChestOpen(On_Player.orig_OpenChest orig, Player self, int x, int y, int newChest)
+        else
         {
-            bool isNewChest = !lootedChests.Contains(newChest);
+            tileFrameY = "/" + tileFrameY;
+        }
+        string tileFrame = tileFrameX + tileFrameY;
 
-            if (DevConfig.Instance.EnableChestChanges)
-            {
-                Main.chest[newChest].frame = 2;
-                Main.chest[newChest].frameCounter = 10;
-                self.chest = -1;
+        Mod.Logger.Info("Chest opened: " + tileFrame);
 
-                if (isNewChest)
-                {
-                    Item.NewItem(
-                        this,
-                        new Point16(x, y).ToWorldCoordinates(), 0, 0,
-                        InventoryManager.GetRandomItem(TerraCellsItemCategory.Weapon)
-                    );
-                }
-            }
+        if (DevConfig.Instance.EnableChestChanges)
+        {
+            self.chest = -1;
 
             if (isNewChest)
             {
-                lootedChests.Add(newChest);
+                int length = ChestLootTables[tileFrame].Length;
+                if (length > 0)
+                {
+                    Item.NewItem(
+                        this,
+                        new Point16(x, y).ToWorldCoordinates(),
+                        0,
+                        0,
+                        ChestLootTables[tileFrame][Main.rand.Next(length)]
+                    );
+                }
             }
+        }
+
+        if (isNewChest)
+        {
+            lootedChests.Add(newChest);
         }
     }
 }
