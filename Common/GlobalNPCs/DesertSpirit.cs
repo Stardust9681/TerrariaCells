@@ -44,22 +44,26 @@ namespace TerrariaCells.Common.GlobalNPCs
 		}
 		public bool DesertSpiritAI(NPC npc, Player target)
 		{
-			const int TimeRotating = 300;
+			const int TimeRotating = 360;
 
-			bool validTarget = npc.TargetInAggroRange(target, 256, false);
-			bool alreadyAttacking = MathF.Abs(npc.ai[3] - TimeRotating) > 1;
-			bool followThrough = validTarget || alreadyAttacking;
+			bool validTarget = npc.TargetInAggroRange(target, 512, false);
 
 			if (npc.ai[1] == 0)
 			{
-				npc.ai[1] = npc.Center.X;
-				npc.ai[2] = npc.Center.Y;
+				npc.ai[1] = Pack(npc.Center.ToTileCoordinates16());
+				//npc.ai[1] = npc.Center.X;
+				//npc.ai[2] = npc.Center.Y;
 			}
 			if (npc.HasValidTarget)
 			{
 				npc.direction = npc.Center.X > target.Center.X ? -1 : 1;
 				npc.spriteDirection = npc.direction;
 			}
+
+			// ===== Removed Teleport Code =====
+			// Sorbet's discretion, says it doesn't fit the level
+			// Read here: https://discord.com/channels/1260223010728706169/1260224973549736006/1326664401742467074
+			/*
 			if (npc.ai[0] > 300 && npc.ai[3] <= 0)
 			{
 				Vector2 tpos = npc.Center;
@@ -85,22 +89,25 @@ namespace TerrariaCells.Common.GlobalNPCs
 				npc.ai[2] = rotpos.Y;
 				npc.ai[3] = TimeRotating;
 			}
+			*/
 
-			npc.Center = new Vector2(npc.ai[1], npc.ai[2]) + new Vector2((float)Math.Sin(MathHelper.ToRadians(npc.ai[0] * 2)) * 50, (float)Math.Sin(MathHelper.ToRadians(npc.ai[0] * 5)) * 10);
-			npc.ai[0]++;
+			(ushort x, ushort y) = Unpack(npc.ai[1]);
+			Vector2 worldPos = new Terraria.DataStructures.Point16(x, y).ToWorldCoordinates();
+			npc.Center = worldPos + new Vector2(MathF.Sin(MathHelper.ToRadians(npc.ai[3] * 2)) * 50, MathF.Sin(MathHelper.ToRadians(npc.ai[3] * 5)) * 10);
 
-			if (followThrough)
+			if (validTarget)
 			{
-				if (npc.ai[3] < 200 && npc.ai[3] % 10 == 0 && npc.HasValidTarget && npc.ai[3] > 100)
+				if (npc.ai[3] < 200 && (int)npc.ai[3] % 10 == 0 && npc.HasValidTarget && npc.ai[3] > 100)
 				{
-					Projectile.NewProjectileDirect(npc.GetSource_FromAI(), target.Center + new Vector2(Main.rand.Next(20, 100), 0).RotatedByRandom(MathHelper.TwoPi), Vector2.Zero, ProjectileID.DesertDjinnCurse, 0, 1, -1, npc.whoAmI, target.whoAmI);
+					Projectile fire = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), target.Center + new Vector2(Main.rand.Next(20, 100), 0).RotatedByRandom(MathHelper.TwoPi), Vector2.Zero, ProjectileID.DesertDjinnCurse, 0, 1, -1, 0, 0, npc.whoAmI);
+					fire.localAI[0] = 0.05f;
 				}
-				npc.ai[3]--;
 			}
 
+			npc.ai[3]--;
+			if (npc.ai[3] < 1) npc.ai[3] = TimeRotating;
 
 			return false;
 		}
-
 	}
 }
