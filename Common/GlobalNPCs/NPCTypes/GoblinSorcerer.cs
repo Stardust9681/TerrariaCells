@@ -16,8 +16,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			return npcType.Equals(Terraria.ID.NPCID.GoblinSorcerer);
 		}
 
-		const int Casting = 0;
-		const int Teleporting = 1;
+		const int Idle = 0;
+		const int Casting = 1;
+		const int Teleporting = 2;
 
 		public override void Behaviour(NPC npc)
 		{
@@ -26,6 +27,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 
 			switch (npc.Phase())
 			{
+				case Idle:
+					IdleAI(npc);
+					break;
 				case Casting:
 					CastingAI(npc);
 					break;
@@ -35,6 +39,30 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				default:
 					npc.Phase(Teleporting);
 					break;
+			}
+		}
+		private void IdleAI(NPC npc)
+		{
+			if (
+				npc.TryGetTarget(out Entity target)
+				&& npc.TargetInAggroRange(target, 480, false))
+			{
+				npc.dontTakeDamage = false;
+				npc.Phase(Casting);
+				return;
+			}
+
+			npc.dontTakeDamage = true;
+
+			if (Main.rand.NextBool(3))
+				return;
+
+			for (int i = 0; i < 2; i++)
+			{
+				Dust dust = Dust.NewDustDirect(npc.Center + (Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi) * 24), 1, 1, Terraria.ID.DustID.Shadowflame);
+				dust.scale = Main.rand.NextFloat(0.95f, 1.25f);
+				dust.noGravity = true;
+				dust.velocity = new Vector2(0, (dust.position.Y - npc.Center.Y) * 0.12f);
 			}
 		}
 		private void CastingAI(NPC npc)
@@ -47,6 +75,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				NPC ball = NPC.NewNPCDirect(npc.GetSource_FromAI(), npc.Center, Terraria.ID.NPCID.ChaosBall);
 				ball.velocity = npc.DirectionTo(Main.player[npc.target].Center) * 6f;
 				ball.damage = npc.damage / 2;
+				ball.netUpdate = true;
 			}
 			if (timer > 45 * 3)
 			{
@@ -81,11 +110,11 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 					for (int j = 0; j < MaxDistance / PxPerTile; j++)
 					{
 						Rectangle tpRect = new Rectangle((int)start.X - (npc.width / 2), (int)start.Y - (npc.height / 2), npc.width, npc.height);
-						if (!Collision.SolidTiles(tpRect.Location.ToVector2(), npc.width, npc.height)
-							&& (Utilities.TCellsUtils.FindGround(tpRect).Y < tpRect.Bottom + (npc.height * 2)))
-							start -= rays[i];
-						//if (Collision.CanHitLine(start, 8, 8, start + rays[i], 8, 8))
-						//start += rays[i];
+						//if (!Collision.SolidTiles(tpRect.Location.ToVector2(), npc.width, npc.height)
+						//	&& (Utilities.TCellsUtils.FindGround(tpRect).Y < tpRect.Bottom + (npc.height * 2)))
+						//	start -= rays[i];
+						if (Collision.CanHitLine(start, 8, 8, start + rays[i], 8, 8))
+							start += rays[i];
 						else
 						{
 							break;

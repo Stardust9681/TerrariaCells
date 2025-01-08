@@ -60,7 +60,7 @@ namespace TerrariaCells.Common.Utilities
 			return false;
 		}
 		///<returns>True if NPC direction is towards target. False otherwise</returns>
-		public static bool IsFacingTarget(this NPC npc, Player target)
+		public static bool IsFacingTarget(this NPC npc, Entity target)
 			=> npc.direction == MathF.Sign(target.position.X - npc.position.X);
 
 		public static Vector2 FindGroundInFront(this NPC npc)
@@ -74,6 +74,13 @@ namespace TerrariaCells.Common.Utilities
 		{
 			if (!npc.TryGetTarget(out Entity target))
 				return false;
+			if (lineOfSight && !npc.LineOfSight(target.position))
+				return false;
+			return npc.DistanceSQ(target.position) < MathF.Pow(range, 2);
+		}
+
+		public static bool TargetInAggroRange(this NPC npc, Entity target, float range = 240, bool lineOfSight = true)
+		{
 			if (lineOfSight && !npc.LineOfSight(target.position))
 				return false;
 			return npc.DistanceSQ(target.position) < MathF.Pow(range, 2);
