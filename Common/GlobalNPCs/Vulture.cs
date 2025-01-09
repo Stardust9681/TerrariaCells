@@ -17,35 +17,22 @@ namespace TerrariaCells.Common.GlobalNPCs
 {
     public partial class Fliers
     {
-
         public bool DrawVulture(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-
             return true;
-        }
-        public void VultureFrame(NPC npc)
-        {
-
         }
         
         public void VultureAI(NPC npc)
         {
-            Player target = null;
             npc.ai[0] = 1;
             npc.noGravity = true;
             Vector2 targetPos = npc.Center;
 
-            
-
-
-
-            //movement
-            if (npc.HasValidTarget)
-            {
-               
-                target = Main.player[npc.target];
-                targetPos = target.Center + new Vector2(0, -200);
-            }
+			//movement
+			if (npc.TryGetTarget(out Entity target))
+			{
+				targetPos = target.Center + new Vector2(0, -200);
+			}
 
             if (npc.Center.Y > targetPos.Y && npc.velocity.Y > -5)
             {
@@ -104,7 +91,6 @@ namespace TerrariaCells.Common.GlobalNPCs
                     npc.velocity -= (n.Center - npc.Center).SafeNormalize(Vector2.Zero) * 0.1f;
                 }
             }
-
         }
     }
 }
