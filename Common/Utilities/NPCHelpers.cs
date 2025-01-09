@@ -54,10 +54,8 @@ namespace TerrariaCells.Common.Utilities
 		///<returns>False if NPC has no target. True if NPC direction is towards target</returns>
 		public static bool IsFacingTarget(this NPC npc)
 		{
-			if (!npc.HasValidTarget) return false;
-			if (npc.SupportsNPCTargets && npc.HasNPCTarget) return npc.direction == MathF.Sign(Main.npc[npc.TranslatedTargetIndex].position.X - npc.position.X);
-			if (npc.HasPlayerTarget) return npc.direction == MathF.Sign(Main.player[npc.target].position.X - npc.position.X);
-			return false;
+			if (!npc.TryGetTarget(out Entity target)) return false;
+			return npc.direction == MathF.Sign(target.position.X - npc.position.X);
 		}
 		///<returns>True if NPC direction is towards target. False otherwise</returns>
 		public static bool IsFacingTarget(this NPC npc, Entity target)
