@@ -28,6 +28,7 @@ namespace TerrariaCells.Common.GlobalItems
                 case ItemID.SniperRifle:
                     item.damage = 40;
                     item.useTime = 25;
+                    item.useAnimation = item.useTime;
                     break;
                 case ItemID.OnyxBlaster:
                     item.damage = 5;
