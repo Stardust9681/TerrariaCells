@@ -119,6 +119,22 @@ public class InventoryManager : ModSystem, IEntitySource
             Mod.GetFileBytes("categorizations.json")
         );
 
+        foreach (
+            KeyValuePair<string, string> item in deserialized.Where(x =>
+                !ItemIDNames.ContainsKey(x.Key)
+            )
+        )
+        {
+            deserialized.Remove(item.Key);
+            Mod.Logger.Error(
+                "Could not find the "
+                    + item.Value
+                    + " with the ID of "
+                    + item.Key
+                    + " among the vanilla ItemID's."
+            );
+        }
+
         VanillaItemCategorizations = deserialized
             .Select(x =>
                 KeyValuePair.Create(ItemIDNames[x.Key], Categorization.FromString(x.Value))
