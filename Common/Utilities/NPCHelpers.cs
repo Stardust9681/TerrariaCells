@@ -37,22 +37,28 @@ namespace TerrariaCells.Common.Utilities
 		///<returns>True if NPC "can see" a given position. False otherwise.</returns>
 		public static bool LineOfSight(this NPC npc, Vector2 toPosition)
 			=> Collision.CanHitLine(npc.position + new Vector2(npc.width * 0.5f, npc.height * 0.25f), 4, 4, toPosition, 4, 4);
-		
+
 		///<returns>True if NPC is determined to be on ground. False otherwise.</returns>
 		public static bool Grounded(this NPC npc)
 			=> npc.collideY && npc.oldVelocity.Y > npc.velocity.Y && npc.oldVelocity.Y > 0;
+
+		public static bool TryGetTarget(this NPC npc, out Entity target)
+		{
+			target = null;
+			if (npc.SupportsNPCTargets && npc.HasNPCTarget) return (target = Main.npc[npc.TranslatedTargetIndex]).active;
+			else if (npc.HasPlayerTarget) return (target = Main.player[npc.target]).active;
+			return npc.HasValidTarget;
+		}
 
 		//Relocated and refactored from Fighters.cs
 		///<returns>False if NPC has no target. True if NPC direction is towards target</returns>
 		public static bool IsFacingTarget(this NPC npc)
 		{
-			if (!npc.HasValidTarget) return false;
-			if (npc.SupportsNPCTargets && npc.HasNPCTarget) return npc.direction == MathF.Sign(Main.npc[npc.TranslatedTargetIndex].position.X - npc.position.X);
-			if (npc.HasPlayerTarget) return npc.direction == MathF.Sign(Main.player[npc.target].position.X - npc.position.X);
-			return false;
+			if (!npc.TryGetTarget(out Entity target)) return false;
+			return npc.direction == MathF.Sign(target.position.X - npc.position.X);
 		}
 		///<returns>True if NPC direction is towards target. False otherwise</returns>
-		public static bool IsFacingTarget(this NPC npc, Player target)
+		public static bool IsFacingTarget(this NPC npc, Entity target)
 			=> npc.direction == MathF.Sign(target.position.X - npc.position.X);
 
 		public static Vector2 FindGroundInFront(this NPC npc)
@@ -60,6 +66,22 @@ namespace TerrariaCells.Common.Utilities
 			Rectangle rect = npc.getRect();
 			rect.X += (npc.direction * npc.width);
 			return TCellsUtils.FindGround(rect);
+		}
+
+		public static bool TargetInAggroRange(this NPC npc, float range = 240, bool lineOfSight = true)
+		{
+			if (!npc.TryGetTarget(out Entity target))
+				return false;
+			if (lineOfSight && !npc.LineOfSight(target.position))
+				return false;
+			return npc.DistanceSQ(target.position) < MathF.Pow(range, 2);
+		}
+
+		public static bool TargetInAggroRange(this NPC npc, Entity target, float range = 240, bool lineOfSight = true)
+		{
+			if (lineOfSight && !npc.LineOfSight(target.position))
+				return false;
+			return npc.DistanceSQ(target.position) < MathF.Pow(range, 2);
 		}
 	}
 }

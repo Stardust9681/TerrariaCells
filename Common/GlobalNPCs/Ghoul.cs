@@ -46,18 +46,42 @@ namespace TerrariaCells.Common.GlobalNPCs
         }
         public void GhoulAI(NPC npc, Player target)
         {
-            int timeWalking = 30;
-            int timeSlashing = 60;
-            int slashDelay = timeSlashing / 3;
+            const int TimeWalking = 30;
+            const int TimeSlashing = 60;
+            const int SlashDelay = TimeSlashing / 3;
 
             if (!npc.HasValidTarget)
             {
                 return;
             }
 
+			if (!npc.TargetInAggroRange(target, 320))
+			{
+				ShouldWalk = false;
+				npc.velocity.X *= 0.9f;
+				if (npc.Grounded() && MathF.Abs(npc.velocity.X) < 1)
+				{
+					if (Main.rand.NextBool(10))
+					{
+						int direction = Main.rand.NextBool() ? -1 : 1;
+						npc.spriteDirection = npc.direction = direction;
+						npc.velocity.X = npc.direction * 10f;
+						SoundEngine.PlaySound(SoundID.Item1, npc.Center);
+						Projectile slash = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center, Vector2.Zero, ModContent.ProjectileType<Slash>(), TCellsUtils.ScaledHostileDamage(25), 1, -1, npc.whoAmI, 0, npc.direction);
+						if (npc.direction < 0)
+							slash.rotation = MathHelper.Pi;
+					}
+					else
+					{
+						npc.spriteDirection = npc.direction = target.position.X < npc.position.X ? -1 : 1;
+						npc.velocity.Y = -5f;
+					}
+				}
+				npc.velocity.Y += 0.01f;
+				return;
+			}
             
-            
-            if (npc.ai[2] >= timeWalking && target.Distance(npc.Center) < 200 && npc.ai[3] == 0 && (float)Math.Abs(npc.Center.Y - target.Center.Y) < 30)
+            if (npc.ai[2] >= TimeWalking && target.Distance(npc.Center) < 200 && npc.ai[3] == 0 && (float)Math.Abs(npc.Center.Y - target.Center.Y) < 30)
             {
                 npc.ai[2] = 0;
                 npc.ai[3] = 1;
@@ -67,7 +91,7 @@ namespace TerrariaCells.Common.GlobalNPCs
             {
                 SoundEngine.PlaySound(SoundID.Item1, npc.Center);
                 Projectile slash = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center, Vector2.Zero, ModContent.ProjectileType<Slash>(), TCellsUtils.ScaledHostileDamage(25), 1, -1, npc.whoAmI, 0, npc.direction);
-                slash.scale = 1;
+                //slash.scale = 1; //Scale defaults to 1f anyway
                 slash.rotation = npc.AngleTo(target.Center);
             }
 
@@ -76,31 +100,32 @@ namespace TerrariaCells.Common.GlobalNPCs
                 npc.velocity.X *= 0.9f;
                 npc.direction = npc.oldDirection;
                 ShouldWalk = false;
-                if (npc.ai[2] % slashDelay == 0 && npc.ai[2] != timeSlashing)
+
+                if (npc.ai[2] % SlashDelay == 0 && npc.ai[2] != TimeSlashing)
                 {
-                    
                     if (npc.ai[2] > 0 && ExtraAI[0] == 0 && !npc.IsFacingTarget(target))
                     {
                         npc.direction = -npc.direction;
                         npc.oldDirection = npc.direction;
-                        npc.ai[2] = slashDelay;
-                        ExtraAI[0] = 1;
+                        npc.ai[2] = SlashDelay;
+                        ExtraAI[0] = 1; //Consider using 'npc.localAI[0]' instead
                     }
                     SoundEngine.PlaySound(SoundID.Item1, npc.Center);
                     npc.velocity.X = 10 * npc.direction;
-                    Projectile slash =  Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center, Vector2.Zero, ModContent.ProjectileType<Slash>(), TCellsUtils.ScaledHostileDamage(25), 1, -1, npc.whoAmI, npc.ai[2] == slashDelay ? 1 : 0, npc.direction);
+                    Projectile slash =  Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center, Vector2.Zero, ModContent.ProjectileType<Slash>(), TCellsUtils.ScaledHostileDamage(25), 1, -1, npc.whoAmI, npc.ai[2] == SlashDelay ? 1 : 0, npc.direction);
                     slash.scale = 1;
                     slash.rotation = npc.direction == 1 ? 0 : MathHelper.Pi;
                 }
-                if (npc.ai[2] >= timeSlashing)
+
+                if (npc.ai[2] >= TimeSlashing)
                 {
                     npc.ai[3] = 0;
                     npc.ai[2] = 0;
-                    ExtraAI[0] = 0;
+                    ExtraAI[0] = 0; //Consider using 'npc.localAI[0]' instead
                 }
             }
 
-            npc.ai[2]++;
+            npc.ai[2]++; //Timer variable
         }
     }
 }
