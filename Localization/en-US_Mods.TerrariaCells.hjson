@@ -95,14 +95,14 @@ Items: {
 		DisplayName: Room Connector Item
 	}
 
-	ExamplePylonItem: {
-		DisplayName: Example Pylon Item
+	PotMarkerItem: {
+		DisplayName: Pot Marker Item
 		Tooltip: ""
 	}
 
-	PotMarkerItem: {
+	ExamplePylonItem: {
 		Tooltip: ""
-		DisplayName: Pot Marker Item
+		DisplayName: Example Pylon Item
 	}
 
 	ClickableCrystalItem: {
@@ -163,4 +163,9 @@ ExplodeOnHit: {
 	Description: 30% chance to explode your target on hit
 }
 
-Tiles.ExamplePylonTile.MapEntry: Example Pylon Tile
+Buffs: {
+	FrozenEnemyDebuff: {
+		DisplayName: Frozen Enemy Debuff
+		Description: Mods.TerrariaCells.Buffs.FrozenEnemyDebuff.Description
+	}
+}
