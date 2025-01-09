@@ -142,7 +142,7 @@ public class InventoryManager : ModSystem, IEntitySource
     {
         if (DevConfig.Instance.EnableInventoryLock)
         {
-            foreach (Player player in Main.ActivePlayers)
+            foreach (Terraria.Player player in Main.ActivePlayers)
             {
                 if (player.selectedItem < INVENTORY_SLOT_COUNT)
                     continue;
@@ -156,14 +156,14 @@ public class InventoryManager : ModSystem, IEntitySource
 
             // if (config.EnableInventoryLock)
             // {
-            foreach (Player player in Main.player)
+            foreach (Terraria.Player player in Main.player)
             {
                 SortInventory(player);
             }
         }
     }
 
-    public void SortInventory(Player player)
+    public void SortInventory(Terraria.Player player)
     {
         // var openSlots = 4;
         // for (int i = 10; i < 14; i++)
@@ -230,7 +230,11 @@ public class InventoryManager : ModSystem, IEntitySource
         }
     }
 
-    public bool MoveItemToItsDedicatedCategory(Player player, Item item, int previousInventorySlot)
+    public bool MoveItemToItsDedicatedCategory(
+        Terraria.Player player,
+        Item item,
+        int previousInventorySlot
+    )
     {
         switch (GetItemCategorization(item))
         {
@@ -362,7 +366,7 @@ public class InventoryManager : ModSystem, IEntitySource
     /// </summary>
     private static bool FilterPickups(
         On_Player.orig_CanAcceptItemIntoInventory orig,
-        Player player,
+        Terraria.Player player,
         Item item
     )
     {
@@ -388,7 +392,7 @@ public class InventoryManager : ModSystem, IEntitySource
 
     public Item OnItemPickup(
         On_Player.orig_PickupItem orig,
-        Player self,
+        Terraria.Player self,
         int playerIndex,
         int worldItemArrayIndex,
         Item itemToPickUp
@@ -420,20 +424,21 @@ public class InventoryManager : ModSystem, IEntitySource
     /// <summary>
     /// Checks the two inventory slots that are used for weapons, and returns true if both are occupied.
     /// </summary>
-    public static bool WeaponsSlotsFull(Player player) =>
+    public static bool WeaponsSlotsFull(Terraria.Player player) =>
         !player.inventory[WEAPON_SLOT_1].IsAir && !player.inventory[WEAPON_SLOT_2].IsAir;
 
-    public static bool SkillsSlotsFull(Player player) =>
+    public static bool SkillsSlotsFull(Terraria.Player player) =>
         !player.inventory[SKILL_SLOT_1].IsAir && !player.inventory[SKILL_SLOT_2].IsAir;
 
-    public static bool PotionSlotFull(Player player) => !player.inventory[POTION_SLOT].IsAir;
+    public static bool PotionSlotFull(Terraria.Player player) =>
+        !player.inventory[POTION_SLOT].IsAir;
 
-    public static bool StorageSlotsFull(Player player) =>
+    public static bool StorageSlotsFull(Terraria.Player player) =>
         !player.inventory[STORAGE_SLOT_1].IsAir
         && !player.inventory[STORAGE_SLOT_2].IsAir
         && !player.inventory[STORAGE_SLOT_3].IsAir
         && !player.inventory[STORAGE_SLOT_4].IsAir;
 
-    public static bool AccessorySlotsFull(Player player) =>
+    public static bool AccessorySlotsFull(Terraria.Player player) =>
         !player.armor[3].IsAir && !player.armor[4].IsAir;
 }
