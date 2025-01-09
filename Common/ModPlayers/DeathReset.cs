@@ -4,7 +4,6 @@ using Terraria.ModLoader;
 using TerrariaCells.Common.Configs;
 using TerrariaCells.Common.Items;
 using TerrariaCells.Common.Systems;
-using TerrariaCells.Content.Tiles;
 
 namespace TerrariaCells.Common.ModPlayers;
 
@@ -12,9 +11,15 @@ public class DeathReset : ModPlayer, IEntitySource
 {
     public string Context => "TerrariaCells.Common.ModPlayers.DeathReset";
 
-    public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
+    public override void Kill(
+        double damage,
+        int hitDirection,
+        bool pvp,
+        PlayerDeathReason damageSource
+    )
     {
         Mod.GetContent<TeleportTracker>().First().Reset();
+        Mod.GetContent<ClickedHeartsTracker>().First().Reset();
         Mod.GetContent<ChestLootSpawner>().First().Reset();
         if (!DevConfig.Instance.DropItems)
         {

@@ -1,58 +1,18 @@
 using System.Linq;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.Localization;
-using Terraria.Map;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Default;
 using Terraria.ObjectData;
 using TerrariaCells.Common.Items;
-using TerrariaCells.Content.Items.Placeable;
+using TerrariaCells.Common.Systems;
 using TerrariaCells.Content.TileEntities;
 
 namespace TerrariaCells.Content.Tiles;
-
-public class TeleportTracker : ModSystem
-{
-    public int teleports = 0;
-
-    public override void OnModLoad()
-    {
-
-        base.OnModLoad();
-    }
-
-    public void Reset()
-    {
-        teleports = 0;
-    }
-
-    public override void OnWorldLoad()
-    {
-        teleports = 0;
-
-
-        base.OnWorldLoad();
-    }
-
-    public void Teleport()
-    {
-        teleports += 1;
-        switch (teleports)
-        {
-            case 2: Main.LocalPlayer.Teleport(new Vector2(32461f, 7814f)); return; //desert
-            case 4: Main.LocalPlayer.Teleport(new Vector2(47403f, 7158f)); return; //hive
-            case 6: Main.LocalPlayer.Teleport(new Vector2(56771f, 6790f)); return; //ice
-            case 8: Main.LocalPlayer.Teleport(new Vector2(8771f, 6102f)); teleports = 0; return; //forest
-        }
-        Main.LocalPlayer.Teleport(new Vector2(19623f, 10326f)); //inn
-    }
-}
 
 /// <summary>
 /// An example for creating a Pylon, identical to how they function in Vanilla. Shows off <seealso cref="ModPylon"/>, an abstract
@@ -73,7 +33,8 @@ public class ForestExitPylon : ModPylon, ITerraCellsCategorization
 
     public TerraCellsItemCategory Category => TerraCellsItemCategory.Storage;
 
-    public override string Texture => (GetType().Namespace + "." + "ExamplePylonTile").Replace('.', '/');
+    public override string Texture =>
+        (GetType().Namespace + "." + "ExamplePylonTile").Replace('.', '/');
 
     public override void Load()
     {
@@ -81,7 +42,6 @@ public class ForestExitPylon : ModPylon, ITerraCellsCategorization
         crystalTexture = ModContent.Request<Texture2D>(Texture + "_Crystal");
         crystalHighlightTexture = ModContent.Request<Texture2D>(Texture + "_CrystalHighlight");
         mapIcon = ModContent.Request<Texture2D>(Texture + "_MapIcon");
-
     }
 
     public override void SetStaticDefaults()
@@ -96,8 +56,18 @@ public class ForestExitPylon : ModPylon, ITerraCellsCategorization
         // These definitions allow for vanilla's pylon TileEntities to be placed.
         // tModLoader has a built in Tile Entity specifically for modded pylons, which we must extend (see SimplePylonTileEntity)
         TEModdedPylon moddedPylon = ModContent.GetInstance<SimplePylonTileEntity>();
-        TileObjectData.newTile.HookCheckIfCanPlace = new PlacementHook(moddedPylon.PlacementPreviewHook_CheckIfCanPlace, 1, 0, true);
-        TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(moddedPylon.Hook_AfterPlacement, -1, 0, false);
+        TileObjectData.newTile.HookCheckIfCanPlace = new PlacementHook(
+            moddedPylon.PlacementPreviewHook_CheckIfCanPlace,
+            1,
+            0,
+            true
+        );
+        TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(
+            moddedPylon.Hook_AfterPlacement,
+            -1,
+            0,
+            false
+        );
 
         TileObjectData.addTile(Type);
 
@@ -128,12 +98,18 @@ public class ForestExitPylon : ModPylon, ITerraCellsCategorization
         ModContent.GetInstance<SimplePylonTileEntity>().Kill(i, j);
     }
 
-    public override bool ValidTeleportCheck_NPCCount(TeleportPylonInfo pylonInfo, int defaultNecessaryNPCCount)
+    public override bool ValidTeleportCheck_NPCCount(
+        TeleportPylonInfo pylonInfo,
+        int defaultNecessaryNPCCount
+    )
     {
         return true;
     }
 
-    public override bool ValidTeleportCheck_BiomeRequirements(TeleportPylonInfo pylonInfo, SceneMetrics sceneData)
+    public override bool ValidTeleportCheck_BiomeRequirements(
+        TeleportPylonInfo pylonInfo,
+        SceneMetrics sceneData
+    )
     {
         return false;
     }
@@ -142,12 +118,22 @@ public class ForestExitPylon : ModPylon, ITerraCellsCategorization
     {
         r = 0.02f;
         g = b = 0.75f;
-
     }
 
     public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
     {
-        DefaultDrawPylonCrystal(spriteBatch, i, j, crystalTexture, crystalHighlightTexture, new Vector2(0f, -12f), Color.White * 0.1f, Color.White, 1, CrystalVerticalFrameCount);
+        DefaultDrawPylonCrystal(
+            spriteBatch,
+            i,
+            j,
+            crystalTexture,
+            crystalHighlightTexture,
+            new Vector2(0f, -12f),
+            Color.White * 0.1f,
+            Color.White,
+            1,
+            CrystalVerticalFrameCount
+        );
     }
 
     public override bool RightClick(int i, int j)
@@ -167,7 +153,8 @@ public class DesertExitPylon : ModPylon, ITerraCellsCategorization
     public Asset<Texture2D> mapIcon;
 
     public TerraCellsItemCategory Category => TerraCellsItemCategory.Storage;
-    public override string Texture => (GetType().Namespace + "." + "ExamplePylonTile").Replace('.', '/');
+    public override string Texture =>
+        (GetType().Namespace + "." + "ExamplePylonTile").Replace('.', '/');
 
     public override void Load()
     {
@@ -190,10 +177,18 @@ public class DesertExitPylon : ModPylon, ITerraCellsCategorization
         // tModLoader has a built in Tile Entity specifically for modded pylons, which we must extend (see SimplePylonTileEntity)
         TEModdedPylon moddedPylon = ModContent.GetInstance<SimplePylonTileEntity>();
         // bad return set to -1 to disable the pylon placement limit
-        TileObjectData.newTile.HookCheckIfCanPlace = new PlacementHook(moddedPylon.PlacementPreviewHook_CheckIfCanPlace, -1, 0, true);
-        TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(moddedPylon.Hook_AfterPlacement, -1, 0, false);
-
-
+        TileObjectData.newTile.HookCheckIfCanPlace = new PlacementHook(
+            moddedPylon.PlacementPreviewHook_CheckIfCanPlace,
+            -1,
+            0,
+            true
+        );
+        TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(
+            moddedPylon.Hook_AfterPlacement,
+            -1,
+            0,
+            false
+        );
 
         TileObjectData.addTile(Type);
 
@@ -224,12 +219,18 @@ public class DesertExitPylon : ModPylon, ITerraCellsCategorization
         ModContent.GetInstance<SimplePylonTileEntity>().Kill(i, j);
     }
 
-    public override bool ValidTeleportCheck_NPCCount(TeleportPylonInfo pylonInfo, int defaultNecessaryNPCCount)
+    public override bool ValidTeleportCheck_NPCCount(
+        TeleportPylonInfo pylonInfo,
+        int defaultNecessaryNPCCount
+    )
     {
         return true;
     }
 
-    public override bool ValidTeleportCheck_BiomeRequirements(TeleportPylonInfo pylonInfo, SceneMetrics sceneData)
+    public override bool ValidTeleportCheck_BiomeRequirements(
+        TeleportPylonInfo pylonInfo,
+        SceneMetrics sceneData
+    )
     {
         return false;
     }
@@ -238,12 +239,22 @@ public class DesertExitPylon : ModPylon, ITerraCellsCategorization
     {
         r = 0.02f;
         g = b = 0.75f;
-
     }
 
     public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
     {
-        DefaultDrawPylonCrystal(spriteBatch, i, j, crystalTexture, crystalHighlightTexture, new Vector2(0f, -12f), Color.White * 0.1f, Color.White, 1, CrystalVerticalFrameCount);
+        DefaultDrawPylonCrystal(
+            spriteBatch,
+            i,
+            j,
+            crystalTexture,
+            crystalHighlightTexture,
+            new Vector2(0f, -12f),
+            Color.White * 0.1f,
+            Color.White,
+            1,
+            CrystalVerticalFrameCount
+        );
     }
 
     public override bool RightClick(int i, int j)
@@ -263,7 +274,8 @@ public class HiveExitPylon : ModPylon, ITerraCellsCategorization
     public Asset<Texture2D> mapIcon;
 
     public TerraCellsItemCategory Category => TerraCellsItemCategory.Storage;
-    public override string Texture => (GetType().Namespace + "." + "ExamplePylonTile").Replace('.', '/');
+    public override string Texture =>
+        (GetType().Namespace + "." + "ExamplePylonTile").Replace('.', '/');
 
     public override void Load()
     {
@@ -285,8 +297,18 @@ public class HiveExitPylon : ModPylon, ITerraCellsCategorization
         // These definitions allow for vanilla's pylon TileEntities to be placed.
         // tModLoader has a built in Tile Entity specifically for modded pylons, which we must extend (see SimplePylonTileEntity)
         TEModdedPylon moddedPylon = ModContent.GetInstance<SimplePylonTileEntity>();
-        TileObjectData.newTile.HookCheckIfCanPlace = new PlacementHook(moddedPylon.PlacementPreviewHook_CheckIfCanPlace, 1, 0, true);
-        TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(moddedPylon.Hook_AfterPlacement, -1, 0, false);
+        TileObjectData.newTile.HookCheckIfCanPlace = new PlacementHook(
+            moddedPylon.PlacementPreviewHook_CheckIfCanPlace,
+            1,
+            0,
+            true
+        );
+        TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(
+            moddedPylon.Hook_AfterPlacement,
+            -1,
+            0,
+            false
+        );
 
         TileObjectData.addTile(Type);
 
@@ -317,12 +339,18 @@ public class HiveExitPylon : ModPylon, ITerraCellsCategorization
         ModContent.GetInstance<SimplePylonTileEntity>().Kill(i, j);
     }
 
-    public override bool ValidTeleportCheck_NPCCount(TeleportPylonInfo pylonInfo, int defaultNecessaryNPCCount)
+    public override bool ValidTeleportCheck_NPCCount(
+        TeleportPylonInfo pylonInfo,
+        int defaultNecessaryNPCCount
+    )
     {
         return true;
     }
 
-    public override bool ValidTeleportCheck_BiomeRequirements(TeleportPylonInfo pylonInfo, SceneMetrics sceneData)
+    public override bool ValidTeleportCheck_BiomeRequirements(
+        TeleportPylonInfo pylonInfo,
+        SceneMetrics sceneData
+    )
     {
         return false;
     }
@@ -331,12 +359,22 @@ public class HiveExitPylon : ModPylon, ITerraCellsCategorization
     {
         r = 0.02f;
         g = b = 0.75f;
-
     }
 
     public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
     {
-        DefaultDrawPylonCrystal(spriteBatch, i, j, crystalTexture, crystalHighlightTexture, new Vector2(0f, -12f), Color.White * 0.1f, Color.White, 1, CrystalVerticalFrameCount);
+        DefaultDrawPylonCrystal(
+            spriteBatch,
+            i,
+            j,
+            crystalTexture,
+            crystalHighlightTexture,
+            new Vector2(0f, -12f),
+            Color.White * 0.1f,
+            Color.White,
+            1,
+            CrystalVerticalFrameCount
+        );
     }
 
     public override bool RightClick(int i, int j)
@@ -356,7 +394,8 @@ public class SnowExitPylon : ModPylon, ITerraCellsCategorization
     public Asset<Texture2D> mapIcon;
 
     public TerraCellsItemCategory Category => TerraCellsItemCategory.Storage;
-    public override string Texture => (GetType().Namespace + "." + "ExamplePylonTile").Replace('.', '/');
+    public override string Texture =>
+        (GetType().Namespace + "." + "ExamplePylonTile").Replace('.', '/');
 
     public override void Load()
     {
@@ -378,8 +417,18 @@ public class SnowExitPylon : ModPylon, ITerraCellsCategorization
         // These definitions allow for vanilla's pylon TileEntities to be placed.
         // tModLoader has a built in Tile Entity specifically for modded pylons, which we must extend (see SimplePylonTileEntity)
         TEModdedPylon moddedPylon = ModContent.GetInstance<SimplePylonTileEntity>();
-        TileObjectData.newTile.HookCheckIfCanPlace = new PlacementHook(moddedPylon.PlacementPreviewHook_CheckIfCanPlace, 1, 0, true);
-        TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(moddedPylon.Hook_AfterPlacement, -1, 0, false);
+        TileObjectData.newTile.HookCheckIfCanPlace = new PlacementHook(
+            moddedPylon.PlacementPreviewHook_CheckIfCanPlace,
+            1,
+            0,
+            true
+        );
+        TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(
+            moddedPylon.Hook_AfterPlacement,
+            -1,
+            0,
+            false
+        );
 
         TileObjectData.addTile(Type);
 
@@ -410,12 +459,18 @@ public class SnowExitPylon : ModPylon, ITerraCellsCategorization
         ModContent.GetInstance<SimplePylonTileEntity>().Kill(i, j);
     }
 
-    public override bool ValidTeleportCheck_NPCCount(TeleportPylonInfo pylonInfo, int defaultNecessaryNPCCount)
+    public override bool ValidTeleportCheck_NPCCount(
+        TeleportPylonInfo pylonInfo,
+        int defaultNecessaryNPCCount
+    )
     {
         return true;
     }
 
-    public override bool ValidTeleportCheck_BiomeRequirements(TeleportPylonInfo pylonInfo, SceneMetrics sceneData)
+    public override bool ValidTeleportCheck_BiomeRequirements(
+        TeleportPylonInfo pylonInfo,
+        SceneMetrics sceneData
+    )
     {
         return false;
     }
@@ -424,12 +479,22 @@ public class SnowExitPylon : ModPylon, ITerraCellsCategorization
     {
         r = 0.02f;
         g = b = 0.75f;
-
     }
 
     public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
     {
-        DefaultDrawPylonCrystal(spriteBatch, i, j, crystalTexture, crystalHighlightTexture, new Vector2(0f, -12f), Color.White * 0.1f, Color.White, 1, CrystalVerticalFrameCount);
+        DefaultDrawPylonCrystal(
+            spriteBatch,
+            i,
+            j,
+            crystalTexture,
+            crystalHighlightTexture,
+            new Vector2(0f, -12f),
+            Color.White * 0.1f,
+            Color.White,
+            1,
+            CrystalVerticalFrameCount
+        );
     }
 
     public override bool RightClick(int i, int j)
