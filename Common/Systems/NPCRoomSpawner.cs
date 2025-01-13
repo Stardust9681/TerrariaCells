@@ -300,7 +300,8 @@ namespace TerrariaCells.Common.Systems
 					return (int)(npcType = result2);
 				if (ModContent.GetInstance<TerrariaCells>().TryFind<ModNPC>(NameOrType, out ModNPC modNPC)) //Check for ModNPC with name
 					return (int)(npcType = modNPC.Type);
-				throw new ArgumentException($"NPC Type or Name: '{NameOrType}' was not found");
+				ModContent.GetInstance<TerrariaCells>().Logger.Warn($"TerraCells NPC Spawning Error: NPC Type or Name: '{NameOrType}' was not found.");
+				return NPCID.FairyCritterPink;	
 			}
 		}
 	}
