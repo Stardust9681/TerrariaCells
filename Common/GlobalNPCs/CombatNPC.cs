@@ -93,41 +93,89 @@ namespace TerrariaCells.Common.GlobalNPCs
 		{
 			switch (npc.type)
 			{
+				// Forest
 				case NPCID.Wolf:
-					npc.lifeMax = 70;
-					npc.damage = 25;
-					npc.defense = 6;
+					npc.lifeMax = 80;
+					npc.damage = 30;
+					npc.defense = 0;
 					break;
-				case NPCID.Raven:
-					npc.lifeMax = 20;
-					npc.damage = 15;
+                case NPCID.Raven:
+                    npc.lifeMax = 20;
+                    npc.damage = 20;
+                    npc.defense = 0;
+                    break;
+                case NPCID.GoblinArcher:
+                    npc.lifeMax = 20;
+                    npc.damage = 25;
+                    npc.defense = 0;
+                    break;
+                case NPCID.GoblinThief:
+                    npc.lifeMax = 40;
+                    npc.damage = 30;
+                    npc.defense = 0;
+                    break;
+                case NPCID.GoblinSorcerer:
+                    npc.lifeMax = 10;
+                    npc.damage = 20;
+                    npc.defense = 0;
+                    break;
+
+                // Desert
+                case NPCID.Mummy:
+					npc.lifeMax = 200;
+					npc.damage = 60;
+					npc.defense = 0;
 					break;
-				case NPCID.Mummy:
-					npc.lifeMax = 150;
-					npc.defense = 20;
+                case NPCID.DesertGhoul:
+                    npc.lifeMax = 50;
+                    npc.damage = 50;
+                    npc.defense = 0;
 					break;
-				case NPCID.DesertGhoul:
-					npc.defense = 12;
-					break;
-				case NPCID.DesertDjinn:
-					npc.defense = 10;
-					break;
-				case NPCID.CultistDevote:
-					npc.lifeMax = 150;
-					npc.damage = 50;
-					break;
+
+				// Sand Poachers have two NPC IDs...
+                case NPCID.DesertScorpionWalk:
+                    npc.lifeMax = 100;
+                    npc.damage = 50;
+                    npc.defense = 0;
+                    break;
+                case NPCID.DesertScorpionWall:
+                    npc.lifeMax = 100;
+                    npc.damage = 50;
+                    npc.defense = 0;
+                    break;
+
+                case NPCID.DesertDjinn:
+                    npc.lifeMax = 30;
+                    npc.damage = 40;
+                    npc.defense = 0;
+                    break;
+                case NPCID.Vulture:
+                    npc.lifeMax = 50;
+                    npc.damage = 40;
+                    npc.defense = 0;
+                    break;
+
+				// Frozen City
+                case NPCID.CultistDevote:
+					npc.lifeMax = 50;
+					npc.damage = 40;
+                    npc.defense = 0;
+                    break;
 				case NPCID.CultistArcherBlue:
-					npc.lifeMax = 275;
-					npc.damage = 75;
-					break;
+					npc.lifeMax = 100;
+					npc.damage = 40;
+                    npc.defense = 0;
+                    break;
 				case NPCID.IceGolem:
-					npc.lifeMax = 1000;
-					npc.damage = 65;
-					break;
+					npc.lifeMax = 200;
+					npc.damage = 50;
+                    npc.defense = 0;
+                    break;
 				case NPCID.IceElemental:
-					npc.lifeMax = 225;
-					npc.damage = 90;
-					break;
+					npc.lifeMax = 75;
+					npc.damage = 60;
+                    npc.defense = 0;
+                    break;
 			}
 		}
 	}

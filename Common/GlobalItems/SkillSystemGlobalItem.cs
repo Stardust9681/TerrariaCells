@@ -106,25 +106,28 @@ namespace TerrariaCells.Common.GlobalItems
 
 
             // DEFINE WHICH ITEMS ARE SKILLS HERE
-            SkillItems.Add(ItemID.StormTigerStaff, new SkillItemData(1800, 600));
+            SkillItems.Add(ItemID.StormTigerStaff, new SkillItemData(5400, 1800));
             SkillItems.Add(ItemID.StardustDragonStaff, new SkillItemData(1800, 600));
 
-            SkillItems.Add(ItemID.ClingerStaff, new SkillItemData(600, 300));
+            SkillItems.Add(ItemID.ClingerStaff, new SkillItemData(2700, 600));
             SkillItems[ItemID.ClingerStaff].useInSolid = false;
             SkillItems[ItemID.ClingerStaff].lineOfSight = true;
 
-            SkillItems.Add(ItemID.ToxicFlask, new SkillItemData(480));
+            SkillItems.Add(ItemID.ToxicFlask, new SkillItemData(1800));
 
             SkillItems.Add(ItemID.StaffoftheFrostHydra, new SkillItemData(1800, 600));
             SkillItems[ItemID.StaffoftheFrostHydra].useInSolid = false;
 
-            SkillItems.Add(ItemID.DD2ExplosiveTrapT1Popper, new SkillItemData(480, 300));
+            SkillItems.Add(ItemID.DD2ExplosiveTrapT1Popper, new SkillItemData(1200, 1200));
             SkillItems[ItemID.DD2ExplosiveTrapT1Popper].useInSolid = false;
             SkillItems[ItemID.DD2ExplosiveTrapT1Popper].lineOfSight = true;
 
-            SkillItems.Add(ItemID.MolotovCocktail, new SkillItemData(480));
-            SkillItems.Add(ItemID.BouncyDynamite, new SkillItemData(480));
+            SkillItems.Add(ItemID.MolotovCocktail, new SkillItemData(900));
+            SkillItems.Add(ItemID.BouncyDynamite, new SkillItemData(3600));
             SkillItems.Add(ItemID.BouncingShield, new SkillItemData(360));
+            SkillItems.Add(ItemID.MedusaHead, new SkillItemData(1800));
+            SkillItems.Add(ItemID.WrathPotion, new SkillItemData(4800, 1200));
+            SkillItems.Add(ItemID.MagicPowerPotion, new SkillItemData(4800, 1200));
             SkillItems.Add(ItemID.SnowballLauncher, new SkillItemData(1200, 480));
 
         }
@@ -613,6 +616,7 @@ namespace TerrariaCells.Common.GlobalItems
             switch (item.type)
             {
                 case ItemID.StormTigerStaff:
+                    item.damage = 20;
                     break;
                 case ItemID.StardustDragonStaff:
                     break;

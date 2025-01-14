@@ -60,6 +60,10 @@ namespace TerrariaCells.Common.GlobalItems
             {
                 entity.damage = 0;
             }
+            if (entity.type == ItemID.RocketI)
+            {
+                entity.damage = 0;
+            }
             if (Guns.Contains(entity.type))
             {
                 StoreSound = entity.UseSound;

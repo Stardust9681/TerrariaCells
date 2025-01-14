@@ -20,15 +20,18 @@ namespace TerrariaCells.Common.GlobalItems
                 case ItemID.PhoenixBlaster:
                     item.damage = 8;
                     item.useTime = 14;
+                    item.knockBack = 0f;
                     break;
                 case ItemID.Minishark:
                     // dps ~60, with reloading ~90, tapers off to 70
                     item.damage = 3;
+                    item.knockBack = 0f;
                     break;
                 case ItemID.SniperRifle:
-                    item.damage = 40;
+                    item.damage = 60;
                     item.useTime = 25;
                     item.useAnimation = item.useTime;
+                    item.knockBack = 0f;
                     break;
                 case ItemID.OnyxBlaster:
                     item.damage = 5;
@@ -38,27 +41,33 @@ namespace TerrariaCells.Common.GlobalItems
                 case ItemID.PulseBow:
                     item.damage = 8;
                     item.useTime = 23;
+                    item.knockBack = 0f;
                     break;
                 case ItemID.IceBow:
                     item.damage = 4;
                     item.useTime = 16;
+                    item.knockBack = 0f;
                     break;
                 // Launchers
                 case ItemID.Toxikarp:
                     item.damage = 2;
                     item.useTime = 12;
+                    item.knockBack = 0f;
                     break;
                 case ItemID.RocketLauncher:
-                    item.damage = 35;
+                    item.damage = 10;
                     item.useTime = 30;
+                    item.knockBack = 0f;
                     break;
                 case ItemID.StarCannon:
                     item.damage = 15;
                     item.useTime = 3;
+                    item.knockBack = 0f;
                     break;
                 case ItemID.GrenadeLauncher:
-                    item.damage = 18;
+                    item.damage = 15;
                     item.useTime = 20;
+                    item.knockBack = 0f;
                     break;
                 // MELEE
                 // Swords
