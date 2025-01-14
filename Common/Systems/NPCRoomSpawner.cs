@@ -24,6 +24,9 @@ namespace TerrariaCells.Common.Systems
 			RoomMarkers.Add(new RoomMarker(new Point(492, 338), RoomMarker.GetInternalRoomName("ForestPremade", "forest_premade"), 700, 70));
 			RoomMarkers.Add(new RoomMarker(new Point(1946, 456), RoomMarker.GetInternalRoomName("DesertPremade", "desert_premade"), 831, 192));
 			RoomMarkers.Add(new RoomMarker(new Point(3475, 368), RoomMarker.GetInternalRoomName("FrozenCityPremade", "frozencity_premade"), 767, 166));
+			// working on adding new rooms, please fix up the tile width and height for these. position is fine though.
+			// RoomMarkers.Add(new RoomMarker(new Point(1501, 183), RoomMarker.GetInternalRoomName("FrozenCityPremade2", "frozencity_premade_2"), //767, 166));
+			// RoomMarkers.Add(new RoomMarker(new Point(4375, 357), RoomMarker.GetInternalRoomName("CrimsonPremade", "crimson_premade"),  //767, 166));
 		}
 
 		/// <summary> Add entries to this list during biome generation. </summary>

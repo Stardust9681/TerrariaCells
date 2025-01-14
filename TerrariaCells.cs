@@ -8,7 +8,14 @@ using TerrariaCells.Common.Configs;
 namespace TerrariaCells
 {
     //Contributions already present are by no means absolute, conventions are negotiable.
-    public class TerrariaCells : Mod { }
+    public class TerrariaCells : Mod {
+        public override void Load()
+        {
+            string biome; 
+            biome = "forest"; 
+            Main.NewText(biome + ": " + Main.LocalPlayer.position);
+        }
+    }
 
     public class TerraCellsSystem : ModSystem
     {

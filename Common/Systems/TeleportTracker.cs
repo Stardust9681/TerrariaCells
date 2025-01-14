@@ -30,20 +30,37 @@ public class TeleportTracker : ModSystem
         teleports += 1;
         switch (teleports)
         {
-            case 2:
-                Main.LocalPlayer.Teleport(new Vector2(32461f, 7814f));
-                return; //desert
-            case 4:
-                Main.LocalPlayer.Teleport(new Vector2(47403f, 7158f));
-                return; //hive
-            case 6:
-                Main.LocalPlayer.Teleport(new Vector2(56771f, 6790f));
-                return; //ice
-            case 8:
-                Main.LocalPlayer.Teleport(new Vector2(8771f, 6102f));
+            case 2: 
+                // desert:
+                Main.LocalPlayer.Teleport(new(91387.836f, 7734.0f)); 
+                return;
+            case 4: 
+                // hive:
+                Main.LocalPlayer.Teleport(new(47393.8f, 7158.0f)); 
+                return;
+            case 6: 
+                // crimson:
+                Main.LocalPlayer.Teleport(new(73025.14f, 7510.0f)); 
+                return;
+            case 8: 
+                // frozen:
+                Main.LocalPlayer.Teleport(new(56762.617f, 6790.0f)); 
+                return;
+            case 10: 
+                // frozen city
+                Main.LocalPlayer.Teleport(new(25136.639f, 6134.0f)); 
+                return;
+            case 12: 
+                // caverns:
+                Main.LocalPlayer.Teleport(new(28818.312f, 17606.0f)); 
+                return;
+            case 14: 
+                // forest:
+                Main.LocalPlayer.Teleport(new(12026.719f, 5990.0f)); 
                 teleports = 0;
-                return; //forest
+                return;
         }
+
         Main.LocalPlayer.Teleport(new Vector2(19623f, 10326f)); //inn
     }
 }
