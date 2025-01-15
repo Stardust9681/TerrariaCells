@@ -37,7 +37,7 @@ public class TeleportTracker : ModSystem
 				teleports = 0;
 				break;
 			case 2: //Crimson
-				position = new Vector2(73025.14f, 7510);
+				position = new Vector2(4433, 453) * 16;
 				break;
 			case 4: //Desert
 				position = new Vector2(91387.836f, 7734);
