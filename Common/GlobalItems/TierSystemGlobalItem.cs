@@ -52,7 +52,7 @@ namespace TerrariaCells.Common.GlobalItems
         {
             // Equation is found using Sorbet's example values.
             // Graph of tiers vs damage values: https://www.desmos.com/calculator/mz89u5adai
-            damage += MathF.Pow(damageLevelScaling, itemLevel);
+            damage *= MathF.Pow(damageLevelScaling, itemLevel - 2);
         }
 
         public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback)

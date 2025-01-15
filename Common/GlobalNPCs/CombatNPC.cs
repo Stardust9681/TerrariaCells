@@ -95,7 +95,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 			{
 				// Forest
 				case NPCID.Wolf:
-					npc.lifeMax = 80;
+					npc.lifeMax = 120;
 					npc.damage = 30;
 					npc.defense = 0;
 					break;
@@ -131,19 +131,17 @@ namespace TerrariaCells.Common.GlobalNPCs
                     npc.damage = 50;
                     npc.defense = 0;
 					break;
-
-				// Sand Poachers have two NPC IDs...
+				// Sand Poachers have two NPC IDs???
                 case NPCID.DesertScorpionWalk:
-                    npc.lifeMax = 100;
-                    npc.damage = 50;
+                    npc.lifeMax = 150;
+                    npc.damage = 40;
                     npc.defense = 0;
                     break;
                 case NPCID.DesertScorpionWall:
-                    npc.lifeMax = 100;
-                    npc.damage = 50;
+                    npc.lifeMax = 150;
+                    npc.damage = 40;
                     npc.defense = 0;
                     break;
-
                 case NPCID.DesertDjinn:
                     npc.lifeMax = 30;
                     npc.damage = 40;
@@ -157,26 +155,49 @@ namespace TerrariaCells.Common.GlobalNPCs
 
 				// Frozen City
                 case NPCID.CultistDevote:
-					npc.lifeMax = 50;
-					npc.damage = 40;
-                    npc.defense = 0;
-                    break;
-				case NPCID.CultistArcherBlue:
 					npc.lifeMax = 100;
 					npc.damage = 40;
                     npc.defense = 0;
                     break;
+				case NPCID.CultistArcherBlue:
+					npc.lifeMax = 150;
+					npc.damage = 40;
+                    npc.defense = 0;
+                    break;
 				case NPCID.IceGolem:
-					npc.lifeMax = 200;
-					npc.damage = 50;
+					npc.lifeMax = 300;
+					npc.damage = 40;
                     npc.defense = 0;
                     break;
 				case NPCID.IceElemental:
-					npc.lifeMax = 75;
-					npc.damage = 60;
+					npc.lifeMax = 100;
+					npc.damage = 30;
                     npc.defense = 0;
                     break;
-			}
+
+                // Crimson
+                case NPCID.Crimera:
+                    npc.lifeMax = 80;
+                    npc.defense = 0;
+                    break;
+                case NPCID.BloodJelly:
+                    npc.lifeMax = 100;
+                    npc.damage = 30;
+                    npc.defense = 0;
+                    break;
+                case NPCID.BloodCrawler:
+                    npc.defense = 0;
+                    break;
+                case NPCID.Crimslime:
+                    npc.lifeMax = 150;
+                    npc.defense = 0;
+                    break;
+
+                // Jungle
+                case NPCID.Hornet:
+                    npc.defense = 0;
+                    break;
+            }
 		}
 	}
 }

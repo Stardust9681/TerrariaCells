@@ -616,18 +616,21 @@ namespace TerrariaCells.Common.GlobalItems
             switch (item.type)
             {
                 case ItemID.StormTigerStaff:
-                    item.damage = 20;
+                    item.damage = 10;
                     break;
                 case ItemID.StardustDragonStaff:
                     break;
                 case ItemID.ClingerStaff:
+                    item.damage = 10;
                     break;
                 case ItemID.ToxicFlask:
+                    item.damage = 10;
                     break;
                 case ItemID.StaffoftheFrostHydra:
                     item.knockBack = 0;
                     break;
                 case ItemID.DD2ExplosiveTrapT1Popper:
+                    item.damage = 15;
                     break;
                 case ItemID.MolotovCocktail:
                     item.consumable = false;

@@ -21,63 +21,83 @@ namespace TerrariaCells.Common.GlobalItems
                     item.damage = 8;
                     item.useTime = 14;
                     item.knockBack = 0f;
+                    item.value = 1000;
                     break;
                 case ItemID.Minishark:
                     // dps ~60, with reloading ~90, tapers off to 70
                     item.damage = 3;
                     item.knockBack = 0f;
+                    item.value = 1000;
                     break;
                 case ItemID.SniperRifle:
                     item.damage = 60;
                     item.useTime = 25;
                     item.useAnimation = item.useTime;
                     item.knockBack = 0f;
+                    item.value = 1000;
                     break;
                 case ItemID.OnyxBlaster:
-                    item.damage = 5;
+                    item.damage = 13;
                     item.useTime = 48;
+                    item.value = 1000;
                     break;
                 // Bows
                 case ItemID.PulseBow:
-                    item.damage = 8;
+                    item.damage = 15;
                     item.useTime = 23;
                     item.knockBack = 0f;
+                    item.value = 1000;
                     break;
                 case ItemID.IceBow:
-                    item.damage = 4;
+                    item.damage = 30;
                     item.useTime = 16;
                     item.knockBack = 0f;
+                    item.value = 1000;
                     break;
                 // Launchers
                 case ItemID.Toxikarp:
                     item.damage = 2;
                     item.useTime = 12;
                     item.knockBack = 0f;
+                    item.value = 1000;
                     break;
                 case ItemID.RocketLauncher:
                     item.damage = 10;
                     item.useTime = 30;
                     item.knockBack = 0f;
+                    item.value = 1000;
                     break;
                 case ItemID.StarCannon:
                     item.damage = 15;
                     item.useTime = 3;
                     item.knockBack = 0f;
+                    item.value = 1000;
                     break;
                 case ItemID.GrenadeLauncher:
                     item.damage = 15;
-                    item.useTime = 20;
+                    item.useTime = 70;
                     item.knockBack = 0f;
+                    item.value = 1000;
                     break;
+                // Other
+                case ItemID.AleThrowingGlove:
+                    item.damage = 20;
+                    item.knockBack = 0f;
+                    item.value = 1000;
+                    break;
+
+
                 // MELEE
                 // Swords
                 case ItemID.FieryGreatsword:
                     item.damage = 12;
                     item.useTime = 30;
+                    item.value = 1000;
                     break;
                 case ItemID.Starfury:
                     item.damage = 8;
                     item.useTime = 20;
+                    item.value = 1000;
                     break;
             }
         }
