@@ -105,7 +105,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                     npc.defense = 0;
                     break;
                 case NPCID.GoblinArcher:
-                    npc.lifeMax = 20;
+                    npc.lifeMax = 30;
                     npc.damage = 25;
                     npc.defense = 0;
                     break;
@@ -139,7 +139,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                     npc.defense = 0;
                     break;
                 case NPCID.DesertDjinn:
-                    npc.lifeMax = 30;
+                    npc.lifeMax = 55;
                     npc.damage = 40;
                     npc.defense = 0;
                     break;
