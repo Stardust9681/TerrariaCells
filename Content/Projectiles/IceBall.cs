@@ -36,7 +36,7 @@ namespace TerrariaCells.Content.Projectiles
         public override void AI()
         {
             int maxTimeLeft = 200;
-            int timeCharging = (int)ai[2];
+            int timeCharging = (int)Projectile.ai[2];
             int numShards = 5;
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Frost);
             d.noGravity = true;
