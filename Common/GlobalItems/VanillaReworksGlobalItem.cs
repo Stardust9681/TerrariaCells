@@ -18,14 +18,14 @@ namespace TerrariaCells.Common.GlobalItems
                 // RANGED WEAPONS
                 // Guns
                 case ItemID.PhoenixBlaster:
-                    item.damage = 8;
+                    item.damage = 20;
                     item.useTime = 14;
                     item.knockBack = 0f;
                     item.value = 1000;
                     break;
                 case ItemID.Minishark:
                     // dps ~60, with reloading ~90, tapers off to 70
-                    item.damage = 3;
+                    item.damage = 10;
                     item.knockBack = 0f;
                     item.value = 1000;
                     break;
@@ -74,7 +74,7 @@ namespace TerrariaCells.Common.GlobalItems
                     item.value = 1000;
                     break;
                 case ItemID.GrenadeLauncher:
-                    item.damage = 15;
+                    item.damage = 80;
                     item.useTime = 70;
                     item.knockBack = 0f;
                     item.value = 1000;
@@ -90,7 +90,7 @@ namespace TerrariaCells.Common.GlobalItems
                 // MELEE
                 // Swords
                 case ItemID.FieryGreatsword:
-                    item.damage = 12;
+                    item.damage = 30;
                     item.useTime = 30;
                     item.value = 1000;
                     break;

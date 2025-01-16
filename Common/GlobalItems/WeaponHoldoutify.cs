@@ -86,7 +86,7 @@ namespace TerrariaCells.Common.GlobalItems
                 }
                 if (entity.type == ItemID.OnyxBlaster)
                 {
-                    entity.damage = 4;
+                    entity.damage = 13;
                     MaxAmmo = 4;
                     ReloadSuccessRange = 0.15f;
                     ReloadSuccessLocation = 0.7f;
