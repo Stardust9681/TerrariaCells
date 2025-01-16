@@ -7,7 +7,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace TerrariaCells.Common
+namespace TerrariaCells.Common.Systems
 {
     public class Detours : ModSystem
     {
