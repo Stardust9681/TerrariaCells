@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
 
+using TerrariaCells.Common.Configs;
 namespace TerrariaCells.Common.UI;
 
 public class DeadCellsUISystem : ModSystem
@@ -38,6 +39,10 @@ public class DeadCellsUISystem : ModSystem
         limitedStorageUI = new LimitedStorageUI();
         limitedStorageUI.Activate();
         limitedStorageInterface.SetState(limitedStorageUI);
+
+		ReloadInterface = new UserInterface();
+		ReloadInterface.SetState(null);
+		reloaderUI = new ReloaderUI();
     }
 
     public override void Unload()
@@ -46,7 +51,7 @@ public class DeadCellsUISystem : ModSystem
     }
 
     internal void ShowReloadUI()
-    {
+	{
         ReloadInterface?.SetState(reloaderUI);
     }
 
@@ -92,14 +97,26 @@ public class DeadCellsUISystem : ModSystem
     public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
     {
         // called here before the filtering of vanilla inventory layers since somethign dumb happens when filtering and idk what
-        ModContent.GetInstance<UISystem>().ModifyInterfaceLayers(layers);
+        //ModContent.GetInstance<UISystem>().ModifyInterfaceLayers(layers);
 
         HideVanillaInventoryLayers(layers);
 
         int mouseTextIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
         if (mouseTextIndex != -1)
         {
-            if (!DevConfig.Instance.EnableInventoryChanges)
+			layers.Insert(mouseTextIndex, new LegacyGameInterfaceLayer(
+				"TerraCells: ReloadUI",
+				delegate
+				{
+					if (_lastUpdateUiGameTime != null && ReloadInterface?.CurrentState != null)
+					{
+						ReloadInterface?.Draw(Main.spriteBatch, _lastUpdateUiGameTime);
+					}
+					return true;
+				},
+				InterfaceScaleType.UI));
+
+			if (!DevConfig.Instance.EnableInventoryChanges)
             {
                 return;
             }
@@ -117,18 +134,6 @@ public class DeadCellsUISystem : ModSystem
                     InterfaceScaleType.UI
                 )
             );
-
-            layers.Insert(mouseTextIndex, new LegacyGameInterfaceLayer(
-                "TerraCells: ReloadUI",
-                delegate
-                {
-                    if (_lastUpdateUiGameTime != null && ReloadInterface?.CurrentState != null)
-                    {
-                        ReloadInterface.Draw(Main.spriteBatch, _lastUpdateUiGameTime);
-                    }
-                    return true;
-                },
-                InterfaceScaleType.UI));
         }
     }
 }

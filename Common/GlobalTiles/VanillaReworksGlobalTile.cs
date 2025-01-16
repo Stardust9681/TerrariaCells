@@ -46,6 +46,8 @@ namespace TerrariaCells.Common.GlobalTiles
 		private readonly ushort[] ValidTiles = new ushort[] {
 			TileID.TeleportationPylon,
 			TileID.GemLocks,
+			TileID.Containers,
+			TileID.Containers2
 		};
 		private void On_Player_TileInteractionsUse(On_Player.orig_TileInteractionsUse orig, Player self, int myX, int myY)
 		{

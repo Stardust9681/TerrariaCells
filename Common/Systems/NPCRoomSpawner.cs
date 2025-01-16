@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -17,19 +17,22 @@ namespace TerrariaCells.Common.Systems
 {
 	public class NPCRoomSpawner : ModSystem
 	{
-		public override void ClearWorld()
+		public static void ResetSpawns()
 		{
-			RoomMarkers ??= new List<RoomMarker>();
-			RoomMarkers.Clear();
+			NPCRespawnHandler.RespawnMarkers?.Clear();
+			if (RoomMarkers is null) RoomMarkers = new List<RoomMarker>();
+			else RoomMarkers.Clear();
+			foreach (NPC npc in Main.npc.Where(x => x.active && !x.friendly)) npc.active = false; //Disable all current NPCs
 			RoomMarkers.Add(new RoomMarker(new Point(492, 338), RoomMarker.GetInternalRoomName("ForestPremade", "forest_premade"), 700, 70));
-			//RoomMarkers.Add(new RoomMarker(new Point(1946, 456), RoomMarker.GetInternalRoomName("DesertPremade", "desert_premade"), 831, 192));
-			//RoomMarkers.Add(new RoomMarker(new Point(3475, 368), RoomMarker.GetInternalRoomName("FrozenCityPremade", "frozencity_premade"), 767, 166));
-
-			// working on adding new rooms, please fix up the tile width and height for these. position is fine though.
-			RoomMarkers.Add(new RoomMarker(new Point(5657, 444), RoomMarker.GetInternalRoomName("DesertPremade2", "desert_premade_2"), 6243-5657, 656-444));
-			RoomMarkers.Add(new RoomMarker(new Point(1501, 198), RoomMarker.GetInternalRoomName("FrozenCityPremade2", "frozencity_premade_2"), 2652-1501, 692-198));
+			RoomMarkers.Add(new RoomMarker(new Point(5657, 444), RoomMarker.GetInternalRoomName("DesertPremade2", "desert_premade_2"), 6243 - 5657, 656 - 444));
+			RoomMarkers.Add(new RoomMarker(new Point(1501, 198), RoomMarker.GetInternalRoomName("FrozenCityPremade2", "frozencity_premade_2"), 2652 - 1501, 692 - 198));
 			RoomMarkers.Add(new RoomMarker(new Point(2949, 412), RoomMarker.GetInternalRoomName("HivePremade", "hive_premade"), 3397 - 2949, 542 - 412));
 			RoomMarkers.Add(new RoomMarker(new Point(4375, 404), RoomMarker.GetInternalRoomName("CrimsonPremade", "crimson_premade"), 5411 - 4375, 571 - 404));
+		}
+
+		public override void ClearWorld()
+		{
+			ResetSpawns();
 		}
 
 		/// <summary> Add entries to this list during biome generation. </summary>

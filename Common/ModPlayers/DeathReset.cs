@@ -18,10 +18,10 @@ public class DeathReset : ModPlayer, IEntitySource
         PlayerDeathReason damageSource
     )
     {
-        Mod.GetContent<TeleportTracker>().First().Reset();
-        Mod.GetContent<ClickedHeartsTracker>().First().Reset();
-        Mod.GetContent<ChestLootSpawner>().First().Reset();
-        Mod.GetContent<WorldTimeHandler>().First().ClearWorld();
+		ModContent.GetInstance<TeleportTracker>().Reset();
+		ModContent.GetInstance<ClickedHeartsTracker>().Reset();
+		ModContent.GetInstance<ChestLootSpawner>().Reset();
+		NPCRoomSpawner.ResetSpawns();
         if (!DevConfig.Instance.DropItems)
         {
             return;

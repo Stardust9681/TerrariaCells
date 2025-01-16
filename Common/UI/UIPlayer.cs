@@ -16,18 +16,19 @@ namespace TerrariaCells.Common.UI
     {
         public override void PostUpdate()
         {
-            //toggle UI so that it only shows if the player is holding a weapon that uses it. Only set state if it needs to.
+			//toggle UI so that it only shows if the player is holding a weapon that uses it. Only set state if it needs to.
+			DeadCellsUISystem uiSystem = ModContent.GetInstance<DeadCellsUISystem>();
             if (WeaponHoldoutify.Guns.Contains(Player.HeldItem.type))
             {
-                if (ModContent.GetInstance<UISystem>().ReloadInterface.CurrentState == null)
+                if (uiSystem.ReloadInterface?.CurrentState == null)
                 {
-                    ModContent.GetInstance<UISystem>().ShowReloadUI();
+					uiSystem.ShowReloadUI();
                 }
                 
             }
-            else if (ModContent.GetInstance<UISystem>().ReloadInterface.CurrentState == ModContent.GetInstance<UISystem>().reloaderUI)
+            else if (uiSystem.ReloadInterface?.CurrentState == uiSystem.reloaderUI && uiSystem.reloaderUI != null)
             {
-                ModContent.GetInstance<UISystem>().HideReloadUI();
+				uiSystem.HideReloadUI();
             }
         }
         
