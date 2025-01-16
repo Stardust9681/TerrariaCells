@@ -24,7 +24,7 @@ namespace TerrariaCells.Common.Systems
 			else RoomMarkers.Clear();
 			foreach (NPC npc in Main.npc.Where(x => x.active && !x.friendly)) npc.active = false; //Disable all current NPCs
 			RoomMarkers.Add(new RoomMarker(new Point(492, 338), RoomMarker.GetInternalRoomName("ForestPremade", "forest_premade"), 700, 70));
-			RoomMarkers.Add(new RoomMarker(new Point(5657, 444), RoomMarker.GetInternalRoomName("DesertPremade2", "desert_premade_2"), 6243 - 5657, 656 - 444));
+			RoomMarkers.Add(new RoomMarker(new Point(5657, 444), RoomMarker.GetInternalRoomName("DesertPremade2", "desert_premade_2"), 587, 211));
 			RoomMarkers.Add(new RoomMarker(new Point(1501, 198), RoomMarker.GetInternalRoomName("FrozenCityPremade2", "frozencity_premade_2"), 2652 - 1501, 692 - 198));
 			RoomMarkers.Add(new RoomMarker(new Point(2949, 412), RoomMarker.GetInternalRoomName("HivePremade", "hive_premade"), 3397 - 2949, 542 - 412));
 			RoomMarkers.Add(new RoomMarker(new Point(4375, 404), RoomMarker.GetInternalRoomName("CrimsonPremade", "crimson_premade"), 5411 - 4375, 571 - 404));

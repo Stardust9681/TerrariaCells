@@ -13,7 +13,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 	public class CombatNPC : GlobalNPC
 	{
 		public override bool InstancePerEntity => true;
-		public bool allowContactDamage = true;
+		public bool allowContactDamage = false;
 
 		public override void SetDefaults(NPC npc)
 		{
@@ -133,10 +133,6 @@ namespace TerrariaCells.Common.GlobalNPCs
 					break;
 				// Sand Poachers have two NPC IDs???
                 case NPCID.DesertScorpionWalk:
-                    npc.lifeMax = 150;
-                    npc.damage = 40;
-                    npc.defense = 0;
-                    break;
                 case NPCID.DesertScorpionWall:
                     npc.lifeMax = 150;
                     npc.damage = 40;
