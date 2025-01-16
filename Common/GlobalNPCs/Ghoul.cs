@@ -55,7 +55,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                 return;
             }
 
-			if (!npc.TargetInAggroRange(target, 320))
+			if (!npc.TargetInAggroRange(target, 384))
 			{
 				ShouldWalk = false;
 				npc.velocity.X *= 0.9f;

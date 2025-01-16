@@ -140,7 +140,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 
 			if (npc.FindGroundInFront().Y > (npc.Bottom.Y + npc.height))
 			{
-				if (!npc.TargetInAggroRange())
+				if (!npc.TargetInAggroRange(target))
 				{
 					npc.ai[1] = -npc.direction;
 					npc.Phase(Idle);
@@ -225,9 +225,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				int xy = (int)npc.ai[3];
 				(ushort x, ushort y) = Common.Utilities.NPCHelpers.Unpack(xy);
 				Vector2 vel = new Vector2(x * 16 + 8, y * 16 + 8);
+				vel.Y -= MathF.Abs(npc.position.X - vel.X) * 0.00625f;
 				vel = npc.DirectionTo(vel) * 8.5f;
-				vel.Y *= 1.075f;
-				vel.Y += -MathF.Abs(vel.X * 0.08f);
 				Projectile proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center, vel, Main.rand.Next(arrowsToFire), npc.damage / 5, 1f, Main.myPlayer);
 				proj.hostile = true;
 				proj.friendly = false;

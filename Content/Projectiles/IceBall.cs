@@ -35,9 +35,8 @@ namespace TerrariaCells.Content.Projectiles
         }
         public override void AI()
         {
-
             int maxTimeLeft = 200;
-            int timeCharging = 60;
+            int timeCharging = (int)ai[2];
             int numShards = 5;
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Frost);
             d.noGravity = true;
@@ -54,21 +53,23 @@ namespace TerrariaCells.Content.Projectiles
             }
             else
             {
-                Projectile.rotation -= MathHelper.ToRadians(-7 * Projectile.direction);
+                Projectile.rotation += MathHelper.ToRadians(7 * Projectile.direction);
             }
 
             if (Projectile.timeLeft == maxTimeLeft - timeCharging)
             {
                 SoundEngine.PlaySound(SoundID.Item120, Projectile.Center);
-                Projectile.ai[0] = 0;
-                Player target = Main.player[(int)Projectile.ai[1]];
+				Projectile.scale = 0.5f;
+				Projectile.Resize(30, 30);
+				Player target = Main.player[(int)Projectile.ai[1]];
                 if (target != null && target.active && !target.dead)
                 {
-                    Projectile.velocity = (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero) * 5;
-                }
+                    Projectile.velocity = Projectile.Center.DirectionTo(target.Center) * 4.8f;
+				}
             }
 
-            if (Projectile.ai[0] == 60 && Projectile.timeLeft > 100 && Projectile.timeLeft < 240)
+            /* !!! UNUSED !!!
+			if (Projectile.ai[0] == 60 && Projectile.timeLeft > 100 && Projectile.timeLeft < 240)
             {
                 Projectile.ai[0] = 0;
                 for (int i = 0; i < numShards; i++)
@@ -78,15 +79,12 @@ namespace TerrariaCells.Content.Projectiles
                 }
                 //SoundEngine.PlaySound(SoundID.Item28, Projectile.Center);
             }
+			*/
+
             if (Projectile.timeLeft < 10)
             {
                 Projectile.Opacity -= 0.1f;
             }
-            base.AI();
-        }
-        public override void OnKill(int timeLeft)
-        {
-            base.OnKill(timeLeft);
         }
     }
 }

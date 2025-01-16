@@ -52,8 +52,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                 npc.ai[0]++;
                 if (npc.ai[0] == 20 && npc.HasValidTarget)
                 {
-                    
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center - new Vector2(0, 60), Vector2.Zero, ModContent.ProjectileType<IceBall>(), TCellsUtils.ScaledHostileDamage(50), 1, ai1: target.whoAmI);
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center - new Vector2(0, 60), Vector2.Zero, ModContent.ProjectileType<IceBall>(), TCellsUtils.ScaledHostileDamage(50), 1, Main.myPlayer, 0, target.whoAmI, 70);
                 }
                 if (npc.ai[0] >= 90)
                 {
