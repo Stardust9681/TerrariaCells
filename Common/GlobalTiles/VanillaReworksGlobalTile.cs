@@ -47,7 +47,9 @@ namespace TerrariaCells.Common.GlobalTiles
 			TileID.TeleportationPylon,
 			TileID.GemLocks,
 			TileID.Containers,
-			TileID.Containers2
+			TileID.Containers2,
+			TileID.Heart,
+			TileID.ManaCrystal,
 		};
 		private void On_Player_TileInteractionsUse(On_Player.orig_TileInteractionsUse orig, Player self, int myX, int myY)
 		{
