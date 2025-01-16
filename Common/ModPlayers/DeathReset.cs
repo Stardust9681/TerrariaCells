@@ -21,6 +21,7 @@ public class DeathReset : ModPlayer, IEntitySource
         Mod.GetContent<TeleportTracker>().First().Reset();
         Mod.GetContent<ClickedHeartsTracker>().First().Reset();
         Mod.GetContent<ChestLootSpawner>().First().Reset();
+        Mod.GetContent<WorldTimeHandler>().First().ClearWorld();
         if (!DevConfig.Instance.DropItems)
         {
             return;
