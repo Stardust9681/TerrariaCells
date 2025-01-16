@@ -22,6 +22,7 @@ public class DeathReset : ModPlayer, IEntitySource
 		ModContent.GetInstance<ClickedHeartsTracker>().Reset();
 		ModContent.GetInstance<ChestLootSpawner>().Reset();
 		NPCRoomSpawner.ResetSpawns();
+		WorldPylonSystem.ResetPylons();
         if (!DevConfig.Instance.DropItems)
         {
             return;
