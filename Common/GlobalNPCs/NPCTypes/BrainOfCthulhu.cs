@@ -46,16 +46,20 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		public override void Behaviour(NPC npc)
 		{
 			int timer = npc.Timer();
-
-			Vector2 topLeft = GetArenaCentre(npc) - (ArenaSize * 0.5f);
-			Vector2 botRight = topLeft + ArenaSize;
-			Dust.QuickBox(topLeft, botRight, 6, Color.Yellow, (d) => { d.velocity = Vector2.Zero; d.noGravity = true; });
-			Dust.QuickDust(GetArenaCentre(npc), Color.Turquoise);
-
 			if (timer == 0)
 			{
 				npc.ai[1] = NPCHelpers.Pack(npc.Center.ToTileCoordinates16());
 			}
+
+			Vector2 topLeft = GetArenaCentre(npc) - (ArenaSize * 0.5f);
+			Vector2 botRight = topLeft + ArenaSize;
+			Dust.QuickBox(topLeft, botRight, 6, Color.Yellow, (d) => { d.velocity = Vector2.Zero; d.noGravity = true; });
+			Vector2 centre = GetArenaCentre(npc);
+			Dust.QuickDust(centre, Color.Turquoise);
+
+			Systems.CameraManipulation.SetZoom(120, new Vector2(95, 55)*16, null);
+			Systems.CameraManipulation.SetCamera(120, centre + new Vector2(0, 240) - (Main.ScreenSize.ToVector2() * 0.5f));
+
 			//Originally: T < 120 // endTime:120
 			if (timer < 120) EntranceCutscene(npc, 120, ref timer);
 			//Originally: T < 175 // startTime:120, duration:55
@@ -73,7 +77,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			}
 			if (timer == XTimeStart - 60)
 			{
-				Vector2 centre = GetArenaCentre(npc);
 				Vector2 offset = ArenaSize * 0.5f;
 				Vector2[] positions = new Vector2[] {
 						centre + (offset * -1),
@@ -88,7 +91,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			{
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
-					Vector2 centre = GetArenaCentre(npc);
 					List<Vector2> positions = new List<Vector2> {
 					centre - (ArenaSize*0.5f),
 					centre + (ArenaSize*0.5f),
@@ -144,7 +146,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			npc.velocity *= 0;
 
 			//From 0-120...
-			CameraPlayer.SetCameraPosition(centre, endTime - timer, 0.05f);
+			//CameraPlayer.SetCameraPosition(centre, endTime - timer, 0.05f);
+			
 
 			//At 105..
 			if (timer == endTime - 15)
