@@ -23,6 +23,9 @@ namespace TerrariaCells.Common.Configs
 		[DefaultValue(false)]
 		public bool BuilderMode;
 
+		[DefaultValue(true)]
+		public bool DisableUsingMouseItem;
+
 		/// <summary>Prevents tile damage from explosives.</summary>
 		[DefaultValue(true)]
 		public bool PreventExplosionDamage;
@@ -55,5 +58,6 @@ namespace TerrariaCells.Common.Configs
 		/// </summary>
 		[DefaultValue(true)]
 		public bool HideVanillaInventory;
+
 	}
 }
