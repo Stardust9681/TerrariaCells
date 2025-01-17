@@ -12,7 +12,7 @@ using TerrariaCells.Common.Items;
 using TerrariaCells.Common.Systems;
 using TerrariaCells.Content.TileEntities;
 
-namespace TerrariaCells.Content.Tiles;
+namespace TerrariaCells.Content.Tiles.LevelExitPylon;
 
 /// <summary>
 /// An example for creating a Pylon, identical to how they function in Vanilla. Shows off <seealso cref="ModPylon"/>, an abstract

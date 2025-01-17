@@ -86,6 +86,11 @@ Configs: {
 			Label: Drop Items
 			Tooltip: ""
 		}
+
+		DisableUsingMouseItem: {
+			Label: Disable Using Mouse Item
+			Tooltip: ""
+		}
 	}
 }
 

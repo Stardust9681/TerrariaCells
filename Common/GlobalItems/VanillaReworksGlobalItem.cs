@@ -37,6 +37,7 @@ namespace TerrariaCells.Common.GlobalItems
                     item.value = 1000;
                     break;
                 case ItemID.OnyxBlaster:
+                    // Change its damage in WeaponHoldoutify.cs, no idea why is it there but I don't want to break it
                     item.damage = 13;
                     item.useTime = 48;
                     item.value = 1000;
@@ -49,7 +50,7 @@ namespace TerrariaCells.Common.GlobalItems
                     item.value = 1000;
                     break;
                 case ItemID.IceBow:
-                    item.damage = 30;
+                    item.damage = 15;
                     item.useTime = 16;
                     item.knockBack = 0f;
                     item.value = 1000;
