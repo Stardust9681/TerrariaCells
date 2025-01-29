@@ -140,6 +140,7 @@ Projectiles: {
 	IllusionBrainHitbox.DisplayName: Illusion Brain Hitbox
 	TelegraphWarning.DisplayName: Telegraph Warning
 	TendrilAttack.DisplayName: Tendril Attack
+	SwordStabWave.DisplayName: Sword Stab Wave
 }
 
 Tooltips: {
