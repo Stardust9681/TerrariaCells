@@ -21,6 +21,24 @@ namespace TerrariaCells.Content.WeaponAnimations
         {
             return Shotguns.Contains(entity.type);
         }
+        public override bool CanUseItem(Item item, Player player)
+        {
+            WeaponPlayer mplayer = player.GetModPlayer<WeaponPlayer>();
+            if (Ammo > 0 && !mplayer.reloading && player.altFunctionUse != 2)
+            {
+
+                item.useTime = OriginalUseTime;
+                item.useAnimation = OriginalUseAnimation;
+                item.reuseDelay = OriginalReuseDelay;
+            }
+            else
+            {
+                item.useTime = (int)(OriginalUseTime * ReloadTimeMult);
+                item.useAnimation = (int)(OriginalUseAnimation * ReloadTimeMult);
+                item.reuseDelay = (int)(OriginalReuseDelay * ReloadTimeMult);
+            }
+            return base.CanUseItem(item, player);
+        }
         public override bool AltFunctionUse(Item item, Player player)
         {
             if (Ammo < MaxAmmo && player.itemAnimation == 0)

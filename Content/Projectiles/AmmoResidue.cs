@@ -27,11 +27,11 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
             Asset<Texture2D> t = null;
             if (Projectile.ai[1] == 0)
             {
-                t = ModContent.Request<Texture2D>("TerrariaCells/Content/Projectiles/HeldProjectiles/ShotgunShell");
+                t = ModContent.Request<Texture2D>("TerrariaCells/Content/Projectiles/ShotgunShell");
                 
             }else if (Projectile.ai[1] == 1)
             {
-                t = ModContent.Request<Texture2D>("TerrariaCells/Content/Projectiles/HeldProjectiles/Mag");
+                t = ModContent.Request<Texture2D>("TerrariaCells/Content/Projectiles/Mag");
             }
 
             if (t != null) {

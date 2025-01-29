@@ -95,14 +95,6 @@ namespace TerrariaCells.Common.GlobalProjectiles
                     modifiers.SetCrit();
                     break;
             }
-            if (projectile.type == ModContent.ProjectileType<Sword>())
-            {
-                if (projectile.ai[0] == ItemID.FieryGreatsword && target.HasBuff(BuffID.Oiled))
-                {
-                    modifiers.SetCrit();
-                    Projectile.NewProjectile(new EntitySource_Parent(projectile), target.position, Vector2.Zero, ProjectileID.Volcano, 12, 10f, ai1: 1);
-                }
-            }
 
         }
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
@@ -129,14 +121,6 @@ namespace TerrariaCells.Common.GlobalProjectiles
                 case ProjectileID.Ale:
                     target.AddBuff(BuffID.Oiled, 60 * 8);
                     break;
-            }
-            if (projectile.type == ModContent.ProjectileType<Sword>())
-            {
-                if (projectile.ai[0] == ItemID.Starfury)
-                {
-                    Projectile starFuryStar = Main.projectile[Projectile.NewProjectile(new EntitySource_Parent(projectile), target.position.X, target.position.Y - 500f, 0, 20f, ProjectileID.Starfury, 12, 10f, ai1: 1)];
-                    starFuryStar.tileCollide = false;
-                }
             }
         }
         public override void OnSpawn(Projectile projectile, IEntitySource source)

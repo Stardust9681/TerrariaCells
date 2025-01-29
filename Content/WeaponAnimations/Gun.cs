@@ -19,9 +19,17 @@ namespace TerrariaCells.Content.WeaponAnimations
         public int ReloadStep = 0;
         public bool FullyReloads = true;
         public SoundStyle? StoredSound = null;
+
+        public int OriginalUseTime;
+        public int OriginalUseAnimation;
+        public int OriginalReuseDelay;
+
         //dont know what this method is really for but it is necessary
         public override void SetDefaults(Item entity)
         {
+            OriginalUseTime = entity.useTime;
+            OriginalUseAnimation = entity.useAnimation;
+            OriginalReuseDelay = entity.reuseDelay;
             Ammo = MaxAmmo;
             StoredSound = entity.UseSound;
             entity.UseSound = null;

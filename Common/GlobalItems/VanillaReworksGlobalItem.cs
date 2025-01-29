@@ -54,7 +54,9 @@ namespace TerrariaCells.Common.GlobalItems
                     break;
                 case ItemID.StarCannon:
                     item.damage = 15;
-                    item.useTime = 3;
+                    item.useTime = 10;
+                    item.useAnimation = 30;
+                    item.reuseDelay = 30;
                     break;
                 case ItemID.GrenadeLauncher:
                     item.damage = 18;

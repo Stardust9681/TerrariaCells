@@ -11,7 +11,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using TerrariaCells.Common.ModPlayers;
 using TerrariaCells.Common.Utilities;
-using TerrariaCells.Content.Projectiles.HeldProjectiles;
+using TerrariaCells.Content.Projectiles;
 
 namespace TerrariaCells.Content.WeaponAnimations
 {

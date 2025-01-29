@@ -11,39 +11,23 @@ namespace TerrariaCells.Common.UI
 {
     public class UISystem : ModSystem
     {
-        internal UserInterface ReloadInterface;
-        internal ReloaderUI reloaderUI;
         public override void Load()
         {
             if (!Main.dedServ)
             {
-                ReloadInterface = new UserInterface();
-
-                reloaderUI = new ReloaderUI();
-                reloaderUI.Activate(); // Activate calls Initialize() on the UIState if not initialized and calls OnActivate, then calls Activate on every child element.
+                
             }
         }
         public override void Unload()
         {
             base.Unload();
         }
-        internal void ShowReloadUI()
-        {
-            ReloadInterface?.SetState(reloaderUI);
-        }
-
-        internal void HideReloadUI()
-        {
-            ReloadInterface?.SetState(null);
-        }
+        
         internal GameTime _lastUpdateUiGameTime;
         public override void UpdateUI(GameTime gameTime)
         {
             _lastUpdateUiGameTime = gameTime;
-            if (ReloadInterface?.CurrentState != null)
-            {
-                ReloadInterface.Update(gameTime);
-            }
+            
         }
 
         // removed override since CustomInterface.ModifyInterfaceLayers now effectively manages calling this.
@@ -52,17 +36,7 @@ namespace TerrariaCells.Common.UI
             int mouseTextIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Inventory"));
             if (mouseTextIndex != -1)
             {
-                layers.Insert(mouseTextIndex, new LegacyGameInterfaceLayer(
-                    "TerraCells: ReloadUI",
-                    delegate
-                    {
-                        if (_lastUpdateUiGameTime != null && ReloadInterface?.CurrentState != null)
-                        {
-                            ReloadInterface.Draw(Main.spriteBatch, _lastUpdateUiGameTime);
-                        }
-                        return true;
-                    },
-                    InterfaceScaleType.UI));
+                
             }
         }
     }

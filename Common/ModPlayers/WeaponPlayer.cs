@@ -52,7 +52,7 @@ namespace TerrariaCells.Common.ModPlayers
 
             bool animationActive = drawInfo.drawPlayer.ItemAnimationActive;
             bool holdingGun = Shotgun.Shotguns.Contains(drawInfo.heldItem.type) || Handgun.Handguns.Contains(drawInfo.heldItem.type);
-            bool firstReloadStep = (drawInfo.heldItem.TryGetGlobalItem(out Handgun handgun) && handgun.ReloadStep == 0) || !Handgun.Handguns.Contains(drawInfo.heldItem.type);
+            bool firstReloadStep = Handgun.Handguns.Contains(drawInfo.heldItem.type) && ((drawInfo.heldItem.TryGetGlobalItem<Handgun>(out Handgun handgun) && handgun.ReloadStep == 0) || !Handgun.Handguns.Contains(drawInfo.heldItem.type));
 
             return animationActive && holdingGun && firstReloadStep;
         }
@@ -66,12 +66,12 @@ namespace TerrariaCells.Common.ModPlayers
             {
 
                 int animationTime = player.itemAnimationMax - player.itemAnimation;
-                Asset<Texture2D> t = ModContent.Request<Texture2D>("TerrariaCells/Content/Projectiles/HeldProjectiles/ShotgunShell");
+                Asset<Texture2D> t = ModContent.Request<Texture2D>("TerrariaCells/Content/Projectiles/ShotgunShell");
                 float rotation = TCellsUtils.LerpFloat(0, -50 * mplayer.useDirection, animationTime - (player.itemAnimationMax / 2), player.itemAnimationMax / 2, TCellsUtils.LerpEasing.InSine);
                 Vector2 origin = new Vector2(t.Width() / 2, t.Height());
                 if (Handgun.Handguns.Contains(drawInfo.heldItem.type))
                 {
-                    t = ModContent.Request<Texture2D>("TerrariaCells/Content/Projectiles/HeldProjectiles/Mag");
+                    t = ModContent.Request<Texture2D>("TerrariaCells/Content/Projectiles/Mag");
                     rotation -= 40 * mplayer.useDirection;
                     origin = t.Size() / 2;
                 }

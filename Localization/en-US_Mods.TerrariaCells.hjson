@@ -133,6 +133,7 @@ Projectiles: {
 	IceBall.DisplayName: Ice Ball
 	IceArrow.DisplayName: Ice Arrow
 	IllusionBrainHitbox.DisplayName: Illusion Brain Hitbox
+	SwordStabWave.DisplayName: Sword Stab Wave
 }
 
 Tooltips: {

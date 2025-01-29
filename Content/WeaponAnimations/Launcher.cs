@@ -36,15 +36,18 @@ namespace TerrariaCells.Content.WeaponAnimations
             WeaponPlayer mplayer = player.GetModPlayer<WeaponPlayer>();
             if (Ammo > 0 && !mplayer.reloading && player.altFunctionUse != 2)
             {
-                player.HeldItem.useTime = (int)(ContentSamples.ItemsByType[player.HeldItem.type].useTime);
-                player.HeldItem.useAnimation = (int)(ContentSamples.ItemsByType[player.HeldItem.type].useAnimation);
+
+                item.useTime = OriginalUseTime;
+                item.useAnimation = OriginalUseAnimation;
+                item.reuseDelay = OriginalReuseDelay;
             }
             else
             {
-                player.HeldItem.useTime = (int)(ContentSamples.ItemsByType[player.HeldItem.type].useTime * ReloadTimeMult);
-                player.HeldItem.useAnimation = (int)(ContentSamples.ItemsByType[player.HeldItem.type].useAnimation * ReloadTimeMult);
+                item.useTime = (int)(OriginalUseTime * ReloadTimeMult);
+                item.useAnimation = (int)(OriginalUseAnimation * ReloadTimeMult);
+                item.reuseDelay = (int)(OriginalReuseDelay * ReloadTimeMult);
             }
-                return base.CanUseItem(item, player);
+            return base.CanUseItem(item, player);
         }
         public override void UseStyle(Item item, Player player, Rectangle heldItemFrame)
         {
@@ -54,7 +57,7 @@ namespace TerrariaCells.Content.WeaponAnimations
             //time recoil takes
             int maxRecoilTime = player.itemAnimationMax / 2;
             ReloadTimeMult = 3;
-
+            //Main.NewText();
             //only do shoot animation if you shouldnt be reloading
             if (Ammo > 0 && !mplayer.reloading && player.altFunctionUse != 2)
             {
@@ -64,7 +67,7 @@ namespace TerrariaCells.Content.WeaponAnimations
                     mplayer.useDirection = 1;
                 }
                 //at start of animation
-                if (player.itemAnimation == player.itemAnimationMax - 1)
+                if (player.itemAnimation == player.itemAnimationMax - 1 && player.reuseDelay == item.reuseDelay)
                 {
                     //set values that stay constant throughout
                     mplayer.OriginalRotation = player.itemRotation;
@@ -73,8 +76,9 @@ namespace TerrariaCells.Content.WeaponAnimations
                     SoundEngine.PlaySound(StoredSound, player.Center);
                 }
                 //decrement ammo at end of animation because reasons
-                if (player.itemAnimation == 1)
+                if (player.itemAnimation == 1 && player.reuseDelay == item.reuseDelay)
                 {
+                    
                     Ammo--;  
                 }
 
@@ -83,9 +87,9 @@ namespace TerrariaCells.Content.WeaponAnimations
                 {
                     player.itemRotation += MathHelper.Pi;
                 }
-                if (animationTime < 10)
+                if (player.itemTime < 10 && player.reuseDelay == item.reuseDelay)
                 {
-                    player.itemLocation += TCellsUtils.LerpVector2(Vector2.Zero, (player.AngleTo(Main.MouseWorld) + MathHelper.Pi).ToRotationVector2() * 5, animationTime, 10, TCellsUtils.LerpEasing.DownParabola);
+                    player.itemLocation += TCellsUtils.LerpVector2(Vector2.Zero, (player.AngleTo(Main.MouseWorld) + MathHelper.Pi).ToRotationVector2() * 5, player.itemTime, 10, TCellsUtils.LerpEasing.DownParabola);
                 }
                 //arm position
                 player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, player.itemRotation - (MathHelper.PiOver2 - MathHelper.ToRadians(20)) * player.direction);
@@ -95,7 +99,7 @@ namespace TerrariaCells.Content.WeaponAnimations
             {
                 
                 //set constants for start of animation
-                if (player.itemAnimation == player.itemAnimationMax - 1)
+                if (player.itemAnimation == player.itemAnimationMax - 1 && player.reuseDelay == item.reuseDelay)
                 {
                     mplayer.useDirection = -1;
                     if (Main.MouseWorld.X >= player.Center.X)

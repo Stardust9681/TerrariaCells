@@ -11,7 +11,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using TerrariaCells.Common.Utilities;
 
-namespace TerrariaCells.Content.Projectiles.HeldProjectiles
+namespace TerrariaCells.Content.Projectiles
 {
     public class SwordStabWave : ModProjectile
     {
@@ -37,7 +37,7 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
             Main.EntitySpriteDraw(t.Value, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.Opacity, Projectile.rotation + MathHelper.PiOver2, t.Size() / 2, Projectile.scale, SpriteEffects.None);
             return false;
         }
-        
+
         public override void AI()
         {
             if (Projectile.timeLeft == 1000)
@@ -45,24 +45,24 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
                 Projectile.timeLeft = (int)Projectile.ai[1];
             }
 
-            
+
             //Main.NewText(Projectile.timeLeft);
             Player owner = Main.player[Projectile.owner];
 
             float rot = owner.itemRotation + MathHelper.ToRadians(owner.direction == 1 ? 136 : 45);
 
             Vector2 armPos = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, rot);
-            
+
 
             Asset<Texture2D> t = TextureAssets.Item[owner.HeldItem.type];
             float distance = t.Size().Length() + (owner.direction == -1 ? 15 : 10);
-            
+
 
             Projectile.rotation = rot;
-            
+
             //Main.NewText(proj.spriteDirection);
             int xOff = owner.direction == -1 ? 8 : 12;
-            Projectile.Center = armPos - TCellsUtils.LerpVector2(new Vector2(distance/2, xOff).RotatedBy(rot), new Vector2(distance, xOff).RotatedBy(rot), Projectile.ai[1] - Projectile.timeLeft, Projectile.ai[1], TCellsUtils.LerpEasing.OutQuint);
+            Projectile.Center = armPos - TCellsUtils.LerpVector2(new Vector2(distance / 2, xOff).RotatedBy(rot), new Vector2(distance, xOff).RotatedBy(rot), Projectile.ai[1] - Projectile.timeLeft, Projectile.ai[1], TCellsUtils.LerpEasing.OutQuint);
 
 
             Projectile.scale = TCellsUtils.LerpFloat(0.5f, 1, Projectile.ai[1] - Projectile.timeLeft, Projectile.ai[1], TCellsUtils.LerpEasing.DownParabola);

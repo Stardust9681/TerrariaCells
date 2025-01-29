@@ -4,11 +4,7 @@
     <Import Project="..\tModLoader.targets" />
     <!-- General -->
     <ItemGroup>
-        <None Remove="Common\UI\Indicator.png" />
-        <None Remove="Common\UI\ReloadBar.png" />
-        <None Remove="Common\UI\SuccessRange.png" />
         <None Remove="Content\Buffs\FrozenEnemyDebuff.png" />
-        <None Remove="Content\Projectiles\HeldProjectiles\ShotgunShell.png" />
         <None Remove="Common\Assets\DesertScorpionStab.png" />
         <None Remove="Common\Assets\GrayscaleExplosion.png" />
         <None Remove="Common\Assets\MummyShockwave.png" />
@@ -17,7 +13,6 @@
     </ItemGroup>
     <ItemGroup>
         <Folder Include="Common\" />
-        <Folder Include="Content\" />
         <Reference Include="StructureHelper">
             <HintPath>..\ModAssemblies\StructureHelper_v2.5.2.dll</HintPath>
         </Reference>
