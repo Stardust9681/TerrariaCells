@@ -14,7 +14,6 @@
 	  <None Remove="Content\Modifiers\**" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Content\" />
 	  <None Remove="Common\UI\Indicator.png" />
 	  <None Remove="Common\UI\ReloadBar.png" />
 	  <None Remove="Common\UI\SuccessRange.png" />

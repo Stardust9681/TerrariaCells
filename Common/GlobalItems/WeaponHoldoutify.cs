@@ -18,6 +18,10 @@ namespace TerrariaCells.Common.GlobalItems
 {
     public class WeaponHoldoutify : GlobalItem
     {
+        public override bool IsLoadingEnabled(Mod mod)
+        {
+            return false;
+        }
         public override bool InstancePerEntity => true;
         //used by all
         public bool vanillaShoot = false;

@@ -7,6 +7,8 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrariaCells.Common.ModPlayers;
+using TerrariaCells.Content.WeaponAnimations;
 
 namespace TerrariaCells.Common
 {
@@ -17,6 +19,8 @@ namespace TerrariaCells.Common
             Terraria.On_Main.DoDraw_UpdateCameraPosition += On_Main_DoDraw_UpdateCameraPosition;
             On_Player.PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool += On_Player_PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool;
             On_Player.PickupItem += On_Player_PickupItem;
+            On_Player.ItemCheck_Shoot += InterruptShoot;
+            
         }
         //reduce amount of mana the little star pickups give
         private Item On_Player_PickupItem(On_Player.orig_PickupItem orig, Player self, int playerIndex, int worldItemArrayIndex, Item itemToPickUp)
@@ -63,6 +67,19 @@ namespace TerrariaCells.Common
             Main.player[Main.myPlayer].inventory[Main.player[Main.myPlayer].selectedItem].type = 0;
             orig();
             Main.player[Main.myPlayer].inventory[Main.player[Main.myPlayer].selectedItem].type = originalType;
+        }
+
+        private void InterruptShoot(On_Player.orig_ItemCheck_Shoot orig, Player self, int i, Item sItem, int weaponDamage)
+        {
+
+            if (Sword.IsBroadsword(sItem) && sItem.TryGetGlobalItem<Sword>(out Sword sword) && !sword.VanillaShoot)
+            {
+                WeaponPlayer mplayer = self.GetModPlayer<WeaponPlayer>();
+
+                mplayer.shouldShoot = true;
+                return;
+            }
+            orig(self, i, sItem, weaponDamage);
         }
     }
 }

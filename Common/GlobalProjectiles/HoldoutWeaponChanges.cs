@@ -29,7 +29,7 @@ namespace TerrariaCells.Common.GlobalProjectiles
         public override void AI(Projectile projectile)
         {
             //exception for vortex beater to work with the active reload stuff
-            if (projectile.type == ProjectileID.VortexBeater && projectile.active)
+            if (projectile.type == ProjectileID.VortexBeater && projectile.active && false)
             {
                 Player owner = Main.player[projectile.owner];
                 if (!owner.active || owner.dead || owner.noItems || owner.CCed)

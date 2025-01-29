@@ -113,6 +113,7 @@ namespace TerrariaCells.Common.UI
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
+            return;
             Player player = Main.LocalPlayer;
             if (player == null) return;
             if (!player.HeldItem.active)
