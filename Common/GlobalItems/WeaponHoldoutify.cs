@@ -18,10 +18,6 @@ namespace TerrariaCells.Common.GlobalItems
 {
     public class WeaponHoldoutify : GlobalItem
     {
-        public override bool IsLoadingEnabled(Mod mod)
-        {
-            return false;
-        }
         public override bool InstancePerEntity => true;
         //used by all
         public bool vanillaShoot = false;
@@ -35,16 +31,11 @@ namespace TerrariaCells.Common.GlobalItems
         public int MaxAmmo;
         public int Ammo;
 
-        //swords
-        public bool Heavyweight = false;
-        public static int[] HeavyweightAnyways = { ItemID.DeathSickle, ItemID.IceSickle, ItemID.BladeofGrass, ItemID.CandyCaneSword, ItemID.ChlorophyteClaymore, ItemID.ChristmasTreeSword, ItemID.TheHorsemansBlade, ItemID.DD2SquireBetsySword };
-
-
         //fixing a sound anamoly
         public SoundStyle? StoreSound;
- 
-        public static int[] Shotguns = { ItemID.Boomstick, ItemID.OnyxBlaster, ItemID.Shotgun, ItemID.TacticalShotgun, ItemID.QuadBarrelShotgun, ItemID.Xenopopper};
-        public static int[] Autorifles = { ItemID.Megashark, ItemID.Minishark, ItemID.Uzi, ItemID.ChainGun, ItemID.ClockworkAssaultRifle, ItemID.VortexBeater, ItemID.CandyCornRifle, ItemID.SDMG, ItemID.Gatligator, ItemID.CoinGun};
+
+        public static int[] Shotguns = { ItemID.Boomstick, ItemID.OnyxBlaster, ItemID.Shotgun, ItemID.TacticalShotgun, ItemID.QuadBarrelShotgun, ItemID.Xenopopper };
+        public static int[] Autorifles = { ItemID.Megashark, ItemID.Minishark, ItemID.Uzi, ItemID.ChainGun, ItemID.ClockworkAssaultRifle, ItemID.VortexBeater, ItemID.CandyCornRifle, ItemID.SDMG, ItemID.Gatligator, ItemID.CoinGun };
         //eventide and phantom phoenix not included because they're weird
         public static int[] Bows = { ItemID.WoodenBow, ItemID.AshWoodBow, ItemID.BorealWoodBow, ItemID.PalmWoodBow, ItemID.ShadewoodBow, ItemID.EbonwoodBow, ItemID.PearlwoodBow, ItemID.RichMahoganyBow,
             ItemID.CopperBow, ItemID.TinBow, ItemID.LeadBow, ItemID.IronBow, ItemID.SilverBow, ItemID.TungstenBow, ItemID.GoldBow, ItemID.PlatinumBow,
@@ -54,19 +45,17 @@ namespace TerrariaCells.Common.GlobalItems
         public static int[] Broadswords = { ItemID.BluePhasesaber, ItemID.GreenPhasesaber, ItemID.PurplePhasesaber, ItemID.YellowPhasesaber, ItemID.OrangePhasesaber, ItemID.RedPhasesaber, ItemID.WhitePhasesaber,
             ItemID.NightsEdge, ItemID.Excalibur, ItemID.TrueExcalibur, ItemID.TrueNightsEdge, ItemID.TheHorsemansBlade, ItemID.TerraBlade};
         public static int[] Handguns = { ItemID.FlintlockPistol, ItemID.PewMaticHorn, ItemID.PhoenixBlaster, ItemID.Revolver, ItemID.TheUndertaker, ItemID.VenusMagnum, ItemID.Handgun, ItemID.FlareGun, ItemID.PainterPaintballGun };
-        public static int[] Snipers = { ItemID.SniperRifle }; 
+        public static int[] Snipers = { ItemID.SniperRifle };
         public static int[] Muskets = { ItemID.Musket, ItemID.RedRyder, ItemID.Blowpipe, ItemID.Blowgun, ItemID.Sandgun };
-        public static int[] Launchers = { ItemID.RocketLauncher, ItemID.StarCannon, ItemID.GrenadeLauncher };
-        public static int[] Guns = Shotguns.Concat(Autorifles).Concat(Handguns).Concat(Muskets).Concat(Snipers).Concat(Launchers).Append(ItemID.Toxikarp).ToArray();
+        public static int[] Guns = Shotguns.Concat(Autorifles).Concat(Handguns).Concat(Muskets).Concat(Snipers).ToArray();
         public bool IsBroadsword(Item item)
         {
-            return ((item.DamageType == DamageClass.Melee || item.DamageType == DamageClass.MeleeNoSpeed) && item.useStyle == ItemUseStyleID.Swing && item.pick == 0 && item.axe == 0 && item.hammer == 0 && !item.noMelee && !item.noUseGraphic) || Broadswords.Contains(item.type);
-            
+            return ((item.DamageType == DamageClass.Melee || item.DamageType == DamageClass.MeleeNoSpeed) && item.useStyle == ItemUseStyleID.Swing && item.pick == 0 && item.axe == 0 && !item.noMelee && !item.noUseGraphic) || Broadswords.Contains(item.type);
+
         }
-        
+
         public override void SetDefaults(Item entity)
         {
-            
             if (entity.type == ItemID.MusketBall)
             {
                 entity.damage = 0;
@@ -83,14 +72,6 @@ namespace TerrariaCells.Common.GlobalItems
                 ReloadSuccessRange = 0.3f;
                 ReloadSuccessLocation = 0.5f;
                 if (entity.type == ItemID.CandyCornRifle) entity.shoot = ProjectileID.CandyCorn;
-                if (entity.type == ItemID.Toxikarp)
-                {
-                    entity.shoot = ProjectileID.ToxicBubble;
-                    MaxAmmo = 20;
-                    entity.useTime = entity.useAnimation = 12;
-                    entity.damage = 2;
-                    ReloadTime = 60;
-                };
             }
             if (Shotguns.Contains(entity.type))
             {
@@ -101,15 +82,13 @@ namespace TerrariaCells.Common.GlobalItems
                 }
                 if (entity.type == ItemID.OnyxBlaster)
                 {
-                    entity.damage = 5;
-                    MaxAmmo = 2;
-                    entity.useTime = entity.useAnimation = 48;
-
-                    //ReloadSuccessRange = 0.15f;
-                    //ReloadSuccessLocation = 0.7f;
+                    entity.damage = 4;
+                    MaxAmmo = 4;
+                    ReloadSuccessRange = 0.15f;
+                    ReloadSuccessLocation = 0.7f;
                 }
                 ReloadTime = (int)(entity.useTime * MaxAmmo * 0.7f);
-                
+
             }
             if (Handguns.Contains(entity.type))
             {
@@ -128,22 +107,20 @@ namespace TerrariaCells.Common.GlobalItems
                 {
                     entity.shoot = ProjectileID.PewMaticHornShot;
                 }
-                if (entity.type == ItemID.PhoenixBlaster)
-                {
-                    MaxAmmo = 15;
-                    entity.damage = 8;
-                    entity.useTime = entity.useAnimation = 14;
-
-                }
             }
             if (Autorifles.Contains(entity.type))
             {
-                MaxAmmo = 30;
                 ReloadTime = entity.useAnimation * 7;
                 if (entity.type == ItemID.CoinGun)
                 {
+                    MaxAmmo = 30;
                     entity.damage = 20;
                     entity.shoot = ProjectileID.SilverCoin;
+                }
+                if (entity.type == ItemID.Minishark)
+                {
+                    MaxAmmo = 60;
+                    entity.useTime = entity.useAnimation = 6;
                 }
                 if (entity.type == ItemID.VortexBeater)
                 {
@@ -154,7 +131,7 @@ namespace TerrariaCells.Common.GlobalItems
             if (Muskets.Contains(entity.type))
             {
                 MaxAmmo = 1;
-                
+
                 if (entity.type == ItemID.Blowgun)
                 {
                     entity.shoot = ProjectileID.PoisonDartBlowgun;
@@ -173,47 +150,10 @@ namespace TerrariaCells.Common.GlobalItems
             if (Snipers.Contains(entity.type))
             {
                 MaxAmmo = 1;
-                
-                if (entity.type == ItemID.SniperRifle)
-                {
-                    entity.useTime = entity.useAnimation = 40;
-                    entity.damage = 25;
-
-                }
                 ReloadTime = entity.useAnimation * 0.8f;
-            }
-            if (Launchers.Contains(entity.type))
-            {
-                MaxAmmo = 1;
-                entity.shoot = ProjectileID.RocketI;
-                if (entity.type == ItemID.RocketLauncher)
-                {
-                    MaxAmmo = 4;
-                    entity.useTime = entity.useAnimation = 30;
-                    entity.damage = 25;
-                }
-                if (entity.type == ItemID.GrenadeLauncher)
-                {
-                    MaxAmmo = 5;
-                    entity.damage = 18;
-                    entity.useTime = entity.useAnimation = 20;
-                    entity.shoot = ProjectileID.GrenadeI;
-                }
-                if (entity.type == ItemID.StarCannon)
-                {
-                    entity.useTime = entity.useAnimation = 40;
-                    entity.damage = 15;
-                    MaxAmmo = 3;
-                    entity.shoot = ProjectileID.StarCannonStar;
-                }
 
-                ReloadTime = (int)(entity.useAnimation * MaxAmmo);
-                if (entity.type == ItemID.StarCannon)
-                {
-                    ReloadTime *= 2;
-                }
             }
-            if (Bows.Contains(entity.type) )
+            if (Bows.Contains(entity.type))
             {
                 entity.noUseGraphic = true;
                 entity.useAmmo = AmmoID.None;
@@ -240,17 +180,8 @@ namespace TerrariaCells.Common.GlobalItems
                     entity.shoot = ProjectileID.DD2BetsyArrow;
                 if (entity.type == ItemID.ShadowFlameBow)
                     entity.shoot = ProjectileID.ShadowFlameArrow;
-
-                if (entity.type == ItemID.IceBow)
-                {
-                    entity.damage = 4;
-                }
-                if (entity.type == ItemID.PulseBow)
-                {
-                    entity.damage = 8;
-                    entity.useTime = entity.useAnimation = 23;
-                }
-
+                if (entity.type == ItemID.RocketLauncher)
+                    entity.shoot = ProjectileID.RocketI;
             }
             if (entity.type == ItemID.FairyQueenRangedItem)
             {
@@ -270,11 +201,6 @@ namespace TerrariaCells.Common.GlobalItems
                 if (entity.shoot == ProjectileID.None) entity.shoot = ModContent.ProjectileType<Sword>();
                 if (!Broadswords.Contains(entity.type))
                     Broadswords = Broadswords.Append(entity.type).ToArray();
-
-                if (entity.useAnimation >= 30 || HeavyweightAnyways.Contains(entity.type))
-                {
-                    Heavyweight = true;
-                }
             }
             if (MaxAmmo > 0) Ammo = MaxAmmo;
             if (ReloadTime > 0) SkillTimer = ReloadTime;
@@ -283,10 +209,10 @@ namespace TerrariaCells.Common.GlobalItems
         {
             if (SkillTimer < ReloadTime + 20)
             {
-                
+
                 float skillProgress = Math.Clamp(SkillTimer, 0, ReloadTime) / ReloadTime;
                 SkillTimer++;
-                if (skillProgress < ReloadSuccessLocation + ReloadSuccessRange/2 && skillProgress > ReloadSuccessLocation - ReloadSuccessRange/2 && player.controlUseTile && !RightClickedBefore)
+                if (skillProgress < ReloadSuccessLocation + ReloadSuccessRange / 2 && skillProgress > ReloadSuccessLocation - ReloadSuccessRange / 2 && player.controlUseTile && !RightClickedBefore)
                 {
                     SkillTimer = ReloadTime;
                     Ammo = MaxAmmo;
@@ -310,21 +236,13 @@ namespace TerrariaCells.Common.GlobalItems
                     {
                         EmpoweredAmmo = 1;
                     }
-                    if (Launchers.Contains(item.type))
-                    {
-                        EmpoweredAmmo = 1;
-                    }
-                    if (item.type == ItemID.Toxikarp)
-                    {
-                        EmpoweredAmmo = 1;
-                    }
                     SoundEngine.PlaySound(SoundID.Unlock);
                 }
                 if (player.controlUseTile)
                 {
                     RightClickedBefore = true;
                 }
-                
+
             }
             else
             {
@@ -358,13 +276,13 @@ namespace TerrariaCells.Common.GlobalItems
 
             if ((Bows.Contains(item.type) || item.type == ItemID.DD2PhoenixBow || item.type == ItemID.FairyQueenRangedItem && !player.ItemAnimationActive) && player.ownedProjectileCounts[ModContent.ProjectileType<Bow>()] < 1)
             {
-                
+
                 Projectile.NewProjectile(new EntitySource_ItemUse_WithAmmo(player, item, player.ChooseAmmo(item).type), player.Center, Vector2.Zero, ModContent.ProjectileType<Bow>(), item.damage, item.knockBack, Main.myPlayer, item.type, 0, 1);
                 return false;
             }
             return base.AltFunctionUse(item, player);
         }
-        
+
         public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             if (!vanillaShoot)
@@ -374,41 +292,22 @@ namespace TerrariaCells.Common.GlobalItems
                     Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<Guns>(), damage, knockback, Main.myPlayer, item.type, 0, Ammo == 0 ? 1 : 0);
                     return false;
                 }
-                
+
                 if (Bows.Contains(item.type))
                 {
                     if (player.ownedProjectileCounts[ModContent.ProjectileType<Bow>()] < 1)
-                    Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<Bow>(), damage, knockback, Main.myPlayer, item.type, 0, 0);
+                        Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<Bow>(), damage, knockback, Main.myPlayer, item.type, 0, 0);
                     return false;
                 }
                 if (IsBroadsword(item))
                 {
-                    
+
                     if (player.ownedProjectileCounts[ModContent.ProjectileType<Sword>()] < 1)
                     {
                         Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<Sword>(), damage, knockback, Main.myPlayer, item.type, velocity.ToRotation(), 0);
                     }
                     return false;
                 }
-            }
-            if (item.type == ItemID.OnyxBlaster)
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    Projectile.NewProjectile(source, position, velocity.RotatedByRandom(MathHelper.ToRadians(20)) * Main.rand.NextFloat(0.8f, 1.2f), type, damage, knockback);
-                }
-                if (EmpoweredAmmo > 0)
-                {
-                    Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, 661, damage, knockback);
-                    proj.CritChance = 100;
-                }
-                return false;
-            }
-            if (item.type == ItemID.StarCannon)
-            {
-                Projectile.NewProjectileDirect(source, position, velocity * 1.1f, type, damage, knockback);
-                Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback);
-                Projectile.NewProjectileDirect(source, position, velocity * 0.9f, type, damage, knockback);
             }
             return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
         }

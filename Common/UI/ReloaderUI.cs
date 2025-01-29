@@ -15,6 +15,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 using Terraria.UI.Chat;
+using TerrariaCells.Common.Configs;
 using TerrariaCells.Common.GlobalItems;
 
 namespace TerrariaCells.Common.UI
@@ -24,7 +25,7 @@ namespace TerrariaCells.Common.UI
         public UIImage Bar;
         public override void OnInitialize()
         {
-            
+
             Bar = new UIImage(ModContent.Request<Texture2D>("TerrariaCells/Common/UI/ReloadBar"));
             Bar.Top.Set(510, 0);
             Bar.Left.Set(838, 0);
@@ -58,7 +59,7 @@ namespace TerrariaCells.Common.UI
                 Bar.Top.Set(Main.mouseY - offset.Y, 0f);
                 Recalculate();
             }
-            
+
             //var parentSpace = GetDimensions().ToRectangle();
             //if (!Bar.GetDimensions().ToRectangle().Intersects(parentSpace))
             //{
@@ -66,7 +67,7 @@ namespace TerrariaCells.Common.UI
             //    Bar.Top.Pixels = Utils.Clamp(Top.Pixels, 0, parentSpace.Bottom - Height.Pixels);
             //    // Recalculate forces the UI system to do the positioning math again.
             //    Recalculate();
-                
+
             //}
         }
         public Vector2 offset;
@@ -75,7 +76,7 @@ namespace TerrariaCells.Common.UI
         //dragging ui stuff stolen from example mod
         public override void LeftMouseDown(UIMouseEvent evt)
         {
-           
+
             base.LeftMouseDown(evt);
             Rectangle barRect = new Rectangle((int)Bar.Left.Pixels, (int)Bar.Top.Pixels, (int)(Bar.Width.Pixels * scale), (int)(Bar.Height.Pixels * scale));
             if (barRect.Contains(Main.mouseX, Main.mouseY))
@@ -132,16 +133,28 @@ namespace TerrariaCells.Common.UI
             {
                 opacity = 1 - (weapon.SkillTimer - weapon.ReloadTime) / 20f;
             }
-            
-            Vector2 startOfBar = new Vector2(Bar.Left.Pixels + 2*scale, Bar.Top.Pixels);
-            
+
+            Vector2 startOfBar = new Vector2(Bar.Left.Pixels + 2 * scale, Bar.Top.Pixels);
+
             spriteBatch.Draw(bar.Value, new Vector2(Bar.Left.Pixels, Bar.Top.Pixels), null, Color.White * opacity, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
-            
-            spriteBatch.Draw(succ.Value, new Vector2(Bar.Left.Pixels, Bar.Top.Pixels + 2*scale) + new Vector2(MathHelper.Lerp(0, (Bar.Width.Pixels) * scale, weapon.ReloadSuccessLocation), 0), null, Color.White * opacity, 0, new Vector2(succ.Width()/2, 0), new Vector2(2.8f*scale * (10*weapon.ReloadSuccessRange), scale), SpriteEffects.None, 0f);
-            spriteBatch.Draw(ind.Value, startOfBar + new Vector2(MathHelper.Lerp(0, (Bar.Width.Pixels- 4) * scale, Math.Clamp(weapon.SkillTimer, 0, weapon.ReloadTime) / weapon.ReloadTime), 8*scale), null, Color.White * opacity, 0, ind.Size()/2, scale, SpriteEffects.None, 0f);
-            Vector2 ammoLoc = new Vector2(Bar.Left.Pixels + 26 * scale, Bar.Top.Pixels + 25*scale);
-            spriteBatch.Draw(bullet.Value, ammoLoc, null, Color.White, 0, bullet.Size()/2, scale, SpriteEffects.None, 0);
-            Utils.DrawBorderString(spriteBatch, weapon.Ammo.ToString(), ammoLoc + new Vector2(8, -9)*scale, Color.White, scale: scale);
+
+            spriteBatch.Draw(succ.Value, new Vector2(Bar.Left.Pixels, Bar.Top.Pixels + 2 * scale) + new Vector2(MathHelper.Lerp(0, (Bar.Width.Pixels) * scale, weapon.ReloadSuccessLocation), 0), null, Color.White * opacity, 0, new Vector2(succ.Width() / 2, 0), new Vector2(2.8f * scale * (10 * weapon.ReloadSuccessRange), scale), SpriteEffects.None, 0f);
+
+            float amount = Math.Clamp(weapon.SkillTimer, 0, weapon.ReloadTime) / weapon.ReloadTime;
+
+            if (amount == 1f)
+            {
+                amount = (float)weapon.Ammo / weapon.MaxAmmo;
+            }
+
+            float barPosition = MathHelper.Lerp(value1: 0, (Bar.Width.Pixels - 4) * scale, amount);
+            Vector2 barReloadingOffset = new Vector2(barPosition, 8 * scale);
+            spriteBatch.Draw(ind.Value, startOfBar + barReloadingOffset, null, Color.White * opacity, 0, ind.Size() / 2, scale, SpriteEffects.None, 0f);
+
+            Vector2 ammoLoc = new Vector2(Bar.Left.Pixels + 26 * scale, Bar.Top.Pixels + 25 * scale);
+            spriteBatch.Draw(bullet.Value, ammoLoc, null, Color.White, 0, bullet.Size() / 2, scale, SpriteEffects.None, 0);
+
+            Utils.DrawBorderString(spriteBatch, weapon.Ammo.ToString(), ammoLoc + new Vector2(8, -9) * scale, Color.White, scale: scale);
         }
     }
 }

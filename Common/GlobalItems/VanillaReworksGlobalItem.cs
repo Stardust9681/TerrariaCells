@@ -16,26 +16,59 @@ namespace TerrariaCells.Common.GlobalItems
             {
 
                 // RANGED WEAPONS
-                case ItemID.PulseBow:
-                    // with bounces: dps ~27, with charging ~60
-                    // without bounces: dps ~21, with charing ~50
-                    item.damage = 7;
+                // Guns
+                case ItemID.PhoenixBlaster:
+                    item.damage = 8;
+                    item.useTime = 14;
                     break;
-                case ItemID.QuadBarrelShotgun:
-                    // dps ~40, with reloading ~48
-                    item.damage = 5;
-                    break;
-                case ItemID.OnyxBlaster:
-                    // dps ~28, with reloading ~32
-                    item.damage = 4;
+                case ItemID.Minishark:
+                    // dps ~60, with reloading ~90, tapers off to 70
+                    item.damage = 3;
                     break;
                 case ItemID.SniperRifle:
-                    // dps: ~19, with reloading: ~40
-                    item.damage = 18;
+                    item.damage = 40;
+                    item.useTime = 25;
+                    item.useAnimation = item.useTime;
                     break;
-                case ItemID.PhoenixBlaster:
-                    // dps: ~27, with reloading: ~28
-                    item.damage = 7;
+                case ItemID.OnyxBlaster:
+                    item.damage = 5;
+                    item.useTime = 48;
+                    break;
+                // Bows
+                case ItemID.PulseBow:
+                    item.damage = 8;
+                    item.useTime = 23;
+                    break;
+                case ItemID.IceBow:
+                    item.damage = 4;
+                    item.useTime = 16;
+                    break;
+                // Launchers
+                case ItemID.Toxikarp:
+                    item.damage = 2;
+                    item.useTime = 12;
+                    break;
+                case ItemID.RocketLauncher:
+                    item.damage = 35;
+                    item.useTime = 30;
+                    break;
+                case ItemID.StarCannon:
+                    item.damage = 15;
+                    item.useTime = 3;
+                    break;
+                case ItemID.GrenadeLauncher:
+                    item.damage = 18;
+                    item.useTime = 20;
+                    break;
+                // MELEE
+                // Swords
+                case ItemID.FieryGreatsword:
+                    item.damage = 12;
+                    item.useTime = 30;
+                    break;
+                case ItemID.Starfury:
+                    item.damage = 8;
+                    item.useTime = 20;
                     break;
             }
         }
@@ -46,7 +79,7 @@ namespace TerrariaCells.Common.GlobalItems
             return false;
         }
 
-        
+
         public override void ModifyWeaponCrit(Item item, Player player, ref float crit)
         {
             // Disable crits for all weapons by default

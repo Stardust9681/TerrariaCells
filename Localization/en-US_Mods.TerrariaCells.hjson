@@ -1,13 +1,6 @@
-Items: {
-	RoomConnectorItem: {
-		DisplayName: Room Connector Item
-		Tooltip: ""
-	}
-}
-
 Configs: {
 	TerrariaCellsConfig: {
-		DisplayName: TerraCells Config
+		DisplayName: Terraria Cells Config
 
 		DisableZoom: {
 			Label: Disable Zoom Cap
@@ -28,10 +21,10 @@ Configs: {
 	}
 
 	WeaponUIConfig: {
-		DisplayName: Weapon U I Config
+		DisplayName: Weapon UI Config
 
 		DragUI: {
-			Label: Drag U I
+			Label: Drag UI
 			Tooltip: ""
 		}
 
@@ -44,6 +37,77 @@ Configs: {
 			Label: Scale
 			Tooltip: ""
 		}
+	}
+
+	DevConfig: {
+		BuilderMode: {
+			Label: Builder Mode
+			Tooltip: Toggle ability to build. Also allows tiles to be interacted with normally.
+		}
+
+		DoPylonDiscoveries: {
+			Label: Do Pylon Discoveries
+			Tooltip: Toggles intended Pylon mechanics.
+		}
+
+		PreventExplosionDamage: {
+			Label: Prevent Explosion Damage
+			Tooltip: Prevents tile damage from explosives.
+		}
+
+		DisplayName: Dev Config
+
+		Headers: {
+			BuilderSettings: Builder Settings
+			InventorySettings: Inventory Settings
+		}
+
+		EnableInventoryChanges: {
+			Label: Enable Inventory Changes
+			Tooltip: ""
+		}
+
+		EnableInventoryLock: {
+			Label: Enable Inventory Lock
+			Tooltip: ""
+		}
+
+		HideVanillaInventory: {
+			Label: Hide Vanilla Inventory
+			Tooltip: ""
+		}
+
+		EnableChestChanges: {
+			Label: Enable Chest Changes
+			Tooltip: ""
+		}
+
+		DropItems: {
+			Label: Drop Items
+			Tooltip: ""
+		}
+	}
+}
+
+Items: {
+	RoomConnectorItem: {
+		Tooltip: ""
+		DisplayName: Room Connector Item
+	}
+
+	PotMarkerItem: {
+		DisplayName: Pot Marker Item
+		Tooltip: ""
+	}
+
+	ExamplePylonItem: {
+		Tooltip: ""
+		DisplayName: Example Pylon Item
+	}
+
+	ClickableCrystalItem: {
+		DisplayName: Clickable Crystal Item
+		Tooltip: ""
 	}
 }
 
@@ -60,7 +124,15 @@ Projectiles: {
 	SniperShot.DisplayName: Sniper Shot
 	Guns.DisplayName: Guns
 	ExplosionModProjectile.DisplayName: Explosion
-	SwordStabWave.DisplayName: Sword Stab Wave
+	VultureBone.DisplayName: Vulture Bone
+	Slash.DisplayName: Slash
+	PoacherStab.DisplayName: Poacher Stab
+	MummyShockwave.DisplayName: Mummy Shockwave
+	IceSpike.DisplayName: Ice Spike
+	IceShard.DisplayName: Ice Shard
+	IceBall.DisplayName: Ice Ball
+	IceArrow.DisplayName: Ice Arrow
+	IllusionBrainHitbox.DisplayName: Illusion Brain Hitbox
 }
 
 Tooltips: {
@@ -89,4 +161,11 @@ Electrified: {
 ExplodeOnHit: {
 	Name: Exploding
 	Description: 30% chance to explode your target on hit
+}
+
+Buffs: {
+	FrozenEnemyDebuff: {
+		DisplayName: Frozen Enemy Debuff
+		Description: Mods.TerrariaCells.Buffs.FrozenEnemyDebuff.Description
+	}
 }

@@ -12,15 +12,12 @@ using Terraria.ModLoader;
 using System.Reflection;
 using Terraria.Audio;
 using TerrariaCells.Common.GlobalItems;
-using TerrariaCells.Common.Utilities;
 
 namespace TerrariaCells.Content.Projectiles.HeldProjectiles
 {
     public class Sword : ModProjectile
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.IronBroadsword;
-
-        public int SwingCounter = 0;
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.HeldProjDoesNotUsePlayerGfxOffY[Type] = true;
@@ -49,7 +46,7 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
             }
             MethodInfo PlayerItemCheck_Shoot = typeof(Player).GetMethod("ApplyNPCOnHitEffects", BindingFlags.NonPublic | BindingFlags.Instance);
             PlayerItemCheck_Shoot.Invoke(owner, [owner.HeldItem, target.Hitbox, hit.SourceDamage, hit.Knockback, target.whoAmI, 1, damageDone]);
-            
+
         }
         public override bool PreDraw(ref Color lightColor)
         {
@@ -63,20 +60,25 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
             Asset<Texture2D> t = TextureAssets.Item[(int)Projectile.ai[0]];
             Vector2 armPosition = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.Pi / 2); // get position of hand
             armPosition.Y += owner.gfxOffY;
-            
-            if (Projectile.ai[2] != 1)
+            float x = Timer / (owner.HeldItem.useAnimation * Projectile.extraUpdates + 1);
+            //parabola
+            //float scaleLerper = -(float)Math.Pow((2 * x - 1), 2) + 1;
+            float scaleLerper = (float)(Math.Sin(2 * Math.PI * x - Math.PI * 0.5f) / 2) + 0.5f;
+            //ease in out
+            float rotLerper = x < 0.5 ? 16 * x * x * x * x * x : 1 - (float)Math.Pow(-2 * x + 2, 5) / 2;
+            if (Projectile.ai[2] == 0)
             {
-                Main.EntitySpriteDraw(t.Value, armPosition + new Vector2(TCellsUtils.LerpFloat(-15, -25, Timer, owner.HeldItem.useAnimation * Projectile.extraUpdates+1, TCellsUtils.LerpEasing.Bell), -5 * Projectile.spriteDirection).RotatedBy(Projectile.rotation) - Main.screenPosition,
+                Main.EntitySpriteDraw(t.Value, armPosition + new Vector2(MathHelper.Lerp(-15, -25, scaleLerper), -5 * Projectile.spriteDirection).RotatedBy(Projectile.rotation) - Main.screenPosition,
                     null, lightColor,
-                    Projectile.rotation + MathHelper.ToRadians(Projectile.spriteDirection == 1 ? -135 : 135),
+                    Projectile.rotation + MathHelper.ToRadians(Projectile.spriteDirection == 1 ? -130 : 130),
                     new Vector2(2, Projectile.spriteDirection == 1 ? t.Height() - 2 : 2),
                     Projectile.scale,// * MathHelper.Lerp(0.8f, 1.1f, scaleLerper),
                     Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically);
             }
             if (Projectile.ai[2] == 1)
             {
-               
-                Main.EntitySpriteDraw(t.Value, armPosition + new Vector2(TCellsUtils.LerpFloat(-15, -25, Timer, owner.HeldItem.useAnimation * Projectile.extraUpdates+1, TCellsUtils.LerpEasing.Bell), -5 * Projectile.spriteDirection).RotatedBy(Projectile.rotation) - Main.screenPosition,
+
+                Main.EntitySpriteDraw(t.Value, armPosition + new Vector2(MathHelper.Lerp(-15, -25, scaleLerper), -5 * Projectile.spriteDirection).RotatedBy(Projectile.rotation) - Main.screenPosition,
                     null, lightColor,
                     Projectile.rotation + MathHelper.ToRadians(Projectile.spriteDirection == 1 ? -40 : 40),
                     new Vector2(t.Width() - 2, Projectile.spriteDirection == 1 ? t.Height() - 2 : 2),
@@ -97,9 +99,12 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
             }
             Asset<Texture2D> t = TextureAssets.Item[(int)Projectile.ai[0]];
             Vector2 armPosition = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.Pi / 2);
-            
-            float scale = Projectile.scale * TCellsUtils.LerpFloat(0.8f, 1.1f, Timer, (owner.HeldItem.useAnimation * Projectile.extraUpdates + 1), TCellsUtils.LerpEasing.Bell) + 0.2f;
-            return Collision.CheckAABBvLineCollision(targetHitbox.Location.ToVector2(), targetHitbox.Size(), armPosition, armPosition + new Vector2(t.Width(), t.Height()).RotatedBy(Projectile.rotation + MathHelper.ToRadians(130 + (Projectile.spriteDirection == -1 ? 5 : 15)))* scale );
+            float x = Timer / (owner.HeldItem.useAnimation * Projectile.extraUpdates + 1);
+            //parabola
+            //float scaleLerper = -(float)Math.Pow((2 * x - 1), 2) + 1;
+            float scaleLerper = (float)(Math.Sin(2 * Math.PI * x - Math.PI * 0.5f) / 2) + 0.5f;
+            float scale = Projectile.scale * MathHelper.Lerp(0.8f, 1.1f, scaleLerper) + 0.2f;
+            return Collision.CheckAABBvLineCollision(targetHitbox.Location.ToVector2(), targetHitbox.Size(), armPosition, armPosition + new Vector2(t.Width(), t.Height()).RotatedBy(Projectile.rotation + MathHelper.ToRadians(130 + (Projectile.spriteDirection == -1 ? 5 : 15))) * scale);
         }
         public float Timer = 0;
         //ai[0] = item to clone
@@ -117,57 +122,20 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
             }
             Projectile.spriteDirection = Main.MouseWorld.X > owner.MountedCenter.X ? 1 : -1;
             owner.direction = Projectile.spriteDirection;
-            if (Projectile.ai[2] != 2)
-                Projectile.ai[1] = Projectile.AngleTo(Main.MouseWorld);
+            Projectile.ai[1] = Projectile.AngleTo(Main.MouseWorld);
             Projectile.Center = owner.Center;
             owner.heldProj = Projectile.whoAmI;
             Projectile.netUpdate = true;
             Timer += 1f;
-            
-
-
-            if (Projectile.ai[2] == 0)
+            float x = Timer / (owner.HeldItem.useAnimation * Projectile.extraUpdates + 1);
+            float rotLerper = x < 0.5 ? 16 * x * x * x * x * x : 1 - (float)Math.Pow(-2 * x + 2, 5) / 2;
+            if (Projectile.ai[2] == 1)
             {
-                Projectile.friendly = true;
-                Projectile.rotation = TCellsUtils.LerpFloat(Projectile.ai[1] + MathHelper.ToRadians(180 - 120 * Projectile.spriteDirection),
-                     Projectile.ai[1] + MathHelper.ToRadians(180 + 60 * Projectile.spriteDirection),
-                     Timer, (owner.HeldItem.useAnimation * Projectile.extraUpdates + 1), TCellsUtils.LerpEasing.InOutQuint);
+                rotLerper = 1 - rotLerper;
             }
-            else if (Projectile.ai[2] == 1)
-            {
-                Projectile.friendly = true;
-                Projectile.rotation = TCellsUtils.LerpFloat(Projectile.ai[1] + MathHelper.ToRadians(180 + 60 * Projectile.spriteDirection),
-                    Projectile.ai[1] + MathHelper.ToRadians(180 - 120 * Projectile.spriteDirection),
-                     Timer, (owner.HeldItem.useAnimation * Projectile.extraUpdates + 1), TCellsUtils.LerpEasing.InOutQuint);
-            }
-            else if (Projectile.ai[2] == 2)
-            {
-                if (!owner.HeldItem.GetGlobalItem<WeaponHoldoutify>().Heavyweight)
-                {
-                    Projectile.friendly = false;
-                    Projectile.rotation = owner.AngleFrom(Main.MouseWorld);
-                }
-                else
-                {
-                    Projectile.rotation = TCellsUtils.LerpFloat(Projectile.ai[1] + MathHelper.ToRadians(180 - 120 * Projectile.spriteDirection),
-                     Projectile.ai[1] + MathHelper.ToRadians(180 + 240 * Projectile.spriteDirection),
-                     Timer, (owner.HeldItem.useAnimation * Projectile.extraUpdates + 1), TCellsUtils.LerpEasing.InOutQuint);
-                }
-               
-            }
-            
-            
-            owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.ToRadians(-90) );
-            owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, 0);
-            Vector2 armpos = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation);
+            Projectile.rotation = MathHelper.Lerp(Projectile.ai[1] + MathHelper.ToRadians(180 - 120 * Projectile.spriteDirection), Projectile.ai[1] + MathHelper.ToRadians(180 + 60 * Projectile.spriteDirection), rotLerper);
 
-
-            if (Projectile.ai[2] == 2 && Main.myPlayer == owner.whoAmI && Timer == 1 && !owner.HeldItem.GetGlobalItem<WeaponHoldoutify>().Heavyweight)
-            {
-                Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), owner.Center, Vector2.Zero, ModContent.ProjectileType<SwordStabWave>(), Projectile.damage, Projectile.knockBack, owner.whoAmI, Projectile.whoAmI, owner.HeldItem.useAnimation - 5);
-
-            }
-            
+            owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.ToRadians(-90));
             if (Timer == (int)((owner.HeldItem.useAnimation * Projectile.extraUpdates + 1) * 0.4f))
             {
                 SoundEngine.PlaySound(owner.HeldItem.GetGlobalItem<WeaponHoldoutify>().StoreSound, Projectile.Center);
@@ -181,21 +149,13 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
             }
             if (Timer >= (owner.HeldItem.useAnimation * Projectile.extraUpdates + 1))
             {
-                
+
                 if (owner.controlUseItem)
                 {
-                    SwingCounter++;
-                    Projectile.CritChance = 0;
-                    Timer = 0;
-                    
-                    Projectile.ai[2] = Projectile.ai[2] == 0 ? 1 : 0;
-                    if (SwingCounter >= 2)
-                    {
-                        Projectile.ai[2] = 2;
-                        SwingCounter = -1;
-                        Projectile.CritChance = 100;
-                    }
 
+                    Timer = 0;
+
+                    Projectile.ai[2] = Projectile.ai[2] == 0 ? 1 : 0;
                     Projectile.ResetLocalNPCHitImmunity();
                     FieldInfo VolcanoExplosions = typeof(Player).GetField("_spawnVolcanoExplosion", BindingFlags.NonPublic | BindingFlags.Instance);
                     if (VolcanoExplosions != null)
@@ -206,7 +166,6 @@ namespace TerrariaCells.Content.Projectiles.HeldProjectiles
                     Projectile.Kill();
                 }
             }
-            //Main.NewText(Projectile.rotation);
         }
     }
 }
