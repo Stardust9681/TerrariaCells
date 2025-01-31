@@ -28,12 +28,35 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 
 		public abstract bool AppliesToNPC(int npcType);
 		public abstract void Behaviour(NPC npc);
-		public virtual void FindFrame(NPC npc) { }
+		public virtual bool FindFrame(NPC npc) => true;
 		public virtual bool PreDraw(NPC npc, SpriteBatch spritebatch, Vector2 screenPos, Color lightColor) { return true; }
 	}
 
-	internal class AITypeHandler : GlobalNPC
+	internal  class AITypeHandler : GlobalNPC
 	{
+		public override void Load()
+		{
+			Terraria.On_NPC.VanillaFindFrame += On_FindFrame;
+		}
+		public override void Unload()
+		{
+			Terraria.On_NPC.VanillaFindFrame -= On_FindFrame;
+		}
+
+		//Okay, so here's the deal:
+		//GlobalNPC.FindFrame(..) caused conflicts with NPC.VanillafindFrame(..) where the latter sort of overrode the former
+		//And, look, they don't let you disable that either. So here's what I'm doing to fix that
+		//Also: frameHeight param is literally useless in all situations. Not sure why it's ever included as a parameter for this function
+		public void On_FindFrame(On_NPC.orig_VanillaFindFrame orig, NPC npc, int frameHeight, bool isLikeATownNPC, int typeToAnimateAs)
+		{
+			if (AIOverwriteSystem.TryGetAIType(npc.type, out AIType ai))
+			{
+				if (!ai.FindFrame(npc))
+					return;
+			}
+			orig.Invoke(npc, frameHeight, isLikeATownNPC, typeToAnimateAs);
+		}
+
 		public override bool PreAI(NPC npc)
 		{
 			if (!AIOverwriteSystem.TryGetAIType(npc.type, out AIType ai))
@@ -47,16 +70,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			if (!AIOverwriteSystem.TryGetAIType(npc.type, out AIType ai))
 				return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
 			return ai.PreDraw(npc, spriteBatch, screenPos, drawColor);
-		}
-
-		public override void FindFrame(NPC npc, int frameHeight)
-		{
-			if (!AIOverwriteSystem.TryGetAIType(npc.target, out AIType ai))
-			{
-				base.FindFrame(npc, frameHeight);
-				return;
-			}
-			ai.FindFrame(npc);
 		}
 	}
 }
