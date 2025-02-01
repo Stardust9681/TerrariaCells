@@ -1,20 +1,8 @@
-<!-- VS encountered an error with csproj file, elected to allow for tML to repair project -->
+﻿<!-- VS encountered an error with csproj file, elected to allow for tML to repair project -->
 <Project Sdk="Microsoft.NET.Sdk">
     <!-- Import tModLoader mod properties -->
     <Import Project="..\tModLoader.targets" />
     <!-- General -->
-    <ItemGroup>
-        <None Remove="Common\UI\Indicator.png" />
-        <None Remove="Common\UI\ReloadBar.png" />
-        <None Remove="Common\UI\SuccessRange.png" />
-        <None Remove="Content\Buffs\FrozenEnemyDebuff.png" />
-        <None Remove="Content\Projectiles\HeldProjectiles\ShotgunShell.png" />
-        <None Remove="Common\Assets\DesertScorpionStab.png" />
-        <None Remove="Common\Assets\GrayscaleExplosion.png" />
-        <None Remove="Common\Assets\MummyShockwave.png" />
-        <None Remove="Common\Assets\MummySlam.png" />
-        <None Remove="Content\Projectiles\MummyShockwave.png" />
-    </ItemGroup>
     <ItemGroup>
         <Folder Include="Content\" />
         <Reference Include="StructureHelper">
