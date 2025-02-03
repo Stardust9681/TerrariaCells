@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
@@ -50,4 +51,22 @@ public class DeathReset : ModPlayer, IEntitySource
             item.TurnToAir(true);
         }
     }
+
+
+
+	public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath)
+	{
+		return new Item[]
+			{
+				new Item(Terraria.ID.ItemID.CopperShortsword), //Weapon Slot 1
+				new Item(Terraria.ID.ItemID.WoodenBow), //Weapon Slot 2
+				new Item(0, 0), //Skill Slot 1 (idk if this'll keep it open I hope it does tho)
+				new Item(0, 0), //Skill Slot 2
+				new Item(Terraria.ID.ItemID.LesserHealingPotion, 2), //Potion Slot
+			};
+	}
+	public override void ModifyStartingInventory(IReadOnlyDictionary<string, List<Item>> itemsByMod, bool mediumCoreDeath)
+	{
+		itemsByMod["Terraria"].Clear();
+	}
 }

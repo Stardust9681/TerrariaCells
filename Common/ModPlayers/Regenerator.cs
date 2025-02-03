@@ -38,16 +38,6 @@ namespace TerrariaCells.Common.ModPlayers
 			IL_HorizontalBarsPlayerResourcesDisplaySet.LifeFillingDrawer -= IL_HealthbarTextureSelect;
 		}
 
-		public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath)
-		{
-			if (mediumCoreDeath)
-				return base.AddStartingItems(mediumCoreDeath);
-			return new Item[]
-				{
-					new Item(Terraria.ID.ItemID.LesserHealingPotion, 2),
-				};
-		}
-
 		#region Healthbar
 		public const int MAX_HEALTHBAR_SIZE = 800;
 
