@@ -43,13 +43,17 @@ namespace TerrariaCells.Common.GlobalTiles
 			return false;
 		}
 
-		private readonly ushort[] ValidTiles = new ushort[] {
+		private readonly int[] ValidTiles = new int[] {
 			TileID.TeleportationPylon,
 			TileID.GemLocks,
 			TileID.Containers,
 			TileID.Containers2,
 			TileID.Heart,
 			TileID.ManaCrystal,
+			ModContent.TileType<Content.Tiles.LevelExitPylon.ForestExitPylon>(),
+			ModContent.TileType<Content.Tiles.LevelExitPylon.DesertExitPylon>(),
+			ModContent.TileType<Content.Tiles.LevelExitPylon.HiveExitPylon>(),
+			ModContent.TileType<Content.Tiles.LevelExitPylon.SnowExitPylon>(),
 		};
 		private void On_Player_TileInteractionsUse(On_Player.orig_TileInteractionsUse orig, Player self, int myX, int myY)
 		{
