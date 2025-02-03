@@ -32,7 +32,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		public virtual bool PreDraw(NPC npc, SpriteBatch spritebatch, Vector2 screenPos, Color lightColor) { return true; }
 	}
 
-	internal  class AITypeHandler : GlobalNPC
+	internal class AITypeHandler : GlobalNPC
 	{
 		public override void Load()
 		{
@@ -70,6 +70,14 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			if (!AIOverwriteSystem.TryGetAIType(npc.type, out AIType ai))
 				return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
 			return ai.PreDraw(npc, spriteBatch, screenPos, drawColor);
+		}
+
+		public override Color? GetAlpha(NPC npc, Color drawColor)
+		{
+			Color? returnVal = base.GetAlpha(npc, drawColor);
+			if (npc.dontTakeDamage) returnVal = Color.Lerp(drawColor, Color.DarkSlateGray * 0.67f, 0.5f);
+			if (npc.GetGlobalNPC<CombatNPC>().allowContactDamage) returnVal = Color.Lerp(drawColor, Color.IndianRed * (drawColor.A/255f), 0.3f);
+			return returnVal;
 		}
 	}
 }
