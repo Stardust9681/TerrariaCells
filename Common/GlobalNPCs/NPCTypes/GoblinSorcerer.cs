@@ -68,8 +68,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		private void CastingAI(NPC npc)
 		{
 			int timer = npc.Timer();
-			if(timer == 0)
-				CombatNPC.ToggleContactDamage(npc, true);
 			if (timer % 45 == 0)
 			{
 				NPC ball = NPC.NewNPCDirect(npc.GetSource_FromAI(), npc.Center, Terraria.ID.NPCID.ChaosBall);
@@ -153,7 +151,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 					d.scale = Main.rand.NextFloat(1.33f, 1.67f);
 				}
 				npc.position = new Vector2(npc.ai[2], npc.ai[3] - npc.height);
-				CombatNPC.ToggleContactDamage(npc, true);
 				npc.Phase(Casting);
 				return;
 			}
