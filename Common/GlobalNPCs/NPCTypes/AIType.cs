@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using TerrariaCells.Common.Systems;
+using Terraria.DataStructures;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 {
@@ -55,6 +56,11 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 					return;
 			}
 			orig.Invoke(npc, frameHeight, isLikeATownNPC, typeToAnimateAs);
+		}
+
+		public override void OnSpawn(NPC npc, IEntitySource source)
+		{
+			npc.GetGlobalNPC<CombatNPC>().allowContactDamage = !AIOverwriteSystem.AITypeExists(npc.type);
 		}
 
 		public override bool PreAI(NPC npc)
