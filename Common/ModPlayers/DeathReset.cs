@@ -40,16 +40,22 @@ public class DeathReset : ModPlayer, IEntitySource
         Entity.DropItem(this, Entity.Center, ref Entity.armor[5]);
     }
 
-    public override void OnRespawn()
-    {
+	public override void OnRespawn()
+	{
 		ModContent.GetInstance<TeleportTracker>().Reset();
 		ModContent.GetInstance<ClickedHeartsTracker>().Reset();
 		ModContent.GetInstance<ChestLootSpawner>().Reset();
+		foreach (NPC npc in Main.ActiveNPCs)
+			npc.StrikeInstantKill(); //Kill all NPCs so they aren't re-added to respawn buffer
+		foreach (Item item in Main.ActiveItems)
+			item.TurnToAir(true); //Turn all items to air, so player and NPC drops don't remain
+		foreach (Projectile projectile in Main.ActiveProjectiles)
+			projectile.Kill(); //Disable any tombstones or what-have-you
 		NPCRoomSpawner.ResetSpawns();
 		WorldPylonSystem.ResetPylons();
-        foreach (Item item in Main.ActiveItems) {
-            item.TurnToAir(true);
-        }
+
+		//Wipes the map data for the current session, but it doesn't like trying to load areas that you've explored this session, and the map will be restored next time you load the world
+		//Main.clearMap = true;
     }
 
 
