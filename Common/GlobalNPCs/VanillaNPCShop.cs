@@ -21,17 +21,37 @@ namespace TerrariaCells.Common.GlobalNPCs
                     entry.Disable();
                 }
 
-                // Add the specified vanilla items to the shop
-                shop.Add(ItemID.PhoenixBlaster);
-                shop.Add(ItemID.SniperRifle);
-                shop.Add(ItemID.OnyxBlaster);
-                shop.Add(ItemID.PulseBow);
-                shop.Add(ItemID.IceBow);
-                shop.Add(ItemID.Toxikarp);
-                shop.Add(ItemID.Minishark);
-                shop.Add(ItemID.GrenadeLauncher);
-                shop.Add(ItemID.FieryGreatsword);
-                shop.Add(ItemID.AleThrowingGlove);
+                // Add the specified vanilla items to the shop with custom price
+                shop.Add(new Item(ItemID.PhoenixBlaster) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.SniperRifle) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.OnyxBlaster) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.PulseBow) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.IceBow) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.Toxikarp) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.Minishark) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.GrenadeLauncher) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.FieryGreatsword) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.AleThrowingGlove) {
+                    shopCustomPrice = 10
+                });
             }
 
             if (shop.NpcType == NPCID.Merchant) 
@@ -41,24 +61,60 @@ namespace TerrariaCells.Common.GlobalNPCs
                     entry.Disable();
                 }
 
-                shop.Add(ItemID.CelestialMagnet);
-                shop.Add(ItemID.NaturesGift);
-                shop.Add(ItemID.ArcaneFlower);
-                shop.Add(ItemID.ManaRegenerationBand);
-                shop.Add(ItemID.MagicCuffs);
-                shop.Add(ItemID.StalkersQuiver);
-                shop.Add(ItemID.AmmoBox);
-                shop.Add(ItemID.ChlorophyteDye);
-                shop.Add(ItemID.BallOfFuseWire);
-                shop.Add(ItemID.ReconScope);
-                shop.Add(ItemID.BerserkerGlove);
-                shop.Add(ItemID.Nazar);
-                shop.Add(ItemID.FeralClaws);
-                shop.Add(ItemID.ThePlan);
-                shop.Add(ItemID.ObsidianShield);
-                shop.Add(ItemID.FrozenTurtleShell);
-                shop.Add(ItemID.BandofRegeneration);
-                shop.Add(ItemID.FastClock);
+                shop.Add(new Item(ItemID.CelestialMagnet) { 
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.NaturesGift) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.ArcaneFlower) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.ManaRegenerationBand) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.MagicCuffs) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.StalkersQuiver) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.AmmoBox) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.ChlorophyteDye) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.BallOfFuseWire) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.ReconScope) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.BerserkerGlove) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.Nazar) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.FeralClaws) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.ThePlan) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.ObsidianShield) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.FrozenTurtleShell) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.BandofRegeneration) {
+                    shopCustomPrice = 10
+                });
+                shop.Add(new Item(ItemID.FastClock) {
+                    shopCustomPrice = 10
+                });
             }
         }
     }
