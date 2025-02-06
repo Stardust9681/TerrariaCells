@@ -94,6 +94,7 @@ namespace TerrariaCells.Common.Utilities
         public static float GetLerpValue(float timer, float length, LerpEasing easing, float start, bool clamp)
         {
             float x = (timer - start) / length;
+            //Main.NewText(x);
             float lerp = 0;
             //i do not know the significance of these numbers. they are used in back easing calculations.
             float overshoot = 1.70158f;

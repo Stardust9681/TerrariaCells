@@ -1,4 +1,4 @@
-﻿<!-- VS encountered an error with csproj file, elected to allow for tML to repair project -->
+<!-- VS encountered an error with csproj file, elected to allow for tML to repair project -->
 <Project Sdk="Microsoft.NET.Sdk">
     <!-- Import tModLoader mod properties -->
     <Import Project="..\tModLoader.targets" />
