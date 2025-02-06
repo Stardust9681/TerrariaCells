@@ -9,12 +9,11 @@ using Terraria.ModLoader.IO;
 namespace TerrariaCells.Common.GlobalItems
 {
     /// <summary>
-    /// GlobalItem that applies a level to every damage-dealing item, handling relevant weapon scaling and 
+    /// GlobalItem that applies a level to every damage-dealing item, handling relevant weapon scaling and
     /// </summary>
     public class TierSystemGlobalItem : GlobalItem
     {
-
-        public static float damageLevelScaling = 1.30f;
+        public static float damageLevelScaling = 1.33f;
         public static float knockbackLevelScaling = 1.125f;
         public static float attackSpeedLevelScaling = 0.125f;
 
@@ -25,12 +24,12 @@ namespace TerrariaCells.Common.GlobalItems
         // Only apply item levels to weapons
         public override bool AppliesToEntity(Item entity, bool lateInstantiation)
         {
-            return lateInstantiation && entity.damage > 0 || lateInstantiation && entity.shoot != ItemID.None;
+            return lateInstantiation && entity.damage > 0
+                || lateInstantiation && entity.shoot != ItemID.None;
         }
 
         public override void SetDefaults(Item item)
         {
-
             item.rare = itemLevel;
             Math.Clamp(item.rare, 0, 10);
         }
@@ -55,7 +54,11 @@ namespace TerrariaCells.Common.GlobalItems
             damage *= MathF.Pow(damageLevelScaling, itemLevel - 2);
         }
 
-        public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback)
+        public override void ModifyWeaponKnockback(
+            Item item,
+            Player player,
+            ref StatModifier knockback
+        )
         {
             knockback *= 1 + (MathF.Sqrt(itemLevel - 1) * knockbackLevelScaling);
         }
@@ -67,7 +70,6 @@ namespace TerrariaCells.Common.GlobalItems
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
-
             // Iterate through the list of tooltips so we can change vanilla tooltips
             foreach (TooltipLine tooltip in tooltips)
             {
@@ -78,7 +80,6 @@ namespace TerrariaCells.Common.GlobalItems
                         tooltip.Text += " [Tier " + itemLevel.ToString() + "]";
                         break;
                 }
-
             }
 
             // Also add the tier at the end of the tooltip
@@ -115,8 +116,5 @@ namespace TerrariaCells.Common.GlobalItems
 
             return myClone;
         }
-
-
     }
-
 }

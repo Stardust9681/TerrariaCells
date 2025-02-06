@@ -28,7 +28,9 @@ namespace TerrariaCells.Common.Utilities
             InOutQuint,
             InBack,
             OutBack,
-            InOutBack
+            InOutBack,
+            DownParabola,
+            Bell
         }
         
         public static Vector2 FindGround(Rectangle rectangle, int attempts = 200)
@@ -116,6 +118,8 @@ namespace TerrariaCells.Common.Utilities
                 LerpEasing.InOutBack => x < 0.5f
                     ? ((float)Math.Pow(2 * x, 2) * ((overshoot3 + 1) * 2 * x - overshoot3)) / 2
                     : ((float)Math.Pow(2 * x - 2, 2) * ((overshoot3 + 1) * (x * 2 - 2) + overshoot3) + 2) / 2,
+                LerpEasing.DownParabola => -(float)Math.Pow(2 * x - 1, 2) + 1,
+                LerpEasing.Bell => (float)Math.Sin(2*Math.PI* x - 0.5f*Math.PI) / 2 + 0.5f,
                 _ => x
             };
             if (clamp)
