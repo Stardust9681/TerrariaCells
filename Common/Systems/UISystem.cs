@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
-
 using TerrariaCells.Common.Configs;
+
 namespace TerrariaCells.Common.UI;
 
 public class DeadCellsUISystem : ModSystem
@@ -24,7 +24,8 @@ public class DeadCellsUISystem : ModSystem
     internal UserInterface limitedStorageInterface;
     internal LimitedStorageUI limitedStorageUI;
     internal UserInterface ReloadInterface;
-    internal ReloaderUI reloaderUI;
+
+    // internal ReloaderUI reloaderUI;
 
     internal GameTime _lastUpdateUiGameTime;
 
@@ -40,9 +41,9 @@ public class DeadCellsUISystem : ModSystem
         limitedStorageUI.Activate();
         limitedStorageInterface.SetState(limitedStorageUI);
 
-		ReloadInterface = new UserInterface();
-		ReloadInterface.SetState(null);
-		reloaderUI = new ReloaderUI();
+        ReloadInterface = new UserInterface();
+        ReloadInterface.SetState(null);
+        // reloaderUI = new ReloaderUI();
     }
 
     public override void Unload()
@@ -51,8 +52,8 @@ public class DeadCellsUISystem : ModSystem
     }
 
     internal void ShowReloadUI()
-	{
-        ReloadInterface?.SetState(reloaderUI);
+    {
+        // ReloadInterface?.SetState(reloaderUI);
     }
 
     internal void HideReloadUI()
@@ -104,19 +105,23 @@ public class DeadCellsUISystem : ModSystem
         int mouseTextIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
         if (mouseTextIndex != -1)
         {
-			layers.Insert(mouseTextIndex, new LegacyGameInterfaceLayer(
-				"TerraCells: ReloadUI",
-				delegate
-				{
-					if (_lastUpdateUiGameTime != null && ReloadInterface?.CurrentState != null)
-					{
-						ReloadInterface?.Draw(Main.spriteBatch, _lastUpdateUiGameTime);
-					}
-					return true;
-				},
-				InterfaceScaleType.UI));
+            layers.Insert(
+                mouseTextIndex,
+                new LegacyGameInterfaceLayer(
+                    "TerraCells: ReloadUI",
+                    delegate
+                    {
+                        if (_lastUpdateUiGameTime != null && ReloadInterface?.CurrentState != null)
+                        {
+                            ReloadInterface?.Draw(Main.spriteBatch, _lastUpdateUiGameTime);
+                        }
+                        return true;
+                    },
+                    InterfaceScaleType.UI
+                )
+            );
 
-			if (!DevConfig.Instance.EnableInventoryChanges)
+            if (!DevConfig.Instance.EnableInventoryChanges)
             {
                 return;
             }

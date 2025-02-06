@@ -127,110 +127,110 @@ namespace TerrariaCells.Common.UI
         public override void Draw(SpriteBatch spriteBatch)
         {
             return;
-            Player player = Main.LocalPlayer;
-            if (player == null)
-                return;
-            if (!player.HeldItem.active)
-            {
-                return;
-            }
-            WeaponHoldoutify weapon = player.HeldItem?.GetGlobalItem<WeaponHoldoutify>();
-            if (weapon == null)
-                return;
-            Asset<Texture2D> bar = ModContent.Request<Texture2D>(
-                "TerrariaCells/Common/UI/ReloadBar"
-            );
-            Asset<Texture2D> succ = ModContent.Request<Texture2D>(
-                "TerrariaCells/Common/UI/SuccessRange"
-            );
-            Asset<Texture2D> ind = ModContent.Request<Texture2D>(
-                "TerrariaCells/Common/UI/Indicator"
-            );
-            Asset<Texture2D> bullet = TextureAssets.Item[ItemID.HighVelocityBullet];
-            Main.instance.LoadItem(ItemID.HighVelocityBullet);
-            float opacity = 1;
-            if (
-                weapon.SkillTimer > weapon.ReloadTime
-                && ModContent.GetInstance<WeaponUIConfig>().FadeOut
-            )
-            {
-                opacity = 1 - (weapon.SkillTimer - weapon.ReloadTime) / 20f;
-            }
+            // Player player = Main.LocalPlayer;
+            // if (player == null)
+            //     return;
+            // if (!player.HeldItem.active)
+            // {
+            //     return;
+            // }
+            // WeaponHoldoutify weapon = player.HeldItem?.GetGlobalItem<WeaponHoldoutify>();
+            // if (weapon == null)
+            //     return;
+            // Asset<Texture2D> bar = ModContent.Request<Texture2D>(
+            //     "TerrariaCells/Common/UI/ReloadBar"
+            // );
+            // Asset<Texture2D> succ = ModContent.Request<Texture2D>(
+            //     "TerrariaCells/Common/UI/SuccessRange"
+            // );
+            // Asset<Texture2D> ind = ModContent.Request<Texture2D>(
+            //     "TerrariaCells/Common/UI/Indicator"
+            // );
+            // Asset<Texture2D> bullet = TextureAssets.Item[ItemID.HighVelocityBullet];
+            // Main.instance.LoadItem(ItemID.HighVelocityBullet);
+            // float opacity = 1;
+            // if (
+            //     weapon.SkillTimer > weapon.ReloadTime
+            //     && ModContent.GetInstance<WeaponUIConfig>().FadeOut
+            // )
+            // {
+            //     opacity = 1 - (weapon.SkillTimer - weapon.ReloadTime) / 20f;
+            // }
 
-            Vector2 startOfBar = new Vector2(Bar.Left.Pixels + 2 * scale, Bar.Top.Pixels);
+            // Vector2 startOfBar = new Vector2(Bar.Left.Pixels + 2 * scale, Bar.Top.Pixels);
 
-            spriteBatch.Draw(
-                bar.Value,
-                new Vector2(Bar.Left.Pixels, Bar.Top.Pixels),
-                null,
-                Color.White * opacity,
-                0,
-                new Vector2(0, 0),
-                scale,
-                SpriteEffects.None,
-                0f
-            );
+            // spriteBatch.Draw(
+            //     bar.Value,
+            //     new Vector2(Bar.Left.Pixels, Bar.Top.Pixels),
+            //     null,
+            //     Color.White * opacity,
+            //     0,
+            //     new Vector2(0, 0),
+            //     scale,
+            //     SpriteEffects.None,
+            //     0f
+            // );
 
-            spriteBatch.Draw(
-                succ.Value,
-                new Vector2(Bar.Left.Pixels, Bar.Top.Pixels + 2 * scale)
-                    + new Vector2(
-                        MathHelper.Lerp(
-                            0,
-                            (Bar.Width.Pixels) * scale,
-                            weapon.ReloadSuccessLocation
-                        ),
-                        0
-                    ),
-                null,
-                Color.White * opacity,
-                0,
-                new Vector2(succ.Width() / 2, 0),
-                new Vector2(2.8f * scale * (10 * weapon.ReloadSuccessRange), scale),
-                SpriteEffects.None,
-                0f
-            );
-            spriteBatch.Draw(
-                ind.Value,
-                startOfBar
-                    + new Vector2(
-                        MathHelper.Lerp(
-                            0,
-                            (Bar.Width.Pixels - 4) * scale,
-                            Math.Clamp(weapon.SkillTimer, 0, weapon.ReloadTime) / weapon.ReloadTime
-                        ),
-                        8 * scale
-                    ),
-                null,
-                Color.White * opacity,
-                0,
-                ind.Size() / 2,
-                scale,
-                SpriteEffects.None,
-                0f
-            );
-            Vector2 ammoLoc = new Vector2(
-                Bar.Left.Pixels + 26 * scale,
-                Bar.Top.Pixels + 25 * scale
-            );
-            spriteBatch.Draw(
-                bullet.Value,
-                ammoLoc,
-                null,
-                Color.White,
-                0,
-                bullet.Size() / 2,
-                scale,
-                SpriteEffects.None,
-                0
-            );
-            Utils.DrawBorderString(
-                spriteBatch,
-                weapon.Ammo.ToString(),
-                ammoLoc + new Vector2(8, -9) * scale,
-                Color.White,
-                scale: scale
-            );
+            // spriteBatch.Draw(
+            //     succ.Value,
+            //     new Vector2(Bar.Left.Pixels, Bar.Top.Pixels + 2 * scale)
+            //         + new Vector2(
+            //             MathHelper.Lerp(
+            //                 0,
+            //                 (Bar.Width.Pixels) * scale,
+            //                 weapon.ReloadSuccessLocation
+            //             ),
+            //             0
+            //         ),
+            //     null,
+            //     Color.White * opacity,
+            //     0,
+            //     new Vector2(succ.Width() / 2, 0),
+            //     new Vector2(2.8f * scale * (10 * weapon.ReloadSuccessRange), scale),
+            //     SpriteEffects.None,
+            //     0f
+            // );
+            // spriteBatch.Draw(
+            //     ind.Value,
+            //     startOfBar
+            //         + new Vector2(
+            //             MathHelper.Lerp(
+            //                 0,
+            //                 (Bar.Width.Pixels - 4) * scale,
+            //                 Math.Clamp(weapon.SkillTimer, 0, weapon.ReloadTime) / weapon.ReloadTime
+            //             ),
+            //             8 * scale
+            //         ),
+            //     null,
+            //     Color.White * opacity,
+            //     0,
+            //     ind.Size() / 2,
+            //     scale,
+            //     SpriteEffects.None,
+            //     0f
+            // );
+            // Vector2 ammoLoc = new Vector2(
+            //     Bar.Left.Pixels + 26 * scale,
+            //     Bar.Top.Pixels + 25 * scale
+            // );
+            // spriteBatch.Draw(
+            //     bullet.Value,
+            //     ammoLoc,
+            //     null,
+            //     Color.White,
+            //     0,
+            //     bullet.Size() / 2,
+            //     scale,
+            //     SpriteEffects.None,
+            //     0
+            // );
+            // Utils.DrawBorderString(
+            //     spriteBatch,
+            //     weapon.Ammo.ToString(),
+            //     ammoLoc + new Vector2(8, -9) * scale,
+            //     Color.White,
+            //     scale: scale
+            // );
         }
     }
 }
