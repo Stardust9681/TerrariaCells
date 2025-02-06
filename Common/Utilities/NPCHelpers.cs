@@ -34,6 +34,18 @@ namespace TerrariaCells.Common.Utilities
 		internal static (ushort, ushort) Unpack(int value) => ((ushort)((value >> 16) & ushort.MaxValue), (ushort)(value & ushort.MaxValue));
 		#endregion
 
+		public static float PositionToFloat(Vector2 pos)
+		{
+			return (uint)((uint)pos.X * (Main.maxTilesY * 16)) + (uint)pos.Y;
+		}
+		public static Vector2 FloatToPosition(float input)
+		{
+			Vector2 res;
+			res.X = (uint)(input / (Main.maxTilesY * 16));
+			res.Y = (uint)(input - (res.X * (Main.maxTilesY * 16)));
+			return res;
+		}
+
 		///<returns>True if NPC "can see" a given position. False otherwise.</returns>
 		public static bool LineOfSight(this NPC npc, Vector2 toPosition)
 			=> Collision.CanHitLine(npc.position + new Vector2(npc.width * 0.5f, npc.height * 0.25f), 4, 4, toPosition, 4, 4);

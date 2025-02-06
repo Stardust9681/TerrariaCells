@@ -18,6 +18,5 @@ namespace TerrariaCells.Common.Configs
 
         [DefaultValue(true)]
         public bool ShowCooldown;
-
     }
 }

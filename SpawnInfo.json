@@ -1037,6 +1037,11 @@
               "NameOrType": "BloodCrawler",
               "OffsetX": "749",
               "OffsetY": "114"
+            },
+            {
+              "NameOrType": "BrainofCthulhu",
+              "OffsetX": "896",
+              "OffsetY": "67"
             }
           ]
         }

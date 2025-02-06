@@ -58,6 +58,5 @@ namespace TerrariaCells.Common.Configs
 		/// </summary>
 		[DefaultValue(true)]
 		public bool HideVanillaInventory;
-
 	}
 }

@@ -68,8 +68,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		private void CastingAI(NPC npc)
 		{
 			int timer = npc.Timer();
-			if(timer == 0)
-				CombatNPC.ToggleContactDamage(npc, true);
 			if (timer % 45 == 0)
 			{
 				NPC ball = NPC.NewNPCDirect(npc.GetSource_FromAI(), npc.Center, Terraria.ID.NPCID.ChaosBall);
@@ -86,14 +84,15 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		}
 		private void TeleportingAI(NPC npc)
 		{
-			if (npc.Timer() < 5)
+			int timer = npc.Timer();
+			if (npc.Timer() == 1)
 			{
 				Player target = Main.player[npc.target];
 				int direction = target.direction;
 
 				const int PxPerTile = 16;
-				const int MinDistance = 128;
-				const int MaxDistance = 512;
+				const int MinDistance = 6 * PxPerTile;
+				const int MaxDistance = 12 * PxPerTile;
 				const int RayCount = 9;
 				const int TotalAngle = 90;
 
@@ -101,15 +100,15 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				for (int i = 0; i < RayCount; i++)
 				{
 					float rayAngle = (float)((i - (RayCount / 2)) / (float)RayCount) * TotalAngle;
-					rays[i] = new Vector2(-direction, 0).RotatedBy(MathHelper.ToRadians(rayAngle)) * PxPerTile;
+					rays[i] = (Vector2.UnitX * -direction).RotatedBy(MathHelper.ToRadians(rayAngle)) * PxPerTile;
 				}
 
 				for (int i = 0; i < RayCount; i++)
 				{
-					Vector2 start = target.Center * rays[i] * (MaxDistance / PxPerTile);
-					for (int j = 0; j < MaxDistance / PxPerTile; j++)
+					Vector2 start = target.Center + (rays[i] * MinDistance / PxPerTile);
+					for (int j = MinDistance / PxPerTile; j < MaxDistance / PxPerTile; j++)
 					{
-						Rectangle tpRect = new Rectangle((int)start.X - (npc.width / 2), (int)start.Y - (npc.height / 2), npc.width, npc.height);
+						//Rectangle tpRect = new Rectangle((int)start.X - (npc.width / 2), (int)start.Y - (npc.height / 2), npc.width, npc.height);
 						//if (!Collision.SolidTiles(tpRect.Location.ToVector2(), npc.width, npc.height)
 						//	&& (Utilities.TCellsUtils.FindGround(tpRect).Y < tpRect.Bottom + (npc.height * 2)))
 						//	start -= rays[i];
@@ -152,7 +151,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 					d.scale = Main.rand.NextFloat(1.33f, 1.67f);
 				}
 				npc.position = new Vector2(npc.ai[2], npc.ai[3] - npc.height);
-				CombatNPC.ToggleContactDamage(npc, true);
 				npc.Phase(Casting);
 				return;
 			}
