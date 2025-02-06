@@ -584,7 +584,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			lerpValue = MathF.Min(lerpValue, 1);
 			if (Direction < 0)
 			{
-				Projectile.position.X = MathHelper.Lerp(Target, Anchor, lerpValue);
+				Projectile.position.X = MathHelper.Lerp(Anchor, Target, lerpValue);
 			}
 			Projectile.width = (int)MathHelper.Lerp(0, MathF.Abs(Target - Anchor), lerpValue);
 
@@ -599,6 +599,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				int segmentsCount = Projectile.width / 28;
 				int remainder = Projectile.width - (segmentsCount * 28);
 				Vector2 anchor = new Vector2(Anchor, Projectile.position.Y) - Main.screenPosition;
+				Vector2 start = anchor;
 				Color drawColour = Color.Lerp(Color.OrangeRed, Color.DarkRed, 0.4f);
 				for (int i = 0; i < segmentsCount; i++)
 				{
@@ -622,6 +623,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 						Vector2.Zero,
 						1f,
 						Direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
+				//Utils.DrawLine(Main.spriteBatch, start + Main.screenPosition, anchor + Main.screenPosition, Color.Green);
+				//Utils.DrawLine(Main.spriteBatch, Projectile.position, Projectile.position + new Vector2(Projectile.width, 0), Color.Orange);
 			}
 			return false;
 		}
