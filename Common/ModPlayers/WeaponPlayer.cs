@@ -23,6 +23,7 @@ namespace TerrariaCells.Common.ModPlayers
         public int swingType = 0;
         public float itemScale = 1;
         public bool reloading = false;
+        public int reuseTimer = 0;
 
         //multiple
         public float OriginalRotation = 0;
@@ -45,6 +46,7 @@ namespace TerrariaCells.Common.ModPlayers
             {
                 reloading = false;
             }
+            if (reuseTimer > 0) reuseTimer--;
             base.PostUpdate();
         }
     }
@@ -161,7 +163,7 @@ namespace TerrariaCells.Common.ModPlayers
                 drawInfo.DrawDataCache.Add(
                     new DrawData(
                         t.Value,
-                        position,
+                        position + new Vector2(0, drawInfo.drawPlayer.gfxOffY),
                         null,
                         Lighting.GetColor(drawInfo.drawPlayer.itemLocation.ToTileCoordinates()),
                         drawInfo.drawPlayer.itemRotation + rotationAdd,

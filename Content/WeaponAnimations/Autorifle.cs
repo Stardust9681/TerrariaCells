@@ -52,27 +52,16 @@ namespace TerrariaCells.Content.WeaponAnimations
             WeaponPlayer mplayer = player.GetModPlayer<WeaponPlayer>();
             if (Ammo > 0 && !mplayer.reloading && player.altFunctionUse != 2)
             {
-                player.HeldItem.useTime = (int)(
-                    ContentSamples.ItemsByType[player.HeldItem.type].useTime
-                );
-                player.HeldItem.useAnimation = (int)(
-                    ContentSamples.ItemsByType[player.HeldItem.type].useAnimation
-                );
-                player.HeldItem.reuseDelay = (int)(
-                    ContentSamples.ItemsByType[player.HeldItem.type].reuseDelay
-                );
+
+                item.useTime = OriginalUseTime;
+                item.useAnimation = OriginalUseAnimation;
+                item.reuseDelay = OriginalReuseDelay;
             }
             else
             {
-                player.HeldItem.useTime = (int)(
-                    ContentSamples.ItemsByType[player.HeldItem.type].useTime * ReloadTimeMult
-                );
-                player.HeldItem.useAnimation = (int)(
-                    ContentSamples.ItemsByType[player.HeldItem.type].useAnimation * ReloadTimeMult
-                );
-                player.HeldItem.reuseDelay = (int)(
-                    ContentSamples.ItemsByType[player.HeldItem.type].reuseDelay * ReloadTimeMult
-                );
+                item.useTime = (int)(OriginalUseTime * ReloadTimeMult);
+                item.useAnimation = (int)(OriginalUseAnimation * ReloadTimeMult);
+                item.reuseDelay = (int)(OriginalReuseDelay * ReloadTimeMult);
             }
             return base.CanUseItem(item, player);
         }
@@ -84,7 +73,6 @@ namespace TerrariaCells.Content.WeaponAnimations
             int animationTime = player.itemAnimationMax - player.itemAnimation;
             //time recoil takes
             int maxRecoilTime = player.itemAnimationMax / 2;
-            ReloadTimeMult = 3;
 
             //only do shoot animation if you shouldnt be reloading
             if (Ammo > 0 && !mplayer.reloading && player.altFunctionUse != 2)

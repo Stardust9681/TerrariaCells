@@ -83,18 +83,28 @@ namespace TerrariaCells.Content.WeaponAnimations
 
             return false;
         }
-
+        
         public override void UseStyle(Item item, Player player, Rectangle heldItemFrame)
         {
             if (IsBroadsword(item))
             {
+                //if (player.itemTime != 0)
+                //{
+                //    return;
+                //}
                 WeaponPlayer mplayer = player.GetModPlayer<WeaponPlayer>();
 
-                mplayer.useDirection = -1;
-                if (Main.MouseWorld.X >= player.Center.X)
+                if (player.itemAnimation == player.itemAnimationMax)
                 {
-                    mplayer.useDirection = 1;
+                    mplayer.useDirection = -1;
+                    if (Main.MouseWorld.X >= player.Center.X)
+                    {
+                        mplayer.useDirection = 1;
+                    }
+                    mplayer.useRotation = player.Center.AngleTo(Main.MouseWorld);
                 }
+
+
                 //make player face direction of swing
                 player.direction = mplayer.useDirection;
                 //sword point at cursor
@@ -146,7 +156,7 @@ namespace TerrariaCells.Content.WeaponAnimations
                                 item.damage,
                                 item.knockBack,
                                 player.whoAmI,
-                                ai1: item.useTime
+                                ai1: item.useTime - 2
                             );
                     }
                 }
@@ -154,11 +164,13 @@ namespace TerrariaCells.Content.WeaponAnimations
                 {
                     item.noMelee = false;
                 }
+
                 //set that offset
                 player.itemRotation =
                     mplayer.useRotation
                     + MathHelper.ToRadians(mplayer.useDirection == 1 ? 45 : 135)
                     + MathHelper.ToRadians(angleOffset * mplayer.useDirection);
+
                 //work with grav potion
                 if (player.gravDir == -1f)
                 {
@@ -188,6 +200,7 @@ namespace TerrariaCells.Content.WeaponAnimations
                     if (mplayer.swingType > 2)
                     {
                         mplayer.swingType = 0;
+                        mplayer.reuseTimer = 20;
                     }
                 }
                 //arm
@@ -241,15 +254,21 @@ namespace TerrariaCells.Content.WeaponAnimations
 
         public override bool CanUseItem(Item item, Player player)
         {
+            if (player.GetModPlayer<WeaponPlayer>().reuseTimer > 0)
+            {
+                return false;
+            }
             if (
                 player.GetModPlayer<WeaponPlayer>().swingType == 2
                 && !HeavySwords.Contains(item.type)
             )
             {
+                
                 item.noMelee = true;
             }
             else
             {
+                
                 item.noMelee = false;
             }
             return base.CanUseItem(item, player);
