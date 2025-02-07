@@ -150,7 +150,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				//	Dust d = Dust.NewDustDirect(npc.position, npc.width, npc.height, Terraria.ID.DustID.Shadowflame);
 				//	d.scale = Main.rand.NextFloat(1.33f, 1.67f);
 				//}
-				npc.position = new Vector2(npc.ai[2], npc.ai[3] - (2*npc.height));
+				npc.position = new Vector2(npc.ai[2], npc.ai[3] - npc.height);
 				if(timer > 255)
 					npc.Phase(Casting);
 			}
