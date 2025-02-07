@@ -35,15 +35,18 @@ namespace TerrariaCells.Content.WeaponAnimations
             WeaponPlayer mplayer = player.GetModPlayer<WeaponPlayer>();
             if (Ammo > 0 && !mplayer.reloading && player.altFunctionUse != 2)
             {
-                player.HeldItem.useTime = (int)(ContentSamples.ItemsByType[player.HeldItem.type].useTime);
-                player.HeldItem.useAnimation = (int)(ContentSamples.ItemsByType[player.HeldItem.type].useAnimation);
+
+                item.useTime = OriginalUseTime;
+                item.useAnimation = OriginalUseAnimation;
+                item.reuseDelay = OriginalReuseDelay;
             }
             else
             {
-                player.HeldItem.useTime = (int)(ContentSamples.ItemsByType[player.HeldItem.type].useTime * ReloadTimeMult);
-                player.HeldItem.useAnimation = (int)(ContentSamples.ItemsByType[player.HeldItem.type].useAnimation * ReloadTimeMult);
+                item.useTime = (int)(OriginalUseTime * ReloadTimeMult);
+                item.useAnimation = (int)(OriginalUseAnimation * ReloadTimeMult);
+                item.reuseDelay = (int)(OriginalReuseDelay * ReloadTimeMult);
             }
-                return base.CanUseItem(item, player);
+            return base.CanUseItem(item, player);
         }
         public override void UseStyle(Item item, Player player, Rectangle heldItemFrame)
         {
@@ -53,7 +56,6 @@ namespace TerrariaCells.Content.WeaponAnimations
             //time recoil takes
             int maxRecoilTime = player.itemAnimationMax / 2;
 
-            ReloadTimeMult = 2;
             //only do shoot animation if you shouldnt be reloading
             if (Ammo > 0 && !mplayer.reloading && player.altFunctionUse != 2)
             {

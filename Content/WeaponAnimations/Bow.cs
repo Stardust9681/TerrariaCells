@@ -55,8 +55,7 @@ namespace TerrariaCells.Content.WeaponAnimations
         public override void UseStyle(Item item, Player player, Rectangle heldItemFrame)
         {
             int animationTime = player.itemAnimationMax - player.itemAnimation;
-            player.itemLocation = player.Center + new Vector2(10 * player.direction, 0).RotatedBy(player.itemRotation);
-            //Main.NewText(player.altFunctionUse);
+            player.itemLocation = player.Center + new Vector2(10 * player.direction, player.gfxOffY).RotatedBy(player.itemRotation);
             if (player.altFunctionUse == 2)
             {
                 //Main.NewText(Charge);
