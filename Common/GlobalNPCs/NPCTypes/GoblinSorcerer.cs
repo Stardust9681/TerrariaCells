@@ -68,11 +68,11 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		private void CastingAI(NPC npc)
 		{
 			int timer = npc.Timer();
-			if (timer % 45 == 0)
+			if (timer % 15 == 0)
 			{
 				NPC ball = NPC.NewNPCDirect(npc.GetSource_FromAI(), npc.Center, Terraria.ID.NPCID.ChaosBall);
-				ball.velocity = npc.DirectionTo(Main.player[npc.target].Center) * 6f;
-				ball.damage = npc.damage / 2;
+				ball.velocity = npc.DirectionTo(Main.player[npc.target].Center) * 3f;
+				ball.damage = npc.damage / 3;
 				ball.netUpdate = true;
 			}
 			if (timer > 45 * 3)
@@ -85,7 +85,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		private void TeleportingAI(NPC npc)
 		{
 			int timer = npc.Timer();
-			if (npc.Timer() == 1)
+			if (timer == 1)
 			{
 				Player target = Main.player[npc.target];
 				int direction = target.direction;
@@ -112,7 +112,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 						//if (!Collision.SolidTiles(tpRect.Location.ToVector2(), npc.width, npc.height)
 						//	&& (Utilities.TCellsUtils.FindGround(tpRect).Y < tpRect.Bottom + (npc.height * 2)))
 						//	start -= rays[i];
-						if (Collision.CanHitLine(start, 8, 8, start + rays[i], 8, 8))
+						if (Collision.CanHitLine(start, 24, 24, start + rays[i], 24, 24))
 							start += rays[i];
 						else
 						{
@@ -143,20 +143,20 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				npc.ai[2] = ground.X;
 				npc.ai[3] = ground.Y;
 			}
-			if (npc.Timer() > 210)
+			if (timer > 210)
 			{
-				for (int i = 0; i < 7; i++)
-				{
-					Dust d = Dust.NewDustDirect(npc.position, npc.width, npc.height, Terraria.ID.DustID.Shadowflame);
-					d.scale = Main.rand.NextFloat(1.33f, 1.67f);
-				}
-				npc.position = new Vector2(npc.ai[2], npc.ai[3] - npc.height);
-				npc.Phase(Casting);
-				return;
+				//for (int i = 0; i < 7; i++)
+				//{
+				//	Dust d = Dust.NewDustDirect(npc.position, npc.width, npc.height, Terraria.ID.DustID.Shadowflame);
+				//	d.scale = Main.rand.NextFloat(1.33f, 1.67f);
+				//}
+				npc.position = new Vector2(npc.ai[2], npc.ai[3] - (2*npc.height));
+				if(timer > 255)
+					npc.Phase(Casting);
 			}
-			else if(npc.Timer() > 5 && MathF.Pow(npc.Timer(), 2) % 60 < 5)
+			else if(timer > 5 && MathF.Pow(timer, 2) % 60 < 5)
 			{
-				Dust d = Dust.NewDustDirect(new Vector2(npc.ai[2], npc.ai[3]+2), npc.width, npc.height, Terraria.ID.DustID.Shadowflame);
+				Dust d = Dust.NewDustDirect(new Vector2(npc.ai[2], npc.ai[3]-2), npc.width, npc.height, Terraria.ID.DustID.Shadowflame);
 				d.scale = Main.rand.NextFloat(1.33f, 1.67f);
 				d.velocity.Y = -MathF.Abs(d.velocity.Y) * 0.67f - (1 - MathF.Abs(d.velocity.X));
 			}
