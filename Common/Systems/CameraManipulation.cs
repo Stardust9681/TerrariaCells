@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TerrariaCells.Common.Configs;
+using Terraria.Graphics.CameraModifiers;
 
 namespace TerrariaCells.Common.Systems
 {
@@ -65,13 +66,24 @@ namespace TerrariaCells.Common.Systems
 			float zoomClamp = Math.Max(Transform.Zoom.X, _DefaultZoomCap);
 			Vector2 zoom = Vector2.One * zoomClamp;
 
+			//Decided to keep the zoom actually
 			_ZoomOverride.TryApply(ref zoom);
 
 			Transform.Zoom = zoom;
 		}
 		public override void ModifyScreenPosition()
 		{
-			_CameraModifier.TryApply(ref Main.screenPosition);
+			if (!Main.LocalPlayer.dead)
+			{
+				_CameraModifier.TryApply(ref Main.screenPosition);
+				Main.instance.CameraModifiers.ApplyTo(ref Main.screenPosition);
+			}
+			else
+			{
+				_CameraModifier.Position = Main.screenPosition;
+				_CameraModifier.LerpTime = 0;
+				_CameraModifier.Time = 0;
+			}
 		}
 		public override void PreUpdateEntities()
 		{

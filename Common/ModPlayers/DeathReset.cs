@@ -46,31 +46,36 @@ public class DeathReset : ModPlayer, IEntitySource
 		ModContent.GetInstance<ClickedHeartsTracker>().Reset();
 		ModContent.GetInstance<ChestLootSpawner>().Reset();
 		foreach (NPC npc in Main.ActiveNPCs)
-			npc.StrikeInstantKill(); //Kill all NPCs so they aren't re-added to respawn buffer
+			if(!npc.friendly) npc.active = false; //Kill all NPCs so they aren't re-added to respawn buffer
 		foreach (Item item in Main.ActiveItems)
 			item.TurnToAir(true); //Turn all items to air, so player and NPC drops don't remain
 		foreach (Projectile projectile in Main.ActiveProjectiles)
-			projectile.Kill(); //Disable any tombstones or what-have-you
+			projectile.active = false; //Disable any tombstones or what-have-you
 		NPCRoomSpawner.ResetSpawns();
 		WorldPylonSystem.ResetPylons();
 
 		//Wipes the map data for the current session, but it doesn't like trying to load areas that you've explored this session, and the map will be restored next time you load the world
 		//Main.clearMap = true;
+
+		Item[] startInv = GetStartingItems();
+		for (int i = 0; i < startInv.Length; i++)
+		{
+			Player.inventory[i] = startInv[i].Clone();
+			if (startInv[i].IsAir)
+				Player.inventory[i].TurnToAir();
+		}
     }
 
 
-
-	public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath)
-	{
-		return new Item[]
-			{
+	Item[] GetStartingItems() => new Item[]
+		{
 				new Item(Terraria.ID.ItemID.CopperShortsword), //Weapon Slot 1
 				new Item(Terraria.ID.ItemID.WoodenBow), //Weapon Slot 2
 				new Item(0, 0), //Skill Slot 1 (idk if this'll keep it open I hope it does tho)
 				new Item(0, 0), //Skill Slot 2
 				new Item(Terraria.ID.ItemID.LesserHealingPotion, 2), //Potion Slot
-			};
-	}
+		};
+	public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath) => GetStartingItems();
 	public override void ModifyStartingInventory(IReadOnlyDictionary<string, List<Item>> itemsByMod, bool mediumCoreDeath)
 	{
 		itemsByMod["Terraria"].Clear();

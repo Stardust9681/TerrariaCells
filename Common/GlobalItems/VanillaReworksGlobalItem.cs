@@ -14,27 +14,23 @@ namespace TerrariaCells.Common.GlobalItems
             // CHANGE DEFAULT ITEM STATS HERE
             switch (item.type)
             {
-
                 // RANGED WEAPONS
                 // Guns
                 case ItemID.PhoenixBlaster:
                     item.damage = 20;
                     item.useTime = 14;
-                    item.useAnimation = item.useTime;
                     item.knockBack = 0f;
                     item.value = 1000;
-
                     break;
                 case ItemID.Minishark:
                     // dps ~60, with reloading ~90, tapers off to 70
                     item.damage = 10;
                     item.knockBack = 0f;
                     item.value = 1000;
-                    break;
+					break;
                 case ItemID.SniperRifle:
                     item.damage = 60;
                     item.useTime = 25;
-                    item.useAnimation = item.useTime;
                     item.knockBack = 0f;
                     item.value = 1000;
                     break;
@@ -42,21 +38,18 @@ namespace TerrariaCells.Common.GlobalItems
                     // Change its damage in WeaponHoldoutify.cs, no idea why is it there but I don't want to break it
                     item.damage = 13;
                     item.useTime = 48;
-                    item.useAnimation = item.useTime;
                     item.value = 1000;
                     break;
                 // Bows
                 case ItemID.PulseBow:
                     item.damage = 15;
                     item.useTime = 23;
-                    item.useAnimation = item.useTime;
                     item.knockBack = 0f;
                     item.value = 1000;
                     break;
                 case ItemID.IceBow:
                     item.damage = 15;
                     item.useTime = 16;
-                    item.useAnimation = item.useTime;
                     item.knockBack = 0f;
                     item.value = 1000;
                     break;
@@ -64,31 +57,26 @@ namespace TerrariaCells.Common.GlobalItems
                 case ItemID.Toxikarp:
                     item.damage = 2;
                     item.useTime = 12;
-                    item.useAnimation = item.useTime;
                     item.knockBack = 0f;
                     item.value = 1000;
                     break;
                 case ItemID.RocketLauncher:
                     item.damage = 10;
                     item.useTime = 30;
-                    item.useAnimation = item.useTime;
                     item.knockBack = 0f;
                     item.value = 1000;
                     break;
                 case ItemID.StarCannon:
                     item.damage = 15;
                     item.useTime = 10;
-
                     item.useAnimation = 30;
                     item.reuseDelay = 15;
                     item.knockBack = 0f;
                     item.value = 1000;
-
-                    break;
+					return;
                 case ItemID.GrenadeLauncher:
                     item.damage = 80;
                     item.useTime = 70;
-                    item.useAnimation = item.useTime;
                     item.knockBack = 0f;
                     item.value = 1000;
                     break;
@@ -97,41 +85,86 @@ namespace TerrariaCells.Common.GlobalItems
                     item.damage = 20;
                     item.knockBack = 0f;
                     item.value = 1000;
-                    break;
-
+					break;
 
                 // MELEE
                 // Swords
                 case ItemID.FieryGreatsword:
                     item.damage = 30;
                     item.useTime = 30;
-                    item.useAnimation = item.useTime;
                     item.value = 1000;
                     break;
                 case ItemID.Starfury:
                     item.damage = 8;
                     item.useTime = 20;
-                    item.useAnimation = item.useTime;
                     item.value = 1000;
                     break;
+                // MAGE
+                case ItemID.EmeraldStaff:
+                    item.damage = 15;
+                    item.mana = 5;
+                    item.useTime = 18;
+                    item.knockBack = 0f;
+                    item.shootSpeed = 50;
+                    break;
+                case ItemID.InfernoFork:
+                    item.damage = 15;
+                    item.mana = 80;
+                    item.useTime = 45;
+                    item.knockBack = 0f;
+                    break;
+                case ItemID.StaffofEarth:
+                    item.damage = 120;
+                    item.mana = 100;
+                    item.useTime = 45;
+                    item.knockBack = 10f;
+                    break;
+                case ItemID.LaserRifle:
+                    item.damage = 5;
+                    item.mana = 3;
+                    item.useTime = 8;
+                    item.knockBack = 0f;
+                    break;
+                case ItemID.VenomStaff:
+                    item.damage = 8;
+                    item.mana = 40;
+                    item.useTime = 30;
+                    item.knockBack = 0f;
+                    break;
+                case ItemID.BookofSkulls: 
+                    item.damage = 40;
+                    item.mana = 40;
+                    item.useTime = 20;
+                    item.knockBack = 0f;
+                    item.shootSpeed = 12;
+                    break;
+                // SUMMON
+                // Staffs
+                case ItemID.ClingerStaff:
+                    item.knockBack = 0f;
+                    break;
+
+				default:
+					return;
             }
-        }
-        public override void ModifyHitNPC(Item item, Player player, NPC target, ref NPC.HitModifiers modifiers)
-        {
-            if (item.type == ItemID.FieryGreatsword && target.HasBuff(BuffID.Oiled))
-            {
-                modifiers.SetCrit();
-                Projectile.NewProjectileDirect(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ProjectileID.Volcano, item.damage, 5, player.whoAmI, ai1: 1);
-            }
-            base.ModifyHitNPC(item, player, target, ref modifiers);
+			item.useAnimation = item.useTime;
         }
         
+        public override void OnHitNPC(Item item, Player player, NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            if (item.type == ItemID.FieryGreatsword && target.oiled)
+            {
+                hit.Crit = true;
+                Projectile.NewProjectileDirect(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ProjectileID.Volcano, hit.Damage, 5);
+            }
+            base.OnHitNPC(item, player, target, hit, damageDone);
+        }
+
         // Prevents guns from utilizing ammo
         public override bool NeedsAmmo(Item item, Player player)
         {
             return false;
         }
-
 
         public override void ModifyWeaponCrit(Item item, Player player, ref float crit)
         {
@@ -207,16 +240,14 @@ namespace TerrariaCells.Common.GlobalItems
 
             }
 
-
             /*
-            //// FOR TESTING
+            // FOR TESTING
             Mod.Logger.Debug("Tooltip for " + item.Name);
             foreach (TooltipLine tooltip in tooltips)
             {
                 Mod.Logger.Debug(tooltip.Name + " : " + tooltip.Text);
             }
             */
-
         }
     }
 }
