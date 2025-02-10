@@ -46,11 +46,11 @@ public class DeathReset : ModPlayer, IEntitySource
 		ModContent.GetInstance<ClickedHeartsTracker>().Reset();
 		ModContent.GetInstance<ChestLootSpawner>().Reset();
 		foreach (NPC npc in Main.ActiveNPCs)
-			if(!npc.friendly) npc.StrikeInstantKill(); //Kill all NPCs so they aren't re-added to respawn buffer
+			if(!npc.friendly) npc.active = false; //Kill all NPCs so they aren't re-added to respawn buffer
 		foreach (Item item in Main.ActiveItems)
 			item.TurnToAir(true); //Turn all items to air, so player and NPC drops don't remain
 		foreach (Projectile projectile in Main.ActiveProjectiles)
-			projectile.Kill(); //Disable any tombstones or what-have-you
+			projectile.active = false; //Disable any tombstones or what-have-you
 		NPCRoomSpawner.ResetSpawns();
 		WorldPylonSystem.ResetPylons();
 

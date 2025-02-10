@@ -66,10 +66,8 @@ namespace TerrariaCells.Common.Systems
 			float zoomClamp = Math.Max(Transform.Zoom.X, _DefaultZoomCap);
 			Vector2 zoom = Vector2.One * zoomClamp;
 
-			if (!Main.LocalPlayer.dead)
-			{
-				_ZoomOverride.TryApply(ref zoom);
-			}
+			//Decided to keep the zoom actually
+			_ZoomOverride.TryApply(ref zoom);
 
 			Transform.Zoom = zoom;
 		}
