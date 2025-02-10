@@ -115,43 +115,43 @@ namespace TerrariaCells.Common.GlobalItems
                     item.value = 1000;
                     break;
                 // MAGE
-                case EmeraldStaff:
+                case ItemID.EmeraldStaff:
                     item.damage = 15;
                     item.mana = 5;
                     item.useTime = 18;
                     item.knockBack = 0f;
-                    item.velocity = 50;
+                    item.shootSpeed = 50;
                     break;
-                case InfernoFork:
+                case ItemID.InfernoFork:
                     item.damage = 15;
                     item.mana = 80;
                     item.useTime = 45;
                     item.knockBack = 0f;
                     break;
-                case StaffofEarth:
+                case ItemID.StaffofEarth:
                     item.damage = 120;
                     item.mana = 100;
                     item.useTime = 45;
                     item.knockBack = 10f;
                     break;
-                case LaserRifle:
+                case ItemID.LaserRifle:
                     item.damage = 5;
                     item.mana = 3;
                     item.useTime = 8;
                     item.knockBack = 0f;
                     break;
-                case VenomStaff:
+                case ItemID.VenomStaff:
                     item.damage = 8;
                     item.mana = 40;
                     item.useTime = 30;
                     item.knockBack = 0f;
                     break;
-                case BookofSkulls: 
+                case ItemID.BookofSkulls: 
                     item.damage = 40;
                     item.mana = 40;
                     item.useTime = 20;
                     item.knockBack = 0f;
-                    item.velocity = 12;
+                    item.shootSpeed = 12;
                     break;
                 // SUMMON
                 // Staffs
