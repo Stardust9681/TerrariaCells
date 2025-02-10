@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent.UI.States;
 using Terraria.ID;
+using Terraria.Initializers;
+using Terraria.IO;
 using Terraria.ModLoader;
+using Terraria.Utilities;
 
 namespace TerrariaCells.Common.Systems
 {
@@ -17,7 +23,23 @@ namespace TerrariaCells.Common.Systems
             Terraria.On_Main.DoDraw_UpdateCameraPosition += On_Main_DoDraw_UpdateCameraPosition;
             On_Player.PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool += On_Player_PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool;
             On_Player.PickupItem += On_Player_PickupItem;
+            On_UIWorldSelect.NewWorldClick += On_UIWorldSelect_NewWorldClick;
         }
+
+        private void On_UIWorldSelect_NewWorldClick(On_UIWorldSelect.orig_NewWorldClick orig, UIWorldSelect self, Terraria.UI.UIMouseEvent evt, Terraria.UI.UIElement listeningElement)
+        {
+            SoundEngine.PlaySound(SoundID.MenuOpen);
+            Debug.Write(Main.WorldPath);
+            byte[] bytes = ModContent.GetInstance<TerrariaCells>().GetFileBytes("Common/Assets/World/terracellspremadev0.2.2.wld");
+            File.WriteAllBytes(Main.WorldPath + "/terracellsv0.2.1.wld", bytes);
+            byte[] bytes2 = ModContent.GetInstance<TerrariaCells>().GetFileBytes("Common/Assets/World/terracellspremadev0.2.2.twld");
+            File.WriteAllBytes(Main.WorldPath + "/terracellsv0.2.1.twld", bytes2);
+
+            Main.ActiveWorldFileData = new WorldFileData(Main.WorldPath + "/terracellsv0.2.1.wld", false);
+            Main.worldName = "terracellsv0.2.1";
+            WorldGen.playWorld();
+        }
+
         //reduce amount of mana the little star pickups give
         private Item On_Player_PickupItem(On_Player.orig_PickupItem orig, Player self, int playerIndex, int worldItemArrayIndex, Item itemToPickUp)
         {
