@@ -105,12 +105,12 @@ namespace TerrariaCells.Content.WeaponAnimations
                 {
                     player.itemRotation += MathHelper.Pi;
                 }
-                if (player.itemTime < 5 && player.reuseDelay == item.reuseDelay)
+                if (player.itemTime > player.itemTimeMax - 5 && player.reuseDelay == item.reuseDelay)
                 {
                     player.itemLocation += TCellsUtils.LerpVector2(
                         Vector2.Zero,
                         (player.AngleTo(Main.MouseWorld) + MathHelper.Pi).ToRotationVector2() * 5,
-                        player.itemTime,
+                        player.itemTimeMax - player.itemTime,
                         5,
                         TCellsUtils.LerpEasing.DownParabola
                     );

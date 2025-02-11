@@ -124,14 +124,14 @@ namespace TerrariaCells.Content.WeaponAnimations
                     break;
                  
                 case ItemID.GrenadeLauncher:
-                    ReloadTimeMult = 1.5f;
+                    ReloadTimeMult = 0.6f;
                     break;
                 case ItemID.StarCannon:
                 case ItemID.RocketLauncher:
-                    ReloadTimeMult = 3;
+                    ReloadTimeMult = 2f;
                     break;
                 case ItemID.SniperRifle:
-                    ReloadTimeMult = 3;
+                    ReloadTimeMult = 1.2f;
                     break;
                  
                     
