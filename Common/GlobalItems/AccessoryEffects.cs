@@ -40,22 +40,39 @@ namespace TerrariaCells.Common.GlobalItems
 		}
 		public override void UpdateAccessory(Item item, Player player, bool hideVisual)
 		{
+			ModPlayers.AccessoryPlayer modPlayer = player.GetModPlayer<ModPlayers.AccessoryPlayer>();
 			switch (item.type)
 			{
-				case ItemID.FastClock: FastClock(player); break;
-				case ItemID.BandofRegeneration: BandOfRegeneration(player); break;
-				case ItemID.FrozenTurtleShell: FrozenShield(player, item); break;
-				case ItemID.ObsidianShield: ObsidianShield(player); break;
-				case ItemID.ThePlan: ThePlan(player); break;
-				case ItemID.FeralClaws: FeralClaws(player); break;
-				case ItemID.Nazar: Nazar(player); break;
-				case ItemID.SharkToothNecklace: SharktoothNecklace(player); break;
-				case ItemID.BerserkerGlove: BerserkerGlove(player); break;
-				case ItemID.ReconScope: ReconScope(player); break;
-				case ItemID.BallOfFuseWire: FuseKitten(player); break;
-				case ItemID.ChlorophyteDye: ChlorophyteCoating(player); break;
-				case ItemID.AmmoBox: AmmoBox(player); break;
-				case ItemID.StalkersQuiver: StalkerQuiver(player); break;
+				case ItemID.FastClock: modPlayer.fastClock = true; break;
+				case ItemID.BandofRegeneration: modPlayer.bandOfRegen = true; break;
+				case ItemID.FrozenTurtleShell: modPlayer.frozenShieldItem = item; break;
+				case ItemID.ObsidianShield: player.statDefense += 4; break;
+				case ItemID.ThePlan: modPlayer.thePlan = true; break;
+				//case ItemID.CelestialShell: break;
+
+				case ItemID.FeralClaws: player.GetAttackSpeed(DamageClass.Melee) += 0.28f; break;
+				case ItemID.Nazar: modPlayer.nazar = true; break;
+				case ItemID.SharkToothNecklace: modPlayer.sharktooth = true; break;
+				case ItemID.BerserkerGlove: modPlayer.bersGlove = true; break;
+
+				case ItemID.ReconScope: modPlayer.reconScope = true; break;
+				case ItemID.BallOfFuseWire: modPlayer.fuseKitten = true; break;
+				case ItemID.ChlorophyteDye: modPlayer.chlorophyteCoating = true; break;
+				//case ItemID.AmmoBox: break;
+				case ItemID.StalkersQuiver: modPlayer.stalkerQuiver = true; break;
+
+				case ItemID.ArcaneFlower: //Already gives -0.08 manaCost, -400 aggro
+					player.GetDamage(DamageClass.Magic) += 0.5f;
+					player.manaCost += 0.58f;
+					player.aggro += 400;
+					break;
+				case ItemID.ManaRegenerationBand: //Already gives +20 mana, +1 manaRegenDelayBonus, +25 manaRegenBonus
+					player.manaRegenDelayBonus += 3f;
+					player.manaRegenBonus += 25;
+					break;
+				case ItemID.NaturesGift: //Already gives -6% manaCost
+					player.manaCost -= 0.27f; //I know suggestion is 25%, I'm going 33% because you're sacrificing SO MUCH for this boost to mana cost of all things
+					break;
 			}
 		}
 
@@ -125,73 +142,9 @@ namespace TerrariaCells.Common.GlobalItems
             }
         }
 
-		private void CelestialStone(Player player)
-		{
-			//var modPlayer = player.GetModPlayer<SkillPlayer>();
-			//modPlayer.skillOne_cooldown -= 30;
-			//modPlayer.skillTwo_cooldown -= 30;
-		}
-
-		private void FastClock(Player player)
-		{
-			player.GetModPlayer<ModPlayers.AccessoryPlayer>().fastClock = true;
-		}
-		private void BandOfRegeneration(Player player)
-		{
-			player.GetModPlayer<ModPlayers.AccessoryPlayer>().bandOfRegen = true;
-		}
-		private void FrozenShield(Player player, Item frozenShield)
-		{
-			player.GetModPlayer<ModPlayers.AccessoryPlayer>().frozenShieldItem = frozenShield;
-		}
-		private void ObsidianShield(Player player)
-		{
-			player.statDefense += 4; //Obs Shield already gives +2 and KB Immunity
-		}
-		private void ThePlan(Player player)
-		{
-			player.GetModPlayer<ModPlayers.AccessoryPlayer>().thePlan = true;
-		}
-		private void FeralClaws(Player player)
-		{
-			player.GetAttackSpeed(DamageClass.Melee) += 0.28f; //Feral Claw already gives +0.12f
-		}
-		private void Nazar(Player player)
-		{
-			player.GetModPlayer<ModPlayers.AccessoryPlayer>().nazar = true;
-		}
-		private void SharktoothNecklace(Player player)
-		{
-			player.GetModPlayer<ModPlayers.AccessoryPlayer>().sharktooth = true;
-		}
-		private void BerserkerGlove(Player player)
-		{
-			player.GetModPlayer<ModPlayers.AccessoryPlayer>().bersGlove = true;
-		}
-		private void ReconScope(Player player)
-		{
-			player.GetModPlayer<ModPlayers.AccessoryPlayer>().reconScope = true;
-		}
-		private void FuseKitten(Player player)
-		{
-			player.GetModPlayer<ModPlayers.AccessoryPlayer>().fuseKitten = true;
-		}
-		private void ChlorophyteCoating(Player player)
-		{
-			player.GetModPlayer<ModPlayers.AccessoryPlayer>().chlorophyteCoating = true;
-		}
-		private void AmmoBox(Player player)
-		{
-			//Need Weapons branch, and idk how they have this set up
-		}
-		private void StalkerQuiver(Player player)
-		{
-			player.GetModPlayer<ModPlayers.AccessoryPlayer>().stalkerQuiver = true;
-		}
-
 		public override void GrabRange(Item item, Player player, ref int grabRange)
 		{
-			if (player.manaMagnet)
+			if ((item.type == ItemID.Star || item.type == ItemID.SoulCake || item.type == ItemID.SugarPlum) && player.manaMagnet)
 				grabRange = 15 * 16;
 		}
 	}
