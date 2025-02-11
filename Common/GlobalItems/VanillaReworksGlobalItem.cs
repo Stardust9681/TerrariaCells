@@ -149,15 +149,15 @@ namespace TerrariaCells.Common.GlobalItems
             }
 			item.useAnimation = item.useTime;
         }
-        
-        public override void OnHitNPC(Item item, Player player, NPC target, NPC.HitInfo hit, int damageDone)
+
+        public override void ModifyHitNPC(Item item, Player player, NPC target, ref NPC.HitModifiers modifiers)
         {
-            if (item.type == ItemID.FieryGreatsword && target.oiled)
+            if (item.type == ItemID.FieryGreatsword && target.HasBuff(BuffID.Oiled))
             {
-                hit.Crit = true;
-                Projectile.NewProjectileDirect(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ProjectileID.Volcano, hit.Damage, 5);
+                modifiers.SetCrit();
+                Projectile.NewProjectileDirect(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ProjectileID.Volcano, item.damage, 5, player.whoAmI, ai1: 1);
             }
-            base.OnHitNPC(item, player, target, hit, damageDone);
+            base.ModifyHitNPC(item, player, target, ref modifiers);
         }
 
         // Prevents guns from utilizing ammo
