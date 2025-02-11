@@ -11,6 +11,15 @@ namespace TerrariaCells.Common.GlobalItems
 {
 	public class AccessoryEffects : GlobalItem
 	{
+		public override void Load()
+		{
+			On_Player.ApplyEquipFunctional += On_Player_ApplyEquipFunctional;
+		}
+		public override void Unload()
+		{
+			On_Player.ApplyEquipFunctional -= On_Player_ApplyEquipFunctional;
+		}
+
 		public override void SetDefaults(Item item)
 		{
 			int[] NewAccessoryTypes = new int[] {
@@ -21,6 +30,29 @@ namespace TerrariaCells.Common.GlobalItems
 			{
 				item.DefaultToAccessory(item.width, item.height);
 				item.maxStack = 1;
+			}
+
+			switch (item.type)
+			{
+				case ItemID.ChlorophyteDye:
+					item.SetNameOverride("Chlorophyte Coating");
+					item.dye = 0;
+					item.glowMask = -1;
+					break;
+				case ItemID.BallOfFuseWire:
+					item.shoot = ProjectileID.None;
+					item.buffType = 0;
+					item.useAnimation = 0;
+					item.useTime = 0;
+					item.useStyle = ItemUseStyleID.None;
+					item.UseSound = null;
+					break;
+				case ItemID.BerserkerGlove:
+					item.defense = 0;
+					break;
+				case ItemID.ObsidianShield:
+					item.defense = 6;
+					break;
 			}
 			if (item.type == ItemID.ChlorophyteDye)
 			{
@@ -38,45 +70,78 @@ namespace TerrariaCells.Common.GlobalItems
 				item.UseSound = null;
 			}
 		}
-		public override void UpdateAccessory(Item item, Player player, bool hideVisual)
+
+		private void On_Player_ApplyEquipFunctional(On_Player.orig_ApplyEquipFunctional orig, Player player, Item item, bool hideVisual)
 		{
 			ModPlayers.AccessoryPlayer modPlayer = player.GetModPlayer<ModPlayers.AccessoryPlayer>();
 			switch (item.type)
 			{
-				case ItemID.FastClock: modPlayer.fastClock = true; break;
-				case ItemID.BandofRegeneration: modPlayer.bandOfRegen = true; break;
-				case ItemID.FrozenTurtleShell: modPlayer.frozenShieldItem = item; break;
-				case ItemID.ObsidianShield: player.statDefense += 4; break;
-				case ItemID.ThePlan: modPlayer.thePlan = true; break;
-				//case ItemID.CelestialShell: break;
+				case ItemID.FastClock:
+					modPlayer.fastClock = true;
+					break;
+				case ItemID.BandofRegeneration:
+					modPlayer.bandOfRegen = true;
+					break;
+				case ItemID.FrozenTurtleShell:
+					modPlayer.frozenShieldItem = item;
+					break;
+				case ItemID.ObsidianShield:
+					player.noKnockback = true;
+					break;
+				case ItemID.ThePlan:
+					modPlayer.thePlan = true;
+					break;
+				//case ItemID.CelestialShell:
+				//break;
 
-				case ItemID.FeralClaws: player.GetAttackSpeed(DamageClass.Melee) += 0.28f; break;
-				case ItemID.Nazar: modPlayer.nazar = true; break;
-				case ItemID.SharkToothNecklace: modPlayer.sharktooth = true; break;
-				case ItemID.BerserkerGlove: modPlayer.bersGlove = true; break;
+				case ItemID.FeralClaws:
+					player.GetAttackSpeed(DamageClass.Melee) += 0.4f;
+					break;
+				case ItemID.Nazar:
+					modPlayer.nazar = true;
+					break;
+				case ItemID.SharkToothNecklace:
+					modPlayer.sharktooth = true;
+					break;
+				case ItemID.BerserkerGlove:
+					modPlayer.bersGlove = true;
+					break;
 
-				case ItemID.ReconScope: modPlayer.reconScope = true; break;
-				case ItemID.BallOfFuseWire: modPlayer.fuseKitten = true; break;
-				case ItemID.ChlorophyteDye: modPlayer.chlorophyteCoating = true; break;
+				case ItemID.ReconScope:
+					modPlayer.reconScope = true;
+					break;
+				case ItemID.BallOfFuseWire:
+					modPlayer.fuseKitten = true;
+					break;
+				case ItemID.ChlorophyteDye:
+					modPlayer.chlorophyteCoating = true;
+					break;
 				//case ItemID.AmmoBox: break;
-				case ItemID.StalkersQuiver: modPlayer.stalkerQuiver = true; break;
+				case ItemID.StalkersQuiver:
+					modPlayer.stalkerQuiver = true;
+					break;
 
-				case ItemID.ArcaneFlower: //Already gives -0.08 manaCost, -400 aggro
-					player.GetDamage(DamageClass.Magic) += 0.5f;
-					player.manaCost += 0.58f;
-					player.aggro += 400;
+				case ItemID.ArcaneFlower:
+					player.GetDamage(DamageClass.Magic) += 0.50f;
+					player.manaCost += 0.5f;
 					break;
-				case ItemID.ManaRegenerationBand: //Already gives +20 mana, +1 manaRegenDelayBonus, +25 manaRegenBonus
-					player.manaRegenDelayBonus += 3f;
-					player.manaRegenBonus += 25;
+				case ItemID.ManaRegenerationBand:
+					player.statManaMax2 += 20;
+					player.manaRegenDelayBonus += 4f;
+					player.manaRegenBonus += 50;
 					break;
-				case ItemID.NaturesGift: //Already gives -6% manaCost
-					player.manaCost -= 0.27f; //I know suggestion is 25%, I'm going 33% because you're sacrificing SO MUCH for this boost to mana cost of all things
+				case ItemID.NaturesGift:
+					//I know suggestion is 25%, I'm going 33% because you're sacrificing SO MUCH for this boost to mana cost of all things
+					player.manaCost -= 0.33f;
+					break;
+				default:
+					orig.Invoke(player, item, hideVisual);
 					break;
 			}
 		}
 
-		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips) {
+		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+		{
 			if (item.type == ItemID.Nazar)
 			{
                 tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
