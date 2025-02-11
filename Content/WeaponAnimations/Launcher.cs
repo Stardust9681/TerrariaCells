@@ -142,8 +142,8 @@ namespace TerrariaCells.Content.WeaponAnimations
                 }
                 else
                 {
-                    player.itemLocation += TCellsUtils.LerpVector2(new Vector2(-10 * player.direction, 15), Vector2.Zero, animationTime, player.itemAnimationMax, TCellsUtils.LerpEasing.InOutCubic);
-                    player.itemRotation = TCellsUtils.LerpFloat(MathHelper.ToRadians(-30) * player.direction, 0, animationTime, player.itemAnimationMax, TCellsUtils.LerpEasing.InOutCubic);
+                    player.itemLocation += TCellsUtils.LerpVector2(new Vector2(-10 * player.direction, 15), Vector2.Zero, player.itemTimeMax - player.itemTime, player.itemTimeMax, TCellsUtils.LerpEasing.InOutCubic);
+                    player.itemRotation = TCellsUtils.LerpFloat(MathHelper.ToRadians(-30) * player.direction, 0, player.itemTimeMax - player.itemTime, player.itemTimeMax, TCellsUtils.LerpEasing.InOutCubic);
                     player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, player.itemRotation - MathHelper.PiOver2 * player.direction);
                 }
                 //play reload sound and increase ammo at end of animation

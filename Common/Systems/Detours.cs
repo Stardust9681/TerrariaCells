@@ -73,7 +73,7 @@ namespace TerrariaCells.Common.Systems
             {
                 projToShoot = ProjectileID.FireArrow;
                 usedAmmoItemId = ItemID.FlamingArrow;
-                return;
+                //return;
             }
             orig(self, sItem, ref projToShoot, ref speed, ref canShoot, ref totalDamage, ref KnockBack, out usedAmmoItemId, dontConsume);
         }

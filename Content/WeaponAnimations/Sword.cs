@@ -202,6 +202,10 @@ namespace TerrariaCells.Content.WeaponAnimations
                         mplayer.swingType = 0;
                         mplayer.reuseTimer = 20;
                     }
+                    if (mplayer.swingType > 1 && player.HeldItem.useTime < 15)
+                    {
+                        mplayer.swingType = 0;
+                    }
                 }
                 //arm
                 player.SetCompositeArmFront(
