@@ -14,32 +14,31 @@ namespace TerrariaCells.Common.ModPlayers
 {
 	public class AccessoryPlayer : ModPlayer
 	{
-		public bool fastClock;
+		public bool fastClock; //+30% speed on killing an enemy
 		private int fastClockTimer = 0;
-		public bool bandOfRegen;
+		public bool bandOfRegen; //+1% health on killing an enemy
+		private bool frozenShield; //Saved from lethal damage once (consumed on use)
 		public Item? frozenShieldItem;
-		private bool frozenShield;
-		public bool thePlan;
-		public bool nazar;
-		public bool sharktooth;
-		public bool bersGlove;
+		public bool thePlan; //+50% damage vs enemies with >90% hp
+		public bool nazar; //+20 mana on melee hit
+		public bool sharktooth; //Inflict bleed on hit
+		public bool bersGlove; //+4% damage for "consecutive" melee hits
 		private int bersTimer;
 		private int bersCounter;
-		public bool reconScope;
-		public bool fuseKitten;
-		public bool chlorophyteCoating;
+		public bool reconScope; //+30% damage when no enemies nearby
+		public bool fuseKitten; //[Unused] Extra rocket explosion damage/radius
+		public bool chlorophyteCoating; //[Unused] Bullets and arrows become chlorophyte
+		public bool stalkerQuiver; //Summons a spectral arrow to hit targets hit by your arrows (deals 50% original damage)
 
-		public bool stalkerQuiver;
 		public override void Load()
 		{
 			IL_Player.OnHurt_Part2 += IL_Player_OnHurt_Part2;
-			IL_Player.ApplyEquipFunctional += IL_Player_ApplyEquipFunctional;
-
+			//IL_Player.ApplyEquipFunctional += IL_Player_ApplyEquipFunctional;
 		}
 		public override void Unload()
 		{
 			IL_Player.OnHurt_Part2 -= IL_Player_OnHurt_Part2;
-			IL_Player.ApplyEquipFunctional -= IL_Player_ApplyEquipFunctional;
+			//IL_Player.ApplyEquipFunctional -= IL_Player_ApplyEquipFunctional;
 		}
 		private void IL_Player_OnHurt_Part2(ILContext context)
 		{
@@ -47,6 +46,10 @@ namespace TerrariaCells.Common.ModPlayers
 			try
 			{
 				ILCursor cursor = new ILCursor(context);
+
+				//===== NOTE =====
+				//Magic Cuffs needs to either be IL or Detour (no orig), due to them restoring mana on hit in vanilla
+				//================
 
 				ILLabel? IL_0176 = null; //IL instruction 0176 (by ilSpy)
 				if (!cursor.TryGotoNext(
@@ -84,6 +87,7 @@ namespace TerrariaCells.Common.ModPlayers
 				MonoModHooks.DumpIL(ModContent.GetInstance<TerrariaCells>(), context);
 			}
 		}
+		//[Unused]
 		private void IL_Player_ApplyEquipFunctional(ILContext context)
 		{
 			log4net.ILog GetInstanceLogger() => ModContent.GetInstance<TerrariaCells>().Logger;
@@ -296,19 +300,22 @@ namespace TerrariaCells.Common.ModPlayers
 				fastClockTimer--;
 				Player.moveSpeed += 0.3f;
 			}
-			bool anyNearbyEnemies = false;
-			for (int i = 0; i < Main.maxNPCs; i++)
+			if (reconScope)
 			{
-				if (!Main.npc[i].active) continue;
-				NPC npc = Main.npc[i];
-				if (MathF.Abs(npc.position.X - Player.position.X) + MathF.Abs(npc.position.X - Player.position.X) < 6 * 16)
+				bool anyNearbyEnemies = false;
+				for (int i = 0; i < Main.maxNPCs; i++)
 				{
-					anyNearbyEnemies = true;
-					break;
+					if (!Main.npc[i].active) continue;
+					NPC npc = Main.npc[i];
+					if (MathF.Abs(npc.position.X - Player.position.X) + MathF.Abs(npc.position.X - Player.position.X) < 6 * 16)
+					{
+						anyNearbyEnemies = true;
+						break;
+					}
 				}
+				if (!anyNearbyEnemies)
+					Player.GetDamage(DamageClass.Generic) += 0.3f;
 			}
-			if (!anyNearbyEnemies)
-				Player.GetDamage(DamageClass.Generic) += 0.3f;
 		}
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
@@ -343,7 +350,11 @@ namespace TerrariaCells.Common.ModPlayers
 					Player.statMana += 20;
 					Player.ManaEffect(20);
 				}
-				if (sharktooth)	target.AddBuff(BuffID.Bleeding, 360); //Replace with modded debuff? 6 sec duration.
+				if (sharktooth)
+				{
+					//Still need Bleed
+					target.AddBuff(BuffID.Bleeding, 360); //Replace with modded debuff? 6 sec duration.
+				}
 				if (bersGlove)
 				{
 					bersCounter++;

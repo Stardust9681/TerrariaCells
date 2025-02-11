@@ -223,9 +223,9 @@ namespace TerrariaCells.Common.GlobalItems
                         float attacksPerSecond = MathF.Round(60 / (float)tempStat, 2);
                         tooltip.Text += Mod.GetLocalization("Tooltips.AttacksPerSecond").Format(attacksPerSecond);
                         break;
-                    case "UseMana":
-                        tooltip.Hide();
-                        break;
+                    //case "UseMana":
+                        //tooltip.Hide();
+                        //break;
                     case "EtherianManaWarning":
                         tooltip.Hide();
                         break;
