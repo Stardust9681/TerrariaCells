@@ -30,13 +30,13 @@ namespace TerrariaCells.Common.Systems
         {
             SoundEngine.PlaySound(SoundID.MenuOpen);
             Debug.Write(Main.WorldPath);
-            byte[] bytes = ModContent.GetInstance<TerrariaCells>().GetFileBytes("Common/Assets/World/terracellspremadev0.3.wld");
-            File.WriteAllBytes(Main.WorldPath + "/terracellsv0.3.wld", bytes);
-            byte[] bytes2 = ModContent.GetInstance<TerrariaCells>().GetFileBytes("Common/Assets/World/terracellspremadev0.3.twld");
-            File.WriteAllBytes(Main.WorldPath + "/terracellsv0.3.twld", bytes2);
+            byte[] bytes = ModContent.GetInstance<TerrariaCells>().GetFileBytes("Common/Assets/World/terracellspremadev0.2.2.wld");
+            File.WriteAllBytes(Main.WorldPath + "/terracellsv0.2.1.wld", bytes);
+            byte[] bytes2 = ModContent.GetInstance<TerrariaCells>().GetFileBytes("Common/Assets/World/terracellspremadev0.2.2.twld");
+            File.WriteAllBytes(Main.WorldPath + "/terracellsv0.2.1.twld", bytes2);
 
-            Main.ActiveWorldFileData = new WorldFileData(Main.WorldPath + "/terracellsv0.3.wld", false);
-            Main.worldName = "terracellsv0.3";
+            Main.ActiveWorldFileData = new WorldFileData(Main.WorldPath + "/terracellsv0.2.1.wld", false);
+            Main.worldName = "terracellsv0.2.1";
             WorldGen.playWorld();
         }
 
