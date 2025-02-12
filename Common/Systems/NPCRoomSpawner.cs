@@ -97,6 +97,7 @@ namespace TerrariaCells.Common.Systems
 		}
 		public override void PostUpdateNPCs()
 		{
+			if (Configs.DevConfig.Instance.DisableSpawns) return;
 			for (int i = 0; i < Main.maxPlayers; i++)
 			{
 				if (!Main.player[i].active) continue;

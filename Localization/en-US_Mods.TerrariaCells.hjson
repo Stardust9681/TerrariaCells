@@ -91,6 +91,11 @@ Configs: {
 			Label: Disable Using Mouse Item
 			Tooltip: ""
 		}
+
+		DisableSpawns: {
+			Label: Disable Spawns
+			Tooltip: ""
+		}
 	}
 }
 
