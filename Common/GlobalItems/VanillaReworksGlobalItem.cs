@@ -11,6 +11,12 @@ namespace TerrariaCells.Common.GlobalItems
     {
         public override void SetDefaults(Item item)
         {
+            //make swords that are juuust too fast for the animation to look right. slowed down a given a bit of damage
+            if (item.useStyle == ItemUseStyleID.Swing && !item.noMelee && item.DamageType == DamageClass.Melee && item.useTime == 15)
+            {
+                item.useTime += 5;
+                item.damage = (int)(item.damage * 1.05f);
+            }
             // CHANGE DEFAULT ITEM STATS HERE
             switch (item.type)
             {
@@ -143,10 +149,8 @@ namespace TerrariaCells.Common.GlobalItems
                 case ItemID.ClingerStaff:
                     item.knockBack = 0f;
                     break;
-
-				default:
-					return;
             }
+            
 			item.useAnimation = item.useTime;
         }
 
