@@ -97,6 +97,7 @@ namespace TerrariaCells.Common.GlobalProjectiles
             }
 
         }
+
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
         {
             switch (projectile.type)
@@ -123,6 +124,7 @@ namespace TerrariaCells.Common.GlobalProjectiles
                     break;
             }
         }
+
         public override void OnSpawn(Projectile projectile, IEntitySource source)
         {
             if (projectile.type == ProjectileID.Volcano && projectile.ai[1] != 1)
@@ -133,7 +135,14 @@ namespace TerrariaCells.Common.GlobalProjectiles
             {
                 projectile.Kill();
             }
+
+			//Disable gravestones (starting to get unsightly)
+			if (ProjectileID.Sets.IsAGravestone[projectile.type])
+			{
+				projectile.Kill();
+			}
         }
+
         public override void AI(Projectile projectile)
         {
             if (projectile.type == ProjectileID.Starfury)
