@@ -81,4 +81,23 @@ public class DeathReset : ModPlayer, IEntitySource
 	{
 		itemsByMod["Terraria"].Clear();
 	}
+
+	public override void Load()
+	{
+		Terraria.GameContent.UI.States.On_UICharacterCreation.SetupPlayerStatsAndInventoryBasedOnDifficulty += SetupPlayerInfo;
+	}
+	public override void Unload()
+	{
+		Terraria.GameContent.UI.States.On_UICharacterCreation.SetupPlayerStatsAndInventoryBasedOnDifficulty -= SetupPlayerInfo;
+	}
+
+	//Remove wings and finch staff buff
+	private void SetupPlayerInfo(Terraria.GameContent.UI.States.On_UICharacterCreation.orig_SetupPlayerStatsAndInventoryBasedOnDifficulty orig, Terraria.GameContent.UI.States.UICharacterCreation self)
+	{
+		orig.Invoke(self);
+
+		Player player = (Player)self.GetType().GetField("_player", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).GetValue(self);
+		player.armor[3].TurnToAir();
+		player.ClearBuff(216); //Finch, which is for some reason applied at character creation
+	}
 }
