@@ -24,15 +24,18 @@ namespace TerrariaCells.Common.GlobalProjectiles
         }
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
         {
-            if (projectile.DamageType == DamageClass.Magic || projectile.DamageType == DamageClass.MagicSummonHybrid)
-            {
-                if ( Main.netMode != NetmodeID.MultiplayerClient && !SpawnedMana)
-                {
-                    SpawnedMana = true;
-                    Item.NewItem(projectile.GetSource_OnHit(target), target.Hitbox, new Item(ItemID.Star));
-                }
-            }
-            base.OnHitNPC(projectile, target, hit, damageDone);
-        }
+			if (target.lifeMax <= 5 || target.friendly || !target.CanBeChasedBy() || NPCID.Sets.ProjectileNPC[target.type])
+				return;
+
+			//Fixed an error here that didn't show up for some reason
+			if (projectile.DamageType.CountsAsClass(DamageClass.Magic))
+			{
+				if (Main.netMode != NetmodeID.MultiplayerClient && !SpawnedMana)
+				{
+					SpawnedMana = true;
+					Item.NewItem(projectile.GetSource_OnHit(target), target.Hitbox, new Item(ItemID.Star));
+				}
+			}
+		}
     }
 }
