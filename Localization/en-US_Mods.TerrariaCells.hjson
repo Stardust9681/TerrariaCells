@@ -60,6 +60,7 @@ Configs: {
 		Headers: {
 			BuilderSettings: Builder Settings
 			InventorySettings: Inventory Settings
+			GameplaySettings: Gameplay Settings Header
 		}
 
 		EnableInventoryChanges: {
@@ -92,8 +93,8 @@ Configs: {
 			Tooltip: ""
 		}
 
-		DisableSpawns: {
-			Label: Disable Spawns
+		EnableCustomWorldGen: {
+			Label: Enable Custom World Gen
 			Tooltip: ""
 		}
 	}

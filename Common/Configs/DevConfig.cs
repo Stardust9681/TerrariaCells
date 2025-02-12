@@ -8,20 +8,21 @@ using Terraria.ModLoader.Config;
 
 namespace TerrariaCells.Common.Configs
 {
-	public class DevConfig : ModConfig
-	{
-		//[Newtonsoft.Json.JsonIgnore]
-		private static DevConfig _instance;
-		//[Newtonsoft.Json.JsonIgnore]
-		public static DevConfig Instance => _instance ??= Terraria.ModLoader.ModContent.GetInstance<DevConfig>();
+    public class DevConfig : ModConfig
+    {
+        //[Newtonsoft.Json.JsonIgnore]
+        private static DevConfig _instance;
 
-		public override ConfigScope Mode => ConfigScope.ServerSide;
+        //[Newtonsoft.Json.JsonIgnore]
+        public static DevConfig Instance =>
+            _instance ??= Terraria.ModLoader.ModContent.GetInstance<DevConfig>();
 
-		[Header("BuilderSettings")]
+        public override ConfigScope Mode => ConfigScope.ServerSide;
 
-		///<summary>Toggle ability to build. Also allows tiles to be interacted with normally.</summary>
-		[DefaultValue(false)]
-		public bool BuilderMode;
+        [Header("GameplaySettings")]
+        ///<summary>Toggle ability to build. Also allows tiles to be interacted with normally.</summary>
+        [DefaultValue(false)]
+        public bool BuilderMode;
 
 		/// <summary>Toggle NPC spawns (added to allow builders to build in peace)</summary>
 		[DefaultValue(false)]
@@ -30,37 +31,40 @@ namespace TerrariaCells.Common.Configs
 		[DefaultValue(true)]
 		public bool DisableUsingMouseItem;
 
-		/// <summary>Prevents tile damage from explosives.</summary>
-		[DefaultValue(true)]
-		public bool PreventExplosionDamage;
+        /// <summary>Prevents tile damage from explosives.</summary>
+        [DefaultValue(true)]
+        public bool PreventExplosionDamage;
 
-		/// <summary>Toggles intended Pylon mechanics.</summary>
-		[DefaultValue(true)]
-		public bool DoPylonDiscoveries;
+        /// <summary>Toggles intended Pylon mechanics.</summary>
+        [DefaultValue(true)]
+        public bool DoPylonDiscoveries;
 
-		[Header("InventorySettings")]
+        /// <summary>When active, drops all of the players items onto the ground on death.</summary>
+        [DefaultValue(true)]
+        public bool DropItems;
 
-		/// <summary>Effectively controls whether this mod affects the interface.</summary>
-		[DefaultValue(true)]
-		public bool EnableInventoryChanges;
+        /// <summary>When active, replaces vanilla world generation with custom worldgen.</summary>
+        [DefaultValue(true)]
+        public bool EnableCustomWorldGen;
 
-		/// <summary>If enabled, activate the chest limiting feature that disables the chest interface and drops items from chests instead.</summary>
-		[DefaultValue(true)]
-		public bool EnableChestChanges;
+        [Header("InventorySettings")]
+        /// <summary>Effectively controls whether this mod affects the interface.</summary>
+        [DefaultValue(true)]
+        public bool EnableInventoryChanges;
 
-		/// <summary>Since the default inventory is used and manipulated in this mod, you can disable that behaviour here if you wish.</summary>
-		[DefaultValue(true)]
-		public bool EnableInventoryLock;
+        /// <summary>If enabled, activate the chest limiting feature that disables the chest interface and drops items from chests instead.</summary>
+        [DefaultValue(true)]
+        public bool EnableChestChanges;
 
-		/// <summary>When active, drops all of the players items onto the ground on death.</summary>
-		[DefaultValue(true)]
-		public bool DropItems;
+        /// <summary>Since the default inventory is used and manipulated in this mod, you can disable that behaviour here if you wish.</summary>
+        [DefaultValue(true)]
+        public bool EnableInventoryLock;
 
-		/// <summary>
-		/// Disables the interfaces that show the inventory.
-		/// <para>Note that this disables the functionality of the visible inventory as well.</para>
-		/// </summary>
-		[DefaultValue(true)]
-		public bool HideVanillaInventory;
-	}
+        /// <summary>
+        /// Disables the interfaces that show the inventory.
+        /// <para>Note that this disables the functionality of the visible inventory as well.</para>
+        /// </summary>
+        [DefaultValue(true)]
+        public bool HideVanillaInventory;
+    }
 }
