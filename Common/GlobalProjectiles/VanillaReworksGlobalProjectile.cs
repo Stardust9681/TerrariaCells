@@ -176,6 +176,7 @@ namespace TerrariaCells.Common.GlobalProjectiles
 			{
 				projectile.velocity = Vector2.Zero;
 				Lighting.AddLight(projectile.Center, Color.White.ToVector3() * 0.5f);
+				return false;
 			}
 			return base.PreAI(projectile);
 		}

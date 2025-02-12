@@ -41,13 +41,15 @@ namespace TerrariaCells.Common.GlobalNPCs
         
         public bool CultistDevoteeAI(NPC npc, Player target)
         {
-            if (npc.HasValidTarget)
+			bool validTarget = npc.TargetInAggroRange(target, 400, false);
+
+            if (target != null)
             {
                 npc.direction = npc.Center.X > target.Center.X ? -1 : 1;
                 npc.spriteDirection = npc.direction;
             }
 
-            if (npc.ai[0] > 0 || (npc.HasValidTarget && target.Distance(npc.Center) < 400))
+            if (npc.ai[0] > 0 || validTarget)
             {
                 npc.ai[0]++;
                 if (npc.ai[0] == 20 && npc.HasValidTarget)

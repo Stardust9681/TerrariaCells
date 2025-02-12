@@ -46,7 +46,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 		{
 			const int TimeRotating = 360;
 
-			bool validTarget = npc.TargetInAggroRange(target, 512, false);
+			bool validTarget = npc.TargetInAggroRange(target, 448, false);
 
 			if (npc.ai[1] == 0)
 			{

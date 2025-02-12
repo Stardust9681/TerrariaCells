@@ -49,7 +49,7 @@ namespace TerrariaCells.Common.Utilities
 
 		///<returns>True if NPC "can see" a given position. False otherwise.</returns>
 		public static bool LineOfSight(this NPC npc, Vector2 toPosition)
-			=> Collision.CanHitLine(npc.position + new Vector2(npc.width * 0.5f, npc.height * 0.25f), 4, 4, toPosition, 4, 4);
+			=> Collision.CanHitLine(npc.position, npc.width, npc.height, toPosition, npc.width, npc.height);
 
 		///<returns>True if NPC is determined to be on ground. False otherwise.</returns>
 		public static bool Grounded(this NPC npc)

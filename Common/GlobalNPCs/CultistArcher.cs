@@ -63,7 +63,9 @@ namespace TerrariaCells.Common.GlobalNPCs
 
         public bool CultistArcherAI(NPC npc, Player target)
         {
-            if (npc.HasValidTarget && npc.Distance(target.Center) < 600 && Collision.CanHitLine(npc.Center, 1, 1, target.Center, 1, 1) && npc.collideY)
+			bool validTarget = npc.TargetInAggroRange(target, 600);
+
+            if (validTarget && npc.collideY)
             {
                 ShouldWalk = false;
                 npc.velocity.X *= 0.9f;

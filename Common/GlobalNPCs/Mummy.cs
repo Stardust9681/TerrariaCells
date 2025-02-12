@@ -23,7 +23,6 @@ namespace TerrariaCells.Common.GlobalNPCs
         public bool DrawMummy(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             Asset<Texture2D> t = TextureAssets.Npc[npc.type];
-
             Asset<Texture2D> slam = ModContent.Request<Texture2D>("TerrariaCells/Common/Assets/MummySlam");
 
             if (npc.ai[3] == 0)
@@ -61,22 +60,23 @@ namespace TerrariaCells.Common.GlobalNPCs
         }
         public void MummyAI(NPC npc, Player target)
         {
-            int slamCooldown = 50;
-            int slamTime = 100;
-
-            
+            const int SlamCooldown = 50;
+            const int SlamTime = 100;
 
             npc.ai[2]++;
 
+			bool validTarget = npc.TargetInAggroRange(target, 220);
+			if (!validTarget)
+				ShouldWalk = false;
 
-            if (npc.HasValidTarget && npc.ai[2] >= slamCooldown && npc.ai[3] == 0 && npc.Distance(target.Center) < 220 && ((npc.direction == -1 && npc.Center.X > target.Center.X) || (npc.direction == 1 && npc.Center.X < target.Center.X)))
-            {
+			if (validTarget && npc.ai[2] >= SlamCooldown && npc.ai[3] == 0 && npc.direction == MathF.Sign(target.position.X - npc.position.X))
+			{
                 npc.ai[2] = 0;
                 npc.ai[3] = 1;
                 CustomFrameCounter = 0;
                 CustomFrameY = 0;
             }
-            if (npc.ai[2] >= slamTime && npc.ai[3] == 1)
+            if (npc.ai[2] >= SlamTime && npc.ai[3] == 1)
             {
                 npc.ai[2] = 0;
                 npc.ai[3] = 0;
@@ -88,7 +88,6 @@ namespace TerrariaCells.Common.GlobalNPCs
                 npc.velocity.X *= 0.9f;
                 if (npc.ai[2] == 70)
                 {
-                    
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + new Vector2(40 * npc.direction, 0), Vector2.Zero, ModContent.ProjectileType<MummyShockwave>(), TCellsUtils.ScaledHostileDamage(30), 1, -1, npc.direction);
                     SoundEngine.PlaySound(SoundID.Item14, npc.Center);
                 }
