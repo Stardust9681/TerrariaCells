@@ -93,14 +93,25 @@ namespace TerrariaCells.Common.GlobalNPCs
 
 			(ushort x, ushort y) = Unpack(npc.ai[1]);
 			Vector2 worldPos = new Terraria.DataStructures.Point16(x, y).ToWorldCoordinates();
+			worldPos.Y -= npc.height;
+			for (int i = 0; i < 2 * npc.height; i += 16)
+			{
+				Tile tile = Framing.GetTileSafely(x+(i/16), y);
+				if (tile.HasTile && !tile.IsActuated && Main.tileSolid[tile.TileType])
+				{
+					worldPos.Y += i;
+					break;
+				}
+			}
 			npc.Center = worldPos + new Vector2(MathF.Sin(MathHelper.ToRadians(npc.ai[3] * 2)) * 50, MathF.Sin(MathHelper.ToRadians(npc.ai[3] * 5)) * 10);
 
 			if (validTarget)
 			{
 				if (npc.ai[3] < 200 && (int)npc.ai[3] % 10 == 0 && npc.HasValidTarget && npc.ai[3] > 100)
 				{
-					Projectile fire = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), target.Center + new Vector2(Main.rand.Next(20, 100), 0).RotatedByRandom(MathHelper.TwoPi), Vector2.Zero, ProjectileID.DesertDjinnCurse, 0, 1, -1, 0, 0, npc.whoAmI);
+					Projectile fire = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), target.Center + new Vector2(Main.rand.Next(20, 100), 0).RotatedByRandom(MathHelper.TwoPi), Vector2.Zero, ProjectileID.DesertDjinnCurse, 0, 1, -1, -1, 0, npc.whoAmI);
 					fire.localAI[0] = 0.05f;
+					fire.velocity = Vector2.Zero;
 				}
 			}
 

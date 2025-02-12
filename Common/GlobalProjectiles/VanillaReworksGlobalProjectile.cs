@@ -156,9 +156,10 @@ namespace TerrariaCells.Common.GlobalProjectiles
 			}
         }
 
-        public override void AI(Projectile projectile)
+        /*public override void AI(Projectile projectile)
         {
-            if (projectile.type == ProjectileID.Starfury)
+			//Literally wasn't doing anything ?
+			/*if (projectile.type == ProjectileID.Starfury)
             {
                 int targetID = projectile.FindTargetWithLineOfSight();
                 if (targetID >= 0)
@@ -166,7 +167,17 @@ namespace TerrariaCells.Common.GlobalProjectiles
                     Vector2 directionToTarget = projectile.DirectionTo(Main.npc[targetID].position);
 
                 }
-            }
-        }
-    }
+            }//
+		}*/
+
+		public override bool PreAI(Projectile projectile)
+		{
+			if (projectile.type == ProjectileID.DesertDjinnCurse)
+			{
+				projectile.velocity = Vector2.Zero;
+				Lighting.AddLight(projectile.Center, Color.White.ToVector3() * 0.5f);
+			}
+			return base.PreAI(projectile);
+		}
+	}
 }
