@@ -53,6 +53,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			}
 
 			npc.dontTakeDamage = true;
+			npc.velocity.Y += 0.14f;
 
 			if (Main.rand.NextBool(3))
 				return;
@@ -80,6 +81,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				npc.Phase(Teleporting);
 			}
 			npc.velocity.X *= 0.8f;
+			npc.velocity.Y += 0.14f;
 			npc.Timer(npc.Timer() + 1);
 		}
 		private void TeleportingAI(NPC npc)
@@ -112,12 +114,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 						//if (!Collision.SolidTiles(tpRect.Location.ToVector2(), npc.width, npc.height)
 						//	&& (Utilities.TCellsUtils.FindGround(tpRect).Y < tpRect.Bottom + (npc.height * 2)))
 						//	start -= rays[i];
-						if (Collision.CanHitLine(start, 24, 24, start + rays[i], 24, 24))
+						if (Collision.CanHitLine(start, 32, 64, start + rays[i], 32, 64) && Collision.AnyCollision(start+rays[i], Vector2.UnitY, 32, 64).Y != 0)
 							start += rays[i];
 						else
-						{
 							break;
-						}
 					}
 					rays[i] = start;
 					//Dust d = Dust.NewDustDirect(start, 1, 1, Terraria.ID.DustID.GemDiamond);
@@ -138,6 +138,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 
 				int index = Main.rand.Next(availablePositions.Count);
 				Point pos = availablePositions[index].ToPoint();
+				pos.Y -= 24;
 				Vector2 ground = Utilities.TCellsUtils.FindGround(new Rectangle(pos.X, pos.Y, npc.width, npc.height), 40);
 
 				npc.ai[2] = ground.X;
@@ -150,8 +151,14 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				//	Dust d = Dust.NewDustDirect(npc.position, npc.width, npc.height, Terraria.ID.DustID.Shadowflame);
 				//	d.scale = Main.rand.NextFloat(1.33f, 1.67f);
 				//}
-				npc.position = new Vector2(npc.ai[2], npc.ai[3] - npc.height);
-				if(timer > 255)
+				if (npc.ai[2] != 0)
+				{
+					npc.position = new Vector2(npc.ai[2], npc.ai[3] - npc.height);
+					npc.ai[2] = 0;
+					npc.ai[3] = 0;
+				}
+				npc.velocity.Y += 0.14f;
+				if (timer > 255)
 					npc.Phase(Casting);
 			}
 			else if(timer > 5 && MathF.Pow(timer, 2) % 60 < 5)
