@@ -20,7 +20,20 @@ namespace TerrariaCells.Common.GlobalProjectiles
         private static int[] bossNPCs = { NPCID.EyeofCthulhu };
         private static float stakeToUndeadDamageModifier = 1.5f;
 
-        public override bool OnTileCollide(Projectile projectile, Vector2 oldVelocity)
+		public override void SetDefaults(Projectile projectile)
+		{
+			switch (projectile.type)
+			{
+				case ProjectileID.BulletHighVelocity:
+					projectile.penetrate = 1;
+					break;
+				case ProjectileID.PulseBolt:
+					projectile.penetrate = 3;
+					break;
+			}
+		}
+
+		public override bool OnTileCollide(Projectile projectile, Vector2 oldVelocity)
         {
             if (projectile.type == ProjectileID.PulseBolt)
             {
@@ -36,7 +49,7 @@ namespace TerrariaCells.Common.GlobalProjectiles
                     int targetID = projectile.FindTargetWithLineOfSight();
                     if (targetID >= 0)
                     {
-                        Vector2 newVel = projectile.DirectionTo(Main.npc[targetID].position);
+                        Vector2 newVel = projectile.DirectionTo(Main.npc[targetID].Center);
                         newVel.Normalize();
                         newVel *= projectile.oldVelocity.Length();
 
