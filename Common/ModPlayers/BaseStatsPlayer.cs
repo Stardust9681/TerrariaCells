@@ -30,9 +30,11 @@ namespace TerrariaCells.Common.ModPlayers
 			}
 			Player.manaRegenBonus += Player.statManaMax2 / (int)MathHelper.Lerp(33, 66, (float)Player.statMana/(float)Player.statManaMax2);
         }
-        public override void PostUpdate()
-        {
-            base.PostUpdate();
-        }
-    }
+
+		public override void ModifyMaxStats(out StatModifier health, out StatModifier mana)
+		{
+			base.ModifyMaxStats(out health, out mana);
+			mana.Flat += 180;
+		}
+	}
 }
