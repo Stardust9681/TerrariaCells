@@ -142,69 +142,63 @@ namespace TerrariaCells.Common.GlobalItems
 
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 		{
-			if (item.type == ItemID.Nazar)
+			int ttCounter = 0;
+			void AddToolTip(string text)
 			{
-                tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
+				if(ttCounter == 0)
+					tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
 
-                TooltipLine line = new TooltipLine(Mod, "Tooltip0", "Melee attacks restore 20 mana ");
-                tooltips.Add(line);
-            }
-            if (item.type == ItemID.ArcaneFlower)
-            {
-                tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
-
-                TooltipLine line = new TooltipLine(Mod, "Tooltip0", "Increases damage and mana cost by 50%");
-                tooltips.Add(line);
-            }
-            if (item.type == ItemID.FrozenTurtleShell)
-            {
-                tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
-
-                TooltipLine line = new TooltipLine(Mod, "Tooltip0", "If you would die, instead survive with 1 HP. Consumed on use");
-                tooltips.Add(line);
-            }
-            if (item.type == ItemID.BallOfFuseWire)
-            {
-                tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
-
-                TooltipLine line = new TooltipLine(Mod, "Tooltip0", "Explosions are more powerful");
-                tooltips.Add(line);
-            }
-            if (item.type == ItemID.StalkersQuiver)
-            {
-                tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
-
-                TooltipLine line = new TooltipLine(Mod, "Tooltip0", "Arrow attacks create spectral arrows to hunt the target");
-                tooltips.Add(line);
-            }
-            if (item.type == ItemID.BandofRegeneration)
-            {
-                tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
-
-                TooltipLine line = new TooltipLine(Mod, "Tooltip0", "Killing an enemy restores 1% of your max HP");
-                tooltips.Add(line);
-            }
-            if (item.type == ItemID.FastClock)
-            {
-                tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
-
-                TooltipLine line = new TooltipLine(Mod, "Tooltip0", "Killing an enemy provides a temporary speed buff");
-                tooltips.Add(line);
-            }
-            if (item.type == ItemID.ChlorophyteDye)
-            {
-                tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
-
-                TooltipLine line = new TooltipLine(Mod, "Tooltip0", "Bullets and Arrows are covered with chlorophyte");
-                tooltips.Add(line);
-            }
-            if (item.type == ItemID.NaturesGift)
-            {
-                tooltips.RemoveAll(x => x.Name.StartsWith("Tooltip") && x.Mod == "Terraria");
-
-                TooltipLine line = new TooltipLine(Mod, "Tooltip0", "Reduces mana cost by 25% ");
-                tooltips.Add(line);
-            }
+				tooltips.Add(new TooltipLine(Mod, $"Tooltip{ttCounter++}", text));
+			}
+			switch (item.type)
+			{
+				case ItemID.Nazar:
+					AddToolTip("Melee attacks restore 20 mana");
+					break;
+				case ItemID.ArcaneFlower:
+					AddToolTip("50% increased magic damage");
+					AddToolTip("50% increased mana cost");
+					break;
+				case ItemID.FrozenTurtleShell:
+					AddToolTip("If you would die, instead survive with 1 HP");
+					AddToolTip("Consumed on use");
+					break;
+				case ItemID.BallOfFuseWire:
+					AddToolTip("Explosions are much more powerful");
+					break;
+				case ItemID.StalkersQuiver:
+					AddToolTip("Arrow attacks cause spectral arrows to attack the target");
+					break;
+				case ItemID.BandofRegeneration:
+					AddToolTip("Killing an enemy restores 1% of your max HP");
+					break;
+				case ItemID.FastClock:
+					AddToolTip("Killing an enemy increases your speed briefly");
+					break;
+				case ItemID.ChlorophyteDye:
+					AddToolTip("Bullets and Arrows become coated in chlorophyte");
+					break;
+				case ItemID.NaturesGift:
+					AddToolTip("25% reduced mana cost");
+					break;
+				case ItemID.BerserkerGlove:
+					AddToolTip("4% increased damage on successive melee attacks");
+					break;
+				case ItemID.FeralClaws:
+					AddToolTip("40% increased melee attack speed");
+					break;
+				case ItemID.SharkToothNecklace:
+					AddToolTip("Enemies bleed on melee hit");
+					break;
+				case ItemID.ThePlan:
+					AddToolTip("50% increased damage against healthy enemies");
+					break;
+				case ItemID.ReconScope:
+					AddToolTip("30% increased damage when no enemies are nearby");
+					break;
+				default:
+					return;
+			}
         }
 
 		public override void GrabRange(Item item, Player player, ref int grabRange)

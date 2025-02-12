@@ -184,9 +184,14 @@ namespace TerrariaCells.Common.GlobalItems
                 // CHANGE VANILLA TOOLTIPS HERE
                 switch (tooltip.Name)
                 {
-                    case "Material": // Remove the Material tag in the item tooltip
-                        tooltip.Hide();
+					//Tooltips to be hidden
+                    case "Material":
+					case "EtherianManaWarning":
+					case "OneDropLogo":
+					case "JourneyResearch":
+						tooltip.Hide();
                         break;
+
                     case "Knockback":
                         float knockback = player.GetWeaponKnockback(item, item.knockBack);
 
@@ -195,8 +200,8 @@ namespace TerrariaCells.Common.GlobalItems
 
                         tooltip.Text += " (" + knockback + "%)";
                         break;
-                    case "Speed":
 
+                    case "Speed":
                         int tempStat = (int)(item.useAnimation * (1 / player.GetWeaponAttackSpeed(item)));
 
                         if (tempStat <= 8)
@@ -219,16 +224,7 @@ namespace TerrariaCells.Common.GlobalItems
                         float attacksPerSecond = MathF.Round(60 / (float)tempStat, 2);
                         tooltip.Text += Mod.GetLocalization("Tooltips.AttacksPerSecond").Format(attacksPerSecond);
                         break;
-                    //case "UseMana":
-                        //tooltip.Hide();
-                        //break;
-                    case "EtherianManaWarning":
-                        tooltip.Hide();
-                        break;
-                    case "OneDropLogo":
-                        tooltip.Hide();
-                        break;
-                        /*
+						/*
                     case "Favorite":
                         tooltip.Hide();
                         break;
@@ -236,7 +232,7 @@ namespace TerrariaCells.Common.GlobalItems
                         tooltip.Hide();
                         break;
                         */
-                }
+				}
 
             }
 
