@@ -10,6 +10,7 @@ namespace TerrariaCells.Common.Utilities
 {
 	public static class NPCHelpers
 	{
+		//Need to change these, @ me later, I don't feel like trying to compress this rn, why couldn't they just be ints dude
 		#region Timer and Phase
 		//Packing Timer and Phase data into one variable
 		//Timer goes up to 18 minutes (ushort.MaxValue ticks), surely we don't need more than that
@@ -80,19 +81,23 @@ namespace TerrariaCells.Common.Utilities
 			return TCellsUtils.FindGround(rect);
 		}
 
-		public static bool TargetInAggroRange(this NPC npc, float range = 240, bool lineOfSight = true)
+		public static bool TargetInAggroRange(this NPC npc, float range = 240, bool lineOfSight = true, bool allowDamageTrigger = true)
 		{
 			if (!npc.TryGetTarget(out Entity target))
 				return false;
 			if (lineOfSight && !npc.LineOfSight(target.position))
 				return false;
+			if (allowDamageTrigger && npc.life < npc.lifeMax)
+				return true;
 			return npc.DistanceSQ(target.position) < MathF.Pow(range, 2);
 		}
 
-		public static bool TargetInAggroRange(this NPC npc, Entity target, float range = 240, bool lineOfSight = true)
+		public static bool TargetInAggroRange(this NPC npc, Entity target, float range = 240, bool lineOfSight = true, bool allowDamageTrigger = true)
 		{
 			if (lineOfSight && !npc.LineOfSight(target.position))
 				return false;
+			if (allowDamageTrigger && npc.life < npc.lifeMax)
+				return true;
 			return npc.DistanceSQ(target.position) < MathF.Pow(range, 2);
 		}
 	}
