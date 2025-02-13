@@ -65,8 +65,8 @@ namespace TerrariaCells.Common.GlobalNPCs
 
             npc.ai[2]++;
 
-			bool validTarget = npc.TargetInAggroRange(target, 220);
-			if (!validTarget)
+			bool validTarget = npc.TargetInAggroRange(target, 240);
+			if (MathF.Abs(target.position.X - npc.position.X) < 80)
 				ShouldWalk = false;
 
 			if (validTarget && npc.ai[2] >= SlamCooldown && npc.ai[3] == 0 && npc.direction == MathF.Sign(target.position.X - npc.position.X))
