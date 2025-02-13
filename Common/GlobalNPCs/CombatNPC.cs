@@ -21,6 +21,14 @@ namespace TerrariaCells.Common.GlobalNPCs
 			return base.CanHitPlayer(npc, target, ref cooldownSlot);
 		}
 
+		public override Color? GetAlpha(NPC npc, Color drawColor)
+		{
+			Color? returnVal = base.GetAlpha(npc, drawColor);
+			if (npc.dontTakeDamage) returnVal = Color.Lerp(drawColor, Color.DarkSlateGray * 0.67f, 0.5f);
+			if (npc.GetGlobalNPC<CombatNPC>().allowContactDamage) returnVal = Color.Lerp(drawColor, Color.IndianRed * (drawColor.A / 255f), 0.3f);
+			return returnVal;
+		}
+
 		public static void ToggleContactDamage(NPC npc, bool value) => npc.GetGlobalNPC<CombatNPC>().allowContactDamage = value;
 
 		public override void SetDefaults(NPC npc)
