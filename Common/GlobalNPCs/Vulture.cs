@@ -88,8 +88,8 @@ namespace TerrariaCells.Common.GlobalNPCs
                 NPC n = Main.npc[i];
                 if (n.active && n.type == NPCID.Vulture && n.Hitbox.Intersects(npc.Hitbox))
                 {
-                    npc.velocity -= npc.DirectionFrom(n.Center) * 0.1f;
-                }
+					npc.velocity -= (n.Center - npc.Center).SafeNormalize(Vector2.Zero) * 0.1f;
+				}
             }
         }
     }
