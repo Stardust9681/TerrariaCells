@@ -61,9 +61,13 @@ namespace TerrariaCells.Common.GlobalNPCs
             }
         }
 
-        public bool CultistArcherAI(NPC npc, Player target)
+        public bool CultistArcherAI(NPC npc, Player? target)
         {
-			bool validTarget = npc.TargetInAggroRange(target, 600);
+			bool validTarget;
+			if (target != null)
+				validTarget = npc.TargetInAggroRange(target, 600);
+			else
+				validTarget = npc.TargetInAggroRange(600);
 
             if (validTarget && npc.collideY)
             {

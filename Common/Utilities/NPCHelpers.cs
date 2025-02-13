@@ -55,11 +55,17 @@ namespace TerrariaCells.Common.Utilities
 		public static bool Grounded(this NPC npc)
 			=> npc.collideY && npc.oldVelocity.Y > npc.velocity.Y && npc.oldVelocity.Y > 0;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="npc"></param>
+		/// <param name="target">Will be null if none found</param>
+		/// <returns>True if valid target exists</returns>
 		public static bool TryGetTarget(this NPC npc, out Entity target)
 		{
 			target = null;
 			if (npc.SupportsNPCTargets && npc.HasNPCTarget) return (target = Main.npc[npc.TranslatedTargetIndex]).active;
-			else if (npc.HasPlayerTarget) return (target = Main.player[npc.target]).active;
+			else if (npc.HasPlayerTarget) return (target = Main.player[npc.target]).active && !Main.player[npc.target].dead && !Main.player[npc.target].ghost;
 			return npc.HasValidTarget;
 		}
 

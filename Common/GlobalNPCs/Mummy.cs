@@ -58,16 +58,25 @@ namespace TerrariaCells.Common.GlobalNPCs
                 npc.localAI[1] = 0;
             }
         }
-        public void MummyAI(NPC npc, Player target)
+        public void MummyAI(NPC npc, Player? target)
         {
             const int SlamCooldown = 50;
             const int SlamTime = 100;
 
             npc.ai[2]++;
 
-			bool validTarget = npc.TargetInAggroRange(target, 240);
-			if (MathF.Abs(target.position.X - npc.position.X) < 80)
+			bool validTarget;
+			if (target != null)
+			{
+				validTarget = npc.TargetInAggroRange(target, 240);
+				if (MathF.Abs(target.position.X - npc.position.X) < 80)
+					ShouldWalk = false;
+			}
+			else
+			{
+				validTarget = npc.TargetInAggroRange(240);
 				ShouldWalk = false;
+			}
 
 			if (validTarget && npc.ai[2] >= SlamCooldown && npc.ai[3] == 0 && npc.direction == MathF.Sign(target.position.X - npc.position.X))
 			{

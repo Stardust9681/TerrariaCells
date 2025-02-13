@@ -44,7 +44,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                 CustomFrameY = 0;
             }
         }
-        public void GhoulAI(NPC npc, Player target)
+        public void GhoulAI(NPC npc, Player? target)
         {
             const int TimeWalking = 30;
             const int TimeSlashing = 60;

@@ -39,9 +39,13 @@ namespace TerrariaCells.Common.GlobalNPCs
             }
         }
         
-        public bool CultistDevoteeAI(NPC npc, Player target)
+        public bool CultistDevoteeAI(NPC npc, Player? target)
         {
-			bool validTarget = npc.TargetInAggroRange(target, 400, false);
+			bool validTarget;
+			if (target != null)
+				validTarget = npc.TargetInAggroRange(target, 400, false);
+			else
+				validTarget = npc.TargetInAggroRange(400, false);
 
             if (target != null)
             {

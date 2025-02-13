@@ -114,7 +114,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 						//if (!Collision.SolidTiles(tpRect.Location.ToVector2(), npc.width, npc.height)
 						//	&& (Utilities.TCellsUtils.FindGround(tpRect).Y < tpRect.Bottom + (npc.height * 2)))
 						//	start -= rays[i];
-						if (Collision.CanHitLine(start, 32, 64, start + rays[i], 32, 64) && Collision.AnyCollision(start+rays[i], Vector2.UnitY, 32, 64).Y != 0)
+						if (Collision.CanHitLine(start, 32, 64, start + rays[i], 32, 64) && Collision.AnyCollision(start+rays[i], Vector2.UnitY, 32, 64).Y == 0)
 							start += rays[i];
 						else
 							break;
