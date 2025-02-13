@@ -119,6 +119,11 @@ Items: {
 		DisplayName: Clickable Crystal Item
 		Tooltip: ""
 	}
+
+	PhantomPhoenix: {
+		DisplayName: Phantom Phoenix
+		Tooltip: ""
+	}
 }
 
 Projectiles: {

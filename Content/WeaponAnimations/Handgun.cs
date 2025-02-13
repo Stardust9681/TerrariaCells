@@ -17,6 +17,15 @@ namespace TerrariaCells.Content.WeaponAnimations
     {
         public static int[] Handguns = { ItemID.FlintlockPistol, ItemID.PewMaticHorn, ItemID.PhoenixBlaster, ItemID.Revolver, ItemID.TheUndertaker, ItemID.VenusMagnum, ItemID.Handgun, ItemID.FlareGun, ItemID.PainterPaintballGun };
         public override bool InstancePerEntity => true;
+        public override void SetStaticDefaults()
+        {
+            for (int i = 0; i < Handguns.Length; i++)
+            {
+                ItemID.Sets.ItemsThatAllowRepeatedRightClick[Handguns[i]] = true;
+            }
+
+            base.SetStaticDefaults();
+        }
         public override bool AppliesToEntity(Item entity, bool lateInstantiation)
         {
             return Handguns.Contains(entity.type);
@@ -114,6 +123,7 @@ namespace TerrariaCells.Content.WeaponAnimations
                 //fixed item rotation and back hand rotation
                 player.itemRotation = MathHelper.ToRadians(-20 * mplayer.useDirection);
                 player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, MathHelper.ToRadians(-80 * mplayer.useDirection));
+                if (ReloadStep == SkipStep) ReloadStep++;
                 //front hand movement (go to pocket then back up to gun)
                 if (ReloadStep == 0)
                 {

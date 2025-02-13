@@ -21,9 +21,18 @@ namespace TerrariaCells.Common.Systems
         public override void Load()
         {
             Terraria.On_Main.DoDraw_UpdateCameraPosition += On_Main_DoDraw_UpdateCameraPosition;
-            On_Player.PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool += On_Player_PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool;
             On_Player.PickupItem += On_Player_PickupItem;
             On_UIWorldSelect.NewWorldClick += On_UIWorldSelect_NewWorldClick;
+            On_Player.PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool += NoAmmoDamage;
+        }
+
+       
+
+        private void NoAmmoDamage(On_Player.orig_PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool orig, Player self, Item sItem, ref int projToShoot, ref float speed, ref bool canShoot, ref int totalDamage, ref float KnockBack, out int usedAmmoItemId, bool dontConsume)
+        {
+            int damag = totalDamage;
+            orig(self, sItem, ref projToShoot,ref  speed, ref canShoot, ref totalDamage, ref KnockBack, out usedAmmoItemId, dontConsume);
+            totalDamage = damag;
         }
 
         private void On_UIWorldSelect_NewWorldClick(On_UIWorldSelect.orig_NewWorldClick orig, UIWorldSelect self, Terraria.UI.UIMouseEvent evt, Terraria.UI.UIElement listeningElement)
@@ -66,17 +75,6 @@ namespace TerrariaCells.Common.Systems
             return orig(self, playerIndex, worldItemArrayIndex, itemToPickUp);
         }
 
-        //fix EXTRMELEY strange bug with phantom phoenix
-        private void On_Player_PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool(On_Player.orig_PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool orig, Player self, Item sItem, ref int projToShoot, ref float speed, ref bool canShoot, ref int totalDamage, ref float KnockBack, out int usedAmmoItemId, bool dontConsume)
-        {
-            if (sItem.type == ItemID.DD2PhoenixBow)
-            {
-                projToShoot = ProjectileID.FireArrow;
-                usedAmmoItemId = ItemID.FlamingArrow;
-                //return;
-            }
-            orig(self, sItem, ref projToShoot, ref speed, ref canShoot, ref totalDamage, ref KnockBack, out usedAmmoItemId, dontConsume);
-        }
 
         //kill scope effect
         private void On_Main_DoDraw_UpdateCameraPosition(Terraria.On_Main.orig_DoDraw_UpdateCameraPosition orig)
