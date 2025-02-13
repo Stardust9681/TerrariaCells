@@ -25,7 +25,6 @@ namespace TerrariaCells.Common.GlobalItems
                 case ItemID.PhoenixBlaster:
                     item.damage = 20;
                     item.useTime = 14;
-                    item.knockBack = 0f;
                     item.value = 1000;
                     break;
                 case ItemID.Minishark:
@@ -37,7 +36,6 @@ namespace TerrariaCells.Common.GlobalItems
                 case ItemID.SniperRifle:
                     item.damage = 60;
                     item.useTime = 25;
-                    item.knockBack = 0f;
                     item.value = 1000;
                     break;
                 case ItemID.OnyxBlaster:
@@ -50,26 +48,22 @@ namespace TerrariaCells.Common.GlobalItems
                 case ItemID.PulseBow:
                     item.damage = 15;
                     item.useTime = 23;
-                    item.knockBack = 0f;
                     item.value = 1000;
                     break;
                 case ItemID.IceBow:
                     item.damage = 15;
                     item.useTime = 16;
-                    item.knockBack = 0f;
                     item.value = 1000;
                     break;
                 // Launchers
                 case ItemID.Toxikarp:
                     item.damage = 2;
                     item.useTime = 12;
-                    item.knockBack = 0f;
                     item.value = 1000;
                     break;
                 case ItemID.RocketLauncher:
                     item.damage = 10;
                     item.useTime = 30;
-                    item.knockBack = 0f;
                     item.value = 1000;
                     break;
                 case ItemID.StarCannon:
@@ -77,19 +71,16 @@ namespace TerrariaCells.Common.GlobalItems
                     item.useTime = 10;
                     item.useAnimation = 30;
                     item.reuseDelay = 15;
-                    item.knockBack = 0f;
                     item.value = 1000;
 					return;
                 case ItemID.GrenadeLauncher:
                     item.damage = 80;
                     item.useTime = 70;
-                    item.knockBack = 0f;
                     item.value = 1000;
                     break;
                 // Other
                 case ItemID.AleThrowingGlove:
                     item.damage = 20;
-                    item.knockBack = 0f;
                     item.value = 1000;
 					break;
 
@@ -105,6 +96,7 @@ namespace TerrariaCells.Common.GlobalItems
                     item.useTime = 20;
                     item.value = 1000;
                     break;
+
                 // MAGE
                 case ItemID.EmeraldStaff:
                     item.damage = 15;
@@ -144,6 +136,7 @@ namespace TerrariaCells.Common.GlobalItems
                     item.knockBack = 0f;
                     item.shootSpeed = 12;
                     break;
+
                 // SUMMON
                 // Staffs
                 case ItemID.ClingerStaff:
@@ -152,6 +145,8 @@ namespace TerrariaCells.Common.GlobalItems
             }
             
 			item.useAnimation = item.useTime;
+			if (item.DamageType.CountsAsClass(DamageClass.Ranged))
+				item.knockBack = 0;
         }
 
         public override void ModifyHitNPC(Item item, Player player, NPC target, ref NPC.HitModifiers modifiers)
