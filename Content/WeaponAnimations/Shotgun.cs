@@ -17,6 +17,15 @@ namespace TerrariaCells.Content.WeaponAnimations
     {
         public static int[] Shotguns = { ItemID.Boomstick, ItemID.OnyxBlaster, ItemID.Shotgun, ItemID.TacticalShotgun, ItemID.QuadBarrelShotgun, ItemID.Xenopopper };
         public override bool InstancePerEntity => true;
+        public override void SetStaticDefaults()
+        {
+            for (int i = 0; i < Shotguns.Length; i++)
+            {
+                ItemID.Sets.ItemsThatAllowRepeatedRightClick[Shotguns[i]] = true;
+            }
+
+            base.SetStaticDefaults();
+        }
         public override bool AppliesToEntity(Item entity, bool lateInstantiation)
         {
             return Shotguns.Contains(entity.type);

@@ -19,8 +19,9 @@ namespace TerrariaCells.Common.GlobalProjectiles
         private static int[] undeadNPCs = { NPCID.Zombie, NPCID.Skeleton };
         private static int[] bossNPCs = { NPCID.EyeofCthulhu };
         private static float stakeToUndeadDamageModifier = 1.5f;
-
-		public override void SetDefaults(Projectile projectile)
+        public bool ForceCrit = false;
+        public override bool InstancePerEntity => true;
+        public override void SetDefaults(Projectile projectile)
 		{
 			switch (projectile.type)
 			{
@@ -108,7 +109,10 @@ namespace TerrariaCells.Common.GlobalProjectiles
                     modifiers.SetCrit();
                     break;
             }
-
+            if (ForceCrit)
+            {
+                modifiers.SetCrit();
+            }
         }
 
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
