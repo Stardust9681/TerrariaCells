@@ -79,21 +79,21 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			if(npc.velocity.Y * moveDirY < 3.6f)
 				npc.velocity.Y += moveDirY * 0.075f;
 
-			if (MathF.Abs(npc.position.X - movePos.X) > 160) npc.noTileCollide = true;
-			else if (MathF.Abs(npc.position.X - movePos.X) > 80) npc.velocity.X *= 0.97f;
-			else npc.noTileCollide = false;
+			//if (MathF.Abs(npc.position.X - movePos.X) > 160) npc.noTileCollide = true;
+			//else if (MathF.Abs(npc.position.X - movePos.X) > 80) npc.velocity.X *= 0.97f;
+			//else npc.noTileCollide = false;
 
-			if (npc.velocity.Y < 0 && npc.position.Y < movePos.Y - 64) npc.velocity.Y += 0.1f;
-			if (npc.velocity.Y > 0 && npc.position.Y > movePos.Y + 64) npc.velocity.Y -= 0.15f;
+			if (npc.velocity.Y < 0 && npc.position.Y < movePos.Y - 64) npc.velocity.Y += 0.125f;
+			if (npc.velocity.Y > 0 && npc.position.Y > movePos.Y + 64) npc.velocity.Y -= 0.175f;
 
 			npc.rotation = npc.DirectionTo(target.Center).ToRotation() - MathHelper.PiOver2;
 			
 			//Insane amount of randomness, because this is run every tick, and will be weighted towards lower numbers
-			if(timer > 200 + Main.rand.Next(320))
+			if(timer > 150 + Main.rand.Next(150))
 			{
 				npc.ai[1] = Charge;
 				npc.ai[0] = 0;
-				npc.noTileCollide = false;
+				//npc.noTileCollide = false;
 				return;
 			}
 
@@ -111,6 +111,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			{
 				npc.velocity *= 0.95f;
 				npc.rotation = npc.DirectionTo(target.Center).ToRotation() - MathHelper.PiOver2;
+				//npc.noTileCollide = false;
 			}
 			else if (timer < 30)
 			{
