@@ -31,7 +31,15 @@ namespace TerrariaCells.Content.WeaponAnimations
             ItemID.SniperRifle,
         };
         public override bool InstancePerEntity => true;
+        public override void SetStaticDefaults()
+        {
+            for (int i = 0; i < Autorifles.Length; i++)
+            {
+                ItemID.Sets.ItemsThatAllowRepeatedRightClick[Autorifles[i]] = true;
+            }
 
+            base.SetStaticDefaults();
+        }
         public override bool AppliesToEntity(Item entity, bool lateInstantiation)
         {
             return Autorifles.Contains(entity.type);
@@ -153,6 +161,7 @@ namespace TerrariaCells.Content.WeaponAnimations
                     Player.CompositeArmStretchAmount.Full,
                     MathHelper.ToRadians(-80 * mplayer.useDirection)
                 );
+                if (ReloadStep == SkipStep) ReloadStep++;
                 //front hand movement (go to pocket then back up to gun)
                 if (ReloadStep == 0)
                 {

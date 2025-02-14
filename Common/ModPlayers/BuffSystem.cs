@@ -421,7 +421,7 @@ namespace TerrariaCells.Content.Buffs
                     Main.npc[self.whoAmI].life = 1;
                     if (Main.netMode != NetmodeID.MultiplayerClient)
                     {
-                        Main.npc[self.whoAmI].SimpleStrikeNPC(9999, 1, noPlayerInteraction: true);
+                        Main.npc[self.whoAmI].StrikeInstantKill();
                         if (Main.netMode == NetmodeID.Server)
                         {
                             NetMessage.SendData(MessageID.DamageNPC, -1, -1, null, self.whoAmI, 9999f);
@@ -449,7 +449,7 @@ namespace TerrariaCells.Content.Buffs
                 Main.npc[self.whoAmI].life = 1;
                 if (Main.netMode != NetmodeID.MultiplayerClient)
                 {
-                    Main.npc[self.whoAmI].SimpleStrikeNPC(9999, 1, noPlayerInteraction: true);
+                    Main.npc[self.whoAmI].StrikeInstantKill();
                     if (Main.netMode == NetmodeID.Server)
                     {
                         NetMessage.SendData(MessageID.DamageNPC, -1, -1, null, self.whoAmI, 9999f);

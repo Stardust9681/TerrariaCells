@@ -20,11 +20,13 @@ namespace TerrariaCells.Content.WeaponAnimations
         public int ReloadStep = 0;
         public bool FullyReloads = true;
         public SoundStyle? StoredSound = null;
+        public int SkipStep = -1;
 
         public int OriginalUseTime;
         public int OriginalUseAnimation;
         public int OriginalReuseDelay;
-        //dont know what this method is really for but it is necessary
+        
+
         public override void SetDefaults(Item item)
         {
             
@@ -132,6 +134,7 @@ namespace TerrariaCells.Content.WeaponAnimations
                     break;
                 case ItemID.SniperRifle:
                     ReloadTimeMult = 1.2f;
+                    SkipStep = 1;
                     break;
                  
                     
