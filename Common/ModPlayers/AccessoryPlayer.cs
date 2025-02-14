@@ -319,7 +319,7 @@ namespace TerrariaCells.Common.ModPlayers
 		}
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			if (thePlan && modifiers.DamageType.CountsAsClass(DamageClass.Melee))
+			if (thePlan)
 			{
 				if (target.life > (int)(target.lifeMax * 0.9f)) modifiers.SourceDamage += 0.5f;
 			}
@@ -342,7 +342,7 @@ namespace TerrariaCells.Common.ModPlayers
 		}
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (target.life - damageDone < 1) OnKill(target, hit, damageDone);
+			if (target.life < 1) OnKill(target, hit, hit.Damage);
 			if (hit.DamageType.CountsAsClass(DamageClass.Melee))
 			{
 				if (nazar)
@@ -367,7 +367,10 @@ namespace TerrariaCells.Common.ModPlayers
 
 		private void OnKill(NPC npc, NPC.HitInfo hit, int damage)
 		{
-			if(fastClock) fastClockTimer = 5 * 60;
+			if (npc.lifeMax <= 5 || npc.friendly)// || !npc.CanBeChasedBy() || NPCID.Sets.ProjectileNPC[npc.type])
+				return;
+
+			if (fastClock) fastClockTimer = 5 * 60;
 			if (bandOfRegen) Player.Heal((int)(Player.statLifeMax2 * 0.01f));
 		}
 	}
