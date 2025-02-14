@@ -72,10 +72,18 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
 				if (npc.position.Equals(oldPos))
 				{
-					npc.position -= npc.oldVelocity * 2;
-					npc.ai[1] = -npc.direction;
-					npc.Phase(Idle);
-					return;
+					if (Collision.TileCollision(npc.position + new Vector2(0, -10), Vector2.UnitX * npc.direction, npc.width, npc.height).X != 0)
+					{
+						npc.position -= npc.oldVelocity * 2;
+						npc.ai[1] = -npc.direction;
+						npc.Phase(Idle);
+						return;
+					}
+					else
+					{
+						npc.position.X += npc.direction * 2;
+						npc.position.Y -= 2f;
+					}
 				}
 				else
 				{
