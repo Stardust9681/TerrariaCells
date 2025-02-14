@@ -80,11 +80,18 @@ namespace TerrariaCells.Common.Utilities
 		public static bool IsFacingTarget(this NPC npc, Entity target)
 			=> npc.direction == MathF.Sign(target.position.X - npc.position.X);
 
-		public static Vector2 FindGroundInFront(this NPC npc)
+		public static Vector2 FindGroundInFront(this NPC npc, int tilesToCheck = 6)
 		{
-			Rectangle rect = npc.getRect();
-			rect.X += (npc.direction * npc.width);
-			return TCellsUtils.FindGround(rect);
+			Vector2 testPos = npc.position;
+			testPos.X += npc.direction * npc.width;
+			//Might be able to improve this by doing less checks, depending on how tall the NPC is
+			for (int i = 0; i < tilesToCheck; i++)
+			{
+				Vector2 collision = Collision.TileCollision(testPos, Vector2.UnitY * 16, npc.width, npc.height);
+				if (collision.Y != 16)
+					return testPos  + collision;
+			}
+			return testPos + new Vector2(0, tilesToCheck * 16);
 		}
 
 		public static bool TargetInAggroRange(this NPC npc, float range = 240, bool lineOfSight = true, bool allowDamageTrigger = true)
