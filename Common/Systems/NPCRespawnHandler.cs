@@ -73,6 +73,10 @@ namespace TerrariaCells.Common.Systems
             if (RespawnMarkers.Count == 0)
                 return;
 
+			//Disable spawns if disabled
+			if (Configs.DevConfig.Instance.DisableSpawns)
+				return;
+
             List<Rectangle> respawnRects = new List<Rectangle>();
             Vector2 rectSize = new Vector2(2608f*0.67f, 1840f*0.67f);
             for (int i = 0; i < Main.maxPlayers; i++)

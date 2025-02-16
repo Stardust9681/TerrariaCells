@@ -86,6 +86,16 @@ Configs: {
 			Label: Drop Items
 			Tooltip: ""
 		}
+
+		DisableUsingMouseItem: {
+			Label: Disable Using Mouse Item
+			Tooltip: ""
+		}
+
+		DisableSpawns: {
+			Label: Disable Spawns
+			Tooltip: ""
+		}
 	}
 }
 
@@ -107,6 +117,11 @@ Items: {
 
 	ClickableCrystalItem: {
 		DisplayName: Clickable Crystal Item
+		Tooltip: ""
+	}
+
+	PhantomPhoenix: {
+		DisplayName: Phantom Phoenix
 		Tooltip: ""
 	}
 }
@@ -133,6 +148,9 @@ Projectiles: {
 	IceBall.DisplayName: Ice Ball
 	IceArrow.DisplayName: Ice Arrow
 	IllusionBrainHitbox.DisplayName: Illusion Brain Hitbox
+	TelegraphWarning.DisplayName: Telegraph Warning
+	TendrilAttack.DisplayName: Tendril Attack
+	SwordStabWave.DisplayName: Sword Stab Wave
 }
 
 Tooltips: {

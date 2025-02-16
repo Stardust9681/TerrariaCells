@@ -1,6 +1,6 @@
 ﻿using Terraria.Enums;
 using Terraria.ModLoader;
-using TerrariaCells.Content.Tiles;
+using TerrariaCells.Content.Tiles.LevelExitPylon;
 
 namespace TerrariaCells.Content.Items.Placeable
 {

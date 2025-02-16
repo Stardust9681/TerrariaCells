@@ -29,6 +29,10 @@ namespace TerrariaCells.Common.Systems
 			_AITypesByIndex = null;
 		}
 
+		public static bool AITypeExists(int forNPC)
+		{
+			return _AIPointers[forNPC] != -1;
+		}
 		public static bool TryGetAIType(int forNPC, out AIType ai)
 		{
 			int index = _AIPointers[forNPC];

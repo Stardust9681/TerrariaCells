@@ -19,8 +19,22 @@ namespace TerrariaCells.Common.GlobalProjectiles
         private static int[] undeadNPCs = { NPCID.Zombie, NPCID.Skeleton };
         private static int[] bossNPCs = { NPCID.EyeofCthulhu };
         private static float stakeToUndeadDamageModifier = 1.5f;
+        public bool ForceCrit = false;
+        public override bool InstancePerEntity => true;
+        public override void SetDefaults(Projectile projectile)
+		{
+			switch (projectile.type)
+			{
+				case ProjectileID.BulletHighVelocity:
+					projectile.penetrate = 1;
+					break;
+				case ProjectileID.PulseBolt:
+					projectile.penetrate = 3;
+					break;
+			}
+		}
 
-        public override bool OnTileCollide(Projectile projectile, Vector2 oldVelocity)
+		public override bool OnTileCollide(Projectile projectile, Vector2 oldVelocity)
         {
             if (projectile.type == ProjectileID.PulseBolt)
             {
@@ -36,7 +50,7 @@ namespace TerrariaCells.Common.GlobalProjectiles
                     int targetID = projectile.FindTargetWithLineOfSight();
                     if (targetID >= 0)
                     {
-                        Vector2 newVel = projectile.DirectionTo(Main.npc[targetID].position);
+                        Vector2 newVel = projectile.DirectionTo(Main.npc[targetID].Center);
                         newVel.Normalize();
                         newVel *= projectile.oldVelocity.Length();
 
@@ -95,16 +109,12 @@ namespace TerrariaCells.Common.GlobalProjectiles
                     modifiers.SetCrit();
                     break;
             }
-            if (projectile.type == ModContent.ProjectileType<Sword>())
+            if (ForceCrit)
             {
-                if (projectile.ai[0] == ItemID.FieryGreatsword && target.HasBuff(BuffID.Oiled))
-                {
-                    modifiers.SetCrit();
-                    Projectile.NewProjectile(new EntitySource_Parent(projectile), target.position, Vector2.Zero, ProjectileID.Volcano, 12, 10f, ai1: 1);
-                }
+                modifiers.SetCrit();
             }
-
         }
+
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
         {
             switch (projectile.type)
@@ -130,15 +140,8 @@ namespace TerrariaCells.Common.GlobalProjectiles
                     target.AddBuff(BuffID.Oiled, 60 * 8);
                     break;
             }
-            if (projectile.type == ModContent.ProjectileType<Sword>())
-            {
-                if (projectile.ai[0] == ItemID.Starfury)
-                {
-                    Projectile starFuryStar = Main.projectile[Projectile.NewProjectile(new EntitySource_Parent(projectile), target.position.X, target.position.Y - 500f, 0, 20f, ProjectileID.Starfury, 12, 10f, ai1: 1)];
-                    starFuryStar.tileCollide = false;
-                }
-            }
         }
+
         public override void OnSpawn(Projectile projectile, IEntitySource source)
         {
             if (projectile.type == ProjectileID.Volcano && projectile.ai[1] != 1)
@@ -149,10 +152,18 @@ namespace TerrariaCells.Common.GlobalProjectiles
             {
                 projectile.Kill();
             }
+
+			//Disable gravestones (starting to get unsightly)
+			if (ProjectileID.Sets.IsAGravestone[projectile.type])
+			{
+				projectile.Kill();
+			}
         }
-        public override void AI(Projectile projectile)
+
+        /*public override void AI(Projectile projectile)
         {
-            if (projectile.type == ProjectileID.Starfury)
+			//Literally wasn't doing anything ?
+			/*if (projectile.type == ProjectileID.Starfury)
             {
                 int targetID = projectile.FindTargetWithLineOfSight();
                 if (targetID >= 0)
@@ -160,7 +171,18 @@ namespace TerrariaCells.Common.GlobalProjectiles
                     Vector2 directionToTarget = projectile.DirectionTo(Main.npc[targetID].position);
 
                 }
-            }
-        }
-    }
+            }//
+		}*/
+
+		public override bool PreAI(Projectile projectile)
+		{
+			if (projectile.type == ProjectileID.DesertDjinnCurse)
+			{
+				projectile.velocity = Vector2.Zero;
+				Lighting.AddLight(projectile.Center, Color.White.ToVector3() * 0.5f);
+				return false;
+			}
+			return base.PreAI(projectile);
+		}
+	}
 }

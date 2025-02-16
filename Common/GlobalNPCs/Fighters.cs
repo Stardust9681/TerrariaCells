@@ -53,9 +53,7 @@ namespace TerrariaCells.Common.GlobalNPCs
             {
                 WalkSpeed = 1;
                 JumpSpeed = 8;
-
             }
-            base.SetDefaults(entity);
         }
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
@@ -103,8 +101,8 @@ namespace TerrariaCells.Common.GlobalNPCs
         }
         public override bool PreAI(NPC npc)
         {
-			      if (npc.type is NPCID.GoblinArcher or NPCID.GoblinThief)
-				      return base.PreAI(npc);
+			if (npc.type is NPCID.GoblinArcher or NPCID.GoblinThief)
+				return base.PreAI(npc);
             if (npc.aiStyle == NPCAIStyleID.Fighter|| npc.type == NPCID.CultistArcherBlue)
             {
                 Update(npc);

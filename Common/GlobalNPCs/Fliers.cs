@@ -21,7 +21,10 @@ namespace TerrariaCells.Common.GlobalNPCs
         {
             return FlyingEnemies.Contains(entity.type);
         }
-        public override void SetDefaults(NPC entity)
+        
+		//Not doing anything with these, no point in overriding
+		/*
+		 * public override void SetDefaults(NPC entity)
         {
             base.SetDefaults(entity);
         }
@@ -33,6 +36,7 @@ namespace TerrariaCells.Common.GlobalNPCs
         {
             base.FindFrame(npc, frameHeight);
         }
+		*/
         
         public override bool PreAI(NPC npc)
         {
@@ -54,10 +58,8 @@ namespace TerrariaCells.Common.GlobalNPCs
         }
         public void Update(NPC npc)
         {
-
             npc.TargetClosest();
             ShouldFly = true;
-
         }
     }
 }

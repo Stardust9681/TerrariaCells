@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
@@ -17,13 +17,22 @@ namespace TerrariaCells.Common.Systems
 {
 	public class NPCRoomSpawner : ModSystem
 	{
+		public static void ResetSpawns()
+		{
+			NPCRespawnHandler.RespawnMarkers?.Clear();
+			if (RoomMarkers is null) RoomMarkers = new List<RoomMarker>();
+			else RoomMarkers.Clear();
+			foreach (NPC npc in Main.npc.Where(x => x.active && !x.friendly)) npc.active = false; //Disable all current NPCs
+			RoomMarkers.Add(new RoomMarker(new Point(492, 338), RoomMarker.GetInternalRoomName("ForestPremade", "forest_premade"), 700, 70));
+			RoomMarkers.Add(new RoomMarker(new Point(5657, 444), RoomMarker.GetInternalRoomName("DesertPremade2", "desert_premade_2"), 587, 211));
+			RoomMarkers.Add(new RoomMarker(new Point(1501, 198), RoomMarker.GetInternalRoomName("FrozenCityPremade2", "frozencity_premade_2"), 2652 - 1501, 692 - 198));
+			RoomMarkers.Add(new RoomMarker(new Point(2949, 412), RoomMarker.GetInternalRoomName("HivePremade", "hive_premade"), 3397 - 2949, 542 - 412));
+			RoomMarkers.Add(new RoomMarker(new Point(4375, 404), RoomMarker.GetInternalRoomName("CrimsonPremade", "crimson_premade"), 5411 - 4375, 571 - 404));
+		}
+
 		public override void ClearWorld()
 		{
-			RoomMarkers ??= new List<RoomMarker>();
-			RoomMarkers.Clear();
-			RoomMarkers.Add(new RoomMarker(new Point(492, 338), RoomMarker.GetInternalRoomName("ForestPremade", "forest_premade"), 700, 70));
-			RoomMarkers.Add(new RoomMarker(new Point(1946, 456), RoomMarker.GetInternalRoomName("DesertPremade", "desert_premade"), 831, 192));
-			RoomMarkers.Add(new RoomMarker(new Point(3475, 368), RoomMarker.GetInternalRoomName("FrozenCityPremade", "frozencity_premade"), 767, 166));
+			ResetSpawns();
 		}
 
 		/// <summary> Add entries to this list during biome generation. </summary>
@@ -88,6 +97,7 @@ namespace TerrariaCells.Common.Systems
 		}
 		public override void PostUpdateNPCs()
 		{
+			if (Configs.DevConfig.Instance.DisableSpawns) return;
 			for (int i = 0; i < Main.maxPlayers; i++)
 			{
 				if (!Main.player[i].active) continue;
@@ -300,7 +310,8 @@ namespace TerrariaCells.Common.Systems
 					return (int)(npcType = result2);
 				if (ModContent.GetInstance<TerrariaCells>().TryFind<ModNPC>(NameOrType, out ModNPC modNPC)) //Check for ModNPC with name
 					return (int)(npcType = modNPC.Type);
-				throw new ArgumentException($"NPC Type or Name: '{NameOrType}' was not found");
+				ModContent.GetInstance<TerrariaCells>().Logger.Warn($"TerraCells NPC Spawning Error: NPC Type or Name: '{NameOrType}' was not found.");
+				return NPCID.FairyCritterPink;	
 			}
 		}
 	}

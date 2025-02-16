@@ -22,7 +22,7 @@ namespace TerrariaCells.Common.Systems
 				return _pylonDiscoveries ??= new Dictionary<Point16, bool>();
 			}
 		}
-		public const int MAX_PYLON_RANGE = 5;
+		public const int MAX_PYLON_RANGE = 7;
 
 		public static bool PylonFound(Point16 pylonPos)
 		{

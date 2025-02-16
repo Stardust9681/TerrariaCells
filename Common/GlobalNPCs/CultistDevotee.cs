@@ -39,21 +39,26 @@ namespace TerrariaCells.Common.GlobalNPCs
             }
         }
         
-        public bool CultistDevoteeAI(NPC npc, Player target)
+        public bool CultistDevoteeAI(NPC npc, Player? target)
         {
-            if (npc.HasValidTarget)
+			bool validTarget;
+			if (target != null)
+				validTarget = npc.TargetInAggroRange(target, 400, false);
+			else
+				validTarget = npc.TargetInAggroRange(400, false);
+
+            if (target != null)
             {
                 npc.direction = npc.Center.X > target.Center.X ? -1 : 1;
                 npc.spriteDirection = npc.direction;
             }
 
-            if (npc.ai[0] > 0 || (npc.HasValidTarget && target.Distance(npc.Center) < 400))
+            if (npc.ai[0] > 0 || validTarget)
             {
                 npc.ai[0]++;
                 if (npc.ai[0] == 20 && npc.HasValidTarget)
                 {
-                    
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center - new Vector2(0, 60), Vector2.Zero, ModContent.ProjectileType<IceBall>(), TCellsUtils.ScaledHostileDamage(50), 1, ai1: target.whoAmI);
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center - new Vector2(0, 60), Vector2.Zero, ModContent.ProjectileType<IceBall>(), TCellsUtils.ScaledHostileDamage(50), 1, Main.myPlayer, 0, target.whoAmI, 70);
                 }
                 if (npc.ai[0] >= 90)
                 {
