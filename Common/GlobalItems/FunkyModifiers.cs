@@ -1,13 +1,19 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using TerrariaCells.Common.GlobalProjectiles;
 
 namespace TerrariaCells.Common.GlobalItems;
 
+// if you're looking to add a new weapon, see FunkyModifierItemModifier.weaponCategorizations
+// if you're looking to add a variant of an existing modifier, see FunkyModifierItemModifier.modifierInitList
+// to add a modifier:
+// add the enum variant here
+//      (create a new category for your functionality in ModCategory if you want)
+// categorize the modifier in FunkyModifierItemModifier.ModifierCategorizations
+// create construction method(s) in FunkyModifier
+// use those methods in FunkyModifierItemModifier.modifierInitList
 public enum FunkyModifierType
 {
     None,
@@ -20,16 +26,16 @@ public enum FunkyModifierType
     // Increased mana consumption, massively increased damage
     // Can be negated for the opposite effect
     ImbuedDamage,
+    FrenzyFire,
     DamageOnDebuff,
     CustomAmmo,
     ApplyDebuff,
     CritsExplode,
+    DropMoreMana,
 };
 
 /// <summary>
 /// Used to filter out modifiers that can or can't be given to specific weapons
-///
-/// These correlate to mechanics
 /// </summary>
 public enum ModCategory
 {
@@ -56,40 +62,42 @@ public enum ModCategory
     Flail,
 };
 
-public class FunkyModifierItemModifier : GlobalItem
+/// <summary>
+/// Just adds a whole bunch of hooks into item functionality
+/// feel free to add on to the switch cases for new modifiers, thats why theyre there
+///
+/// This portion contains
+/// </summary>
+public partial class FunkyModifierItemModifier : GlobalItem
 {
-    public override bool InstancePerEntity => true;
+    // public override bool InstancePerEntity => true;
 
     private static readonly FunkyModifier[] modifierInitList =
     [
-        FunkyModifier.Damage(1.5f),
-        FunkyModifier.ProjectileVelocity(1.5f),
-        FunkyModifier.AttackSpeed(1.5f),
-        FunkyModifier.ManaCost(1 / 1.5f),
-        // FunkyModifier.Size(4f),
-        // FunkyModifier.(1.5f),
+        FunkyModifier.Damage(1.15f),
+        FunkyModifier.Damage(1.30f),
+        FunkyModifier.ProjectileVelocity(1.50f),
+        FunkyModifier.AttackSpeed(1.15f),
+        FunkyModifier.AttackSpeed(1.25f),
+        FunkyModifier.ManaCost(0.8f),
+        FunkyModifier.ImbuedDamage(1.40f, 1.25f),
+        FunkyModifier.FrenzyFire(1.40f, 0.75f),
+        FunkyModifier.DamageOnDebuff(1.50f, BuffID.OnFire),
+        FunkyModifier.DamageOnDebuff(1.50f, BuffID.Poisoned),
+        FunkyModifier.CustomAmmo(ProjectileID.ExplosiveBullet),
+        FunkyModifier.CustomAmmo(ProjectileID.BulletHighVelocity),
+        FunkyModifier.ApplyDebuff(BuffID.Poisoned, 30f),
+        FunkyModifier.ApplyDebuff(BuffID.OnFire),
+        FunkyModifier.DropMoreMana(2),
+        // FunkyModifier.CritsExplode(),
     ];
 
     /// <summary>
     /// Used to determine which modifiers are associated with each category, in order to filter out which
     /// modifiers a weapon can get depending on the categorizations the weapon has.
+    ///
+    /// If you need a new category, don't hesistate to add one.
     /// </summary>
-    private static readonly Dictionary<FunkyModifierType, ModCategory[]> modifierCategorizations =
-        new (FunkyModifierType, ModCategory[])[]
-        {
-            (FunkyModifierType.None, []),
-            (FunkyModifierType.Damage, [ModCategory.Generic]),
-            (FunkyModifierType.ProjectileVelocity, [ModCategory.Projectile]),
-            (FunkyModifierType.AttackSpeed, [ModCategory.Generic]),
-            (FunkyModifierType.Size, [ModCategory.Sword, ModCategory.Projectile]),
-            (FunkyModifierType.ManaCost, [ModCategory.Mana]),
-            (FunkyModifierType.ImbuedDamage, [ModCategory.Mana]),
-            (FunkyModifierType.DamageOnDebuff, [ModCategory.Sword, ModCategory.Projectile]),
-            (FunkyModifierType.CustomAmmo, [ModCategory.Ammo]),
-            (FunkyModifierType.ApplyDebuff, [ModCategory.Sword, ModCategory.Projectile]),
-            (FunkyModifierType.CritsExplode, [ModCategory.Sword, ModCategory.Projectile]),
-        }.ToDictionary();
-
     private static ModCategory[] ModifierCategorizations(FunkyModifierType modifierType)
     {
         return modifierType switch
@@ -101,11 +109,13 @@ public class FunkyModifierItemModifier : GlobalItem
             FunkyModifierType.Size => [ModCategory.Sword, ModCategory.Projectile],
             FunkyModifierType.ManaCost => [ModCategory.Mana],
             FunkyModifierType.ImbuedDamage => [ModCategory.Mana],
+            FunkyModifierType.FrenzyFire => [ModCategory.Generic],
             FunkyModifierType.DamageOnDebuff => [ModCategory.Sword, ModCategory.Projectile],
             FunkyModifierType.CustomAmmo => [ModCategory.Ammo],
             FunkyModifierType.ApplyDebuff => [ModCategory.Sword, ModCategory.Projectile],
             FunkyModifierType.CritsExplode => [ModCategory.Sword, ModCategory.Projectile],
-            _ => throw new System.Exception("Could not find enum variant: " + modifierType),
+            FunkyModifierType.DropMoreMana => [ModCategory.Mana],
+            _ => throw new Exception("Could not find enum variant: " + modifierType),
         };
     }
 
@@ -114,9 +124,9 @@ public class FunkyModifierItemModifier : GlobalItem
         ModCategory[]
     )[]
     {
-        (ItemID.PearlwoodSword, [ModCategory.Projectile, ModCategory.Ammo]),
-        (ItemID.BreakerBlade, [ModCategory.Projectile, ModCategory.Ammo]),
-        (ItemID.CopperShortsword, [ModCategory.Projectile, ModCategory.Ammo]),
+        (ItemID.PearlwoodSword, [ModCategory.Sword]),
+        (ItemID.BreakerBlade, [ModCategory.Sword]),
+        (ItemID.CopperShortsword, [ModCategory.Sword]),
         (ItemID.FieryGreatsword, [ModCategory.Sword]),
         (ItemID.VolcanoSmall, [ModCategory.Sword]),
         (ItemID.VolcanoLarge, [ModCategory.Sword]),
@@ -139,6 +149,7 @@ public class FunkyModifierItemModifier : GlobalItem
         (ItemID.RocketLauncher, [ModCategory.Projectile]),
         (ItemID.GrenadeLauncher, [ModCategory.Projectile]),
         (ItemID.StarCannon, [ModCategory.Projectile]),
+        (ItemID.AleThrowingGlove, [ModCategory.Projectile]),
         //
         (ItemID.Toxikarp, [ModCategory.Projectile, ModCategory.Mana]),
         (ItemID.DemonScythe, [ModCategory.Projectile, ModCategory.Mana]),
@@ -155,287 +166,14 @@ public class FunkyModifierItemModifier : GlobalItem
         (ItemID.SharpTears, [ModCategory.Projectile, ModCategory.Mana]),
         (ItemID.BubbleGun, [ModCategory.Projectile, ModCategory.Mana]),
         (ItemID.BookofSkulls, [ModCategory.Projectile, ModCategory.Mana]),
-        (ItemID.AleThrowingGlove, [ModCategory.Projectile, ModCategory.Mana]),
     }.ToDictionary();
-
-    public FunkyModifier[] modifiers;
-
-    public override void SetDefaults(Item item)
-    {
-        if (!weaponCategorizations.TryGetValue((short)item.netID, out var categorizations))
-        {
-            return;
-        }
-
-        int modifierCount = 1;
-        FunkyModifierItemModifier funkyModifiers = item.GetGlobalItem<FunkyModifierItemModifier>();
-        funkyModifiers.modifiers = new FunkyModifier[modifierCount];
-
-        FunkyModifier[] modifierPool = modifierInitList
-            .Where(checking =>
-                ModifierCategorizations(checking.modifierType)
-                    .Any(modifierFilter =>
-                        modifierFilter == ModCategory.Generic
-                        || categorizations.Contains(modifierFilter)
-                    )
-            )
-            .ToArray();
-
-        for (int i = 0; i < modifierCount; i++)
-        {
-            FunkyModifier funkyModifier = modifierPool[Main.rand.Next(modifierPool.Length)];
-            if (funkyModifiers.modifiers.Contains(funkyModifier))
-            {
-                continue;
-            }
-            funkyModifiers.modifiers[i] = funkyModifier;
-        }
-    }
-
-    public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
-    {
-        if (!item.TryGetGlobalItem(out FunkyModifierItemModifier funkyModifiers))
-        {
-            return;
-        }
-        foreach (FunkyModifier modifier in funkyModifiers.modifiers ?? [])
-        {
-            tooltips.Add(
-                new TooltipLine(
-                    Mod,
-                    "FunkyModifier",
-                    "Funky Modifier: " + modifier.modifierType.ToString() + $"[{modifier.modifier}]"
-                )
-            );
-        }
-    }
-
-    public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
-    {
-        if (!item.TryGetGlobalItem(out FunkyModifierItemModifier funkyModifiers))
-        {
-            return;
-        }
-        foreach (FunkyModifier modifier in funkyModifiers.modifiers ?? [])
-        {
-            switch (modifier.modifierType)
-            {
-                case FunkyModifierType.Damage:
-                {
-                    damage *= modifier.modifier;
-                    break;
-                }
-                case FunkyModifierType.ImbuedDamage:
-                {
-                    damage *= modifier.modifier;
-                    break;
-                }
-            }
-        }
-    }
-
-    public override void ModifyManaCost(Item item, Player player, ref float reduce, ref float mult)
-    {
-        if (!item.TryGetGlobalItem(out FunkyModifierItemModifier funkyModifiers))
-        {
-            return;
-        }
-        foreach (FunkyModifier modifier in funkyModifiers.modifiers ?? [])
-        {
-            switch (modifier.modifierType)
-            {
-                case FunkyModifierType.ManaCost:
-                {
-                    mult *= modifier.modifier;
-                    break;
-                }
-                case FunkyModifierType.ImbuedDamage:
-                {
-                    mult *= modifier.secondaryModifier;
-                    break;
-                }
-            }
-        }
-    }
-
-    public override void ModifyItemScale(Item item, Player player, ref float scale)
-    {
-        if (!item.TryGetGlobalItem(out FunkyModifierItemModifier funkyModifiers))
-        {
-            return;
-        }
-        foreach (FunkyModifier modifier in funkyModifiers.modifiers ?? [])
-        {
-            switch (modifier.modifierType)
-            {
-                case FunkyModifierType.Size:
-                {
-                    scale *= modifier.modifier;
-                    break;
-                }
-            }
-        }
-    }
-
-    public override float UseSpeedMultiplier(Item item, Player player)
-    {
-        float scale = 1f;
-        if (!item.TryGetGlobalItem(out FunkyModifierItemModifier funkyModifiers))
-        {
-            return scale;
-        }
-        foreach (FunkyModifier modifier in funkyModifiers.modifiers ?? [])
-        {
-            switch (modifier.modifierType)
-            {
-                case FunkyModifierType.AttackSpeed:
-                {
-                    scale *= modifier.modifier;
-                    break;
-                }
-            }
-        }
-        return scale;
-    }
-
-    public override void ModifyHitNPC(
-        Item item,
-        Player player,
-        NPC target,
-        ref NPC.HitModifiers modifiers
-    )
-    {
-        if (!item.TryGetGlobalItem(out FunkyModifierItemModifier funkyModifiers))
-        {
-            return;
-        }
-        foreach (FunkyModifier modifier in funkyModifiers.modifiers ?? [])
-        {
-            switch (modifier.modifierType)
-            {
-                case FunkyModifierType.DamageOnDebuff:
-                {
-                    if (target.HasBuff(modifier.id))
-                    {
-                        modifiers.SourceDamage *= modifier.modifier;
-                    }
-                    break;
-                }
-            }
-        }
-    }
-
-    public override void ModifyShootStats(
-        Item item,
-        Player player,
-        ref Vector2 position,
-        ref Vector2 velocity,
-        ref int type,
-        ref int damage,
-        ref float knockback
-    )
-    {
-        if (!item.TryGetGlobalItem(out FunkyModifierItemModifier funkyModifiers))
-        {
-            return;
-        }
-        foreach (FunkyModifier modifier in funkyModifiers.modifiers ?? [])
-        {
-            switch (modifier.modifierType)
-            {
-                case FunkyModifierType.ProjectileVelocity:
-                {
-                    velocity *= modifier.modifier;
-                    break;
-                }
-                case FunkyModifierType.CustomAmmo:
-                {
-                    type = modifier.id;
-                    break;
-                }
-            }
-        }
-    }
-
-    public override bool Shoot(
-        Item item,
-        Player player,
-        EntitySource_ItemUse_WithAmmo source,
-        Vector2 position,
-        Vector2 velocity,
-        int type,
-        int damage,
-        float knockback
-    )
-    {
-        return true;
-    }
 }
 
-public class ProjectileFunker : GlobalProjectile
+public partial class ProjectileFunker : GlobalProjectile
 {
-    public FunkyModifier[] modifiersOnSourceItem;
+    internal FunkyModifier[] modifiersOnSourceItem;
 
     public override bool InstancePerEntity => true;
-
-    public override void SetDefaults(Projectile entity)
-    {
-        bool tryGetSource = entity.TryGetGlobalProjectile<SourceGlobalProjectile>(
-            out var sourceGlobal
-        );
-        if (!tryGetSource)
-        {
-            return;
-        }
-
-        if (sourceGlobal.itemSource == null)
-        {
-            return;
-        }
-
-        bool tryGetModifier = sourceGlobal.itemSource.TryGetGlobalItem<FunkyModifierItemModifier>(
-            out var modifiers
-        );
-        if (!tryGetModifier)
-        {
-            return;
-        }
-        modifiersOnSourceItem = modifiers.modifiers;
-    }
-
-    public override void ModifyDamageHitbox(Projectile projectile, ref Rectangle hitbox)
-    {
-        if (!projectile.TryGetGlobalProjectile(out ProjectileFunker funker))
-        {
-            return;
-        }
-
-        if (funker.modifiersOnSourceItem == null)
-        {
-            return;
-        }
-
-        foreach (FunkyModifier modifier in funker.modifiersOnSourceItem)
-        {
-            if (modifier.modifierType == FunkyModifierType.Size)
-            {
-                hitbox.Inflate((int)modifier.modifier, (int)modifier.modifier);
-            }
-        }
-    }
-
-    public override void ModifyHitNPC(
-        Projectile projectile,
-        NPC target,
-        ref NPC.HitModifiers modifiers
-    ) { }
-
-    public override void OnHitNPC(
-        Projectile projectile,
-        NPC target,
-        NPC.HitInfo hit,
-        int damageDone
-    ) { }
 }
 
 /// <summary>
@@ -469,21 +207,55 @@ public struct FunkyModifier(FunkyModifierType type, float modifier)
 
     public static FunkyModifier Damage(float damageMod) => new(FunkyModifierType.Damage, damageMod);
 
-    public static FunkyModifier ProjectileVelocity(float speedModifier) =>
-        new(FunkyModifierType.ProjectileVelocity, speedModifier);
+    public static FunkyModifier ProjectileVelocity(float speedMod) =>
+        new(FunkyModifierType.ProjectileVelocity, speedMod);
 
-    public static FunkyModifier AttackSpeed(float speedModifier) =>
-        new(FunkyModifierType.AttackSpeed, speedModifier);
+    public static FunkyModifier AttackSpeed(float speedMod) =>
+        new(FunkyModifierType.AttackSpeed, speedMod);
 
     /// <summary>
     /// Note for projectiles! Projectile hitboxes can only be flatly incrememnted by integers
     /// since their Rect's use int's, so keep that in mind when working with that.
     /// </summary>
-    /// <param name="flatSizeModifier"></param>
+    /// <param name="sizeMod"></param>
     /// <returns></returns>
-    public static FunkyModifier Size(float flatSizeModifier) =>
-        new FunkyModifier(FunkyModifierType.Size, flatSizeModifier);
+    public static FunkyModifier Size(float sizeMod) => new(FunkyModifierType.Size, sizeMod);
 
-    public static FunkyModifier ManaCost(float costModifier) =>
-        new(FunkyModifierType.ManaCost, costModifier);
+    public static FunkyModifier ManaCost(float manaCostMod) =>
+        new(FunkyModifierType.ManaCost, manaCostMod);
+
+    public static FunkyModifier ImbuedDamage(float damageMod, float manaMod) =>
+        new FunkyModifier(FunkyModifierType.ImbuedDamage, damageMod) with
+        {
+            secondaryModifier = manaMod,
+        };
+
+    public static FunkyModifier FrenzyFire(float speedMod, float damageMod) =>
+        new FunkyModifier(FunkyModifierType.FrenzyFire, damageMod) with
+        {
+            secondaryModifier = speedMod,
+        };
+
+    public static FunkyModifier DamageOnDebuff(float damageMod, int buffID) =>
+        new FunkyModifier(FunkyModifierType.DamageOnDebuff, damageMod) with
+        {
+            id = buffID,
+        };
+
+    public static FunkyModifier CustomAmmo(int ammoItemID) =>
+        new FunkyModifier(FunkyModifierType.CustomAmmo, 0f) with
+        {
+            id = ammoItemID,
+        };
+
+    public static FunkyModifier ApplyDebuff(int buffID, float timeSeconds = 10f) =>
+        new FunkyModifier(FunkyModifierType.ApplyDebuff, timeSeconds * 60) with
+        {
+            id = buffID,
+        };
+
+    public static FunkyModifier CritsExplode() => new(FunkyModifierType.CritsExplode, 0f);
+
+    public static FunkyModifier DropMoreMana(int manaDropMultiplier) =>
+        new(FunkyModifierType.DropMoreMana, manaDropMultiplier);
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrariaCells.Common.GlobalItems;
 
 namespace TerrariaCells.Common.GlobalProjectiles
 {
@@ -24,6 +25,23 @@ namespace TerrariaCells.Common.GlobalProjectiles
         }
         public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
         {
+            int starsSpawned = 1;
+            if (
+                projectile.TryGetGlobalProjectile(out ProjectileFunker projectileFunker)
+                && projectileFunker.SetInstance(projectile)
+            )
+            {
+                foreach (
+                    FunkyModifier funkyModifier in projectileFunker.instance.modifiersOnSourceItem
+                )
+                {
+                    if (funkyModifier.modifierType == FunkyModifierType.DropMoreMana)
+                    {
+                        starsSpawned *= (int)funkyModifier.modifier;
+                    }
+                }
+            }
+
 			if (target.lifeMax <= 5 || target.friendly || !target.CanBeChasedBy() || NPCID.Sets.ProjectileNPC[target.type])
 				return;
 
@@ -33,7 +51,11 @@ namespace TerrariaCells.Common.GlobalProjectiles
 				if (Main.netMode != NetmodeID.MultiplayerClient && !SpawnedMana)
 				{
 					SpawnedMana = true;
+                    for (int i = 0; i < starsSpawned; i++)
+                    {
+
 					Item.NewItem(projectile.GetSource_OnHit(target), target.Hitbox, new Item(ItemID.Star));
+                    }
 				}
 			}
 		}
