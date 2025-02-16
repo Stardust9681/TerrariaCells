@@ -220,8 +220,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				if (Main.netMode == NetmodeID.MultiplayerClient) return;
 
 				Vector2 vel = Vector2.Zero;
-				if (LeftTentacles.Contains(timer - Start)) vel.X = 4;
-				if (RightTentacles.Contains(timer - Start)) vel.X = -4;
+				if (LeftTentacles.Contains(timer)) vel.X = 4;
+				if (RightTentacles.Contains(timer)) vel.X = -4;
 				if (vel.X != 0)
 				{
 					Vector2 position = centre + new Vector2(44 * 16 * -MathF.Sign(vel.X), (36.5f * 16) - (Main.rand.Next(PlatformHeights) * 16));
