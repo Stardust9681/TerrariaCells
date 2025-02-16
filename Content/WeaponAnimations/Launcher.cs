@@ -184,7 +184,7 @@ namespace TerrariaCells.Content.WeaponAnimations
             //only shoot if not reloading
             if (Ammo > 0 && !player.GetModPlayer<WeaponPlayer>().reloading)
             {       
-                return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
+                return true;
             }
             return false;
         }
