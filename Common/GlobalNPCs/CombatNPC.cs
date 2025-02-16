@@ -31,6 +31,10 @@ namespace TerrariaCells.Common.GlobalNPCs
 
 		public static void ToggleContactDamage(NPC npc, bool value) => npc.GetGlobalNPC<CombatNPC>().allowContactDamage = value;
 
+		public override void SetStaticDefaults()
+		{
+			NPCID.Sets.ProjectileNPC[NPCID.Creeper] = true;
+		}
 		public override void SetDefaults(NPC npc)
 		{
 			switch (npc.type)
@@ -119,6 +123,11 @@ namespace TerrariaCells.Common.GlobalNPCs
 				case NPCID.BrainofCthulhu:
 					npc.lifeMax = (int)(npc.lifeMax * 1.3f); //This thing squishy as HEYLLLL
 					npc.knockBackResist = 0f; //Takes 0 knockback
+					break;
+				case NPCID.Creeper:
+					npc.lifeMax = 5;
+					npc.knockBackResist = 0f;
+					npc.defense = 8; //Make low damage projectile spam less effective at clearing low-health targets
 					break;
 				#endregion
 

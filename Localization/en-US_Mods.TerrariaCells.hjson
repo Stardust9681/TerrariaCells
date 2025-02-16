@@ -151,6 +151,7 @@ Projectiles: {
 	TelegraphWarning.DisplayName: Telegraph Warning
 	TendrilAttack.DisplayName: Tendril Attack
 	SwordStabWave.DisplayName: Sword Stab Wave
+	BloodThorn.DisplayName: Blood Thorn
 }
 
 Tooltips: {
