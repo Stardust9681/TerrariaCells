@@ -47,14 +47,13 @@ public class DeathReset : ModPlayer, IEntitySource
 			}
 		}
 
-		//Reset max mana
+		//Reset mana
 		Player.statMana = Player.statManaMax2;
 
 		//Reset systems
 		ModContent.GetInstance<TeleportTracker>().Reset();
 		ModContent.GetInstance<ClickedHeartsTracker>().Reset();
 		ModContent.GetInstance<ChestLootSpawner>().Reset();
-		NPCRoomSpawner.ResetSpawns();
 		WorldPylonSystem.ResetPylons();
 	}
 
@@ -66,6 +65,8 @@ public class DeathReset : ModPlayer, IEntitySource
 			item.TurnToAir(true); //Turn all items to air, so player and NPC drops don't remain
 		foreach (Projectile projectile in Main.ActiveProjectiles)
 			projectile.active = false; //Disable any tombstones or what-have-you
+
+		NPCRoomSpawner.ResetSpawns();
 	}
 
 	Item[] GetStartingItems() => new Item[]

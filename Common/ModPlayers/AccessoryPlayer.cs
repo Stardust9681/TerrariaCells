@@ -265,10 +265,10 @@ namespace TerrariaCells.Common.ModPlayers
 		{
 			if (frozenShieldItem != null)
 			{
-				Player.statLife = 1;
+				Player.statLife = (int)(Player.statLifeMax2 * 0.15f);
 				playSound = false;
 				genDust = false;
-				Player.immuneTime = 4 * 60; //4 sec
+				Player.immuneTime = 5 * 60; //4 sec
 				frozenShield = true;
 				int itemIndex = -1;
 				foreach (Item item in Player.armor[13..19])

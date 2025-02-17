@@ -40,6 +40,8 @@ namespace TerrariaCells.Common.ModPlayers
 
 		#region Healthbar
 		public const int MAX_HEALTHBAR_SIZE = 800;
+		public const string BAR_HEALTH_FILL1 = "Images\\UI\\PlayerResourceSets\\HorizontalBars\\HP_Fill";
+		public const string BAR_HEALTH_FILL2 = "Images\\UI\\PlayerResourceSets\\HorizontalBars\\HP_Fill_Honey";
 
 		private static void IL_HealthbarTextureSelect(ILContext context)
 		{
@@ -224,8 +226,6 @@ namespace TerrariaCells.Common.ModPlayers
 		#region Rally Heal Mechanic
 		public const float STAGGER_POTENCY = 3f;
 		public const float INV_STAGGER_POTENCY = 1f / STAGGER_POTENCY;
-		public const string BAR_HEALTH_FILL1 = "Images\\UI\\PlayerResourceSets\\HorizontalBars\\HP_Fill";
-		public const string BAR_HEALTH_FILL2 = "Images\\UI\\PlayerResourceSets\\HorizontalBars\\HP_Fill_Honey";
 
 		private float damageBuffer;
 		private int damageTime;
@@ -423,7 +423,7 @@ namespace TerrariaCells.Common.ModPlayers
 		//Make sure player dies when they hit <=0 health
 		private void CheckDead()
 		{
-			if (Player.statLife <= 0)
+			if (Player.statLife - DamageLeft <= 0)
 			{
 				deathReason ??= $"{Player.name} was beheaded.";
 
@@ -431,11 +431,9 @@ namespace TerrariaCells.Common.ModPlayers
 			}
 		}
 
-		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource)
+		public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
 		{
-			bool result = base.PreKill(damage, hitDirection, pvp, ref playSound, ref genDust, ref damageSource);
-			if (result) SetStaggerDamage(0);
-			return result;
+			SetStaggerDamage(0);
 		}
 		#endregion
 	}
