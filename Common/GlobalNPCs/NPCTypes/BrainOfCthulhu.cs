@@ -21,6 +21,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			return npcType == NPCID.BrainofCthulhu;
 		}
 
+		//This is probably not ideal NPC behaviour code
+		//Probably don't emulate this
 		public override void Behaviour(NPC npc)
 		{
 			int timer = npc.Timer();
@@ -164,7 +166,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			void Cross()
 			{
 				const int Start = 175;
-				const int End = 215;
+				const int End = 245;
 				const int Duration = End - Start;
 
 				if (timer < Start) return;
@@ -257,6 +259,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 					proj.netUpdate = true;
 				}
 			}
+			//Unused
 			void WarnMoveRandom()
 			{
 				const int Start = 215;
@@ -291,8 +294,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			}
 			void MoveRandom()
 			{
-				const int Start = 248;
-				const int End = 2000;
+				const int Start = 245;
+				const int End = 2673;
 				const int Duration = End - Start;
 
 				if (timer < Start) return;
@@ -301,7 +304,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				if (timer == Start)
 				{
 					npc.Center = centre;
-					Vector2 targetDirection = Vector2.UnitX.RotatedBy(npc.ai[2]);
+					float rotation = MathHelper.PiOver4;
+					rotation += Main.rand.Next(4) * MathHelper.PiOver2;
+					rotation += MathHelper.ToRadians(Main.rand.Next(-20, 20));
+					Vector2 targetDirection = Vector2.UnitX.RotatedBy(rotation);
 					npc.velocity = targetDirection * 4;
 				}
 				if (timer == End)
@@ -421,11 +427,11 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				{
 					Player player = Main.LocalPlayer;
 					if (MathF.Abs(player.velocity.X) < 1.8f)
-						npc.localAI[0]++;
+						npc.localAI[0]+=3;
 					else if(npc.localAI[0] > -30)
-						npc.localAI[0]--;
+						npc.localAI[0]++;
 
-					if (npc.localAI[0] > 120)
+					if (npc.localAI[0] > 320)
 					{
 						Point worldPos = player.Bottom.ToTileCoordinates();
 						for (int i = 0; i < 16; i++)
@@ -434,50 +440,70 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 								break;
 							worldPos.Y++;
 						}
-						Projectile proj = Projectile.NewProjectileDirect(
-							npc.GetSource_FromAI(),
+						IEntitySource npcSourceAI = npc.GetSource_FromAI();
+						Projectile.NewProjectileDirect(
+							npcSourceAI,
 							worldPos.ToWorldCoordinates(),
 							-Vector2.UnitY,
 							ModContent.ProjectileType<BloodThorn>(),
 							20,
 							0,
-							player.whoAmI);
-						proj.hostile = true;
-						proj.friendly = false;
-						proj.netUpdate = true;
+							player.whoAmI).rotation = -MathHelper.PiOver2;
+						for (int i = 0; i < 7; i++)
+						{
+							if (i == 3) continue;
+							int offsetX = (i - 3) * 32;
+							Point spawnPos = worldPos + new Vector2(offsetX, 0).ToTileCoordinates();
+							for (int j = 0; j < 16; j++)
+							{
+								if (WorldGen.SolidTile2(spawnPos.X, spawnPos.Y))
+									break;
+								spawnPos.Y++;
+							}
+							if (spawnPos.Y > worldPos.Y + 2) continue;
+							Projectile.NewProjectileDirect(
+								npcSourceAI,
+								spawnPos.ToWorldCoordinates(),
+								-Vector2.UnitY,
+								ModContent.ProjectileType<BloodThorn>(),
+								20,
+								0,
+								player.whoAmI,
+								ai2: 1).rotation = -MathHelper.PiOver2 + MathHelper.ToRadians(offsetX * 0.55f);
+						}
 						npc.localAI[0] = 15;
 					}
 				}
 			}
 			void Fall()
 			{
-				const int Start = 2000;
-				const int End = 2668;
-				const int Duration = End - Start;
+				const int Start = 2673;
+				//const int End = 2668;
+				//const int Duration = End - Start;
 
 				if (timer < Start) return;
-				if (timer > End) return;
+				//if (timer > End) return;
 
 				if (timer == Start)
 				{
 					npc.noTileCollide = false;
 				}
-				if (timer == End)
+				/*if (timer == End)
 				{
 					npc.rotation = 0;
 					npc.noTileCollide = true;
 					npc.Timer(105);
-				}
+				}*/
 
-				npc.velocity.X *= 0.995f;
-				npc.velocity.Y += 0.1f;
+				npc.velocity.X *= 0.99f;
+				npc.velocity.Y += 0.15f;
 				if (npc.collideX)
 				{
 					npc.position -= 2 * npc.velocity;
 					npc.velocity.X *= -1.3f;
 				}
 
-				npc.rotation += npc.velocity.X * 0.025f;
+				npc.rotation += npc.velocity.X * 0.015f;
 			}
 
 			Entrance();
@@ -485,9 +511,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			Charge();
 			WarnCross();
 			Cross();
-			Tendrils();
-			WarnMoveRandom();
+			//WarnMoveRandom();
 			MoveRandom();
+			Tendrils();
 			Creepers();
 			BloodSpikes();
 			Fall();
@@ -599,18 +625,20 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 
 		public override bool PreAI()
 		{
-			Projectile.position -= Projectile.velocity;
-			return base.PreAI();
+			Projectile.velocity = Vector2.Zero;
+			return false;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			float width = Projectile.localAI[0] * Projectile.timeLeft;
+			int width = (int)(Projectile.localAI[0] * Projectile.timeLeft);
 			if (width == 0)
 				return false;
-			//Utils.DrawLine(Main.spriteBatch, Projectile.Center, Projectile.Center + Projectile.velocity, Colors[(int)Projectile.ai[2]], Color.Transparent, width);
-			//Utils.DrawLine(Main.spriteBatch, Projectile.Center, FloatToPosition(Projectile.ai[0]), Colors[(int)Projectile.ai[2]], Color.Transparent, width);
-			Utils.DrawLine(Main.spriteBatch, Projectile.Center, new Vector2(Projectile.ai[0], Projectile.ai[1]), Colors[(int)Projectile.ai[2]], Color.Transparent, width);
+			
+			//if(width < 8)
+				//Utils.DrawLine(Main.spriteBatch, Projectile.position, new Vector2(Projectile.ai[0], Projectile.ai[1]), Colors[(int)Projectile.ai[2]], Color.Transparent, width);
+			//else
+				Drawing.DrawLine(Main.spriteBatch, Projectile.Center, new Vector2(Projectile.ai[0], Projectile.ai[1]), Colors[(int)Projectile.ai[2]], Color.Transparent, width);
 			return false;
 		}
 	}
@@ -762,33 +790,36 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			Projectile.width = 32;
 			Projectile.height = 100;
 			Projectile.tileCollide = false;
-			Projectile.timeLeft = 60;
+			Projectile.timeLeft = 160;
 		}
 		public override void OnSpawn(IEntitySource source)
 		{
 			Projectile.frame = Main.rand.Next(6);
-			Projectile.rotation = -MathHelper.PiOver2 + Main.rand.NextFloat(-MathHelper.Pi/6f, MathHelper.Pi/6f);
+			//Projectile.rotation = -MathHelper.PiOver2 + Main.rand.NextFloat(-MathHelper.Pi/6f, MathHelper.Pi/6f);
 			Projectile.position.Y -= Projectile.height / 2f;
 
-			TelegraphWarning.CreateWarning(
-				source,
-				Projectile.Bottom,
-				Projectile.Top,
-				40,
-				TelegraphWarning.Orange,
-				0.3f);
+			if (Projectile.ai[2] == 0)
+			{
+				TelegraphWarning.CreateWarning(
+					source,
+					new Vector2(Projectile.Center.X, Projectile.Bottom.Y),
+					new Vector2(Projectile.Center.X, Projectile.position.Y),
+					60,
+					TelegraphWarning.Orange,
+					2f);
+			}
 		}
 		public override void AI()
 		{
 			Projectile.velocity = Vector2.Zero;
-			if (Projectile.ai[0] < 40)
+			if (Projectile.ai[0] < 60)
 				Projectile.ai[0]++;
 			else if(Projectile.ai[1] < 5)
 				Projectile.ai[1]++;
 		}
 		public override bool CanHitPlayer(Player target)
 		{
-			return Projectile.ai[0] >= 30;
+			return Projectile.ai[0] >= 60;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
