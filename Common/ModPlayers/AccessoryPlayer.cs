@@ -300,21 +300,26 @@ namespace TerrariaCells.Common.ModPlayers
 				fastClockTimer--;
 				Player.moveSpeed += 0.3f;
 			}
+		}
+		public override void UpdateEquips()
+		{
 			if (reconScope)
 			{
 				bool anyNearbyEnemies = false;
 				for (int i = 0; i < Main.maxNPCs; i++)
 				{
-					if (!Main.npc[i].active) continue;
 					NPC npc = Main.npc[i];
-					if (MathF.Abs(npc.position.X - Player.position.X) + MathF.Abs(npc.position.X - Player.position.X) < 6 * 16)
+					if (!npc.active) continue;
+					if (MathF.Abs(npc.position.X - Player.position.X) + MathF.Abs(npc.position.Y - Player.position.Y) < 6 * 16)
 					{
 						anyNearbyEnemies = true;
 						break;
 					}
 				}
 				if (!anyNearbyEnemies)
+				{
 					Player.GetDamage(DamageClass.Generic) += 0.3f;
+				}
 			}
 		}
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
