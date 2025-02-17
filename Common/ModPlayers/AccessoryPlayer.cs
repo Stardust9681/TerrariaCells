@@ -15,7 +15,7 @@ namespace TerrariaCells.Common.ModPlayers
 	public class AccessoryPlayer : ModPlayer
 	{
 		public bool fastClock; //+30% speed on killing an enemy
-		private int fastClockTimer = 0;
+		private int fastClockTimer;
 		public bool bandOfRegen; //+1% health on killing an enemy
 		private bool frozenShield; //Saved from lethal damage once (consumed on use)
 		public Item? frozenShieldItem;
@@ -26,9 +26,10 @@ namespace TerrariaCells.Common.ModPlayers
 		private int bersTimer;
 		private int bersCounter;
 		public bool reconScope; //+30% damage when no enemies nearby
-		public bool fuseKitten; //[Unused] Extra rocket explosion damage/radius
-		public bool chlorophyteCoating; //[Unused] Bullets and arrows become chlorophyte
+		public bool fuseKitten; //Extra rocket explosion damage/radius
+		public bool chlorophyteCoating; //Bullets and arrows become chlorophyte
 		public bool stalkerQuiver; //Summons a spectral arrow to hit targets hit by your arrows (deals 50% original damage)
+		private int stalkerQuiverTimer;
 
 		public override void Load()
 		{
@@ -248,7 +249,10 @@ namespace TerrariaCells.Common.ModPlayers
 			reconScope = false;
 			fuseKitten = false;
 			chlorophyteCoating = false;
-
+			if (!stalkerQuiver)
+				stalkerQuiverTimer = 0;
+			else if (stalkerQuiverTimer > 0)
+				stalkerQuiverTimer--;
 			stalkerQuiver = false;
 		}
 		public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
@@ -337,11 +341,12 @@ namespace TerrariaCells.Common.ModPlayers
 		{
 			if (stalkerQuiver)
 			{
-				if (proj.arrow && proj.type != ProjectileID.PhantasmArrow)
+				if (proj.arrow && proj.type != ProjectileID.PhantasmArrow && stalkerQuiverTimer == 0)
 				{
 					Vector2 pos = target.Center + (Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi) * 320f);
 					Projectile newProj = Projectile.NewProjectileDirect(proj.GetSource_OnHit(target), pos, pos.DirectionTo(target.Center) * 4f, ProjectileID.PhantasmArrow, damageDone / 2, 0f, proj.owner, target.whoAmI);
 					//newProj.tileCollide = false;
+					stalkerQuiverTimer = 10; //6x per second should be plenty lenient
 				}
 			}
 		}
