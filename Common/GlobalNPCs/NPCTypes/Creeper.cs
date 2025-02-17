@@ -39,7 +39,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			else
 				npc.ai[0] += MathF.Abs(npc.velocity.Y);
 
-			if (npc.ai[2] > 6)
+			if (npc.ai[2] > 10)
 			{
 				npc.active = false;
 			}

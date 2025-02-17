@@ -11,11 +11,78 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections;
 using System.Reflection;
 using Terraria.DataStructures;
+using MonoMod.Cil;
+using Mono.Cecil.Cil;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 {
 	public class BrainOfCthulhu : AIType
 	{
+		public override void Load()
+		{
+			Terraria.GameContent.UI.BigProgressBar.IL_BrainOfCthuluBigProgressBar.ValidateAndCollectNecessaryInfo += BoCHealthBarInfo;
+		}
+		public override void Unload()
+		{
+			Terraria.GameContent.UI.BigProgressBar.IL_BrainOfCthuluBigProgressBar.ValidateAndCollectNecessaryInfo -= BoCHealthBarInfo;
+		}
+		private void BoCHealthBarInfo(ILContext context)
+		{
+			void Error(string message)
+			{
+				ModContent.GetInstance<TerrariaCells>().Logger.Error(message);
+			}
+			try
+			{
+				ILCursor cursor = new ILCursor(context);
+
+				if (!cursor.TryGotoNext(MoveType.Before,
+					//i => i.MatchCall(typeof(NPC).GetMethod("GetBrainOfCthulhuCreepersCount", BindingFlags.Public | BindingFlags.Static)),
+					i => i.Match(OpCodes.Call),
+					i => i.MatchStloc1(),
+					i => i.MatchLdarg0()))
+				{
+					Error($"Couldn't match IL Patch: {context.Method.Name} @ {cursor.Index}");
+					MonoModHooks.DumpIL(ModContent.GetInstance<TerrariaCells>(), context);
+					return;
+				}
+				ILLabel jumpBackPoint = cursor.MarkLabel();
+
+				if (!cursor.TryGotoNext(MoveType.Before,
+					i => i.MatchLdloc(4),
+					i => i.MatchLdloc(5),
+					i => i.MatchConvR4(),
+					i => i.Match(OpCodes.Call)))
+					//i => i.MatchCall<Terraria.GameContent.UI.BigProgressBar.BigProgressBarCache>("SetLife")))
+				{
+					Error($"Couldn't match IL Patch: {context.Method.Name} @ {cursor.Index}");
+					return;
+				}
+				ILLabel ret = cursor.MarkLabel();
+
+				//cursor.EmitLdloc0();
+				//cursor.EmitDelegate((NPC npc) => (float)npc.life);
+				//cursor.EmitLdloc0();
+				//cursor.EmitDelegate((NPC npc) => npc.lifeMax);
+
+				cursor.EmitLdloc0();
+				cursor.EmitLdfld(typeof(NPC).GetField("life", BindingFlags.Public | BindingFlags.Instance));
+				cursor.EmitConvR4();
+				cursor.EmitStloc(4);
+				cursor.EmitLdloc0();
+				cursor.EmitLdfld(typeof(NPC).GetField("lifeMax", BindingFlags.Public | BindingFlags.Instance));
+				cursor.EmitStloc(5);
+
+				cursor.GotoLabel(jumpBackPoint, MoveType.Before);
+				cursor.EmitBr(ret);
+			}
+			catch (Exception x)
+			{
+				Error(x.Message);
+			}
+		}
+
+
 		public override bool AppliesToNPC(int npcType)
 		{
 			return npcType == NPCID.BrainofCthulhu;
@@ -340,7 +407,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			void Creepers()
 			{
 				const int Start = 230;
-				const int End = 2000;
+				const int End = 2668;
 				const int Duration = End - Start;
 
 				if (timer < Start) return;
@@ -357,7 +424,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				}
 
 				//int timerMod = timer % 333;
-				if (ceilingCollision)
+				const int CreeperSpawnTime = 105;
+				if (ceilingCollision && End - timer > CreeperSpawnTime)
 				{
 					Vector2 top = centre + new Vector2(0, -384);
 					Vector2 bot = centre + new Vector2(0, 384);
@@ -380,14 +448,14 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 					npc.ai[2] = npc.Center.X;
 					npc.ai[3] = -60;
 				}
-				if (npc.ai[3] < 90)
+				if (npc.ai[3] < CreeperSpawnTime)
 				{
 					npc.ai[3]++;
-					if (npc.ai[3] > 0 && (((int)npc.ai[3] % 4 == 0 && Main.rand.NextBool(3)) || (int)npc.ai[3] % 12 == 0))
+					if (npc.ai[3] > 0 && (((int)npc.ai[3] % 6 == 0 && Main.rand.NextBool()) || (int)npc.ai[3] % 12 == 0))
 					{
 						int cycle = timer / 333;
 						int maxCycles = Duration / 333;
-						if ((int)npc.ai[3] % 2 == 0)
+						if ((int)npc.ai[3] % 6 == 0)
 						{
 							float xOffset = MathF.Sin((float)(cycle + 3) * MathHelper.Pi / (float)maxCycles) * 32;
 							Vector2 spawnPos = centre + new Vector2(xOffset, -352);
@@ -396,7 +464,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 									spawnPos,
 									NPCID.Creeper,
 									target: npc.target);
-							creeper.velocity = new Vector2(-4.5f, 9f);
+							creeper.velocity = new Vector2(-6f, 8f);
 							creeper.netUpdate = true;
 						}
 						if ((int)npc.ai[3] % 12 == 0)
@@ -408,7 +476,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 									spawnPos,
 									NPCID.Creeper,
 									target: npc.target);
-							creeper.velocity = new Vector2(3.5f, 7f);
+							creeper.velocity = new Vector2(4f, 6f);
 							creeper.netUpdate = true;
 						}
 					}

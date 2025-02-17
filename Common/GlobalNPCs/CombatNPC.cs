@@ -128,6 +128,8 @@ namespace TerrariaCells.Common.GlobalNPCs
 					npc.lifeMax = 5;
 					npc.knockBackResist = 0f;
 					npc.defense = 8; //Make low damage projectile spam less effective at clearing low-health targets
+					npc.scale = 1.4f;
+					npc.damage = 45;
 					break;
 				#endregion
 
