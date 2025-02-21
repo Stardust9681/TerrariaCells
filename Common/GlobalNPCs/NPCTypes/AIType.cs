@@ -12,6 +12,9 @@ using Mono.Cecil.Cil;
 using System.Reflection;
 
 using TerrariaCells.Common.Systems;
+using MonoMod.RuntimeDetour;
+using System.Collections.Concurrent;
+using Terraria.ID;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 {
@@ -33,7 +36,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 
 		public abstract bool AppliesToNPC(int npcType);
 		public abstract void Behaviour(NPC npc);
-		public virtual bool FindFrame(NPC npc) => true;
+		public virtual bool FindFrame(NPC npc, int frameHeight) => true;
 		public virtual bool PreDraw(NPC npc, SpriteBatch spritebatch, Vector2 screenPos, Color lightColor) { return true; }
 	}
 
@@ -41,18 +44,18 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 	{
 		public override void Load()
 		{
-			On_NPC.VanillaFindFrame += On_FindFrame;
+			//On_NPC.VanillaFindFrame += On_FindFrame;
+			IL_NPC.VanillaFindFrame += IL_FindFrame;
 			IL_NPC.StrikeNPC_HitInfo_bool_bool += IL_StrikeNPC;
 		}
 
 		public override void Unload()
 		{
-			On_NPC.VanillaFindFrame -= On_FindFrame;
+			//On_NPC.VanillaFindFrame -= On_FindFrame;
+			IL_NPC.VanillaFindFrame -= IL_FindFrame;
 			IL_NPC.StrikeNPC_HitInfo_bool_bool -= IL_StrikeNPC;
 		}
 
-		//Go decompile NPC.StrikeNPC(NPC.HitInfo, bool, bool) using ilSpy (or dnSpy hell if I care)
-		//And you tell me why I have to make this IL edit
 		private void IL_StrikeNPC(ILContext context)
 		{
 			log4net.ILog GetInstanceLogger() => ModContent.GetInstance<TerrariaCells>().Logger;
@@ -124,18 +127,55 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			}
 		}
 
-		//Okay, so here's the deal:
-		//GlobalNPC.FindFrame(..) caused conflicts with NPC.VanillafindFrame(..) where the latter sort of overrode the former
-		//And, look, they don't let you disable that either. So here's what I'm doing to fix that
-		//Also: frameHeight param is literally useless in all situations. Not sure why it's ever included as a parameter for this function
-		public void On_FindFrame(On_NPC.orig_VanillaFindFrame orig, NPC npc, int frameHeight, bool isLikeATownNPC, int typeToAnimateAs)
+		//I have banged my HEAD AGAINST THE WALL for this FUCKING thing for FOUR DAYS now. AT LEAST.
+		//SOMETIMES, it works JUST FINE! And SOMETIMES, it just doesn't fucking do ANYTHING.
+		//Dude I'm SO just.. done. I'm pissed at whatever-the-fuck is going on.
+		private static void IL_FindFrame(ILContext context)
 		{
-			if (AIOverwriteSystem.TryGetAIType(npc.type, out AIType ai))
+			log4net.ILog GetInstanceLogger() => ModContent.GetInstance<TerrariaCells>().Logger;
+			try
 			{
-				if (!ai.FindFrame(npc))
-					return;
+				ILCursor cursor = new ILCursor(context);
+
+				cursor.EmitLdarg0();
+				cursor.EmitLdarg1();
+				cursor.EmitDelegate((NPC npc, int frameHeight) => {
+					if (AIOverwriteSystem.TryGetAIType(npc.type, out AIType ai))
+					{
+						if(!ai.FindFrame(npc, frameHeight))
+						{
+							npc.position -= npc.netOffset;
+							return false;
+						}
+					}
+					return true;
+				});
+
+				ILLabel label = cursor.DefineLabel();
+				cursor.EmitBrtrue(label);
+				cursor.EmitRet();
+				cursor.MarkLabel(label);
+
+				return;
+				//One of several attempts to get this working
+				//It's suddenly working again for me and I can't bloody tell why
+				//And seemingly this isn't needed
+				int offset = 0;
+				for (int i = 0; i < cursor.Index; i++)
+				{
+					int instrSize = cursor.Instrs[i].GetSize();
+					cursor.Instrs[i].Offset += offset;
+					offset += instrSize;
+				}
+				for (int i = cursor.Index; i < context.Instrs.Count; i++)
+				{
+					cursor.Instrs[i].Offset += offset;
+				}
 			}
-			orig.Invoke(npc, frameHeight, isLikeATownNPC, typeToAnimateAs);
+			catch (Exception x)
+			{
+				GetInstanceLogger().Error(x.Message);
+			}
 		}
 
 		public override void OnSpawn(NPC npc, IEntitySource source)
