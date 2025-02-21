@@ -600,8 +600,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				if (npc.ai[3] < CreeperSpawnTime)
 				{
 					npc.ai[3]++;
-					int tDiffA = ((maxCycles / (cycle+1))) + 6;
-					int tDiffB = (5 * (maxCycles / (cycle+1)) / 3) + 8;
+					int tDiffA = (int)MathHelper.Lerp(18, 6, (float)cycle / (float)maxCycles);
+					int tDiffB = (int)MathHelper.Lerp(24, 8, (float)cycle / (float)maxCycles);
 					if (npc.ai[3] > 0)
 					{
 						if ((int)npc.ai[3] % tDiffA == 0 && Main.rand.NextBool())
