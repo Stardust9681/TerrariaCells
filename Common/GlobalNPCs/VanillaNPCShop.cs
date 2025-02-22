@@ -21,7 +21,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 
 		private static int[] Weapons; //Arms Dealer
 		private static int[] Accessories; //Goblin Tinkerer
-		private static int[] Skills; //Wizard?
+		private static int[] Skills; //Merchant (Wizard? Plz)
 		public override void Load()
 		{
 			const string path = "chest loot tables.json";
@@ -64,9 +64,26 @@ namespace TerrariaCells.Common.GlobalNPCs
 					selectedItems = Accessories;
 					return;
 				}
-				const int MinCount = 2;
+				const int MinCount = 3;
 				List<int> items = new List<int>();
 				foreach (int itemType in Accessories)
+				{
+					if (items.Count > MinCount && Main.rand.NextBool(items.Count - MinCount)) continue;
+
+					items.Add(itemType);
+				}
+				selectedItems = items.ToArray();
+			}
+			if (npc.type == NPCID.Merchant)
+			{
+				if (playtesting)
+				{
+					selectedItems = Skills;
+					return;
+				}
+				const int MinCount = 1;
+				List<int> items = new List<int>();
+				foreach (int itemType in Skills)
 				{
 					if (items.Count > MinCount && Main.rand.NextBool(items.Count - MinCount)) continue;
 
@@ -77,7 +94,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 		}
 		public override void ModifyActiveShop(NPC npc, string shopName, Item[] items)
 		{
-			if (npc.type is NPCID.ArmsDealer or NPCID.GoblinTinkerer)
+			if (npc.type is NPCID.ArmsDealer or NPCID.GoblinTinkerer or NPCID.Merchant)
 			{
 				for (int i = 0; i < items.Length; i++)
 				{
@@ -90,7 +107,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 		}
 		public override void ModifyShop(NPCShop shop)
         {
-			if (shop.NpcType is NPCID.ArmsDealer or NPCID.GoblinTinkerer)
+			if (shop.NpcType is NPCID.ArmsDealer or NPCID.GoblinTinkerer or NPCID.Merchant)
             {
                 // Remove all existing entries from the shop
                 foreach (var entry in shop.Entries)
