@@ -23,7 +23,7 @@ namespace TerrariaCells.Content.Projectiles
             Projectile.height = 38;
             Projectile.friendly = false;
             Projectile.hostile = true;
-            Projectile.timeLeft = 40;
+            Projectile.timeLeft = 30;
             Projectile.tileCollide = false;
             Projectile.hide = true;
         }
@@ -60,16 +60,10 @@ namespace TerrariaCells.Content.Projectiles
             {
                 Dust.NewDustDirect(Projectile.BottomLeft + new Vector2(i, 0), 0, 0, DustID.Sand, 0, -5);
             }
-            base.OnSpawn(source);
-        }
-        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-        {
-            return base.Colliding(projHitbox, targetHitbox);
         }
         public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
         {
             behindNPCsAndTiles.Add(index);
-            base.DrawBehind(index, behindNPCsAndTiles, behindNPCs, behindProjectiles, overPlayers, overWiresUI);
         }
         public override void AI()
         {
@@ -93,7 +87,6 @@ namespace TerrariaCells.Content.Projectiles
                     Dust.NewDustDirect(Projectile.TopLeft, Projectile.width, Projectile.height, DustID.Sand, 0, 0);
                 }
             }
-            base.AI();
         }
     }
 }

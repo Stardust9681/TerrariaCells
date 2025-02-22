@@ -64,23 +64,24 @@ namespace TerrariaCells.Common.GlobalNPCs
         public bool CultistArcherAI(NPC npc, Player? target)
         {
 			bool validTarget;
+			const int Range = 448;
 			if (target != null)
-				validTarget = npc.TargetInAggroRange(target, 600);
+				validTarget = npc.TargetInAggroRange(target, Range);
 			else
-				validTarget = npc.TargetInAggroRange(600);
+				validTarget = npc.TargetInAggroRange(Range);
 
             if (validTarget && npc.collideY)
             {
                 ShouldWalk = false;
                 npc.velocity.X *= 0.9f;
                 npc.ai[3] = 1;
-                npc.ai[2]--;
-                if (npc.ai[2] <= 0)
+                npc.ai[2]++;
+                if (npc.ai[2] > 45)
                 {
                     Vector2 pos = npc.Center + new Vector2(10 * npc.direction, 0);
                     Projectile.NewProjectileDirect(npc.GetSource_FromAI(), pos, (target.Center - pos).SafeNormalize(Vector2.Zero)*5, ModContent.ProjectileType<IceArrow>(), TCellsUtils.ScaledHostileDamage(25), 1);
                     SoundEngine.PlaySound(SoundID.Item5, npc.Center);
-                    npc.ai[2] = 60;
+                    npc.ai[2] = -15;
                 }
             }
             else

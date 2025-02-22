@@ -25,6 +25,7 @@ namespace TerrariaCells.Common.GlobalProjectiles
 		{
 			switch (projectile.type)
 			{
+				case ProjectileID.PurpleLaser:
 				case ProjectileID.BulletHighVelocity:
 					projectile.penetrate = 1;
 					break;

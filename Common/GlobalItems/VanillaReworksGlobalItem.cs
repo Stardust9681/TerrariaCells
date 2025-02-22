@@ -55,6 +55,9 @@ namespace TerrariaCells.Common.GlobalItems
                     item.useTime = 16;
                     item.value = 1000;
                     break;
+				case ItemID.PlatinumBow:
+					item.damage = 22;
+					break;
                 // Launchers
                 case ItemID.Toxikarp:
                     item.damage = 2;
@@ -96,6 +99,9 @@ namespace TerrariaCells.Common.GlobalItems
                     item.useTime = 20;
                     item.value = 1000;
                     break;
+				case ItemID.PlatinumBroadsword:
+					item.damage = 20;
+					break;
 
                 // MAGE
                 case ItemID.EmeraldStaff:

@@ -112,13 +112,14 @@ namespace TerrariaCells.Common.GlobalNPCs
                     npc.lifeMax = 40;
                     break;
                 case NPCID.BloodJelly:
-                    npc.lifeMax = 100;
+                    npc.lifeMax = 80;
                     npc.damage = 30;
                     break;
                 case NPCID.BloodCrawler:
                     break;
                 case NPCID.Crimslime:
-                    npc.lifeMax = 150;
+                    npc.lifeMax = 130;
+					npc.damage = 40;
                     break;
 				case NPCID.BrainofCthulhu:
 					npc.lifeMax = (int)(npc.lifeMax * 1.3f); //This thing squishy as HEYLLLL
@@ -127,10 +128,10 @@ namespace TerrariaCells.Common.GlobalNPCs
 				case NPCID.Creeper:
 					npc.lifeMax = 5;
 					npc.knockBackResist = 0f;
-					npc.defense = 8; //Make low damage projectile spam less effective at clearing low-health targets
+					npc.defense = 4; //Make low damage projectile spam less effective at clearing low-health targets
 					npc.scale = 1.4f;
 					npc.damage = 45;
-					break;
+					return;
 				#endregion
 
 				#region Jungle
