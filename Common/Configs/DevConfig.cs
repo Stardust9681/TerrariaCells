@@ -62,5 +62,10 @@ namespace TerrariaCells.Common.Configs
 		/// </summary>
 		[DefaultValue(true)]
 		public bool HideVanillaInventory;
+
+		[Header("DebugAndPlaytesting")]
+
+		[DefaultValue(true)]
+		public bool PlaytesterShops;
 	}
 }

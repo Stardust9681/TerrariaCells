@@ -1,120 +1,102 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrariaCells.Common.Utilities;
+using Terraria.DataStructures;
+//using static TerrariaCells.Common.Utilities.JsonUtil;
 
 namespace TerrariaCells.Common.GlobalNPCs
 {
     class VanillaNPCShop : GlobalNPC
     {
-        public override void ModifyShop(NPCShop shop)
+		public override bool InstancePerEntity => true;
+
+		private static int[] Weapons; //Arms Dealer
+		private static int[] Accessories; //Goblin Tinkerer
+		private static int[] Skills; //Wizard?
+		public override void Load()
+		{
+			const string path = "chest loot tables.json";
+			using (StreamReader stream = new StreamReader(Mod.GetFileStream(path)))
+			{
+				string json = stream.ReadToEnd();
+				JObject Root = (JObject)JsonConvert.DeserializeObject(json); //Get json contents in whole
+
+				Weapons = Root.GetItem<int[]>("1");
+				Accessories = Root.GetItem<int[]>("20");
+				Skills = Root.GetItem<int[]>("19");
+			}
+		}
+
+		private int[] selectedItems;
+		public override void SetDefaults(NPC npc)
+		{
+			bool playtesting = Configs.DevConfig.Instance.PlaytesterShops;
+			if (npc.type == NPCID.ArmsDealer)
+			{
+				if (playtesting)
+				{
+					selectedItems = Weapons;
+					return;
+				}
+				const int MinCount = 4;
+				List<int> items = new List<int>();
+				foreach (int itemType in Weapons)
+				{
+					if (items.Count > MinCount && !Main.rand.NextBool(items.Count - MinCount)) continue;
+
+					items.Add(itemType);
+				}
+				selectedItems = items.ToArray();
+			}
+			if (npc.type == NPCID.GoblinTinkerer)
+			{
+				if (playtesting)
+				{
+					selectedItems = Accessories;
+					return;
+				}
+				const int MinCount = 2;
+				List<int> items = new List<int>();
+				foreach (int itemType in Accessories)
+				{
+					if (items.Count > MinCount && Main.rand.NextBool(items.Count - MinCount)) continue;
+
+					items.Add(itemType);
+				}
+				selectedItems = items.ToArray();
+			}
+		}
+		public override void ModifyActiveShop(NPC npc, string shopName, Item[] items)
+		{
+			if (npc.type is NPCID.ArmsDealer or NPCID.GoblinTinkerer)
+			{
+				for (int i = 0; i < items.Length; i++)
+				{
+					if (i < selectedItems.Length)
+						items[i] = new Item(selectedItems[i]) { shopCustomPrice = 10 };
+					else
+						items[i] = null;
+				}
+			}
+		}
+		public override void ModifyShop(NPCShop shop)
         {
-            if (shop.NpcType == NPCID.ArmsDealer)
+			if (shop.NpcType is NPCID.ArmsDealer or NPCID.GoblinTinkerer)
             {
                 // Remove all existing entries from the shop
-                foreach (var entry in shop.Entries.ToList())
+                foreach (var entry in shop.Entries)
                 {
                     entry.Disable();
                 }
-
-                // Add the specified vanilla items to the shop with custom price
-                shop.Add(new Item(ItemID.PhoenixBlaster) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.SniperRifle) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.OnyxBlaster) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.PulseBow) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.IceBow) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.Toxikarp) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.Minishark) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.GrenadeLauncher) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.FieryGreatsword) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.AleThrowingGlove) {
-                    shopCustomPrice = 10
-                });
-            }
-
-            if (shop.NpcType == NPCID.Merchant) 
-            {
-                foreach (var entry in shop.Entries.ToList())
-                {
-                    entry.Disable();
-                }
-
-                shop.Add(new Item(ItemID.CelestialMagnet) { 
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.NaturesGift) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.ArcaneFlower) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.ManaRegenerationBand) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.MagicCuffs) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.StalkersQuiver) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.AmmoBox) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.ChlorophyteDye) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.BallOfFuseWire) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.ReconScope) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.BerserkerGlove) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.Nazar) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.FeralClaws) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.ThePlan) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.ObsidianShield) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.FrozenTurtleShell) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.BandofRegeneration) {
-                    shopCustomPrice = 10
-                });
-                shop.Add(new Item(ItemID.FastClock) {
-                    shopCustomPrice = 10
-                });
             }
         }
     }
