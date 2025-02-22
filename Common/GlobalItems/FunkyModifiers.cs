@@ -124,7 +124,9 @@ public partial class FunkyModifierItemModifier : GlobalItem
         ModCategory[]
     )[]
     {
-        (ItemID.PearlwoodSword, [ModCategory.Sword]),
+		(ItemID.PlatinumBroadsword, [ModCategory.Sword]),
+		//Removed:
+		//(ItemID.PearlwoodSword, [ModCategory.Sword]),
         (ItemID.BreakerBlade, [ModCategory.Sword]),
         (ItemID.CopperShortsword, [ModCategory.Sword]),
         (ItemID.FieryGreatsword, [ModCategory.Sword]),
