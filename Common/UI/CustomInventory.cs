@@ -59,13 +59,13 @@ public class LimitedStorageUI : UIState
         if (Main.playerInventory || Main.LocalPlayer.ghost)
             return;
 
-        string text = Lang.inter[37].Value + " (:3)";
+        string text = Lang.inter[37].Value;
         if (
             Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem].Name != null
             && Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem].Name != ""
         )
             text =
-                Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem].AffixName() + " (yum :3)";
+                Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem].AffixName() ;
 
         DynamicSpriteFontExtensionMethods.DrawString(
             position: new Vector2(
