@@ -130,6 +130,16 @@ Items: {
 		DisplayName: Phantom Phoenix
 		Tooltip: ""
 	}
+
+	CrimsonPylon: {
+		DisplayName: Crimson Pylon
+		Tooltip: ""
+	}
+
+	HivePylon: {
+		DisplayName: Hive Pylon
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -193,4 +203,9 @@ Buffs: {
 		DisplayName: Frozen Enemy Debuff
 		Description: Mods.TerrariaCells.Buffs.FrozenEnemyDebuff.Description
 	}
+}
+
+Tiles: {
+	CrimsonPylon.MapEntry: Crimson Pylon
+	HivePylon.MapEntry: Hive Pylon
 }

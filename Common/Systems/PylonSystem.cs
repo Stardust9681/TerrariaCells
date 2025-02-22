@@ -168,6 +168,10 @@ namespace TerrariaCells.Common.Systems
 				return false;
 			}
 		}
+		public override bool? ValidTeleportCheck_PreAnyDanger(TeleportPylonInfo pylonInfo)
+		{
+			return true;
+		}
 	}
 	public class PylonWorldTile : GlobalTile
 	{
@@ -178,6 +182,12 @@ namespace TerrariaCells.Common.Systems
 			if (TileLoader.GetTile(type) is ModTile modTileType and not null && modTileType is ModPylon)
 				WorldPylonSystem.ReloadPylons();
 			base.KillTile(i, j, type, ref fail, ref effectOnly, ref noItem);
+		}
+		public override void ModifyLight(int i, int j, int type, ref float r, ref float g, ref float b)
+		{
+			if (!WorldPylonSystem.PylonFound(new Point16(i, j)))
+				WorldPylonSystem.MarkDiscovery(new Point16(i, j));
+			base.ModifyLight(i, j, type, ref r, ref g, ref b);
 		}
 	}
 }
