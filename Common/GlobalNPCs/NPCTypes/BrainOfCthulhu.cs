@@ -129,6 +129,11 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				if (timer < Start) return;
 				if (timer > End) return;
 
+				if (timer == End)
+				{
+					npc.dontTakeDamage = false;
+				}
+
 				npc.velocity *= 0;
 
 				globalNPC.allowContactDamage = false;
