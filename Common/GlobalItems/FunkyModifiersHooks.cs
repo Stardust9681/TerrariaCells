@@ -63,9 +63,7 @@ public partial class FunkyModifierItemModifier : GlobalItem
                 new TooltipLine(
                     Mod,
                     "FunkyModifier",
-                    "Funky Modifier: "
-                        + modifier.modifierType.ToString()
-                        + $" [{modifier.modifier} {modifier.secondaryModifier} {modifier.id}]"
+                    modifier.ToString()
                 )
             );
         }

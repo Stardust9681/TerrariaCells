@@ -260,4 +260,53 @@ public struct FunkyModifier(FunkyModifierType type, float modifier)
 
     public static FunkyModifier DropMoreMana(int manaDropMultiplier) =>
         new(FunkyModifierType.DropMoreMana, manaDropMultiplier);
+
+	public override string ToString()
+	{
+		string s = $"[{modifierType}] ";
+		float mod1 = (modifier - 1) * 100;
+		string mod1Text = $"{mod1:+#.#;-#.#;0.0}";
+		float mod2 = (secondaryModifier - 1) * 100;
+		string mod2Text = $"{mod2:+#.#;-#.#;0.0}";
+		switch (modifierType)
+		{
+			case FunkyModifierType.Damage:
+				s += $"{mod1Text}% damage";
+				break;
+			case FunkyModifierType.ProjectileVelocity:
+				s += $"{mod1Text}% projectile speed";
+				break;
+			case FunkyModifierType.AttackSpeed:
+				s += $"{mod1Text}% attack speed";
+				break;
+			case FunkyModifierType.Size:
+				s += $"{mod1Text}% weapon size";
+				break;
+			case FunkyModifierType.ManaCost:
+				s += $"{mod1Text}% mana cost";
+				break;
+			case FunkyModifierType.ImbuedDamage:
+				s += $"{mod1Text}% damage, {mod2Text}% mana cost";
+				break;
+			case FunkyModifierType.FrenzyFire:
+				s += $"{mod1Text}% damage, {mod2Text}% attack speed";
+				break;
+			case FunkyModifierType.DamageOnDebuff:
+				s += $"{mod1Text}% damage vs targets afflicted by {Terraria.Lang.GetBuffName(id)}";
+				break;
+			case FunkyModifierType.CustomAmmo:
+				s += $"Weapon fires {Terraria.Lang.GetProjectileName(ContentSamples.ItemsByType[id].shoot)}s";
+				break;
+			case FunkyModifierType.ApplyDebuff:
+				s += $"Inflict {Terraria.Lang.GetBuffName(id)} for {modifier/60:0.0} sec";
+				break;
+			case FunkyModifierType.CritsExplode:
+				s += $"Critical strikes cause explosions";
+				break;
+			case FunkyModifierType.DropMoreMana:
+				s += $"Enemies drop {mod1Text}% more Mana Stars when hit";
+				break;
+		}
+		return s;
+	}
 }
