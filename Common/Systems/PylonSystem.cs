@@ -69,7 +69,7 @@ namespace TerrariaCells.Common.Systems
 					WorldPylonSystem._PylonDiscoveries.Remove(pos);
 			}
 		}
-		public static Point16 NearestPylonToPlayer(Player player, out int approximateDistance)
+		public static Point16 NearestPylonToPlayer(Player player, out int appxDistanceInTiles)
 		{
 			Point16 playerPosition = Terraria.Utils.ToTileCoordinates16(player.Center);
 			int appxDist = -1;
@@ -83,7 +83,7 @@ namespace TerrariaCells.Common.Systems
 					pylonPos = pos;
 				}
 			}
-			approximateDistance = appxDist;
+			appxDistanceInTiles = appxDist;
 			return pylonPos;
 		}
 
@@ -183,11 +183,15 @@ namespace TerrariaCells.Common.Systems
 				WorldPylonSystem.ReloadPylons();
 			base.KillTile(i, j, type, ref fail, ref effectOnly, ref noItem);
 		}
-		public override void ModifyLight(int i, int j, int type, ref float r, ref float g, ref float b)
+	}
+	public class PylonPlayer : ModPlayer
+	{
+		public override void PostUpdate()
 		{
-			if (!WorldPylonSystem.PylonFound(new Point16(i, j)))
-				WorldPylonSystem.MarkDiscovery(new Point16(i, j));
-			base.ModifyLight(i, j, type, ref r, ref g, ref b);
+			Point16 nearestPylon = WorldPylonSystem.NearestPylonToPlayer(Player, out int appxDist);
+			if (appxDist > WorldPylonSystem.MAX_PYLON_RANGE) return;
+			if (WorldPylonSystem.PylonFound(nearestPylon)) return;
+			WorldPylonSystem.MarkDiscovery(nearestPylon);
 		}
 	}
 }
