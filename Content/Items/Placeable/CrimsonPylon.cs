@@ -11,7 +11,7 @@ namespace TerrariaCells.Content.Items.Placeable
 {
 	public class CrimsonPylon : ModItem
 	{
-		public override string Texture => $"Terraria/Images/Item_{ItemID.TeleportationPylonVictory}";
+		//public override string Texture => $"Terraria/Images/Item_{ItemID.TeleportationPylonVictory}";
 
 		public override void SetDefaults()
 		{
