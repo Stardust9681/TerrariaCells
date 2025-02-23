@@ -73,7 +73,7 @@ namespace TerrariaCells.Content.Tiles
 		public override void DrawMapIcon(ref MapOverlayDrawContext context, ref string mouseOverText, TeleportPylonInfo pylonInfo, bool isNearPylon, Color drawColor, float deselectedScale, float selectedScale)
 		{
 			bool mouseOver = DefaultDrawMapIcon(ref context, mapIcon, pylonInfo.PositionInTiles.ToVector2() + new Vector2(1.5f, 2f), drawColor, deselectedScale, selectedScale);
-			DefaultMapClickHandle(mouseOver, pylonInfo, ModContent.GetInstance<ExamplePylonItem>().DisplayName.Key, ref mouseOverText);
+			DefaultMapClickHandle(mouseOver, pylonInfo, ModContent.GetInstance<Items.Placeable.HivePylon>().DisplayName.Key, ref mouseOverText);
 		}
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
