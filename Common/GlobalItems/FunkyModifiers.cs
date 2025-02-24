@@ -263,7 +263,8 @@ public struct FunkyModifier(FunkyModifierType type, float modifier)
 
 	public override string ToString()
 	{
-		string s = $"[{modifierType}] ";
+		string s = "";
+        // s += $"[{modifierType}] ";
 		float mod1 = (modifier - 1) * 100;
 		string mod1Text = $"{mod1:+#.#;-#.#;0.0}";
 		float mod2 = (secondaryModifier - 1) * 100;
@@ -295,7 +296,7 @@ public struct FunkyModifier(FunkyModifierType type, float modifier)
 				s += $"{mod1Text}% damage vs targets afflicted by {Terraria.Lang.GetBuffName(id)}";
 				break;
 			case FunkyModifierType.CustomAmmo:
-				s += $"Weapon fires {Terraria.Lang.GetProjectileName(ContentSamples.ItemsByType[id].shoot)}s";
+				s += $"Weapon fires {Terraria.Lang.GetProjectileName(id)}s";
 				break;
 			case FunkyModifierType.ApplyDebuff:
 				s += $"Inflict {Terraria.Lang.GetBuffName(id)} for {modifier/60:0.0} sec";

@@ -57,7 +57,33 @@ public class DeathReset : ModPlayer, IEntitySource
 		WorldPylonSystem.ResetPylons();
 	}
 
-	public override void OnRespawn()
+    public override void OnEnterWorld()
+    {
+		foreach ((int itemslot, TerraCellsItemCategory _) in InventoryManager.slotCategorizations)
+		{
+			Entity.inventory[itemslot].TurnToAir();
+		}
+		Entity.inventory[50].TurnToAir();
+		Entity.inventory[51].TurnToAir();
+		Entity.inventory[52].TurnToAir();
+		Entity.inventory[53].TurnToAir();
+		Entity.inventory[58].TurnToAir();
+		Entity.armor[0].TurnToAir();
+		Entity.armor[1].TurnToAir();
+		Entity.armor[2].TurnToAir();
+		Entity.armor[3].TurnToAir();
+		Entity.armor[4].TurnToAir();
+		Entity.armor[5].TurnToAir();
+		Item[] startInv = GetStartingItems();
+		for (int i = 0; i < startInv.Length; i++)
+		{
+			Player.inventory[i] = startInv[i].Clone();
+			if (startInv[i].IsAir)
+				Player.inventory[i].TurnToAir();
+		}
+    }
+
+    public override void OnRespawn()
 	{
 		foreach (NPC npc in Main.ActiveNPCs)
 			if(!npc.friendly) npc.active = false; //Kill all NPCs so they aren't re-added to respawn buffer
