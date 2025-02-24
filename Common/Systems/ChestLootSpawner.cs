@@ -10,15 +10,28 @@ namespace TerrariaCells.Common.Systems;
 
 public class ChestLootSpawner : ModSystem, IEntitySource
 {
-    Dictionary<string, int[]> ChestLootTables;
+    public Dictionary<string, int[]> ChestLootTables;
 
     public List<int> lootedChests = [];
 
     public string Context => "TerrariaCells.ChestLootSpawner.OnChestOpen";
 
+    public override void Load()
+    {
+        using Stream stream = Mod.GetFileStream("chest loot tables.json");
+        var buf = new byte[stream.Length];
+        stream.Read(buf);
+        ChestLootTables = JsonSerializer.Deserialize<Dictionary<string, int[]>>(buf);
+    }
+
     public override void SetStaticDefaults()
     {
         On_Player.OpenChest += OnChestOpen;
+    }
+
+    public override void Unload()
+    {
+        On_Player.OpenChest -= OnChestOpen;
     }
 
     public override void OnWorldLoad()
@@ -54,12 +67,12 @@ public class ChestLootSpawner : ModSystem, IEntitySource
 
     public void OnChestOpen(On_Player.orig_OpenChest orig, Player self, int x, int y, int newChest)
     {
-        using (Stream stream = Mod.GetFileStream("chest loot tables.json"))
-        {
-            var buf = new byte[stream.Length];
-            stream.Read(buf);
-            ChestLootTables = JsonSerializer.Deserialize<Dictionary<string, int[]>>(buf);
-        }
+        // using (Stream stream = Mod.GetFileStream("chest loot tables.json"))
+        // {
+        //     var buf = new byte[stream.Length];
+        //     stream.Read(buf);
+        //     ChestLootTables = JsonSerializer.Deserialize<Dictionary<string, int[]>>(buf);
+        // }
 
         bool isNewChest = !lootedChests.Contains(newChest);
 

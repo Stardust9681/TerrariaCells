@@ -11,6 +11,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using TerrariaCells.Common.Utilities;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 //using static TerrariaCells.Common.Utilities.JsonUtil;
 
 namespace TerrariaCells.Common.GlobalNPCs
@@ -40,6 +41,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 		public override void SetDefaults(NPC npc)
 		{
 			bool playtesting = Configs.DevConfig.Instance.PlaytesterShops;
+
 			if (npc.type == NPCID.ArmsDealer)
 			{
 				if (playtesting)
@@ -94,12 +96,24 @@ namespace TerrariaCells.Common.GlobalNPCs
 		}
 		public override void ModifyActiveShop(NPC npc, string shopName, Item[] items)
 		{
+			int shopCustomPrice = 10;
+			switch (npc.type) {
+				case NPCID.ArmsDealer:
+					shopCustomPrice = 2000;
+					break;
+				case NPCID.GoblinTinkerer:
+					shopCustomPrice = 10000;
+					break;
+				case NPCID.Merchant:
+					shopCustomPrice = 30000;
+					break;
+			}
 			if (npc.type is NPCID.ArmsDealer or NPCID.GoblinTinkerer or NPCID.Merchant)
 			{
 				for (int i = 0; i < items.Length; i++)
 				{
 					if (i < selectedItems.Length)
-						items[i] = new Item(selectedItems[i]) { shopCustomPrice = 10 };
+						items[i] = new Item(selectedItems[i]) { shopCustomPrice = shopCustomPrice };
 					else
 						items[i] = null;
 				}
@@ -115,6 +129,25 @@ namespace TerrariaCells.Common.GlobalNPCs
                     entry.Disable();
                 }
             }
+        }
+    }
+
+	class NPCShopDetours : ModSystem {
+        public override void Load()
+        {
+			On_ShopHelper.GetShoppingSettings += GetShoppingSettings;
+        }
+
+        public override void Unload()
+        {
+			On_ShopHelper.GetShoppingSettings -= GetShoppingSettings;
+        }
+
+        private ShoppingSettings GetShoppingSettings(On_ShopHelper.orig_GetShoppingSettings orig, ShopHelper self, Player player, NPC npc)
+        {
+            ShoppingSettings shoppingSettings = orig(self, player, npc);
+			shoppingSettings.PriceAdjustment = 1.0;
+            return shoppingSettings;
         }
     }
 }

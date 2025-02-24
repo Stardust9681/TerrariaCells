@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrariaCells.Common.Systems;
 using TerrariaCells.Content.WeaponAnimations;
 
 namespace TerrariaCells.Common.GlobalItems
@@ -57,6 +59,7 @@ namespace TerrariaCells.Common.GlobalItems
                     break;
 				case ItemID.PlatinumBow:
 					item.damage = 22;
+                    item.value = 1000;
 					break;
                 // Launchers
                 case ItemID.Toxikarp:
@@ -101,6 +104,7 @@ namespace TerrariaCells.Common.GlobalItems
                     break;
 				case ItemID.PlatinumBroadsword:
 					item.damage = 20;
+                    item.value = 1000;
 					break;
 
                 // MAGE
@@ -110,30 +114,35 @@ namespace TerrariaCells.Common.GlobalItems
                     item.useTime = 18;
                     item.knockBack = 0f;
                     item.shootSpeed = 50;
+                    item.value = 1000;
                     break;
                 case ItemID.InfernoFork:
                     item.damage = 15;
                     item.mana = 80;
                     item.useTime = 45;
                     item.knockBack = 0f;
+                    item.value = 1000;
                     break;
                 case ItemID.StaffofEarth:
                     item.damage = 120;
                     item.mana = 100;
                     item.useTime = 45;
                     item.knockBack = 10f;
+                    item.value = 1000;
                     break;
                 case ItemID.LaserRifle:
                     item.damage = 5;
                     item.mana = 3;
                     item.useTime = 8;
                     item.knockBack = 0f;
+                    item.value = 1000;
                     break;
                 case ItemID.VenomStaff:
                     item.damage = 8;
                     item.mana = 40;
                     item.useTime = 30;
                     item.knockBack = 0f;
+                    item.value = 1000;
                     break;
                 case ItemID.BookofSkulls: 
                     item.damage = 40;
@@ -141,15 +150,39 @@ namespace TerrariaCells.Common.GlobalItems
                     item.useTime = 20;
                     item.knockBack = 0f;
                     item.shootSpeed = 12;
+                    item.value = 1000;
                     break;
 
                 // SUMMON
                 // Staffs
                 case ItemID.ClingerStaff:
                     item.knockBack = 0f;
+                    item.value = 1000;
                     break;
             }
-            
+
+            Dictionary<string, int[]> chestLootTables = ModContent.GetContent<ChestLootSpawner>().First().ChestLootTables;
+            foreach (var key in chestLootTables.Keys) {
+                if (chestLootTables[key].Contains(item.type)) {
+                    switch (key) {
+                        case "1":
+                            // multiplied by 5 so that I can input sell price instead of buy price
+                            item.value = 5 * 500;
+                            break;
+                        case "19":
+                            item.value = 5 * 5000;
+                            break;
+                        case "20":
+                            item.value = 5 * 10000;
+                            break;
+                        case "43":
+                            item.value = 5 * 4000;
+                            break;
+                    }
+                    break;
+                }
+            } 
+
 			item.useAnimation = item.useTime;
 			if (item.DamageType.CountsAsClass(DamageClass.Ranged))
 				item.knockBack = 0;

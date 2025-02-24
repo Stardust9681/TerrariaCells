@@ -296,7 +296,14 @@ public struct FunkyModifier(FunkyModifierType type, float modifier)
 				s += $"{mod1Text}% damage vs targets afflicted by {Terraria.Lang.GetBuffName(id)}";
 				break;
 			case FunkyModifierType.CustomAmmo:
-				s += $"Weapon fires {Terraria.Lang.GetProjectileName(id)}s";
+                string localizedText = Terraria.Lang.GetProjectileName(id).Value;
+                if (id == ProjectileID.ExplosiveBullet) {
+                    localizedText = "Explosive Bullet";
+                }
+                if (id == ProjectileID.BulletHighVelocity) {
+                    localizedText = "High Velocity Bullet";
+                }
+                s += $"Weapon fires {localizedText}s";
 				break;
 			case FunkyModifierType.ApplyDebuff:
 				s += $"Inflict {Terraria.Lang.GetBuffName(id)} for {modifier/60:0.0} sec";

@@ -10,12 +10,12 @@ namespace TerrariaCells.Common.Configs
 {
 	public class DevConfig : ModConfig
 	{
+		public override ConfigScope Mode => ConfigScope.ServerSide;
 		//[Newtonsoft.Json.JsonIgnore]
 		private static DevConfig _instance;
 		//[Newtonsoft.Json.JsonIgnore]
 		public static DevConfig Instance => _instance ??= Terraria.ModLoader.ModContent.GetInstance<DevConfig>();
 
-		public override ConfigScope Mode => ConfigScope.ServerSide;
 
 		[Header("BuilderSettings")]
 
@@ -64,8 +64,12 @@ namespace TerrariaCells.Common.Configs
 		public bool HideVanillaInventory;
 
 		[Header("DebugAndPlaytesting")]
-
-		[DefaultValue(true)]
+		
+		/// <summary>
+		/// If enabled, makes it so that NPC shops sell all available items for their category instead of just a small selection.
+		/// Only for testing purposes.
+		/// <summary>
+		[DefaultValue(false)]
 		public bool PlaytesterShops;
 	}
 }

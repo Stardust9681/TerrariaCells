@@ -16,7 +16,25 @@ namespace TerrariaCells.Common.GlobalTiles
 			On_Player.InInteractionRange += On_Player_InInteractionRange;
         }
 
-		public override void Unload()
+        public override void SetStaticDefaults()
+        {
+			ValidTiles = [
+				TileID.TeleportationPylon,
+				TileID.GemLocks,
+				TileID.Containers,
+				TileID.Containers2,
+				TileID.Heart,
+				TileID.ManaCrystal,
+				TileID.Switches,
+				TileID.Lever,
+				ModContent.TileType<Content.Tiles.LevelExitPylon.ForestExitPylon>(),
+				ModContent.TileType<Content.Tiles.LevelExitPylon.DesertExitPylon>(),
+				ModContent.TileType<Content.Tiles.LevelExitPylon.HiveExitPylon>(),
+				ModContent.TileType<Content.Tiles.LevelExitPylon.SnowExitPylon>(),
+			];
+        }
+
+        public override void Unload()
 		{
 			On_Projectile.ExplodeTiles -= On_Projectile_ExplodeTiles;
 			On_Player.TileInteractionsUse -= On_Player_TileInteractionsUse;
@@ -43,18 +61,7 @@ namespace TerrariaCells.Common.GlobalTiles
 			return false;
 		}
 
-		private readonly int[] ValidTiles = new int[] {
-			TileID.TeleportationPylon,
-			TileID.GemLocks,
-			TileID.Containers,
-			TileID.Containers2,
-			TileID.Heart,
-			TileID.ManaCrystal,
-			ModContent.TileType<Content.Tiles.LevelExitPylon.ForestExitPylon>(),
-			ModContent.TileType<Content.Tiles.LevelExitPylon.DesertExitPylon>(),
-			ModContent.TileType<Content.Tiles.LevelExitPylon.HiveExitPylon>(),
-			ModContent.TileType<Content.Tiles.LevelExitPylon.SnowExitPylon>(),
-		};
+		private int[] ValidTiles;
 		private void On_Player_TileInteractionsUse(On_Player.orig_TileInteractionsUse orig, Player self, int myX, int myY)
 		{
 			if (DevConfig.Instance.BuilderMode)
