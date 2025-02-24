@@ -153,5 +153,19 @@ namespace TerrariaCells.Content.WeaponAnimations
             gunTo.OriginalReuseDelay = gunFrom.OriginalReuseDelay;
             return gunTo;
         }
+
+		public static bool TryGetGlobalItem(Item item, out Gun gun)
+		{
+			gun = null;
+			if (Handgun.Handguns.Contains(item.type))
+				gun = item.GetGlobalItem<Handgun>();
+			if(Autorifle.Autorifles.Contains(item.type))
+				gun = item.GetGlobalItem<Autorifle>();
+			if(Shotgun.Shotguns.Contains(item.type))
+				gun = item.GetGlobalItem<Shotgun>();
+			if(Launcher.Launchers.Contains(item.type))
+				gun = item.GetGlobalItem<Launcher>();
+			return gun != null;
+		}
     }
 }

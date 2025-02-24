@@ -16,20 +16,20 @@ namespace TerrariaCells.Content.WeaponAnimations
 {
     public class Launcher : Gun
     {
-        public static int[] launcher = { ItemID.RocketLauncher, ItemID.StarCannon, ItemID.GrenadeLauncher };
+        public static int[] Launchers = { ItemID.RocketLauncher, ItemID.StarCannon, ItemID.GrenadeLauncher };
         public override bool InstancePerEntity => true;
         public override void SetStaticDefaults()
         {
-            for (int i = 0; i < launcher.Length; i++)
+            for (int i = 0; i < Launchers.Length; i++)
             {
-                ItemID.Sets.ItemsThatAllowRepeatedRightClick[launcher[i]] = true;
+                ItemID.Sets.ItemsThatAllowRepeatedRightClick[Launchers[i]] = true;
             }
 
             base.SetStaticDefaults();
         }
         public override bool AppliesToEntity(Item entity, bool lateInstantiation)
         {
-            return launcher.Contains(entity.type);
+            return Launchers.Contains(entity.type);
             
         }
         public override bool AltFunctionUse(Item item, Player player)
