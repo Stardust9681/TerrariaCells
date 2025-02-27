@@ -109,6 +109,10 @@ namespace TerrariaCells.Common.GlobalProjectiles
                 case ProjectileID.Starfury:
                     modifiers.SetCrit();
                     break;
+                case ProjectileID.GladiusStab:
+                    if  (target.HasBuff(BuffID.Poisoned) || target.HasBuff(BuffID.BloodButcherer))
+                        modifiers.SetCrit();
+                    break;
             }
 
 			if (projectile.TryGetGlobalProjectile(out SourceGlobalProjectile gProj) && gProj.itemSource != null)

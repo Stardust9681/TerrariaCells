@@ -106,6 +106,10 @@ namespace TerrariaCells.Common.GlobalItems
 					item.damage = 20;
                     item.value = 1000;
 					break;
+                case ItemID.Gladius:
+                    item.damage = 8;
+                    item.value = 1000;
+                    break;
 
                 // MAGE
                 case ItemID.EmeraldStaff:
@@ -194,6 +198,11 @@ namespace TerrariaCells.Common.GlobalItems
             {
                 modifiers.SetCrit();
                 Projectile.NewProjectileDirect(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ProjectileID.Volcano, item.damage, 5, player.whoAmI, ai1: 1);
+            }
+            if (item.type == ItemID.Gladius && (target.HasBuff(BuffID.Poisoned) || target.HasBuff(BuffID.BloodButcherer)))
+            {
+                modifiers.SetCrit();
+                Projectile.NewProjectileDirect(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ProjectileID.GladiusStab, item.damage, item.knockBack, player.whoAmI, ai1: 1);
             }
             base.ModifyHitNPC(item, player, target, ref modifiers);
         }
