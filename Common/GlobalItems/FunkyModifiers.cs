@@ -135,6 +135,7 @@ public partial class FunkyModifierItemModifier : GlobalItem
         (ItemID.Excalibur, [ModCategory.Sword]),
         (ItemID.NightsEdge, [ModCategory.Sword]),
         (ItemID.FetidBaghnakhs, [ModCategory.Sword]),
+        (ItemID.Gladius, [ModCategory.Sword]),
         (ItemID.Starfury, [ModCategory.Sword, ModCategory.Projectile]),
         (ItemID.TerraBlade, [ModCategory.Sword, ModCategory.Projectile]),
         (ItemID.ThunderSpear, [ModCategory.Projectile]),
