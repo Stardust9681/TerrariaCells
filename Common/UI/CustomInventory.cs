@@ -1118,6 +1118,271 @@ public class LimitedStorageUI : UIState
         );
         Main.craftingHide = false;
 
+        if (Main.InReforgeMenu)
+        {
+            // if (Main.mouseReforge)
+            // {
+            //     if (Main.reforgeScale < 1f)
+            //         Main.reforgeScale += 0.02f;
+            // }
+            // else if (Main.reforgeScale > 1f)
+            // {
+            //     Main.reforgeScale -= 0.02f;
+            // }
+
+            if (
+                Main.LocalPlayer.chest != -1
+                || Main.npcShop != 0
+                || Main.LocalPlayer.talkNPC == -1
+                || Main.InGuideCraftMenu
+            )
+            {
+                Main.InReforgeMenu = false;
+                Main.LocalPlayer.dropItemCheck();
+                Recipe.FindRecipes();
+            }
+            else
+            {
+                int num56 = 50;
+                int num57 = 270;
+                string text = Lang.inter[46].Value + ": ";
+                if (Main.reforgeItem.type > ItemID.None)
+                {
+                    int num58 = Main.reforgeItem.value;
+                    num58 *= Main.reforgeItem.stack; // #StackablePrefixWeapons: scale with current stack size
+
+                    bool canApplyDiscount = true;
+                    if (!ItemLoader.ReforgePrice(Main.reforgeItem, ref num58, ref canApplyDiscount))
+                        goto skipVanillaPricing;
+
+                    /*
+                    if (Main.LocalPlayer.discountAvailable)
+                    */
+                    if (canApplyDiscount && Main.LocalPlayer.discountAvailable)
+                        num58 = (int)((double)num58 * 0.8);
+
+                    num58 = (int)(
+                        (double)num58 * Main.LocalPlayer.currentShoppingSettings.PriceAdjustment
+                    );
+                    num58 /= 3;
+                    skipVanillaPricing:
+
+                    string text2 = "";
+                    int num59 = 0;
+                    int num60 = 0;
+                    int num61 = 0;
+                    int num62 = 0;
+                    int num63 = num58;
+                    if (num63 < 1)
+                        num63 = 1;
+
+                    if (num63 >= 1000000)
+                    {
+                        num59 = num63 / 1000000;
+                        num63 -= num59 * 1000000;
+                    }
+
+                    if (num63 >= 10000)
+                    {
+                        num60 = num63 / 10000;
+                        num63 -= num60 * 10000;
+                    }
+
+                    if (num63 >= 100)
+                    {
+                        num61 = num63 / 100;
+                        num63 -= num61 * 100;
+                    }
+
+                    if (num63 >= 1)
+                        num62 = num63;
+
+                    if (num59 > 0)
+                        text2 =
+                            text2
+                            + "[c/"
+                            + Colors.AlphaDarken(Colors.CoinPlatinum).Hex3()
+                            + ":"
+                            + num59
+                            + " "
+                            + Lang.inter[15].Value
+                            + "] ";
+
+                    if (num60 > 0)
+                        text2 =
+                            text2
+                            + "[c/"
+                            + Colors.AlphaDarken(Colors.CoinGold).Hex3()
+                            + ":"
+                            + num60
+                            + " "
+                            + Lang.inter[16].Value
+                            + "] ";
+
+                    if (num61 > 0)
+                        text2 =
+                            text2
+                            + "[c/"
+                            + Colors.AlphaDarken(Colors.CoinSilver).Hex3()
+                            + ":"
+                            + num61
+                            + " "
+                            + Lang.inter[17].Value
+                            + "] ";
+
+                    if (num62 > 0)
+                        text2 =
+                            text2
+                            + "[c/"
+                            + Colors.AlphaDarken(Colors.CoinCopper).Hex3()
+                            + ":"
+                            + num62
+                            + " "
+                            + Lang.inter[18].Value
+                            + "] ";
+
+                    ItemSlot.DrawSavings(
+                        Main.spriteBatch,
+                        num56 + 130,
+                        Main.instance.invBottom,
+                        horizontal: true
+                    );
+                    ChatManager.DrawColorCodedStringWithShadow(
+                        Main.spriteBatch,
+                        FontAssets.MouseText.Value,
+                        text2,
+                        new Vector2(
+                            (float)(num56 + 50) + FontAssets.MouseText.Value.MeasureString(text).X,
+                            num57
+                        ),
+                        Microsoft.Xna.Framework.Color.White,
+                        0f,
+                        Vector2.Zero,
+                        Vector2.One
+                    );
+                    int num64 = num56 + 70;
+                    int num65 = num57 + 40;
+                    bool num66 =
+                        Main.mouseX > num64 - 15
+                        && Main.mouseX < num64 + 15
+                        && Main.mouseY > num65 - 15
+                        && Main.mouseY < num65 + 15
+                        && !PlayerInput.IgnoreMouseInterface;
+                    Texture2D value4 = TextureAssets.Reforge[0].Value;
+                    if (num66)
+                        value4 = TextureAssets.Reforge[1].Value;
+
+                    Main.spriteBatch.Draw(
+                        value4,
+                        new Vector2(num64, num65),
+                        null,
+                        Microsoft.Xna.Framework.Color.White,
+                        0f,
+                        value4.Size() / 2f,
+                        Main.reforgeScale,
+                        SpriteEffects.None,
+                        0f
+                    );
+                    UILinkPointNavigator.SetPosition(
+                        304,
+                        new Vector2(num64, num65) + value4.Size() / 4f
+                    );
+                    if (num66)
+                    {
+                        Main.hoverItemName = Lang.inter[19].Value;
+                        if (!Main.mouseReforge)
+                            SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Menu_Tick"));
+
+                        Main.mouseReforge = true;
+                        Main.LocalPlayer.mouseInterface = true;
+
+                        /*
+                        if (mouseLeftRelease && mouseLeft && Main.LocalPlayer.BuyItem(num58)) {
+                        */
+                        if (
+                            Main.mouseLeftRelease
+                            && Main.mouseLeft
+                            && Main.LocalPlayer.CanAfford(num58)
+                            && ItemLoader.CanReforge(Main.reforgeItem)
+                        )
+                        {
+                            Main.LocalPlayer.BuyItem(num58);
+                            ItemLoader.PreReforge(Main.reforgeItem); // After BuyItem just in case
+
+                            Main.reforgeItem.ResetPrefix();
+                            Main.reforgeItem.Prefix(-2);
+                            Main.reforgeItem.position.X =
+                                Main.LocalPlayer.position.X
+                                + (float)(Main.LocalPlayer.width / 2)
+                                - (float)(Main.reforgeItem.width / 2);
+                            Main.reforgeItem.position.Y =
+                                Main.LocalPlayer.position.Y
+                                + (float)(Main.LocalPlayer.height / 2)
+                                - (float)(Main.reforgeItem.height / 2);
+
+                            ItemLoader.PostReforge(Main.reforgeItem);
+
+                            PopupText.NewText(
+                                PopupTextContext.ItemReforge,
+                                Main.reforgeItem,
+                                Main.reforgeItem.stack,
+                                noStack: true
+                            );
+                            SoundEngine.PlaySound(SoundID.Item37);
+                        }
+                    }
+                    else
+                    {
+                        Main.mouseReforge = false;
+                    }
+                }
+                else
+                {
+                    text = Lang.inter[20].Value;
+                }
+
+                ChatManager.DrawColorCodedStringWithShadow(
+                    Main.spriteBatch,
+                    FontAssets.MouseText.Value,
+                    text,
+                    new Vector2(num56 + 50, num57),
+                    new Microsoft.Xna.Framework.Color(
+                        Main.mouseTextColor,
+                        Main.mouseTextColor,
+                        Main.mouseTextColor,
+                        Main.mouseTextColor
+                    ),
+                    0f,
+                    Vector2.Zero,
+                    Vector2.One
+                );
+                if (
+                    Main.mouseX >= num56
+                    && (float)Main.mouseX
+                        <= (float)num56
+                            + (float)TextureAssets.InventoryBack.Width() * Main.inventoryScale
+                    && Main.mouseY >= num57
+                    && (float)Main.mouseY
+                        <= (float)num57
+                            + (float)TextureAssets.InventoryBack.Height() * Main.inventoryScale
+                    && !PlayerInput.IgnoreMouseInterface
+                )
+                {
+                    Main.LocalPlayer.mouseInterface = true;
+                    Main.craftingHide = true;
+                    ItemSlot.LeftClick(ref Main.reforgeItem, 5);
+                    if (Main.mouseLeftRelease && Main.mouseLeft)
+                        Recipe.FindRecipes();
+
+                    ItemSlot.RightClick(ref Main.reforgeItem, 5);
+                    ItemSlot.MouseHover(ref Main.reforgeItem, 5);
+                }
+
+                ItemSlot.Draw(Main.spriteBatch, ref Main.reforgeItem, 5, new Vector2(num56, num57));
+            }
+        }
+        // else if (InGuideCraftMenu) {
+
         Main.CreativeMenu.Draw(Main.spriteBatch);
         bool flag10 = Main.CreativeMenu.Enabled && !Main.CreativeMenu.Blocked;
         flag10 |= Main.hidePlayerCraftingMenu;
