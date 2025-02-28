@@ -157,6 +157,9 @@ namespace TerrariaCells.Common.GlobalProjectiles
                 case ProjectileID.Ale:
                     target.AddBuff(BuffID.Oiled, 60 * 8);
                     break;
+                case ProjectileID.SawtoothShark:
+                    target.AddBuff(BuffID.Bleeding, 60 * 5);
+                    break;
             }
         }
 

@@ -110,6 +110,9 @@ namespace TerrariaCells.Common.GlobalItems
                     item.damage = 8;
                     item.value = 1000;
                     break;
+                case ItemID.SawtoothShark:
+                    item.value = 1000;
+                    break;
 
                 // MAGE
                 case ItemID.EmeraldStaff:
