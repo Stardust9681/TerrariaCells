@@ -30,18 +30,31 @@ namespace TerrariaCells.Common.ModPlayers
 		public bool chlorophyteCoating; //Bullets and arrows become chlorophyte
 		public bool stalkerQuiver; //Summons a spectral arrow to hit targets hit by your arrows (deals 50% original damage)
 		private int stalkerQuiverTimer;
+		public bool magicCuffs; // restore 100 mana when taking damage
 
 		public override void Load()
 		{
-			IL_Player.OnHurt_Part2 += IL_Player_OnHurt_Part2;
+			//IL_Player.OnHurt_Part2 += IL_Player_OnHurt_Part2;
 			//IL_Player.ApplyEquipFunctional += IL_Player_ApplyEquipFunctional;
 		}
 		public override void Unload()
 		{
-			IL_Player.OnHurt_Part2 -= IL_Player_OnHurt_Part2;
+			//IL_Player.OnHurt_Part2 -= IL_Player_OnHurt_Part2;
 			//IL_Player.ApplyEquipFunctional -= IL_Player_ApplyEquipFunctional;
 		}
-		private void IL_Player_OnHurt_Part2(ILContext context)
+
+        public override void OnHurt(Player.HurtInfo info) {
+			if (this.magicCuffs) {
+				Player.statMana += 100;
+				if (Player.statMana > Player.statManaMax2) {
+					Player.statMana = Player.statManaMax2;				
+				}
+				Player.ManaEffect(100);
+			}
+        }
+
+		//[Unused]
+        private void IL_Player_OnHurt_Part2(ILContext context)
 		{
 			log4net.ILog GetInstanceLogger() => ModContent.GetInstance<TerrariaCells>().Logger;
 			try
