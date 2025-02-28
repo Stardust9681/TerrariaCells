@@ -419,6 +419,32 @@ namespace TerrariaCells.Common.GlobalItems
 
             }
 
+            //Add tooltips at the end
+            switch (item.type)
+            {
+                case ItemID.SniperRifle:
+                    tooltips.Add(new TooltipLine(Mod, "Tooltip0", "Inflicts critical hits against bosses"));
+                    break;
+                case ItemID.FieryGreatsword:
+                    tooltips.Add(new TooltipLine(Mod, "Tooltip0", "Striking oiled targets causes an explosion, inflicting a critical hit"));
+                    break;
+                case ItemID.PhoenixBlaster:
+                    tooltips.Add(new TooltipLine(Mod, "Tooltip0", "The last 5 shots inflict a critical hit"));
+                    break;
+                case ItemID.SawtoothShark:
+                    tooltips.Add(new TooltipLine(Mod, "Tooltip0", "Causes targets to bleed"));
+                    break;
+                case ItemID.Gladius:
+                    tooltips.Add(new TooltipLine(Mod, "Tooltip0", "Inflicts a critical hit against poisoned or bleeding targets"));
+                    break;
+                case ItemID.EmeraldStaff:
+                    tooltips.Add(new TooltipLine(Mod, "Tooltip0", "Poisons targets"));
+                    break;
+                case ItemID.RubyStaff:
+                    tooltips.Add(new TooltipLine(Mod, "Tooltip0", "Lights targets on fire"));
+                    break;
+            }
+
             /*
             // FOR TESTING
             Mod.Logger.Debug("Tooltip for " + item.Name);
