@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using TerrariaCells.Common.Items;
 
 namespace TerrariaCells.Common.GlobalItems
 {
@@ -70,6 +71,10 @@ namespace TerrariaCells.Common.GlobalItems
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
+            TerraCellsItemCategory id = InventoryManager.GetItemCategorization(item.netID);
+            if (!(id == TerraCellsItemCategory.Weapon || id == TerraCellsItemCategory.Skill)) {
+                return;
+            }
             // Iterate through the list of tooltips so we can change vanilla tooltips
             foreach (TooltipLine tooltip in tooltips)
             {

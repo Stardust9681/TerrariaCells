@@ -285,7 +285,7 @@ public class LimitedStorageUI : UIState
         Vector2 vector = new Vector2(num, num2);
         Main.spriteBatch.DrawString(
             FontAssets.MouseText.Value,
-            Lang.inter[4].Value + " (hehe)",
+            Lang.inter[4].Value,
             new Vector2(40f, 0f) + vector,
             new Color(
                 Main.mouseTextColor,
@@ -3359,7 +3359,6 @@ public class LimitedStorageUI : UIState
         }
         else
         {
-            // throw new Exception("test hehe :3");
             Item item = inv[slot];
             inv[slot] = ItemSlotArmorSwap(inv[slot], out success);
             if (success)
