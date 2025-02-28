@@ -9,6 +9,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrariaCells.Common.GlobalProjectiles;
+using TerrariaCells.Common.ModPlayers;
 using TerrariaCells.Common.Systems;
 using TerrariaCells.Content.WeaponAnimations;
 
@@ -113,6 +114,11 @@ namespace TerrariaCells.Common.GlobalItems
 					break;
                 case ItemID.Gladius:
                     item.damage = 8;
+                    item.value = 1000;
+                    break;
+                case ItemID.Katana:
+                    item.damage = 8;
+                    item.useTime = 20;
                     item.value = 1000;
                     break;
                 case ItemID.SawtoothShark:
@@ -220,6 +226,10 @@ namespace TerrariaCells.Common.GlobalItems
                 modifiers.SetCrit();
                 Projectile.NewProjectileDirect(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ProjectileID.GladiusStab, item.damage, item.knockBack, player.whoAmI, ai1: 1);
             }
+            if (item.type == ItemID.Katana && player.GetModPlayer<HurtPlayer>().timeSinceLastHurt < 60 * 8)
+            {
+                modifiers.SetCrit();
+            }
             base.ModifyHitNPC(item, player, target, ref modifiers);
         }
 
@@ -236,7 +246,7 @@ namespace TerrariaCells.Common.GlobalItems
 
             // ADD/MODIFY CUSTOM CRIT EFFECTS HERE
         }
-        // Override certain weapon shoots to implement hitscan, follow Emerald staff shoot for help
+        // Override certain weapon shoots to implement hitscan, follow Emerald staff shoot below for help on hitscans
         public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             if (item.type == ItemID.EmeraldStaff) 
