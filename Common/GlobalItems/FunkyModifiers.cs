@@ -167,6 +167,7 @@ public partial class FunkyModifierItemModifier : GlobalItem
         (ItemID.HeatRay, [ModCategory.Projectile, ModCategory.Mana]),
         (ItemID.WaterBolt, [ModCategory.Projectile, ModCategory.Mana]),
         (ItemID.EmeraldStaff, [ModCategory.Projectile, ModCategory.Mana]),
+        (ItemID.RubyStaff, [ModCategory.Projectile, ModCategory.Mana]),
         (ItemID.LaserRifle, [ModCategory.Projectile, ModCategory.Mana]),
         (ItemID.SharpTears, [ModCategory.Projectile, ModCategory.Mana]),
         (ItemID.BubbleGun, [ModCategory.Projectile, ModCategory.Mana]),
