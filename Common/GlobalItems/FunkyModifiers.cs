@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -136,6 +137,7 @@ public partial class FunkyModifierItemModifier : GlobalItem
         (ItemID.NightsEdge, [ModCategory.Sword]),
         (ItemID.FetidBaghnakhs, [ModCategory.Sword]),
         (ItemID.Gladius, [ModCategory.Sword]),
+        (ItemID.SawtoothShark, [ModCategory.Sword]),
         (ItemID.Starfury, [ModCategory.Sword, ModCategory.Projectile]),
         (ItemID.TerraBlade, [ModCategory.Sword, ModCategory.Projectile]),
         (ItemID.ThunderSpear, [ModCategory.Projectile]),
