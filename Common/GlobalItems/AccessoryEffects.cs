@@ -134,6 +134,9 @@ namespace TerrariaCells.Common.GlobalItems
 					//I know suggestion is 25%, I'm going 33% because you're sacrificing SO MUCH for this boost to mana cost of all things
 					player.manaCost -= 0.33f;
 					break;
+				case ItemID.MagicCuffs:
+					modPlayer.magicCuffs = true;
+					break;
 				default:
 					orig.Invoke(player, item, hideVisual);
 					break;
