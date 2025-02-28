@@ -60,11 +60,7 @@ public partial class FunkyModifierItemModifier : GlobalItem
         foreach (FunkyModifier modifier in funkyModifiers.modifiers ?? [])
         {
             tooltips.Add(
-                new TooltipLine(
-                    Mod,
-                    "FunkyModifier",
-                    modifier.ToString()
-                )
+                new TooltipLine(Mod, "FunkyModifier", modifier.ToString()) { IsModifier = true }
             );
         }
     }
@@ -217,7 +213,9 @@ public partial class FunkyModifierItemModifier : GlobalItem
                     velocity *= modifier.modifier;
                     break;
                 }
-                case FunkyModifierType.CustomAmmo:
+                case FunkyModifierType.CustomAmmoBullet:
+                case FunkyModifierType.CustomAmmoArrow:
+                case FunkyModifierType.CustomAmmoRocket:
                 {
                     type = modifier.id;
                     break;

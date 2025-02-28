@@ -29,7 +29,9 @@ public enum FunkyModifierType
     ImbuedDamage,
     FrenzyFire,
     DamageOnDebuff,
-    CustomAmmo,
+    CustomAmmoBullet,
+    CustomAmmoArrow,
+    CustomAmmoRocket,
     ApplyDebuff,
     CritsExplode,
     DropMoreMana,
@@ -56,7 +58,9 @@ public enum ModCategory
     Buff,
 
     // Applies to weapons that consume ammo from the inventory
-    Ammo,
+    AmmoBullet,
+    AmmoArrow,
+    AmmoRocket,
 
     // dunno if these'll be used
     Spear,
@@ -85,8 +89,8 @@ public partial class FunkyModifierItemModifier : GlobalItem
         FunkyModifier.FrenzyFire(1.40f, 0.75f),
         FunkyModifier.DamageOnDebuff(1.50f, BuffID.OnFire),
         FunkyModifier.DamageOnDebuff(1.50f, BuffID.Poisoned),
-        FunkyModifier.CustomAmmo(ProjectileID.ExplosiveBullet),
-        FunkyModifier.CustomAmmo(ProjectileID.BulletHighVelocity),
+        FunkyModifier.CustomBulletAmmo(ProjectileID.ExplosiveBullet),
+        FunkyModifier.CustomBulletAmmo(ProjectileID.BulletHighVelocity),
         FunkyModifier.ApplyDebuff(BuffID.Poisoned, 30f),
         FunkyModifier.ApplyDebuff(BuffID.OnFire),
         FunkyModifier.DropMoreMana(2),
@@ -112,7 +116,9 @@ public partial class FunkyModifierItemModifier : GlobalItem
             FunkyModifierType.ImbuedDamage => [ModCategory.Mana],
             FunkyModifierType.FrenzyFire => [ModCategory.Generic],
             FunkyModifierType.DamageOnDebuff => [ModCategory.Sword, ModCategory.Projectile],
-            FunkyModifierType.CustomAmmo => [ModCategory.Ammo],
+            FunkyModifierType.CustomAmmoBullet => [ModCategory.AmmoBullet],
+            FunkyModifierType.CustomAmmoArrow => [ModCategory.AmmoArrow],
+            FunkyModifierType.CustomAmmoRocket => [ModCategory.AmmoRocket],
             FunkyModifierType.ApplyDebuff => [ModCategory.Sword, ModCategory.Projectile],
             FunkyModifierType.CritsExplode => [ModCategory.Sword, ModCategory.Projectile],
             FunkyModifierType.DropMoreMana => [ModCategory.Mana],
@@ -145,15 +151,15 @@ public partial class FunkyModifierItemModifier : GlobalItem
         (ItemID.Sunfury, [ModCategory.Projectile]),
         (ItemID.GolemFist, [ModCategory.Projectile]),
         //
-        (ItemID.PhoenixBlaster, [ModCategory.Projectile, ModCategory.Ammo]),
-        (ItemID.SniperRifle, [ModCategory.Projectile, ModCategory.Ammo]),
-        (ItemID.OnyxBlaster, [ModCategory.Projectile, ModCategory.Ammo]),
-        (ItemID.Minishark, [ModCategory.Projectile, ModCategory.Ammo]),
-        (ItemID.WoodenBow, [ModCategory.Projectile, ModCategory.Ammo]),
-        (ItemID.IceBow, [ModCategory.Projectile]),
-        (ItemID.PulseBow, [ModCategory.Projectile]),
-        (ItemID.RocketLauncher, [ModCategory.Projectile]),
-        (ItemID.GrenadeLauncher, [ModCategory.Projectile]),
+        (ItemID.PhoenixBlaster, [ModCategory.Projectile, ModCategory.AmmoBullet]),
+        (ItemID.SniperRifle, [ModCategory.Projectile, ModCategory.AmmoBullet]),
+        (ItemID.OnyxBlaster, [ModCategory.Projectile, ModCategory.AmmoBullet]),
+        (ItemID.Minishark, [ModCategory.Projectile, ModCategory.AmmoBullet]),
+        (ItemID.WoodenBow, [ModCategory.Projectile, ModCategory.AmmoArrow]),
+        (ItemID.IceBow, [ModCategory.Projectile, ModCategory.AmmoArrow]),
+        (ItemID.PulseBow, [ModCategory.Projectile, ModCategory.AmmoArrow]),
+        (ItemID.RocketLauncher, [ModCategory.Projectile, ModCategory.AmmoRocket]),
+        (ItemID.GrenadeLauncher, [ModCategory.Projectile, ModCategory.AmmoRocket]),
         (ItemID.StarCannon, [ModCategory.Projectile]),
         (ItemID.AleThrowingGlove, [ModCategory.Projectile]),
         //
@@ -249,8 +255,8 @@ public struct FunkyModifier(FunkyModifierType type, float modifier)
             id = buffID,
         };
 
-    public static FunkyModifier CustomAmmo(int ammoItemID) =>
-        new FunkyModifier(FunkyModifierType.CustomAmmo, 0f) with
+    public static FunkyModifier CustomBulletAmmo(int ammoItemID) =>
+        new FunkyModifier(FunkyModifierType.CustomAmmoBullet, 0f) with
         {
             id = ammoItemID,
         };
@@ -300,7 +306,7 @@ public struct FunkyModifier(FunkyModifierType type, float modifier)
 			case FunkyModifierType.DamageOnDebuff:
 				s += $"{mod1Text}% damage vs targets afflicted by {Terraria.Lang.GetBuffName(id)}";
 				break;
-			case FunkyModifierType.CustomAmmo:
+            case FunkyModifierType.CustomAmmoBullet:
                 string localizedText = Terraria.Lang.GetProjectileName(id).Value;
                 if (id == ProjectileID.ExplosiveBullet) {
                     localizedText = "Explosive Bullet";
