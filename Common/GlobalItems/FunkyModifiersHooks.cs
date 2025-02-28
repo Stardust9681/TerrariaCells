@@ -18,9 +18,8 @@ public partial class FunkyModifierItemModifier : GlobalItem
     public override bool InstancePerEntity => true;
 
     internal FunkyModifier[] modifiers;
-
-    public override void SetDefaults(Item item)
-    {
+    
+    public static void Reforge(Item item) {
         if (!weaponCategorizations.TryGetValue((short)item.netID, out var categorizations))
         {
             return;
@@ -49,6 +48,11 @@ public partial class FunkyModifierItemModifier : GlobalItem
             }
             funkyModifiers.modifiers[i] = funkyModifier;
         }
+    }
+
+    public override void SetDefaults(Item item)
+    {
+        Reforge(item);
     }
 
     public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)

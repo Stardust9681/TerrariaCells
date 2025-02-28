@@ -1143,151 +1143,151 @@ public class LimitedStorageUI : UIState
             }
             else
             {
-                int num56 = 50;
-                int num57 = 270;
+                int slotX = 50;
+                int slotY = 270;
                 string text = Lang.inter[46].Value + ": ";
                 if (Main.reforgeItem.type > ItemID.None)
                 {
-                    int num58 = Main.reforgeItem.value;
-                    num58 *= Main.reforgeItem.stack; // #StackablePrefixWeapons: scale with current stack size
+                    int reforgeCost = Main.reforgeItem.value;
+                    reforgeCost *= Main.reforgeItem.stack; // #StackablePrefixWeapons: scale with current stack size
 
                     bool canApplyDiscount = true;
-                    if (!ItemLoader.ReforgePrice(Main.reforgeItem, ref num58, ref canApplyDiscount))
+                    if (!ItemLoader.ReforgePrice(Main.reforgeItem, ref reforgeCost, ref canApplyDiscount))
                         goto skipVanillaPricing;
 
                     /*
                     if (Main.LocalPlayer.discountAvailable)
                     */
                     if (canApplyDiscount && Main.LocalPlayer.discountAvailable)
-                        num58 = (int)((double)num58 * 0.8);
+                        reforgeCost = (int)((double)reforgeCost * 0.8);
 
-                    num58 = (int)(
-                        (double)num58 * Main.LocalPlayer.currentShoppingSettings.PriceAdjustment
+                    reforgeCost = (int)(
+                        (double)reforgeCost * Main.LocalPlayer.currentShoppingSettings.PriceAdjustment
                     );
-                    num58 /= 3;
+                    reforgeCost /= 3;
                     skipVanillaPricing:
 
-                    string text2 = "";
-                    int num59 = 0;
-                    int num60 = 0;
-                    int num61 = 0;
-                    int num62 = 0;
-                    int num63 = num58;
-                    if (num63 < 1)
-                        num63 = 1;
+                    string costText = "";
+                    int platinumCost = 0;
+                    int goldCost = 0;
+                    int silverCost = 0;
+                    int copperCost = 0;
+                    int finalCost = reforgeCost;
+                    if (finalCost < 1)
+                        finalCost = 1;
 
-                    if (num63 >= 1000000)
+                    if (finalCost >= 1000000)
                     {
-                        num59 = num63 / 1000000;
-                        num63 -= num59 * 1000000;
+                        platinumCost = finalCost / 1000000;
+                        finalCost -= platinumCost * 1000000;
                     }
 
-                    if (num63 >= 10000)
+                    if (finalCost >= 10000)
                     {
-                        num60 = num63 / 10000;
-                        num63 -= num60 * 10000;
+                        goldCost = finalCost / 10000;
+                        finalCost -= goldCost * 10000;
                     }
 
-                    if (num63 >= 100)
+                    if (finalCost >= 100)
                     {
-                        num61 = num63 / 100;
-                        num63 -= num61 * 100;
+                        silverCost = finalCost / 100;
+                        finalCost -= silverCost * 100;
                     }
 
-                    if (num63 >= 1)
-                        num62 = num63;
+                    if (finalCost >= 1)
+                        copperCost = finalCost;
 
-                    if (num59 > 0)
-                        text2 =
-                            text2
+                    if (platinumCost > 0)
+                        costText =
+                            costText
                             + "[c/"
                             + Colors.AlphaDarken(Colors.CoinPlatinum).Hex3()
                             + ":"
-                            + num59
+                            + platinumCost
                             + " "
                             + Lang.inter[15].Value
                             + "] ";
 
-                    if (num60 > 0)
-                        text2 =
-                            text2
+                    if (goldCost > 0)
+                        costText =
+                            costText
                             + "[c/"
                             + Colors.AlphaDarken(Colors.CoinGold).Hex3()
                             + ":"
-                            + num60
+                            + goldCost
                             + " "
                             + Lang.inter[16].Value
                             + "] ";
 
-                    if (num61 > 0)
-                        text2 =
-                            text2
+                    if (silverCost > 0)
+                        costText =
+                            costText
                             + "[c/"
                             + Colors.AlphaDarken(Colors.CoinSilver).Hex3()
                             + ":"
-                            + num61
+                            + silverCost
                             + " "
                             + Lang.inter[17].Value
                             + "] ";
 
-                    if (num62 > 0)
-                        text2 =
-                            text2
+                    if (copperCost > 0)
+                        costText =
+                            costText
                             + "[c/"
                             + Colors.AlphaDarken(Colors.CoinCopper).Hex3()
                             + ":"
-                            + num62
+                            + copperCost
                             + " "
                             + Lang.inter[18].Value
                             + "] ";
 
-                    ItemSlot.DrawSavings(
-                        Main.spriteBatch,
-                        num56 + 130,
-                        Main.instance.invBottom,
-                        horizontal: true
-                    );
+                    // ItemSlot.DrawSavings(
+                    //     Main.spriteBatch,
+                    //     num56 + 130,
+                    //     Main.instance.invBottom,
+                    //     horizontal: true
+                    // );
                     ChatManager.DrawColorCodedStringWithShadow(
                         Main.spriteBatch,
                         FontAssets.MouseText.Value,
-                        text2,
+                        costText,
                         new Vector2(
-                            (float)(num56 + 50) + FontAssets.MouseText.Value.MeasureString(text).X,
-                            num57
+                            (float)(slotX + 50 + 25) + FontAssets.MouseText.Value.MeasureString(text).X,
+                            slotY
                         ),
                         Microsoft.Xna.Framework.Color.White,
                         0f,
                         Vector2.Zero,
                         Vector2.One
                     );
-                    int num64 = num56 + 70;
-                    int num65 = num57 + 40;
-                    bool num66 =
-                        Main.mouseX > num64 - 15
-                        && Main.mouseX < num64 + 15
-                        && Main.mouseY > num65 - 15
-                        && Main.mouseY < num65 + 15
+                    int reforgeButtonX = slotX + 70 + 25; // moving elements over by 25px to fix overlap
+                    int reforgeButtonY = slotY + 40;
+                    bool hoveringOverReforgeButton =
+                        Main.mouseX > reforgeButtonX - 15 
+                        && Main.mouseX < reforgeButtonX + 15
+                        && Main.mouseY > reforgeButtonY - 15
+                        && Main.mouseY < reforgeButtonY + 15
                         && !PlayerInput.IgnoreMouseInterface;
-                    Texture2D value4 = TextureAssets.Reforge[0].Value;
-                    if (num66)
-                        value4 = TextureAssets.Reforge[1].Value;
+                    Texture2D hoverTexture = TextureAssets.Reforge[0].Value;
+                    if (hoveringOverReforgeButton)
+                        hoverTexture = TextureAssets.Reforge[1].Value;
 
                     Main.spriteBatch.Draw(
-                        value4,
-                        new Vector2(num64, num65),
+                        hoverTexture,
+                        new Vector2(reforgeButtonX, reforgeButtonY),
                         null,
                         Microsoft.Xna.Framework.Color.White,
                         0f,
-                        value4.Size() / 2f,
+                        hoverTexture.Size() / 2f,
                         Main.reforgeScale,
                         SpriteEffects.None,
                         0f
                     );
                     UILinkPointNavigator.SetPosition(
                         304,
-                        new Vector2(num64, num65) + value4.Size() / 4f
+                        new Vector2(reforgeButtonX, reforgeButtonY) + hoverTexture.Size() / 4f
                     );
-                    if (num66)
+                    if (hoveringOverReforgeButton)
                     {
                         Main.hoverItemName = Lang.inter[19].Value;
                         if (!Main.mouseReforge)
@@ -1302,32 +1302,53 @@ public class LimitedStorageUI : UIState
                         if (
                             Main.mouseLeftRelease
                             && Main.mouseLeft
-                            && Main.LocalPlayer.CanAfford(num58)
+                            && Main.LocalPlayer.CanAfford(reforgeCost)
                             && ItemLoader.CanReforge(Main.reforgeItem)
                         )
                         {
-                            Main.LocalPlayer.BuyItem(num58);
-                            ItemLoader.PreReforge(Main.reforgeItem); // After BuyItem just in case
+                            if (Main.reforgeItem.TryGetGlobalItem(out FunkyModifierItemModifier modifier)) {
 
-                            Main.reforgeItem.ResetPrefix();
-                            Main.reforgeItem.Prefix(-2);
-                            Main.reforgeItem.position.X =
-                                Main.LocalPlayer.position.X
-                                + (float)(Main.LocalPlayer.width / 2)
-                                - (float)(Main.reforgeItem.width / 2);
-                            Main.reforgeItem.position.Y =
-                                Main.LocalPlayer.position.Y
-                                + (float)(Main.LocalPlayer.height / 2)
-                                - (float)(Main.reforgeItem.height / 2);
+                                Main.LocalPlayer.BuyItem(reforgeCost);
+                                // Disabled reforge system, using FunkyModifier system now >:3
+                                // ItemLoader.PreReforge(Main.reforgeItem); // After BuyItem just in case
 
-                            ItemLoader.PostReforge(Main.reforgeItem);
+                                FunkyModifierItemModifier.Reforge(Main.reforgeItem);
+                                // Main.reforgeItem.ResetPrefix();
+                                // Main.reforgeItem.Prefix(-2);
+                                Main.reforgeItem.position.X =
+                                    Main.LocalPlayer.position.X
+                                    + (float)(Main.LocalPlayer.width / 2)
+                                    - (float)(Main.reforgeItem.width / 2);
+                                Main.reforgeItem.position.Y =
+                                    Main.LocalPlayer.position.Y
+                                    + (float)(Main.LocalPlayer.height / 2)
+                                    - (float)(Main.reforgeItem.height / 2);
 
-                            PopupText.NewText(
-                                PopupTextContext.ItemReforge,
-                                Main.reforgeItem,
-                                Main.reforgeItem.stack,
-                                noStack: true
-                            );
+                                // ItemLoader.PostReforge(Main.reforgeItem);
+
+                                foreach (var mod in modifier.modifiers)
+                                {
+                                    var item = Main.reforgeItem.Clone();
+                                    item.SetNameOverride(mod.ToString());
+                                    PopupText.NewText(
+                                        PopupTextContext.ItemReforge,
+                                        item,
+                                        Main.reforgeItem.stack,
+                                        noStack: true,
+                                        longText: true
+                                    );
+                                }
+                            } else {
+                                var item = Main.reforgeItem.Clone();
+                                item.SetNameOverride("Could not reforge!");
+                                PopupText.NewText(
+                                    PopupTextContext.ItemReforge,
+                                    item,
+                                    Main.reforgeItem.stack,
+                                    noStack: true,
+                                    longText: true
+                                );
+                            }
                             SoundEngine.PlaySound(SoundID.Item37);
                         }
                     }
@@ -1345,7 +1366,7 @@ public class LimitedStorageUI : UIState
                     Main.spriteBatch,
                     FontAssets.MouseText.Value,
                     text,
-                    new Vector2(num56 + 50, num57),
+                    new Vector2(slotX + 50 + 25, slotY),
                     new Microsoft.Xna.Framework.Color(
                         Main.mouseTextColor,
                         Main.mouseTextColor,
@@ -1357,13 +1378,13 @@ public class LimitedStorageUI : UIState
                     Vector2.One
                 );
                 if (
-                    Main.mouseX >= num56
+                    Main.mouseX >= slotX
                     && (float)Main.mouseX
-                        <= (float)num56
+                        <= (float)slotX
                             + (float)TextureAssets.InventoryBack.Width() * Main.inventoryScale
-                    && Main.mouseY >= num57
+                    && Main.mouseY >= slotY
                     && (float)Main.mouseY
-                        <= (float)num57
+                        <= (float)slotY
                             + (float)TextureAssets.InventoryBack.Height() * Main.inventoryScale
                     && !PlayerInput.IgnoreMouseInterface
                 )
@@ -1378,7 +1399,7 @@ public class LimitedStorageUI : UIState
                     ItemSlot.MouseHover(ref Main.reforgeItem, 5);
                 }
 
-                ItemSlot.Draw(Main.spriteBatch, ref Main.reforgeItem, 5, new Vector2(num56, num57));
+                ItemSlot.Draw(Main.spriteBatch, ref Main.reforgeItem, 5, new Vector2(slotX, slotY));
             }
         }
         // else if (InGuideCraftMenu) {
