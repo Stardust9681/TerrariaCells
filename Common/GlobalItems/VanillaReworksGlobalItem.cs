@@ -429,5 +429,21 @@ namespace TerrariaCells.Common.GlobalItems
             }
             */
         }
-    }
+
+		public override void AddRecipes()
+		{
+			for (int i = 0; i < Recipe.numRecipes; i++)
+			{
+				Recipe recipe = Main.recipe[i];
+
+				if (
+					!recipe.Disabled && (
+					recipe.ContainsIngredient(ItemID.CopperCoin)
+					|| recipe.ContainsIngredient(ItemID.SilverCoin)
+					|| recipe.ContainsIngredient(ItemID.GoldCoin)
+					|| recipe.ContainsIngredient(ItemID.PlatinumCoin)))
+					recipe.DisableRecipe();
+			}
+		}
+	}
 }
