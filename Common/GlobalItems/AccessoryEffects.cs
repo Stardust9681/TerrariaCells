@@ -123,7 +123,6 @@ namespace TerrariaCells.Common.GlobalItems
 					player.manaCost += 0.5f;
 					break;
 				case ItemID.ManaRegenerationBand:
-					player.statManaMax2 += 20;
 					player.manaRegenDelayBonus += 4f;
 					player.manaRegenBonus += 50;
 					break;
