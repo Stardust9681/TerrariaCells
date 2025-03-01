@@ -100,9 +100,6 @@ namespace TerrariaCells.Common.GlobalItems
 				case ItemID.Nazar:
 					modPlayer.nazar = true;
 					break;
-				case ItemID.SharkToothNecklace:
-					modPlayer.sharktooth = true;
-					break;
 				case ItemID.BerserkerGlove:
 					modPlayer.bersGlove = true;
 					break;
@@ -189,9 +186,6 @@ namespace TerrariaCells.Common.GlobalItems
 					break;
 				case ItemID.FeralClaws:
 					AddToolTip("40% increased melee attack speed");
-					break;
-				case ItemID.SharkToothNecklace:
-					AddToolTip("Enemies bleed on melee hit");
 					break;
 				case ItemID.ThePlan:
 					AddToolTip("50% increased damage against healthy enemies");
