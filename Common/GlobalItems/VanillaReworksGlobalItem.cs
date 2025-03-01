@@ -443,6 +443,13 @@ namespace TerrariaCells.Common.GlobalItems
                 case ItemID.RubyStaff:
                     tooltips.Add(new TooltipLine(Mod, "Tooltip0", "Lights targets on fire"));
                     break;
+                case ItemID.AleThrowingGlove:
+                    tooltips.Add(new TooltipLine(Mod, "Tooltip0", "Coats targets in oil"));
+                    break;
+                case ItemID.Minishark:
+                    tooltips.Add(new TooltipLine(Mod, "Tooltip0", "Inflicts critical hits to nearby enemies"));
+                    break;
+
             }
 
             /*
