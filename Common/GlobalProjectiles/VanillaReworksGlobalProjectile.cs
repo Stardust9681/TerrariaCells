@@ -158,7 +158,8 @@ namespace TerrariaCells.Common.GlobalProjectiles
                     target.AddBuff(BuffID.Oiled, 60 * 8);
                     break;
                 case ProjectileID.SawtoothShark:
-                    target.AddBuff(BuffID.Bleeding, 60 * 5);
+					GlobalNPCs.BuffNPC.AddBuff(target, BuffID.Bleeding, 60 * 2, damageDone);
+                    //target.AddBuff(BuffID.Bleeding, 60 * 5);
                     break;
             }
         }

@@ -62,7 +62,7 @@ namespace TerrariaCells.Content.Tiles
 		public override void MouseOver(int i, int j)
 		{
 			Main.LocalPlayer.cursorItemIconEnabled = true;
-			Main.LocalPlayer.cursorItemIconID = ModContent.ItemType<Content.Items.Placeable.CrimsonPylon>();
+			Main.LocalPlayer.cursorItemIconID = ModContent.ItemType<Content.Items.Placeable.HivePylon>();
 		}
 
 		public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)

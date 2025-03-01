@@ -92,11 +92,13 @@ namespace TerrariaCells.Common.GlobalNPCs
 				case NPCID.CultistDevote:
 					npc.lifeMax = 100;
 					npc.damage = 40;
+					npc.chaseable = true;
                     break;
 				case NPCID.CultistArcherBlue:
 					npc.lifeMax = 150;
 					npc.damage = 40;
-                    break;
+					npc.chaseable = true;
+					break;
 				case NPCID.IceGolem:
 					npc.lifeMax = 300;
 					npc.damage = 40;
@@ -116,8 +118,10 @@ namespace TerrariaCells.Common.GlobalNPCs
                     npc.damage = 30;
                     break;
                 case NPCID.BloodCrawler:
+					npc.buffImmune[BuffID.Poisoned] = false;
                     break;
                 case NPCID.Crimslime:
+					npc.buffImmune[BuffID.Poisoned] = false;
                     npc.lifeMax = 130;
 					npc.damage = 40;
                     break;

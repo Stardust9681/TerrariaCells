@@ -21,7 +21,6 @@ namespace TerrariaCells.Common.ModPlayers
 		public Item? frozenShieldItem;
 		public bool thePlan; //+50% damage vs enemies with >90% hp
 		public bool nazar; //+20 mana on melee hit
-		public bool sharktooth; //Inflict bleed on hit
 		public bool bersGlove; //+4% damage for "consecutive" melee hits
 		private int bersTimer;
 		private int bersCounter;
@@ -257,7 +256,6 @@ namespace TerrariaCells.Common.ModPlayers
 			frozenShieldItem = null;
 			thePlan = false;
 			nazar = false;
-			sharktooth = false;
 			bersGlove = false;
 			reconScope = false;
 			fuseKitten = false;
@@ -372,11 +370,6 @@ namespace TerrariaCells.Common.ModPlayers
 				{
 					Player.statMana += 20;
 					Player.ManaEffect(20);
-				}
-				if (sharktooth)
-				{
-					//Still need Bleed
-					target.AddBuff(BuffID.Bleeding, 360); //Replace with modded debuff? 6 sec duration.
 				}
 				if (bersGlove)
 				{

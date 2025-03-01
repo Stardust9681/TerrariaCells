@@ -320,7 +320,8 @@ public partial class ProjectileFunker : GlobalProjectile
             {
                 case FunkyModifierType.ApplyDebuff:
                 {
-                    target.AddBuff(funkyModifier.id, (int)funkyModifier.modifier);
+                    //target.AddBuff(funkyModifier.id, (int)funkyModifier.modifier);
+					GlobalNPCs.BuffNPC.AddBuff(target, funkyModifier.id, (int)funkyModifier.modifier, damageDone);
                     break;
                 }
             }
