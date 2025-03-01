@@ -96,7 +96,7 @@ public class ChestLootSpawner : ModSystem, IEntitySource
         {
             self.chest = -1;
 
-            if (isNewChest)
+            if (isNewChest && ChestLootTables.ContainsKey(tileFrame))
             {
                 int length = ChestLootTables[tileFrame].Length;
                 if (length > 0)
