@@ -92,11 +92,13 @@ namespace TerrariaCells.Common.GlobalNPCs
 				case NPCID.CultistDevote:
 					npc.lifeMax = 100;
 					npc.damage = 40;
+					npc.chaseable = true;
                     break;
 				case NPCID.CultistArcherBlue:
 					npc.lifeMax = 150;
 					npc.damage = 40;
-                    break;
+					npc.chaseable = true;
+					break;
 				case NPCID.IceGolem:
 					npc.lifeMax = 300;
 					npc.damage = 40;
