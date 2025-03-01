@@ -278,7 +278,8 @@ namespace TerrariaCells.Common.GlobalItems
                             // Create dummy projectile to damage npc and spawn star
                             Projectile proj = Projectile.NewProjectileDirect(source, npc.Center, Vector2.Zero, ProjectileID.EmeraldBolt, item.damage, 0, player.whoAmI);
                             proj.penetrate = 0;
-                            npc.AddBuff(BuffID.Poisoned, 60 * 5);
+							GlobalNPCs.BuffNPC.AddBuff(npc, BuffID.Poisoned, 60 * 5, damage);
+                            //npc.AddBuff(BuffID.Poisoned, 60 * 5);
                             for (int j = 0; j < 15; j++)
                             {
                                 Dust newDust = Dust.NewDustDirect(checkPos, 2, 2, DustID.GemEmerald);
@@ -293,12 +294,12 @@ namespace TerrariaCells.Common.GlobalItems
 
                 }
                 for (int j = 0; j < 15; j++)
-                            {
-                                Dust newDust = Dust.NewDustDirect(endPos, 2, 2, DustID.GemEmerald);
-                                newDust.noGravity = true;
-                                newDust.velocity = new Vector2(((float)(rand.NextDouble() * 2f) - 1) * 3f, ((float)(rand.NextDouble() * 2f) - 1) * 3f);
+                {
+                    Dust newDust = Dust.NewDustDirect(endPos, 2, 2, DustID.GemEmerald);
+                    newDust.noGravity = true;
+                    newDust.velocity = new Vector2(((float)(rand.NextDouble() * 2f) - 1) * 3f, ((float)(rand.NextDouble() * 2f) - 1) * 3f);
 
-                            }
+                }
                 return false;
             }
             if (item.type == ItemID.RubyStaff) 
@@ -330,7 +331,8 @@ namespace TerrariaCells.Common.GlobalItems
                             // Create dummy projectile to damage npc and spawn star
                             Projectile proj = Projectile.NewProjectileDirect(source, npc.Center, Vector2.Zero, ProjectileID.RubyBolt, item.damage, 0, player.whoAmI);
                             proj.penetrate = 0;
-                            npc.AddBuff(BuffID.OnFire, 60 * 5);
+							GlobalNPCs.BuffNPC.AddBuff(npc, BuffID.OnFire, 60 * 5, damage);
+                            //npc.AddBuff(BuffID.OnFire, 60 * 5);
                             for (int j = 0; j < 15; j++)
                             {
                                 Dust newDust = Dust.NewDustDirect(checkPos, 2, 2, DustID.GemRuby);
@@ -345,12 +347,11 @@ namespace TerrariaCells.Common.GlobalItems
 
                 }
                 for (int j = 0; j < 15; j++)
-                            {
-                                Dust newDust = Dust.NewDustDirect(endPos, 2, 2, DustID.GemRuby);
-                                newDust.noGravity = true;
-                                newDust.velocity = new Vector2(((float)(rand.NextDouble() * 2f) - 1) * 3f, ((float)(rand.NextDouble() * 2f) - 1) * 3f);
-
-                            }
+                {
+                    Dust newDust = Dust.NewDustDirect(endPos, 2, 2, DustID.GemRuby);
+                    newDust.noGravity = true;
+                    newDust.velocity = new Vector2(((float)(rand.NextDouble() * 2f) - 1) * 3f, ((float)(rand.NextDouble() * 2f) - 1) * 3f);
+                }
                 return false;
             }
 

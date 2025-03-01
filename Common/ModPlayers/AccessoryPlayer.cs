@@ -376,7 +376,8 @@ namespace TerrariaCells.Common.ModPlayers
 				if (sharktooth)
 				{
 					//Still need Bleed
-					target.AddBuff(BuffID.Bleeding, 360); //Replace with modded debuff? 6 sec duration.
+					//target.AddBuff(BuffID.Bleeding, 360); //Replace with modded debuff? 6 sec duration.
+					GlobalNPCs.BuffNPC.AddBuff(target, BuffID.Bleeding, 60 * 2, damageDone);
 				}
 				if (bersGlove)
 				{
