@@ -457,4 +457,5 @@ public class InventoryManager : ModSystem, IEntitySource
 
     public static bool AccessorySlotsFull(Terraria.Player player) =>
         !player.armor[3].IsAir && !player.armor[4].IsAir;
+
 }

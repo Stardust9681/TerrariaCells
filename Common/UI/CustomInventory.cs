@@ -54,6 +54,12 @@ public class LimitedStorageUI : UIState
         (new Vector2(56f * 3, 60f), 13, TerraCellsItemCategory.Storage),
     ];
 
+    public static readonly Color defaultSlotColor = new(12, 245, 103);
+    public static readonly Color weaponSlotColor = new(150, 245, 150);
+    public static readonly Color skillSlotColor = new(205, 150, 150);
+    public static readonly Color potionSlotColor = new(215, 150, 243);
+    public static readonly Color storageSlotColor = new(254, 255, 255);
+
     public static void CustomGUIHotbarDrawInner()
     {
         if (Main.playerInventory || Main.LocalPlayer.ghost)
@@ -91,22 +97,23 @@ public class LimitedStorageUI : UIState
         int positionX = 20;
         for (int i = 0; i < 5; i++)
         {
+
             switch (inventorySlots[i].Item3)
             {
                 case TerraCellsItemCategory.Default:
-                    Main.inventoryBack = new Color(12, 245, 103);
+                    Main.inventoryBack = defaultSlotColor;
                     break;
                 case TerraCellsItemCategory.Weapon:
-                    Main.inventoryBack = new Color(150, 245, 150);
+                    Main.inventoryBack = weaponSlotColor;
                     break;
                 case TerraCellsItemCategory.Skill:
-                    Main.inventoryBack = new Color(205, 150, 150);
+                    Main.inventoryBack = skillSlotColor;
                     break;
                 case TerraCellsItemCategory.Potion:
-                    Main.inventoryBack = new Color(215, 150, 243);
+                    Main.inventoryBack = potionSlotColor;
                     break;
                 case TerraCellsItemCategory.Storage:
-                    Main.inventoryBack = new Color(254, 255, 255);
+                    Main.inventoryBack = storageSlotColor;
                     break;
             }
 

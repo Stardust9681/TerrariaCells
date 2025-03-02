@@ -8,9 +8,12 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrariaCells.Common.Configs;
 using TerrariaCells.Common.GlobalProjectiles;
+using TerrariaCells.Common.Items;
 using TerrariaCells.Common.ModPlayers;
 using TerrariaCells.Common.Systems;
+using TerrariaCells.Common.UI;
 using TerrariaCells.Content.WeaponAnimations;
 
 namespace TerrariaCells.Common.GlobalItems
@@ -369,7 +372,10 @@ namespace TerrariaCells.Common.GlobalItems
                 switch (tooltip.Name)
                 {
 					//Tooltips to be hidden
+                    // case "Favorite":
+                    // case "FavoriteDesc":
                     case "Material":
+                    case "Consumable":
 					case "EtherianManaWarning":
 					case "OneDropLogo":
 					case "JourneyResearch":
@@ -379,45 +385,95 @@ namespace TerrariaCells.Common.GlobalItems
                     case "Knockback":
                         float knockback = player.GetWeaponKnockback(item, item.knockBack);
 
-                        knockback = (knockback / 20) * 100;
-                        knockback = MathF.Round(knockback);
+                        // if (knockback == 0.0)
+                        // {
+                        tooltip.Hide();
 
-                        tooltip.Text += " (" + knockback + "%)";
+                        // break;
+                        // }
+
+                        // knockback = (knockback / 20) * 100;
+                        // knockback = MathF.Round(knockback);
+
+                        // tooltip.Text += " (" + knockback + "%)";
                         break;
 
                     case "Speed":
-                        int tempStat = (int)(item.useAnimation * (1 / player.GetWeaponAttackSpeed(item)));
+                        // int tempStat = (int)(item.useAnimation * (1 / player.GetWeaponAttackSpeed(item)));
 
-                        if (tempStat <= 8)
-                            tooltip.Text = Lang.tip[6].Value;
-                        else if (tempStat <= 20)
-                            tooltip.Text = Lang.tip[7].Value;
-                        else if (tempStat <= 25)
-                            tooltip.Text = Lang.tip[8].Value;
-                        else if (tempStat <= 30)
-                            tooltip.Text = Lang.tip[9].Value;
-                        else if (tempStat <= 35)
-                            tooltip.Text = Lang.tip[10].Value;
-                        else if (tempStat <= 45)
-                            tooltip.Text = Lang.tip[11].Value;
-                        else if (tempStat <= 55)
-                            tooltip.Text = Lang.tip[12].Value;
-                        else
-                            tooltip.Text = Lang.tip[13].Value;
+                        // if (tempStat <= 8)
+                        //     tooltip.Text = Lang.tip[6].Value;
+                        // else if (tempStat <= 20)
+                        //     tooltip.Text = Lang.tip[7].Value;
+                        // else if (tempStat <= 25)
+                        //     tooltip.Text = Lang.tip[8].Value;
+                        // else if (tempStat <= 30)
+                        //     tooltip.Text = Lang.tip[9].Value;
+                        // else if (tempStat <= 35)
+                        //     tooltip.Text = Lang.tip[10].Value;
+                        // else if (tempStat <= 45)
+                        //     tooltip.Text = Lang.tip[11].Value;
+                        // else if (tempStat <= 55)
+                        //     tooltip.Text = Lang.tip[12].Value;
+                        // else
+                        //     tooltip.Text = Lang.tip[13].Value;
 
-                        float attacksPerSecond = MathF.Round(60 / (float)tempStat, 2);
-                        tooltip.Text += Mod.GetLocalization("Tooltips.AttacksPerSecond").Format(attacksPerSecond);
-                        break;
-						/*
-                    case "Favorite":
+                        // float attacksPerSecond = MathF.Round(60 / (float)tempStat, 2);
+                        // tooltip.Text += Mod.GetLocalization("Tooltips.AttacksPerSecond").Format(attacksPerSecond);
                         tooltip.Hide();
                         break;
-                    case "FavoriteDesc":
-                        tooltip.Hide();
+                    case "UseMana":
+                        switch (InventoryManager.GetItemCategorization(item.netID))
+                        {
+                            case TerraCellsItemCategory.Weapon:
+                                break;
+                            default:
+                                tooltip.Hide();
+                                break;
+                        }
                         break;
-                        */
-				}
+                }
+            }
 
+            TooltipLine itemCategorizationTooltip = new(Mod, "ItemCategorization", "");
+            switch (InventoryManager.GetItemCategorization(item.netID))
+            {
+                case TerraCellsItemCategory.Default:
+                    itemCategorizationTooltip.OverrideColor = LimitedStorageUI.defaultSlotColor;
+                    itemCategorizationTooltip.Text = "???";
+                    break;
+                case TerraCellsItemCategory.Weapon:
+                    itemCategorizationTooltip.OverrideColor = LimitedStorageUI.weaponSlotColor;
+                    itemCategorizationTooltip.Text = "Weapon";
+                    break;
+                case TerraCellsItemCategory.Skill:
+                    itemCategorizationTooltip.OverrideColor = LimitedStorageUI.skillSlotColor;
+                    itemCategorizationTooltip.Text = "Skill";
+                    break;
+                case TerraCellsItemCategory.Potion:
+                    itemCategorizationTooltip.OverrideColor = LimitedStorageUI.potionSlotColor;
+                    itemCategorizationTooltip.Text = "Potion";
+                    break;
+                case TerraCellsItemCategory.Storage:
+                    // itemCategorizationTooltip.OverrideColor = LimitedStorageUI.storageSlotColor;
+                    // itemCategorizationTooltip.Text = "Storage";
+                    break;
+                case TerraCellsItemCategory.Pickup:
+                    itemCategorizationTooltip.OverrideColor = LimitedStorageUI.defaultSlotColor;
+                    itemCategorizationTooltip.Text = "Potion";
+                    break;
+                default:
+                    break;
+            }
+
+            int index = tooltips.FindIndex(x => x.Name == "Damage");
+            if (index == -1)
+            {
+                tooltips.Add(itemCategorizationTooltip);
+            }
+            else
+            {
+                tooltips.Insert(index, itemCategorizationTooltip);
             }
 
             //Add tooltips at the end
@@ -452,18 +508,97 @@ namespace TerrariaCells.Common.GlobalItems
                     break;
 
             }
-
-            /*
-            // FOR TESTING
-            Mod.Logger.Debug("Tooltip for " + item.Name);
-            foreach (TooltipLine tooltip in tooltips)
-            {
-                Mod.Logger.Debug(tooltip.Name + " : " + tooltip.Text);
-            }
-            */
         }
 
-		public override void AddRecipes()
+        public IEnumerable<TooltipLine> GetTooltips(Item item)
+        {
+            List<TooltipLine> tooltips = [];
+            if (DevConfig.Instance.ListCategorizationTooltip)
+            {
+                TooltipLine itemCategorizationTooltip = new(Mod, "ItemCategorization", "");
+                switch (InventoryManager.GetItemCategorization(item.netID))
+                {
+                    case TerraCellsItemCategory.Default:
+                        itemCategorizationTooltip.OverrideColor = LimitedStorageUI.defaultSlotColor;
+                        itemCategorizationTooltip.Text = "???";
+                        break;
+                    case TerraCellsItemCategory.Weapon:
+                        itemCategorizationTooltip.OverrideColor = LimitedStorageUI.weaponSlotColor;
+                        itemCategorizationTooltip.Text = "Weapon";
+                        break;
+                    case TerraCellsItemCategory.Skill:
+                        itemCategorizationTooltip.OverrideColor = LimitedStorageUI.skillSlotColor;
+                        itemCategorizationTooltip.Text = "Skill";
+                        break;
+                    case TerraCellsItemCategory.Potion:
+                        itemCategorizationTooltip.OverrideColor = LimitedStorageUI.potionSlotColor;
+                        itemCategorizationTooltip.Text = "Potion";
+                        break;
+                    case TerraCellsItemCategory.Storage:
+                        // itemCategorizationTooltip.OverrideColor = LimitedStorageUI.storageSlotColor;
+                        // itemCategorizationTooltip.Text = "Storage";
+                        break;
+                    case TerraCellsItemCategory.Pickup:
+                        itemCategorizationTooltip.OverrideColor = LimitedStorageUI.defaultSlotColor;
+                        itemCategorizationTooltip.Text = "Potion";
+                        break;
+                    default:
+                        break;
+                }
+                tooltips.Add(itemCategorizationTooltip);
+            }
+            switch (item.type)
+            {
+                case ItemID.SniperRifle:
+                    tooltips.Add(
+                        new TooltipLine(Mod, "Tooltip0", "Inflicts critical hits against bosses")
+                    );
+                    break;
+                case ItemID.FieryGreatsword:
+                    tooltips.Add(
+                        new TooltipLine(
+                            Mod,
+                            "Tooltip0",
+                            "Striking oiled targets causes an explosion, inflicting a critical hit"
+                        )
+                    );
+                    break;
+                case ItemID.PhoenixBlaster:
+                    tooltips.Add(
+                        new TooltipLine(Mod, "Tooltip0", "The last 5 shots inflict a critical hit")
+                    );
+                    break;
+                case ItemID.SawtoothShark:
+                    tooltips.Add(new TooltipLine(Mod, "Tooltip0", "Causes targets to bleed"));
+                    break;
+                case ItemID.Gladius:
+                    tooltips.Add(
+                        new TooltipLine(
+                            Mod,
+                            "Tooltip0",
+                            "Inflicts a critical hit against poisoned or bleeding targets"
+                        )
+                    );
+                    break;
+                case ItemID.EmeraldStaff:
+                    tooltips.Add(new TooltipLine(Mod, "Tooltip0", "Poisons targets"));
+                    break;
+                case ItemID.RubyStaff:
+                    tooltips.Add(new TooltipLine(Mod, "Tooltip0", "Lights targets on fire"));
+                    break;
+                case ItemID.AleThrowingGlove:
+                    tooltips.Add(new TooltipLine(Mod, "Tooltip0", "Coats targets in oil"));
+                    break;
+                case ItemID.Minishark:
+                    tooltips.Add(
+                        new TooltipLine(Mod, "Tooltip0", "Inflicts critical hits to nearby enemies")
+                    );
+                    break;
+            }
+            return tooltips;
+        }
+
+        public override void AddRecipes()
 		{
 			for (int i = 0; i < Recipe.numRecipes; i++)
 			{
@@ -479,5 +614,5 @@ namespace TerrariaCells.Common.GlobalItems
 					recipe.DisableRecipe();
 			}
 		}
-	}
+    }
 }

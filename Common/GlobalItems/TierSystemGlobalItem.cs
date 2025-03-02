@@ -82,13 +82,13 @@ namespace TerrariaCells.Common.GlobalItems
                 switch (tooltip.Name)
                 {
                     case "ItemName":
-                        tooltip.Text += " [Tier " + itemLevel.ToString() + "]";
+                        // tooltip.Text += " [Tier " + itemLevel.ToString() + "]";
                         break;
                 }
             }
 
             // Also add the tier at the end of the tooltip
-            tooltips.Add(new TooltipLine(Mod, "Tier", "[Tier " + itemLevel.ToString() + "]"));
+            // tooltips.Add(new TooltipLine(Mod, "Tier", "[Tier " + itemLevel.ToString() + "]"));
         }
 
         public override void NetSend(Item item, BinaryWriter writer)

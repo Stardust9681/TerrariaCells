@@ -17,7 +17,7 @@ namespace TerrariaCells.Common.Configs
 		public static DevConfig Instance => _instance ??= Terraria.ModLoader.ModContent.GetInstance<DevConfig>();
 
 
-		[Header("BuilderSettings")]
+        [Header("BuilderSettings")]
 
 		///<summary>Toggle ability to build. Also allows tiles to be interacted with normally.</summary>
 		[DefaultValue(false)]
@@ -71,5 +71,13 @@ namespace TerrariaCells.Common.Configs
 		/// <summary>
 		[DefaultValue(false)]
 		public bool PlaytesterShops;
+
+        /// <summary>
+        /// If true, shows the categorization of an item in it's tooltips.
+        /// Can be disabled for a cleaner list.
+        /// </summary>
+        [DefaultValue(true)]
+        public bool ListCategorizationTooltip;
+
 	}
 }

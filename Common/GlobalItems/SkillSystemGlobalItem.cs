@@ -924,67 +924,81 @@ namespace TerrariaCells.Common.GlobalItems
                 return;
             }
 
-            TooltipLine skillTooltip = new TooltipLine(Mod, "SkillTooltip", skillData.tooltip);
+            // overridden since TooltipOrganizer already semi-manages this
 
-            // Iterate through the list of tooltips so we can change vanilla tooltips
-            foreach (TooltipLine tooltip in tooltips)
-            {
-                // Alter vanilla tooltips here
-                switch (tooltip.Name)
-                {
-                    case "ItemName": // Change all skills to have a different name color
-                        tooltip.Text = "[Skill] " + tooltip.Text;
+            // TooltipLine skillTooltip = new TooltipLine(Mod, "SkillTooltip", skillData.tooltip);
+            // // Iterate through the list of tooltips so we can change vanilla tooltips
+            // foreach (TooltipLine tooltip in tooltips)
+            // {
+            //     // Alter vanilla tooltips here
+            //     switch (tooltip.Name)
+            //     {
+            //         case "ItemName": // Change all skills to have a different name color
+            //             // tooltip.Text = "[Skill] " + tooltip.Text;
 
-                        Color skillColor = new Color(48, 184, 116);
-                        tooltip.OverrideColor = skillColor;
-                        break;
-                    case "Tooltip0": // If the skill has a custom tooltip description, replace the vanilla tooltip with it
-                        if (!string.IsNullOrEmpty(skillData.tooltip))
-                        {
-                            tooltip.Hide();
-                            tooltips.Add(skillTooltip);
-                        }
-                        break;
-                    case "Tooltip1": // Remove additional tooltips, if a custom one is available
-                        if (!string.IsNullOrEmpty(skillData.tooltip))
-                        {
-                            tooltip.Hide();
-                        }
-                        break;
-                    case "Tooltip2": // Remove additional tooltips, if a custom one is available
-                        if (!string.IsNullOrEmpty(skillData.tooltip))
-                        {
-                            tooltip.Hide();
-                        }
-                        break;
-                    case "Speed":
-                        tooltip.Hide();
-                        break;
-                }
+            //             // Color skillColor = new Color(48, 184, 116);
+            //             // tooltip.OverrideColor = skillColor;
+            //             break;
+            //         case "Tooltip0": // If the skill has a custom tooltip description, replace the vanilla tooltip with it
+            //             if (!string.IsNullOrEmpty(skillData.tooltip))
+            //             {
+            //                 tooltip.Hide();
+            //                 tooltips.Add(skillTooltip);
+            //             }
+            //             break;
+            //         case "Tooltip1": // Remove additional tooltips, if a custom one is available
+            //             if (!string.IsNullOrEmpty(skillData.tooltip))
+            //             {
+            //                 tooltip.Hide();
+            //             }
+            //             break;
+            //         case "Tooltip2": // Remove additional tooltips, if a custom one is available
+            //             if (!string.IsNullOrEmpty(skillData.tooltip))
+            //             {
+            //                 tooltip.Hide();
+            //             }
+            //             break;
+            //         case "Speed":
+            //             tooltip.Hide();
+            //             break;
+            //     }
 
-            }
+            // }
 
             // Only show skill-specific tooltips if [shift] is held down
             if (Main.keyState.PressingShift())
             {
-                TooltipLine skillTitleTooltip = new TooltipLine(Mod, "SkillTitle", Mod.GetLocalization("Tooltips.SkillStats").Value)
+                TooltipLine skillTitleTooltip = new TooltipLine(
+                    Mod,
+                    "SkillTitle",
+                    Mod.GetLocalization("Tooltips.SkillStats").Value
+                )
                 {
-                    OverrideColor = Color.CadetBlue
+                    OverrideColor = Color.CadetBlue,
                 };
 
                 tooltips.Add(skillTitleTooltip);
 
-                TooltipLine cooldownTooltip = new TooltipLine(Mod, "SkillCooldown", Mod.GetLocalization("Tooltips.Cooldown").Format(skillData.cooldownTime / 60))
+                TooltipLine cooldownTooltip = new TooltipLine(
+                    Mod,
+                    "SkillCooldown",
+                    Mod.GetLocalization("Tooltips.Cooldown").Format(skillData.cooldownTime / 60)
+                )
                 {
-                    OverrideColor = Color.LightCyan
+                    OverrideColor = Color.LightCyan,
                 };
                 tooltips.Add(cooldownTooltip);
 
                 if (skillData.skillDuration != -1)
                 {
-                    TooltipLine summonTooltip = new TooltipLine(Mod, "SkillDuration", Mod.GetLocalization("Tooltips.SummonTime").Format(skillData.skillDuration / 60))
+                    TooltipLine summonTooltip = new TooltipLine(
+                        Mod,
+                        "SkillDuration",
+                        Mod.GetLocalization("Tooltips.SummonTime")
+                            .Format(skillData.skillDuration / 60)
+                    )
                     {
-                        OverrideColor = Color.LightCyan
+                        OverrideColor = Color.LightCyan,
                     };
 
                     tooltips.Add(summonTooltip);
@@ -992,9 +1006,13 @@ namespace TerrariaCells.Common.GlobalItems
 
                 if (!SkillModPlayer.IsInSlot(instance))
                 {
-                    TooltipLine slotReqTooltip = new TooltipLine(Mod, "SkillSlotReq", "(Item can only be used in a skill slot)")
+                    TooltipLine slotReqTooltip = new TooltipLine(
+                        Mod,
+                        "SkillSlotReq",
+                        "(Item can only be used in a skill slot)"
+                    )
                     {
-                        OverrideColor = Color.PaleVioletRed
+                        OverrideColor = Color.PaleVioletRed,
                     };
 
                     tooltips.Add(slotReqTooltip);
@@ -1002,9 +1020,13 @@ namespace TerrariaCells.Common.GlobalItems
             }
             else
             {
-                TooltipLine shiftTooltip = new TooltipLine(Mod, "ShiftHint", Mod.GetLocalization("Tooltips.ShiftHint").Value)
+                TooltipLine shiftTooltip = new TooltipLine(
+                    Mod,
+                    "ShiftHint",
+                    Mod.GetLocalization("Tooltips.ShiftHint").Value
+                )
                 {
-                    OverrideColor = Color.CadetBlue
+                    OverrideColor = Color.CadetBlue,
                 };
 
                 tooltips.Add(shiftTooltip);
@@ -1012,5 +1034,31 @@ namespace TerrariaCells.Common.GlobalItems
 
         }
 
+        public IEnumerable<TooltipLine> GetTooltips(Item item)
+        {
+            if (!SkillModPlayer.SkillItems.TryGetValue(item.type, out SkillItemData skillData))
+            {
+                return [];
+            }
+            TooltipLine cooldownTooltip = new TooltipLine(
+                Mod,
+                "SkillCooldown",
+                Mod.GetLocalization("Tooltips.Cooldown").Format(skillData.cooldownTime / 60)
+            )
+            {
+                OverrideColor = Color.LightCyan,
+            };
+            return [cooldownTooltip];
+
+            // if (skillData.skillDuration != -1)
+            // {
+            //     TooltipLine summonTooltip = new TooltipLine(Mod, "SkillDuration", Mod.GetLocalization("Tooltips.SummonTime").Format(skillData.skillDuration / 60))
+            //     {
+            //         OverrideColor = Color.LightCyan
+            //     };
+
+            //     tooltips.Add(summonTooltip);
+            // }
+        }
     }
 }

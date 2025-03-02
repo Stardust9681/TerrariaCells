@@ -61,12 +61,46 @@ public partial class FunkyModifierItemModifier : GlobalItem
         {
             return;
         }
-        foreach (FunkyModifier modifier in funkyModifiers.modifiers ?? [])
+        FunkyModifier[] array = funkyModifiers.modifiers ?? [];
+        for (int i = 0; i < array.Length; i++)
         {
-            tooltips.Add(
-                new TooltipLine(Mod, "FunkyModifier", modifier.ToString()) { IsModifier = true }
+            FunkyModifier modifier = array[i];
+            int index = tooltips.FindIndex(x => x.Name == "PrefixDamage");
+            if (index == -1)
+            {
+                tooltips.Add(
+                    new TooltipLine(Mod, "FunkyModifier" + i.ToString(), modifier.ToString())
+                    {
+                        IsModifier = true,
+                    }
+                );
+                continue;
+            }
+            tooltips.Insert(
+                index,
+                new TooltipLine(Mod, "FunkyModifier" + i.ToString(), modifier.ToString())
+                {
+                    IsModifier = true,
+                }
             );
         }
+    }
+
+    public List<TooltipLine> GetTooltips(Item item)
+    {
+        if (!item.TryGetGlobalItem(out FunkyModifierItemModifier funkyModifiers))
+        {
+            return [];
+        }
+        return (funkyModifiers.modifiers ?? [])
+            .Select(
+                (x, i) =>
+                    new TooltipLine(Mod, "FunkyModifier" + i.ToString(), x.ToString())
+                    {
+                        IsModifier = true,
+                    }
+            )
+            .ToList();
     }
 
     public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
