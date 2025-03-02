@@ -435,13 +435,14 @@ namespace TerrariaCells.Common.GlobalItems
 			for (int i = 0; i < Recipe.numRecipes; i++)
 			{
 				Recipe recipe = Main.recipe[i];
+				if (recipe is null) continue;
 
 				if (
 					!recipe.Disabled && (
-					recipe.ContainsIngredient(ItemID.CopperCoin)
-					|| recipe.ContainsIngredient(ItemID.SilverCoin)
-					|| recipe.ContainsIngredient(ItemID.GoldCoin)
-					|| recipe.ContainsIngredient(ItemID.PlatinumCoin)))
+					recipe.HasIngredient(ItemID.CopperCoin)
+					|| recipe.HasIngredient(ItemID.SilverCoin)
+					|| recipe.HasIngredient(ItemID.GoldCoin)
+					|| recipe.HasIngredient(ItemID.PlatinumCoin)))
 					recipe.DisableRecipe();
 			}
 		}
