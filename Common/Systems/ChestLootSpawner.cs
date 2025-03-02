@@ -1,10 +1,13 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 using TerrariaCells.Common.Configs;
+using TerrariaCells.Common.GlobalItems;
 
 namespace TerrariaCells.Common.Systems;
 
@@ -93,13 +96,21 @@ public class ChestLootSpawner : ModSystem, IEntitySource
                 int length = ChestLootTables[tileFrame].Length;
                 if (length > 0)
                 {
-                    Item.NewItem(
+                    int i = Item.NewItem(
                         this,
                         new Point16(x, y).ToWorldCoordinates(),
                         0,
                         0,
                         ChestLootTables[tileFrame][Main.rand.Next(length)]
                     );
+                    Item item = Main.item[i];
+
+                    if (item.TryGetGlobalItem<TierSystemGlobalItem>(out var tierSystem))
+                    {
+                        int level = Mod.GetContent<TeleportTracker>().First().level;
+                        tierSystem.SetLevel(item, level);
+                    }
+                    FunkyModifierItemModifier.Reforge(item);
                 }
             }
         }
@@ -146,13 +157,21 @@ public class ChestLootSpawner : ModSystem, IEntitySource
                 int length = ChestLootTables[tileFrame].Length;
                 if (length > 0)
                 {
-                    Item.NewItem(
+                    Item item = Main.item[
+                        Item.NewItem(
                         this,
                         new Point16(x, y).ToWorldCoordinates(),
                         0,
                         0,
                         ChestLootTables[tileFrame][Main.rand.Next(length)]
-                    );
+                        )
+                    ];
+                    if (item.TryGetGlobalItem<TierSystemGlobalItem>(out var tierSystem))
+                    {
+                        int level = Mod.GetContent<TeleportTracker>().First().level;
+                        tierSystem.SetLevel(item, level);
+                    }
+                    FunkyModifierItemModifier.Reforge(item);
                 }
             }
         }

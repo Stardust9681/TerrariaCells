@@ -14,9 +14,9 @@ namespace TerrariaCells.Common.GlobalItems
     /// </summary>
     public class TierSystemGlobalItem : GlobalItem
     {
-        public static float damageLevelScaling = 1.33f;
-        public static float knockbackLevelScaling = 1.125f;
-        public static float attackSpeedLevelScaling = 0.125f;
+        public const float damageLevelScaling = 1.10f;
+        public const float knockbackLevelScaling = 1.125f;
+        public const float attackSpeedLevelScaling = 0.075f;
 
         public int itemLevel = 1;
 

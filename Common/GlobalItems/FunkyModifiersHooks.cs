@@ -18,14 +18,33 @@ public partial class FunkyModifierItemModifier : GlobalItem
     public override bool InstancePerEntity => true;
 
     internal FunkyModifier[] modifiers;
-    
-    public static void Reforge(Item item) {
+
+    // ranges given here are used inclusively, ie 0..1 is a range from 0..1, as opposed to exclusive ranges that Main.rand takes
+    public static (int, int)[] modifierQuantityRangesPerTier =
+    [
+        (0, 0), // tier 0 isnt possible?
+        (0, 1),
+        (0, 2),
+        (1, 3),
+        (2, 3),
+        (3, 3),
+    ];
+
+    public static void Reforge(Item item)
+    {
         if (!weaponCategorizations.TryGetValue((short)item.netID, out var categorizations))
         {
             return;
         }
 
-        int modifierCount = 1;
+        if (!item.TryGetGlobalItem<TierSystemGlobalItem>(out var tierSystem))
+        {
+            return;
+        }
+
+        (int min, int max) = modifierQuantityRangesPerTier[tierSystem.itemLevel];
+        int modifierCount = Main.rand.Next(min, max + 1); // offset by one to make inputs inclusive
+
         FunkyModifierItemModifier funkyModifiers = item.GetGlobalItem<FunkyModifierItemModifier>();
         funkyModifiers.modifiers = new FunkyModifier[modifierCount];
 

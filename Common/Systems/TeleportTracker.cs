@@ -10,6 +10,9 @@ public class TeleportTracker : ModSystem
 {
     public int teleports = 0;
 
+    // determines the tier of items dropped from chests
+    public int level = 1;
+
     public override void OnModLoad()
     {
         base.OnModLoad();
@@ -18,6 +21,7 @@ public class TeleportTracker : ModSystem
     public void Reset()
     {
         teleports = 0;
+        level = 1;
     }
 
     public override void OnWorldLoad()
@@ -46,19 +50,23 @@ public class TeleportTracker : ModSystem
 			case 2: //Crimson
 				position = new Vector2(4433, 453) * 16;
 				hour = 2.5f;
+                level = 2;
 				break;
 			case 4: //Desert
 				position = new Vector2(91387.836f, 7734);
+                level = 3;
 				break;
 			case 6: //Hive
 				position = new Vector2(47393.8f, 7158);
 				hour = 4;
 				day = false;
+                level = 4;
 				break;
 			case 8: //Frozen City
 				position = new Vector2(25136.639f, 6134);
 				hour = 4.5f;
 				rain = 1f;
+                level = 5;
 				var bottle = new Item(ItemID.CloudinaBottle);
 				Utils.Swap(ref Main.LocalPlayer.armor[5], ref bottle);
 				break;

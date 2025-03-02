@@ -102,6 +102,11 @@ Configs: {
 			Label: Playtester Shops
 			Tooltip: ""
 		}
+
+		ListCategorizationTooltip: {
+			Label: List Categorization Tooltip
+			Tooltip: ""
+		}
 	}
 }
 
