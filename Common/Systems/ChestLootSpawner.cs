@@ -64,7 +64,52 @@ public class ChestLootSpawner : ModSystem, IEntitySource
             Main.chest[chest].frameCounter = 10;
         }
     }
+    // MULTIPLAYER ONLY
+    public void OpenChest(int x, int y, int newChest)
+    {
+        bool isNewChest = !lootedChests.Contains(newChest);
 
+        Tile tile = Main.tile[x, y];
+
+        string tileFrameX = (tile.TileFrameX / 36).ToString();
+        string tileFrameY = tile.TileFrameY.ToString();
+        if (tileFrameY == "0")
+        {
+            tileFrameY = "";
+        }
+        else
+        {
+            tileFrameY = "/" + tileFrameY;
+        }
+        string tileFrame = tileFrameX + tileFrameY;
+
+        Mod.Logger.Info("Chest opened: " + tileFrame);
+
+        if (DevConfig.Instance.EnableChestChanges)
+        {
+
+            if (isNewChest)
+            {
+                int length = ChestLootTables[tileFrame].Length;
+                if (length > 0)
+                {
+                    Item.NewItem(
+                        this,
+                        new Point16(x, y).ToWorldCoordinates(),
+                        0,
+                        0,
+                        ChestLootTables[tileFrame][Main.rand.Next(length)]
+                    );
+                }
+            }
+        }
+
+        if (isNewChest)
+        {
+            lootedChests.Add(newChest);
+        }
+    }
+    // SINGLEPLAYER ONLY
     public void OnChestOpen(On_Player.orig_OpenChest orig, Player self, int x, int y, int newChest)
     {
         // using (Stream stream = Mod.GetFileStream("chest loot tables.json"))
@@ -96,7 +141,7 @@ public class ChestLootSpawner : ModSystem, IEntitySource
         {
             self.chest = -1;
 
-            if (isNewChest && ChestLootTables.ContainsKey(tileFrame))
+            if (isNewChest)
             {
                 int length = ChestLootTables[tileFrame].Length;
                 if (length > 0)
