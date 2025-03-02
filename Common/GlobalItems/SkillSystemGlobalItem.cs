@@ -129,7 +129,7 @@ namespace TerrariaCells.Common.GlobalItems
             SkillItems.Add(ItemID.WrathPotion, new SkillItemData(4800, 1200));
             SkillItems.Add(ItemID.MagicPowerPotion, new SkillItemData(4800, 1200));
             SkillItems.Add(ItemID.SnowballLauncher, new SkillItemData(1200, 480));
-
+            SkillItems.Add(ItemID.ManaPotion, new SkillItemData(1800));
         }
 
         public override void Load()
@@ -647,6 +647,10 @@ namespace TerrariaCells.Common.GlobalItems
                     item.consumable = false;
                     item.maxStack = 1;
 
+                    break;
+                case ItemID.ManaPotion:
+                    item.consumable = false;
+                    item.healMana = 200;
                     break;
             }
         }
