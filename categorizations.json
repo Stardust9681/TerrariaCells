@@ -67,7 +67,7 @@
   "LesserHealingPotion": "Potion",
   "GreaterHealingPotion": "Potion",
   "SuperHealingPotion": "Potion",
-  "ManaPotion": "Potion",
+  "ManaPotion": "Skill",
   "LesserManaPotion": "Potion",
   "GreaterManaPotion": "Potion",
   "SuperManaPotion": "Potion",

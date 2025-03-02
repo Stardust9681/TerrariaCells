@@ -396,10 +396,11 @@ namespace TerrariaCells.Common.ModPlayers
 			return false;
 		}
 
-		//Disable Health Potion CD
+		//Disable Health Potion CD and Mana Sickness
 		public override void PreUpdateBuffs()
 		{
 			Player.ClearBuff(Terraria.ID.BuffID.PotionSickness);
+			Player.ClearBuff(Terraria.ID.BuffID.ManaSickness);
 			Player.potionDelay = 0;
 		}
 		#endregion
