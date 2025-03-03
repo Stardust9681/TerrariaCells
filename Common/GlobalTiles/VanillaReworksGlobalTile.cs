@@ -106,5 +106,72 @@ namespace TerrariaCells.Common.GlobalTiles
 
 			return false;
 		}
+
+		public override void KillTile(int i, int j, int typeT, ref bool fail, ref bool effectOnly, ref bool noItem)
+		{
+            if (typeT >= 481 && typeT <= 483)
+            {
+                noItem = true;
+                Tile tile2 = Main.tile[i, j];
+                tile2.TileType = 0;
+                int fallType = (int)(typeT - 481 + 736);
+                if (Main.netMode == 0)
+                {
+                    Projectile.NewProjectile(null, (float)(i * 16 + 8), (float)(j * 16 + 8), 0f, 0.41f, fallType, 0, 0f, Main.myPlayer, 0f, 0f, 0f);
+                }
+                else if (Main.netMode == 2)
+                {
+                    int num24 = Projectile.NewProjectile(null, (float)(i * 16 + 8), (float)(j * 16 + 8), 0f, 0.41f, fallType, 0, 0f, Main.myPlayer, 0f, 0f, 0f);
+                    Main.projectile[num24].netUpdate = true;
+                }
+
+                for (int nearbyCracked = 0; nearbyCracked < 8; nearbyCracked++)
+                {
+                    int nearbyCrackedX = i;
+                    int nearbyCrackedY = j;
+                    if (nearbyCracked == 0)
+                    {
+                        nearbyCrackedX--;
+                    }
+                    else if (nearbyCracked == 1)
+                    {
+                        nearbyCrackedX++;
+                    }
+                    else if (nearbyCracked == 2)
+                    {
+                        nearbyCrackedY--;
+                    }
+                    else if (nearbyCracked == 3)
+                    {
+                        nearbyCrackedY++;
+                    }
+                    else if (nearbyCracked == 4)
+                    {
+                        nearbyCrackedX--;
+                        nearbyCrackedY--;
+                    }
+                    else if (nearbyCracked == 5)
+                    {
+                        nearbyCrackedX++;
+                        nearbyCrackedY--;
+                    }
+                    else if (nearbyCracked == 6)
+                    {
+                        nearbyCrackedX--;
+                        nearbyCrackedY++;
+                    }
+                    else if (nearbyCracked == 7)
+                    {
+                        nearbyCrackedX++;
+                        nearbyCrackedY++;
+                    }
+                    Tile tile3 = Main.tile[nearbyCrackedX, nearbyCrackedY];
+                    if (tile3.TileType >= 481 && tile3.TileType <= 483)
+                    {
+                        WorldGen.KillTile(nearbyCrackedX, nearbyCrackedY, false, false, true);
+                    }
+                }
+            }
+        }
 	}
 }
