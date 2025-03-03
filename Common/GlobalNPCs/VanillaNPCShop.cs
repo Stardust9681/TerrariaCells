@@ -23,6 +23,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 		private static int[] Weapons; //Arms Dealer
 		private static int[] Accessories; //Goblin Tinkerer
 		private static int[] Skills; //Merchant (Wizard? Plz)
+		private static int[] Armors; //Merchant
 		public override void Load()
 		{
 			const string path = "chest loot tables.json";
@@ -35,6 +36,21 @@ namespace TerrariaCells.Common.GlobalNPCs
 				Accessories = Root.GetItem<int[]>("20");
 				Skills = Root.GetItem<int[]>("19");
 			}
+			//Will be replaced with chest loot table entry like the other buyable items
+			Armors = new int[]{
+                ItemID.NinjaHood,
+				ItemID.NinjaShirt,
+				ItemID.NinjaPants,
+				ItemID.JungleHat,
+				ItemID.JungleShirt,
+				ItemID.JunglePants,
+				ItemID.NecroHelmet,
+				ItemID.NecroBreastplate,
+				ItemID.NecroGreaves,
+				ItemID.MoltenHelmet,
+				ItemID.MoltenBreastplate,
+				ItemID.MoltenGreaves
+			};
 		}
 
 		private int[] selectedItems;
@@ -78,21 +94,31 @@ namespace TerrariaCells.Common.GlobalNPCs
 			}
 			if (npc.type == NPCID.Merchant)
 			{
-				if (playtesting)
+				int[] SkillsAndArmors = new int[Skills.Length + Armors.Length];
+				for (int i = 0; i < Skills.Length; i++)
 				{
-					selectedItems = Skills;
-					return;
+					SkillsAndArmors[i] = Skills[i];
 				}
-				const int MinCount = 1;
-				List<int> items = new List<int>();
-				foreach (int itemType in Skills)
+				for (int i = 0; i < Armors.Length; i++)
 				{
-					if (items.Count > MinCount && Main.rand.NextBool(items.Count - MinCount)) continue;
+					SkillsAndArmors[Skills.Length + i] = Armors[i];
+				}
 
-					items.Add(itemType);
-				}
-				selectedItems = items.ToArray();
-			}
+                if (playtesting)
+                {
+                    selectedItems = SkillsAndArmors;
+                    return;
+                }
+                const int MinCount = 1;
+                List<int> items = new List<int>();
+                foreach (int itemType in SkillsAndArmors)
+                {
+                    if (items.Count > MinCount && Main.rand.NextBool(items.Count - MinCount)) continue;
+
+                    items.Add(itemType);
+                }
+                selectedItems = items.ToArray();
+            }
 		}
 		public override void ModifyActiveShop(NPC npc, string shopName, Item[] items)
 		{
