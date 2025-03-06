@@ -13,6 +13,8 @@ namespace TerrariaCells.Content.WeaponAnimations
 {
     public abstract class Gun : GlobalItem
     {
+        public static float StaticReloadTimeMult = 1f;
+
         public override bool InstancePerEntity => true;
         public int MaxAmmo = 4;
         public int Ammo = 0;

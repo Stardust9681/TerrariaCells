@@ -190,6 +190,12 @@ public class TooltipManager : GlobalItem
             reorganization.InsertTooltip(tooltip, tooltips);
         }
         foreach (
+            TooltipLine tooltip in Mod.GetContent<ArmorEffects>().First().GetTooltips(item)
+        )
+        {
+            reorganization.InsertTooltip(tooltip, tooltips);
+        }
+        foreach (
             TooltipLine tooltip in Mod.GetContent<SkillSystemGlobalItem>().First().GetTooltips(item)
         )
         {

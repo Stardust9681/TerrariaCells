@@ -25,6 +25,7 @@ namespace TerrariaCells.Content.WeaponAnimations
             ItemID.CopperBow, ItemID.TinBow, ItemID.LeadBow, ItemID.IronBow, ItemID.SilverBow, ItemID.TungstenBow, ItemID.GoldBow, ItemID.PlatinumBow,
             ItemID.DemonBow, ItemID.TendonBow, ItemID.MoltenFury, ItemID.BeesKnees, ItemID.HellwingBow, ItemID.BloodRainBow, 
             ItemID.DD2BetsyBow, ItemID.DaedalusStormbow, ItemID.IceBow, ItemID.Marrow, ItemID.Phantasm, ItemID.PulseBow, ItemID.ShadowFlameBow, ItemID.Tsunami, ModContent.ItemType<PhantomPhoenix>()};
+        public static float StaticChargeTimeMult = 1f;
         public int Charge = 0;
         public SoundStyle? StoredSound;
         public int ForcedProjectile = ProjectileID.WoodenArrowFriendly;
@@ -120,9 +121,9 @@ namespace TerrariaCells.Content.WeaponAnimations
                     player.direction = -1;
                     player.itemRotation += MathHelper.Pi;
                 }
-                if (Charge < TimeToCharge)
+                if (Charge < TimeToCharge * StaticChargeTimeMult)
                 {
-                    if (Charge == TimeToCharge - 1)
+                    if (Charge == TimeToCharge * StaticChargeTimeMult - 1)
                     {
                         SoundEngine.PlaySound(SoundID.MaxMana, player.Center);
                         for (int i = 0; i < 10; i++)
@@ -157,8 +158,8 @@ namespace TerrariaCells.Content.WeaponAnimations
         {
             
             type = ForcedProjectile;
-            damage = (int)TCellsUtils.LerpFloat(damage * 1, damage * 1.4f, Charge, (float)TimeToCharge, TCellsUtils.LerpEasing.InCubic);
-            if (Charge >= TimeToCharge)
+            damage = (int)TCellsUtils.LerpFloat(damage * 1, damage * 1.4f, Charge, (float)TimeToCharge * StaticChargeTimeMult, TCellsUtils.LerpEasing.InCubic);
+            if (Charge >= TimeToCharge * StaticChargeTimeMult)
             {
                 type = ChargedProjectile;
                 velocity *= 1.5f;
@@ -172,7 +173,7 @@ namespace TerrariaCells.Content.WeaponAnimations
                 return false;
             }
             Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
-            if (Charge >= TimeToCharge)
+            if (Charge >= TimeToCharge * StaticChargeTimeMult)
             {
                 proj.GetGlobalProjectile<VanillaReworksGlobalProjectile>().ForceCrit = true;
             }
