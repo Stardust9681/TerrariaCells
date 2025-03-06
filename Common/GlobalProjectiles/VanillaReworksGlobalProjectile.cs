@@ -180,6 +180,11 @@ namespace TerrariaCells.Common.GlobalProjectiles
 			{
 				projectile.Kill();
 			}
+
+            if (projectile.type == ProjectileID.BouncyDynamite)
+            {
+                projectile.timeLeft = 90;
+            }
         }
 
         /*public override void AI(Projectile projectile)
