@@ -67,9 +67,9 @@ namespace TerrariaCells.Content.WeaponAnimations
             }
             else
             {
-                item.useTime = (int)(OriginalUseTime * ReloadTimeMult);
-                item.useAnimation = (int)(OriginalUseAnimation * ReloadTimeMult);
-                item.reuseDelay = (int)(OriginalReuseDelay * ReloadTimeMult);
+                item.useTime = (int)(OriginalUseTime * ReloadTimeMult * StaticReloadTimeMult);
+                item.useAnimation = (int)(OriginalUseAnimation * ReloadTimeMult * StaticReloadTimeMult);
+                item.reuseDelay = (int)(OriginalReuseDelay * ReloadTimeMult * StaticReloadTimeMult);
             }
             return base.CanUseItem(item, player);
         }

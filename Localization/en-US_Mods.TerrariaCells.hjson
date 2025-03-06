@@ -173,6 +173,7 @@ Projectiles: {
 	TendrilAttack.DisplayName: Tendril Attack
 	SwordStabWave.DisplayName: Sword Stab Wave
 	BloodThorn.DisplayName: Blood Thorn
+	TrailOfFlames.DisplayName: Trail Of Flames
 }
 
 Tooltips: {
@@ -207,6 +208,11 @@ Buffs: {
 	FrozenEnemyDebuff: {
 		DisplayName: Frozen Enemy Debuff
 		Description: Mods.TerrariaCells.Buffs.FrozenEnemyDebuff.Description
+	}
+
+	ShadowDodgeBuff: {
+		DisplayName: Shadow Dodge Buff
+		Description: Mods.TerrariaCells.Buffs.ShadowDodgeBuff.Description
 	}
 }
 
