@@ -47,7 +47,7 @@ namespace TerrariaCells.Common.ModPlayers
         public bool moltenHelmet;
         public bool moltenBreastplate; //-20% damage taken. Upon taking damage, all nearby enemies are lit on fire <- WORKS
         public bool moltenGreaves; //Leave a trail of flames that ignites enemies (hellfire treads, but functional) <- WORKS
-        float distanceSinceFlameSpawn = 0;
+        float distanceUntilFlameSpawn = 0;
 
         public override void ResetEffects()
         {
@@ -205,15 +205,17 @@ namespace TerrariaCells.Common.ModPlayers
         {
             if (moltenGreaves && Player.velocity.Y == 0)
             {
-                distanceSinceFlameSpawn += Player.velocity.Length();
+                float horizontalSpeed = Math.Abs(Player.velocity.X);
+                distanceUntilFlameSpawn -= horizontalSpeed;
                 if (Player.velocity.X == 0)
                 {
-                    distanceSinceFlameSpawn = 1000000f;
+                    distanceUntilFlameSpawn = 0f;
                 }
-                if (distanceSinceFlameSpawn >= 4f && Player.velocity.X != 0)
+                if (distanceUntilFlameSpawn < 0 && Player.velocity.X != 0)
                 {
-                    distanceSinceFlameSpawn = 0f;
-                    Projectile.NewProjectile(Player.GetSource_FromThis(), Player.Center + new Vector2(0, 14f), Vector2.Zero, ModContent.ProjectileType<TrailOfFlames>(), 1, 0);
+                    distanceUntilFlameSpawn += Math.Min(8f, horizontalSpeed * 4f);
+                    Projectile projectile = Projectile.NewProjectileDirect(Player.GetSource_FromThis(), Player.Center + new Vector2(0f, 16f), Vector2.Zero, ModContent.ProjectileType<TrailOfFlames>(), 1, 0);
+                    ((TrailOfFlames)projectile.ModProjectile).scaleFactor = Math.Min(0.8f, (0.75f + Main.rand.NextFloat() * 0.5f) * 0.65f * Math.Abs(horizontalSpeed / Player.maxRunSpeed));
                 }
             }
         }
