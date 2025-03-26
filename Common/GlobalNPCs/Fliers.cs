@@ -16,14 +16,14 @@ namespace TerrariaCells.Common.GlobalNPCs
     {
         public bool ShouldFly = true;
         public override bool InstancePerEntity => true;
-        public static int[] FlyingEnemies = { NPCID.Vulture };
+        public static int[] FlyingEnemies = { NPCID.Vulture, NPCID.Raven };
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
         {
             return FlyingEnemies.Contains(entity.type);
         }
-        
-		//Not doing anything with these, no point in overriding
-		/*
+
+        //Not doing anything with these, no point in overriding
+        /*
 		 * public override void SetDefaults(NPC entity)
         {
             base.SetDefaults(entity);
@@ -37,7 +37,7 @@ namespace TerrariaCells.Common.GlobalNPCs
             base.FindFrame(npc, frameHeight);
         }
 		*/
-        
+
         public override bool PreAI(NPC npc)
         {
             Update(npc);
