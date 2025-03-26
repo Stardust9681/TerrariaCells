@@ -48,6 +48,13 @@ namespace TerrariaCells.Common.GlobalNPCs
             }
             return true;
         }
+        public override void PostAI(NPC npc)
+        {
+            if (npc.type == NPCID.Raven)
+            {
+                RavenPostAI(npc);
+            }
+        }
         public override bool? CanFallThroughPlatforms(NPC npc)
         {
             if (npc.type == NPCID.Vulture)

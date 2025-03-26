@@ -17,13 +17,9 @@ namespace TerrariaCells.Common.GlobalNPCs
 {
     public partial class Fliers
     {
-
-        public override void SetDefaults(NPC entity)
+        public void RavenPostAI(NPC npc)
         {
-            if (entity.type == NPCID.Raven)
-            {
-                entity.noTileCollide = true;
-            }
+            npc.noTileCollide = npc.ai[0] == 1;
         }
     }
 }
