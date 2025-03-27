@@ -5,6 +5,7 @@ using System.Text.Json;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 using TerrariaCells.Common.Configs;
 using TerrariaCells.Common.GlobalItems;
@@ -54,9 +55,10 @@ public class ChestLootSpawner : ModSystem, IEntitySource
         }
         lootedChests.Clear();
     }
-
+    // This is executed on the server or singleplayer
     public override void PostUpdateWorld()
     {
+        if (Main.netMode != NetmodeID.SinglePlayer) return;
         foreach (int chest in lootedChests)
         {
             if (Main.chest[chest] == null)

@@ -176,7 +176,7 @@ namespace TerrariaCells.Common.Systems
 			Point16 result = new Point16(0);
 			try
 			{
-				StructureHelper.Generator.GetDimensions(RoomName, ModContent.GetInstance<TerrariaCells>(), ref result);
+				// StructureHelper.Generator.GetDimensions(RoomName, ModContent.GetInstance<TerrariaCells>(), ref result);
 			}
 			catch (Exception e)
 			{

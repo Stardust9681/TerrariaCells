@@ -12,6 +12,7 @@ using TerrariaCells;
 using TerrariaCells.Common.GlobalNPCs;
 using TerrariaCells.Common.Utilities;
 using TerrariaCells.Common.Systems;
+using TerrariaCells.Common.ModPlayers;
 
 namespace TerrariaCells.Content.Packets
 {
@@ -24,6 +25,7 @@ namespace TerrariaCells.Content.Packets
             switch ((ChestPacketType)reader.ReadByte())
             {
                 case ChestPacketType.ServerOpenChest:
+                {
                     int chest = reader.ReadInt32();
                     int x = Main.chest[chest].x;
                     int y = Main.chest[chest].y;
@@ -36,13 +38,37 @@ namespace TerrariaCells.Content.Packets
                     packet.Write(chest);
                     packet.Send();
                     break;
-                // This is called on each client, only the server should call this packet
+                }
+                // This is called on each client, only the server should write to this packet
                 case ChestPacketType.ClientOpenChest:
+                {
                     int clientChest = reader.ReadInt32();
-                    int newX = Main.chest[clientChest].x;
-                    int newY = Main.chest[clientChest].y;
-                    //spawner.OpenChest(newX, newY, clientChest);
+                    spawner.lootedChests.Add(clientChest);
                     break;
+                }
+                case ChestPacketType.ServerJoin:
+                {
+                    if (Main.netMode != NetmodeID.Server) return;
+                    int whoAmI = reader.ReadInt32();
+                    ModPacket p = GetPacket((byte)ChestPacketType.ClientJoin, -1);
+                    p.Write(spawner.lootedChests.Count);
+                    foreach (int chestIndex in spawner.lootedChests)
+                    {
+                        p.Write(chestIndex);
+                    }
+                    p.Send(whoAmI, -1);
+                    break;
+                }
+                case ChestPacketType.ClientJoin:
+                {
+                    int cnt = reader.ReadInt32();
+                    for (int i = 0; i < cnt; i++)
+                    {
+                        spawner.lootedChests.Add(reader.ReadInt32());
+                    }
+                    break;
+                }
+
             }
             
 		}
@@ -51,5 +77,7 @@ namespace TerrariaCells.Content.Packets
     {
         ClientOpenChest,
         ServerOpenChest,
+        ServerJoin,
+        ClientJoin,
     }
 }

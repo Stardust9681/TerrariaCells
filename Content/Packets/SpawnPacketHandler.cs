@@ -19,6 +19,7 @@ namespace TerrariaCells.Content.Packets
 			{
 				// If someone requests to spawn all dead, this can only happen if everyone is dead
 				case (byte)SpawnPacketType.SpawnDead:
+				{
 					// Spawn all players on the server, and then sync it to clients, this also checks if all players are dead
                     if (Main.netMode == NetmodeID.MultiplayerClient) return;
                     bool allDead = true;
@@ -41,8 +42,10 @@ namespace TerrariaCells.Content.Packets
 						}
                     }
                     break;
+				}
 				// This force respawns all players, including living ones
 				case (byte)SpawnPacketType.SpawnAll:
+				{
 					foreach (Player player in Main.player)
 					{
 						if (player.active)
@@ -51,11 +54,13 @@ namespace TerrariaCells.Content.Packets
 						}
 					}
 					break;
+				}
 				// In case you want to spawn a specific player
 				case (byte)SpawnPacketType.SpawnTarget:
-					Player target = Main.player[reader.ReadByte()];
-					NetMessage.SendData(MessageID.PlayerSpawn, -1, -1, null, target.whoAmI);
+				{
+					NetMessage.SendData(MessageID.PlayerSpawn, -1, -1, null, reader.ReadByte());
 					break;
+				}
 			}
 		}
 	}

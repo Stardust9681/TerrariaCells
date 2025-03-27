@@ -1,19 +1,8 @@
 global using Microsoft.Xna.Framework;
 using System;
 using System.IO;
-using Terraria;
-using Terraria.ID;
-using Terraria.Graphics;
 using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
-using TerrariaCells.Common.Configs;
-using Terraria.Chat;
-using Terraria.Localization;
-using TerrariaCells.Common.ModPlayers;
-using TerrariaCells.Common.Systems;
-using System.Collections.Generic;
 using TerrariaCells.Common.Utilities;
-using TerrariaCells.Content.Packets;
 
 namespace TerrariaCells
 {
@@ -27,7 +16,7 @@ namespace TerrariaCells
     }
     /// <summary>
     /// Base class for handling net packets, 
-    /// see SpawnPacketHandler.cs for implementations
+    /// see TerrariaCells/Content/Packets for implementations
     /// </summary>
     internal abstract class PacketHandler
 	{
@@ -44,19 +33,21 @@ namespace TerrariaCells
 			HandlerType = handlerType;
 		}
         /// <summary>
-        /// Get a ModPacket
+        /// Get a ModPacket with some written data. Write into a ModPacket with the HandlerType of the class, the sub packetType and the sender
         /// </summary>
         /// <param name="packetType">Type of packet, for most packets this should be 0</param>
-        /// <param name="fromWho"></param>
-        /// <returns>A ModPacket that contains a HandlerType, the given packetType, and the sender</returns>
+        /// <param name="fromWho"> The sender of the packet, if it's lower than 0, it won't be written into the packet</param>
+        /// <returns>A ModPacket that contains in this order a HandlerType, the given packetType, and the sender</returns>
 		protected ModPacket GetPacket(byte packetType, int fromWho)
 		{
-			ModPacket p = GetPacket(packetType, fromWho);
+			ModPacket p = ModContent.GetInstance<TerrariaCells>().GetPacket();
 			p.Write((byte)HandlerType);
 			p.Write(packetType);
-            p.Write((byte)fromWho);
+            if (fromWho > -1)
+            {
+                p.Write((byte)fromWho);
+            }
 			return p;
 		}
-        // This currently remains unused, but it can be helpful
 	}
 }
