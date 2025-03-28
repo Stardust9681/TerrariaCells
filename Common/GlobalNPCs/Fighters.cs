@@ -72,6 +72,10 @@ namespace TerrariaCells.Common.GlobalNPCs
             {
                 return DrawCultistArcher(npc, spriteBatch, screenPos, drawColor);
             }
+            if (BloodCrawlers.Contains(npc.type))
+            {
+                return DrawBloodCrawler(npc, spriteBatch, screenPos, drawColor);
+            }
             return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
         }
         
@@ -88,6 +92,10 @@ namespace TerrariaCells.Common.GlobalNPCs
             if (npc.type == NPCID.CultistArcherBlue)
             {
                 CultistArcherFrame(npc);
+            }
+            if (npc.type == NPCID.BloodCrawler)
+            {
+                BloodCrawlerFrame(npc);
             }
             base.FindFrame(npc, frameHeight);
         }
@@ -125,9 +133,18 @@ namespace TerrariaCells.Common.GlobalNPCs
                 {
                     CultistArcherAI(npc, target);
                 }
+                if (npc.type == NPCID.BloodCrawler)
+                {
+                    BloodCrawlerAI(npc, target);
+                }
                 if (ShouldWalk)
                     Walk(npc, WalkSpeed, Acceleration);
                 JustJumped = false;
+                return false;
+            }
+            if (npc.type == NPCID.BloodCrawlerWall)
+            {
+                BloodCrawlerWallAI(npc);
                 return false;
             }
             return base.PreAI(npc);
