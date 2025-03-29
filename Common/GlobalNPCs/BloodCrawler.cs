@@ -16,7 +16,7 @@ namespace TerrariaCells.Common.GlobalNPCs
     {
         const float bloodCrawlerAttackMaxBlockDistanceX = 20f;
         const float bloodCrawlerAttackMaxBlockDistanceY = 4f;
-        const int bloodCrawlerChargeUpTime = 120;
+        const int bloodCrawlerChargeUpTime = 70;
         const int bloodCrawlerDelayBetweenAttacks = 30;
 
         int[] BloodCrawlers = { NPCID.BloodCrawler, NPCID.BloodCrawlerWall };
@@ -29,10 +29,10 @@ namespace TerrariaCells.Common.GlobalNPCs
                 spriteBatch.Draw(
                     pounce.Value,
                     npc.position - screenPos,
-                    new Rectangle(0, (int)CustomFrameY * 40, 66, 38),
+                    new Rectangle(0, (int)CustomFrameY * 40 + 2, 66, 38),
                     drawColor,
                     npc.rotation,
-                    Vector2.Zero,
+                    new Vector2(5, 16),
                     Vector2.One,
                     npc.direction == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
                     0);
@@ -48,7 +48,7 @@ namespace TerrariaCells.Common.GlobalNPCs
             if (ExtraAI[0] > 0)
             {
                 CustomFrameCounter++;
-                CustomFrameY = Math.Min(CustomFrameCounter / 4, 5);
+                CustomFrameY = Math.Min(CustomFrameCounter / 8, 5);
                 if (CustomFrameCounter > bloodCrawlerChargeUpTime)
                 {
                     CustomFrameY = CustomFrameCounter % 8 <= 1 ? 6 : 7;
@@ -131,7 +131,6 @@ namespace TerrariaCells.Common.GlobalNPCs
                 }
                 else if (ExtraAI[0] > bloodCrawlerChargeUpTime + 10 && npc.collideY)
                 {
-                    Main.NewText("end attack");
                     npc.GetGlobalNPC<CombatNPC>().allowContactDamage = false;
                     ExtraAI[0] = -bloodCrawlerDelayBetweenAttacks;
                 }
