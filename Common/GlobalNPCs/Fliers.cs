@@ -7,6 +7,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -24,7 +25,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 
         //Not doing anything with these, no point in overriding
         /*
-		 * public override void SetDefaults(NPC entity)
+        public override void SetDefaults(NPC entity)
         {
             base.SetDefaults(entity);
         }
@@ -38,12 +39,23 @@ namespace TerrariaCells.Common.GlobalNPCs
         }
 		*/
 
+        public override void OnSpawn(NPC npc, IEntitySource source)
+        {
+            RavenSpawn(npc, source);
+            base.OnSpawn(npc, source);
+        }
+
         public override bool PreAI(NPC npc)
         {
             Update(npc);
             if (npc.type == NPCID.Vulture)
             {
                 VultureAI(npc);
+                return false;
+            }
+            if (npc.type == NPCID.Raven)
+            {
+                RavenAI(npc);
                 return false;
             }
             return true;
