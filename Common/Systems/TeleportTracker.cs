@@ -82,7 +82,14 @@ public class TeleportTracker : ModSystem
 		Main.rainTime = rain != 0 ? 100000f : 0f;
 		Main.dayTime = day;
 		Main.time = hour * 3600;
-		// Teleports player on the server (also works on singleplayer)
+		if (Main.netMode == NetmodeID.SinglePlayer)
+		{
+			Main.LocalPlayer.Teleport(
+				position,
+				TeleportationStyleID.TeleportationPylon);
+				return;
+		}
+		// Teleports player on the server, if we're not on singleplayer
 		NetMessage.SendData(
 			MessageID.TeleportPlayerThroughPortal, -1, -1, null, 
 			Main.LocalPlayer.whoAmI, 
