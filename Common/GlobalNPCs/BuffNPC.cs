@@ -19,18 +19,20 @@ namespace TerrariaCells.Common.GlobalNPCs
 			On_NPC.AddBuff += On_NPC_AddBuff;
 			On_NPC.UpdateNPC_BuffSetFlags += On_NPC_UpdateNPC_BuffSetFlags;
 			On_NPC.DelBuff += On_NPC_DelBuff;
+			On_NPC.UpdateNPC_BuffApplyVFX += On_NPC_UpdateNPC_BuffApplyVFX; ;
 		}
+
 		public override void Unload()
 		{
 			On_NPC.AddBuff -= On_NPC_AddBuff;
 			On_NPC.UpdateNPC_BuffSetFlags -= On_NPC_UpdateNPC_BuffSetFlags;
 			On_NPC.DelBuff -= On_NPC_DelBuff;
+			On_NPC.UpdateNPC_BuffApplyVFX -= On_NPC_UpdateNPC_BuffApplyVFX;
 		}
 
 		private static readonly HashSet<int> BuffsToClear = new HashSet<int>()
 		{
 			BuffID.OnFire,
-			BuffID.Frostburn,
 			BuffID.CursedInferno,
 			BuffID.Poisoned,
 			BuffID.Venom,
@@ -53,16 +55,15 @@ namespace TerrariaCells.Common.GlobalNPCs
 				buffNPC.buffStacks[buffIndex]++;
 			}
 		}
-
 		///Brought over from <see cref="Systems.VanillaClearingSystem"/>...
-		///I actually want to retain visuals, and to adjust things *past* "removing" the buffs
+		//Adjusted to allow different behaviour with a stack counter
 		private void On_NPC_UpdateNPC_BuffSetFlags(On_NPC.orig_UpdateNPC_BuffSetFlags orig, NPC self, bool lowerBuffTime)
 		{
 			BuffNPC buffNPC = self.GetGlobalNPC<BuffNPC>();
 
 			for (int i = 0; i < NPC.maxBuffs; i++)
 			{
-				if (self.buffType[i] > 0 && self.buffTime[i] > 0 && BuffsToClear.Contains(self.buffType[i]))
+				if (BuffsToClear.Contains(self.buffType[i]))
 				{
 					// negative buffs are ignored by the original method
 					self.buffType[i] = -self.buffType[i];
@@ -111,6 +112,126 @@ namespace TerrariaCells.Common.GlobalNPCs
 				orig.Invoke(self, buffIndex);
 			}
 		}
+		
+		//Handles debuff VFX
+		///Didn't use <see cref="GlobalNPC.DrawEffects(NPC, ref Color)"/> because I wanted to now *disable* vanilla VFX
+		private void On_NPC_UpdateNPC_BuffApplyVFX(On_NPC.orig_UpdateNPC_BuffApplyVFX orig, NPC npc)
+		{
+			//Ensure debuff particles are enabled
+			Configs.TerrariaCellsConfig.DebuffIndicators indicator = Configs.TerrariaCellsConfig.Instance.IndicatorType;
+			if ((indicator & Configs.TerrariaCellsConfig.DebuffIndicators.Particles) == Configs.TerrariaCellsConfig.DebuffIndicators.None)
+				return;
+
+			//Vanilla code
+			npc.position += npc.netOffset;
+			//
+
+			BuffNPC globalNPC = npc.GetGlobalNPC<BuffNPC>();
+			for (int buffIndex = 0; buffIndex < NPC.maxBuffs; buffIndex++)
+			{
+				int buffType = npc.buffType[buffIndex];
+				int buffTime = npc.buffTime[buffIndex];
+				int buffStacks = globalNPC.buffStacks[buffIndex];
+
+				if (buffTime < 1 || buffType == 0)
+					continue;
+
+				Dust dust;
+				switch (buffType)
+				{
+					case BuffID.OnFire:
+						int maxStrength_OF = Math.Min(buffStacks, 5);
+						if (Main.rand.NextBool(8 - maxStrength_OF))
+						{
+							int height = (int)(npc.height * (maxStrength_OF * 0.2f));
+							dust = Dust.NewDustDirect(npc.position + new Vector2(-2), npc.width + 4, height + 4, DustID.Torch, Alpha: 100);
+							dust.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+							dust.scale = (MathF.Sin(dust.rotation) * 0.25f) + (1.5f + maxStrength_OF * 0.2f);
+							dust.noGravity = true;
+							dust.velocity = npc.velocity * 0.3f + Vector2.One.RotatedByRandom(MathHelper.TwoPi);
+						}
+						break;
+					case BuffID.CursedInferno:
+						int maxStrength_CI = Math.Min(buffStacks, 5);
+						if (Main.rand.NextBool(8 - maxStrength_CI))
+						{
+							int height = (int)(npc.height * (maxStrength_CI * 0.2f));
+							dust = Dust.NewDustDirect(npc.position + new Vector2(-2), npc.width + 4, npc.height + 4, DustID.CursedTorch, Alpha: 100);
+							dust.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+							dust.scale = (MathF.Sin(dust.rotation) * 0.25f) + (2 + maxStrength_CI * 0.1f);
+							dust.noGravity = true;
+							dust.velocity = npc.velocity * 0.3f + Vector2.One.RotatedByRandom(MathHelper.TwoPi);
+						}
+						break;
+
+					case BuffID.Poisoned:
+						int maxStrength_P = Math.Min(buffStacks, 8);
+						if (Main.rand.NextBool(14 - maxStrength_P))
+						{
+							dust = Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.Poisoned, Alpha: 120, Scale: 0.2f);
+							dust.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+							dust.velocity = Vector2.Zero;
+							dust.fadeIn = 1.9f;
+						}
+						break;
+					case BuffID.Venom:
+						int maxStrength_V = Math.Min(buffStacks, 8);
+						if (Main.rand.NextBool(12 - maxStrength_V))
+						{
+							dust = Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.Venom, Alpha: 100, Scale: 0.5f);
+							dust.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+							dust.velocity = Vector2.Zero;
+							dust.fadeIn = 1.5f;
+						}
+						break;
+
+					case BuffID.Bleeding:
+						int maxStrength_B = Math.Min(buffStacks, 14);
+						if (Main.rand.NextBool(14))
+						{
+							Vector2 pos = Vector2.Zero;
+							Vector2 direction = pos;
+							do //RARE USE OF DO-WHILE LOOP OMG!!!
+							{
+								pos = new Vector2(Main.rand.NextFloat(npc.width), Main.rand.NextFloat(npc.height)) + npc.position;
+								direction = npc.Center.DirectionTo(pos);
+							}
+							while (direction.HasNaNs());
+
+							for (int i = 0; i < maxStrength_B; i++)
+							{
+								dust = Dust.NewDustDirect(pos, 1, 1, DustID.Blood);
+								dust.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+								dust.scale = Main.rand.NextFloat(1f, 1.4f);
+								dust.velocity = direction.RotatedByRandom(MathHelper.ToRadians(10)) * (((float)i / (float)maxStrength_B) + 1f) * 2.5f;
+								dust.noGravity = false;
+							}
+						}
+						break;
+				}
+			}
+
+			//Vanilla code
+			npc.position -= npc.netOffset;
+			//
+
+			//Ensure flags are set appropriately
+			bool was_onFire = npc.onFire;
+			npc.onFire = false;
+			bool was_onFire2 = npc.onFire2;
+			npc.onFire2 = false;
+			bool was_poisoned = npc.poisoned;
+			npc.poisoned = false;
+			bool was_venom = npc.venom;
+			npc.venom = false;
+
+			orig.Invoke(npc);
+
+			npc.onFire = was_onFire;
+			npc.onFire2 = was_onFire2;
+			npc.poisoned = was_poisoned;
+			npc.venom = was_venom;
+		}
 
 		//Literally just helper methods for DPS scaling
 		private static int LinearScale(float x, int num, int den)
@@ -126,8 +247,6 @@ namespace TerrariaCells.Common.GlobalNPCs
 			return (int)(mult * MathF.Pow(x, 2));
 		}
 
-		///Re-adding buff flags here for VFX (NPC.UpdateNPC_BuffApplyVFX runs after NPC.UpdateNPC_BuffApplyDOTs)
-		///In tML NPC.UpdateNPC_BuffApplyDOTs invokes UpdateLifeRegen here
 		public override void UpdateLifeRegen(NPC npc, ref int damage)
 		{
 			BuffNPC buffNPC = npc.GetGlobalNPC<BuffNPC>();
@@ -179,7 +298,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 
 					//Exponential-Scaling DPS
 					case BuffID.Bleeding:
-						npc.lifeRegen -= 2 * ExponentialScale(buffStacks, 0.02f) + 1;
+						npc.lifeRegen -= 2 * ExponentialScale(buffStacks, 0.025f) + 1;
 						if (damage > 2)
 							damage /= 2; //Tick more frequently
 						break;
@@ -196,20 +315,8 @@ namespace TerrariaCells.Common.GlobalNPCs
 				}
 			}
 		}
-		public override void DrawEffects(NPC npc, ref Color drawColor)
-		{
-			if (npc.GetGlobalNPC<BuffNPC>().bleeding)
-			{
-				if (Main.rand.NextBool(12))
-				{
-					Dust blood = Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.Blood);
-					blood.velocity = Vector2.Zero;
-					blood.noGravity = false;
-					blood.scale = Main.rand.NextFloat(0.9f, 1.1f);
-				}
-			}
-		}
 
+		//Helper method for applying debuffs consistently
 		public static void AddBuff(NPC npc, int buffType, int time, int damage, int addStacks = 1)
 		{
 			BuffNPC buffNPC = npc.GetGlobalNPC<BuffNPC>();

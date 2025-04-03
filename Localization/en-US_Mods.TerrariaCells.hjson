@@ -7,7 +7,10 @@ Configs: {
 			Tooltip: Disables the >175% cap on the game's zoom
 		}
 
-		Headers.SkillUI: Skills UI
+		Headers: {
+			SkillUI: Skills UI
+			Gameplay: Gameplay
+		}
 
 		ShowKeybind: {
 			Label: Show Keybind
@@ -17,6 +20,11 @@ Configs: {
 		ShowCooldown: {
 			Label: Show Cooldown Text
 			Tooltip: Display the cooldown time left in text
+		}
+
+		IndicatorType: {
+			Label: Indicator Type
+			Tooltip: ""
 		}
 	}
 
@@ -107,6 +115,14 @@ Configs: {
 			Label: List Categorization Tooltip
 			Tooltip: ""
 		}
+	}
+
+	DebuffIndicators: {
+		Tooltip: ""
+		None.Label: None
+		Icon.Label: Icon
+		Particles.Label: Particles
+		IconAndParticles.Label: Icon and Particles
 	}
 }
 
