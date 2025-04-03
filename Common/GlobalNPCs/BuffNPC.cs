@@ -1,13 +1,15 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace TerrariaCells.Common.GlobalNPCs
 {
@@ -19,7 +21,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 			On_NPC.AddBuff += On_NPC_AddBuff;
 			On_NPC.UpdateNPC_BuffSetFlags += On_NPC_UpdateNPC_BuffSetFlags;
 			On_NPC.DelBuff += On_NPC_DelBuff;
-			On_NPC.UpdateNPC_BuffApplyVFX += On_NPC_UpdateNPC_BuffApplyVFX; ;
+			On_NPC.UpdateNPC_BuffApplyVFX += On_NPC_UpdateNPC_BuffApplyVFX;
 		}
 
 		public override void Unload()
@@ -313,6 +315,56 @@ namespace TerrariaCells.Common.GlobalNPCs
 				{
 					damage++;
 				}
+			}
+		}
+
+		//Handles debuff icons for enemies
+		public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			//Don't do this draw step if you have debuff icons disabled
+			Configs.TerrariaCellsConfig.DebuffIndicators indicator = Configs.TerrariaCellsConfig.Instance.IndicatorType;
+			if ((indicator & Configs.TerrariaCellsConfig.DebuffIndicators.Icon) == Configs.TerrariaCellsConfig.DebuffIndicators.None)
+				return;
+
+			//Have to deal damage to see debuffs
+			if (!npc.playerInteraction[Main.myPlayer])
+				return;
+
+			List<(int BuffType, int BuffStacks)> BuffInfo = new List<(int BuffType, int BuffStacks)>();
+
+			BuffNPC globalNPC = npc.GetGlobalNPC<BuffNPC>();
+			for (int i = 0; i < NPC.maxBuffs; i++)
+			{
+				if (BuffsToClear.Contains(npc.buffType[i]))
+				{
+					BuffInfo.Add((npc.buffType[i], globalNPC.buffStacks[i]));
+				}
+			}
+
+			Vector2 drawPos = npc.Center - screenPos;
+			const int IconSize = 20;
+
+			//24 px for each debuff, 4 px between each
+			int xOffset = IconSize + 4;
+			int yOffset = -Configs.TerrariaCellsConfig.Instance.EnemyDebuffOffset;
+			if (yOffset > 0)
+				drawPos.Y += npc.height / 2;
+			else if(yOffset < 0) //else if, so yOffset = 0 will leave them in the centre
+				drawPos.Y -= (npc.height / 2) + IconSize;
+
+			for (int i = 0; i < BuffInfo.Count; i++)
+			{
+				if (!TextureAssets.Buff[BuffInfo[i].BuffType].IsLoaded)
+					continue;
+
+				Texture2D buffIcon = TextureAssets.Buff[BuffInfo[i].BuffType].Value;
+
+				Vector2 drawOffset = new Vector2((i - (BuffInfo.Count * 0.5f)) * xOffset, yOffset);
+				Vector2 pos = drawPos + drawOffset;
+				Rectangle destination = new Rectangle((int)pos.X, (int)pos.Y, IconSize, IconSize);
+
+				spriteBatch.Draw(buffIcon, destination, Color.White * Configs.TerrariaCellsConfig.Instance.EnemyDebuffOpacity);
+				spriteBatch.DrawString(FontAssets.ItemStack.Value, $"{BuffInfo[i].BuffStacks}", pos + new Vector2(IconSize * .5f), Color.White * Configs.TerrariaCellsConfig.Instance.EnemyDebuffOpacity);
 			}
 		}
 

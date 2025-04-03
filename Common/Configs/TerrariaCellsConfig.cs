@@ -23,7 +23,17 @@ namespace TerrariaCells.Common.Configs
 			IconAndParticles = 3,	//0b11
 		}
 		[DefaultValue(DebuffIndicators.IconAndParticles)]
+		[DrawTicks]
 		public DebuffIndicators IndicatorType;
+
+		[DefaultValue(0.8f)]
+		[Increment(0.05f)]
+		public float EnemyDebuffOpacity;
+
+		[DefaultValue(-8)]
+		[Range(-64, 64)]
+		[Slider]
+		public int EnemyDebuffOffset;
 
         [Header("SkillUI")]
 

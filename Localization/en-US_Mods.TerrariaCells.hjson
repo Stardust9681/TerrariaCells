@@ -26,6 +26,16 @@ Configs: {
 			Label: Indicator Type
 			Tooltip: ""
 		}
+
+		EnemyDebuffOpacity: {
+			Label: Enemy Debuff Opacity
+			Tooltip: ""
+		}
+
+		EnemyDebuffOffset: {
+			Label: Enemy Debuff Offset
+			Tooltip: Vertical offset for debuffs to be displayed on enemies (-down, +up)
+		}
 	}
 
 	WeaponUIConfig: {
