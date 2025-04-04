@@ -158,10 +158,16 @@ namespace TerrariaCells.Common.GlobalProjectiles
                     target.AddBuff(BuffID.Oiled, 60 * 8);
                     break;
                 case ProjectileID.SawtoothShark:
-					GlobalNPCs.BuffNPC.AddBuff(target, BuffID.Bleeding, 60 * 2, damageDone);
+					GlobalNPCs.BuffNPC.AddBuff(target, BuffID.Bleeding, 60 * 3, damageDone);
                     //target.AddBuff(BuffID.Bleeding, 60 * 5);
                     break;
-            }
+
+				case ProjectileID.ToxicCloud:
+				case ProjectileID.ToxicCloud2:
+				case ProjectileID.ToxicCloud3:
+					GlobalNPCs.BuffNPC.AddBuff(target, BuffID.Poisoned, 60 * 20, damageDone);
+					break;
+			}
         }
 
         public override void OnSpawn(Projectile projectile, IEntitySource source)
@@ -210,6 +216,22 @@ namespace TerrariaCells.Common.GlobalProjectiles
 				return false;
 			}
 			return base.PreAI(projectile);
+		}
+
+		public override void PostAI(Projectile projectile)
+		{
+			switch (projectile.type)
+			{
+				case ProjectileID.DD2ExplosiveTrapT1:
+					if (projectile.localAI[0] > Projectile.GetExplosiveTrapCooldown(Main.player[projectile.owner]) - 5
+						&& Main.projectile.Any(x => x.active && x.type == ProjectileID.DD2ExplosiveTrapT1Explosion))
+					{
+						projectile.timeLeft = 2;
+						projectile.Kill();
+						projectile.active = false;
+					}
+					break;
+			}
 		}
 	}
 }
