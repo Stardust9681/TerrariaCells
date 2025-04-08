@@ -27,10 +27,6 @@ namespace TerrariaCells.Common.GlobalItems
         /// Duration before effects of skill are cancelled (ie. summons being unsummoned)
         /// </summary>
         public float skillDuration = -1;
-        /// <summary>
-        /// Replaces the item tooltip with whatever this string is set to
-        /// </summary>
-        public string tooltip;
 
         // Use restrictions
         /// <summary>
@@ -55,13 +51,6 @@ namespace TerrariaCells.Common.GlobalItems
         {
             cooldownTime = cooldown;
             skillDuration = duration;
-        }
-
-        public SkillItemData(float cooldown, float duration, string tooltip)
-        {
-            cooldownTime = cooldown;
-            skillDuration = duration;
-            this.tooltip = tooltip;
         }
     }
 
@@ -251,6 +240,18 @@ namespace TerrariaCells.Common.GlobalItems
             foreach (KeyValuePair<int, SkillSlotData> slotInfo in SkillSlots)
             {
                 Item item = Main.LocalPlayer.inventory[slotInfo.Key];
+
+				//
+				//
+
+
+				int timer = (int)slotInfo.Value.cooldownTimer;
+				int cooldown = (int)slotInfo.Value.cooldownTotal;
+				//OnModifyCooldown?.Invoke(Player, ref timer, ref cooldown);
+
+				
+				//
+				//
 
                 // Reduce cooldown timer for skill slot, if above 0
                 if (slotInfo.Value.cooldownTimer > 0)
@@ -580,7 +581,6 @@ namespace TerrariaCells.Common.GlobalItems
 
             return null;
         }
-
     }
 
     /// <summary>
