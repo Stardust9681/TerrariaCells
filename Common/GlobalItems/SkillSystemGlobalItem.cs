@@ -10,6 +10,12 @@ using Terraria.ModLoader;
 using Terraria.UI;
 using Terraria.UI.Chat;
 
+///================================================================================
+/// Hi! This SHOULD now be deprecated!
+/// Please <see cref="TerrariaCells.Common.Systems.Ability"/> and associated types
+/// Thank you!
+///================================================================================
+
 namespace TerrariaCells.Common.GlobalItems
 {
     /// <summary>
@@ -76,6 +82,7 @@ namespace TerrariaCells.Common.GlobalItems
     /// <summary>
     /// ModPLayer for handling the cooldown logic for each skill slot, as well as non item-specific features
     /// </summary>
+	[Autoload(false)]
     public class SkillModPlayer : ModPlayer
     {
         // Slot index and slot data
@@ -587,6 +594,7 @@ namespace TerrariaCells.Common.GlobalItems
     /// GlobalItem applying skill functionality to all items defined as skills (in the SkillModPlayer SkillItems dictionary)
     /// Includes defaults for all skill items, skill item hooks (ie. prevent skill items from being dropped), and general skill functionality
     /// </summary>
+	[Autoload(false)]
     public class SkillSystemGlobalItem : GlobalItem
     {
         //public Item instance;

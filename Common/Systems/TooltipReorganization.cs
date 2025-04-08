@@ -97,8 +97,11 @@ public class TooltipReorganization : ModSystem
     public override void Load()
     {
         RegisterTooltip("ItemCategorization", "ItemName");
-        RegisterTooltip("SkillCooldown", "Knockback");
-        RegisterTooltip("Tooltip0", "Material");
+		RegisterTooltip("SkillTitle", "Damage");
+		RegisterTooltip("SkillCooldown", "Damage");
+		RegisterTooltip("SkillDuration", "Damage");
+		RegisterTooltip("ShiftHint", "Damage");
+		RegisterTooltip("Tooltip0", "Material");
         RegisterTooltip("Tooltip1", "Tooltip0");
         RegisterTooltip("Tooltip2", "Tooltip1");
         RegisterTooltip("FunkyModifier0", "OneDropLogo");
@@ -195,12 +198,17 @@ public class TooltipManager : GlobalItem
         {
             reorganization.InsertTooltip(tooltip, tooltips);
         }
-        foreach (
-            TooltipLine tooltip in Mod.GetContent<SkillSystemGlobalItem>().First().GetTooltips(item)
-        )
-        {
-            reorganization.InsertTooltip(tooltip, tooltips);
-        }
+		//foreach (
+		//    TooltipLine tooltip in Mod.GetContent<AbilityEdits>().First().GetTooltips(item)
+		//)
+		//{
+		//    reorganization.InsertTooltip(tooltip, tooltips);
+		//}
+		if (AbilityEdits.TryGetWithFormat(Mod, item, out IEnumerable<TooltipLine> lines))
+		{
+			foreach (TooltipLine line in lines)
+				reorganization.InsertTooltip(line, tooltips);
+		}
 
         tooltips.Sort(
             comparison: (x, y) =>
