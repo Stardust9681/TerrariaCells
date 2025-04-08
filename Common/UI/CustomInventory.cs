@@ -171,7 +171,7 @@ public class LimitedStorageUI : UIState
 			if (Ability.AbilityList.TryGetValue(Main.LocalPlayer.inventory[i].type, out Ability ability))
 			{
 				AbilityHandler modPlayer = Main.LocalPlayer.GetModPlayer<AbilityHandler>();
-				PlayerAbility? abilitySlot = modPlayer.Abilities.FirstOrDefault(x => x.Slot == i);
+				AbilitySlot? abilitySlot = modPlayer.Abilities.FirstOrDefault(x => x.Slot == i);
 
 				if (abilitySlot != null && abilitySlot.CooldownTimer > 0)
 				{
