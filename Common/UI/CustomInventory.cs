@@ -22,6 +22,7 @@ using Terraria.UI.Gamepad;
 using TerrariaCells.Common.Configs;
 using TerrariaCells.Common.GlobalItems;
 using TerrariaCells.Common.Items;
+using TerrariaCells.Common.Systems;
 
 namespace TerrariaCells.Common.UI;
 
@@ -166,53 +167,57 @@ public class LimitedStorageUI : UIState
                 lightColor
             );
 
-            // Show cooldown ui on hotbar
-            SkillSlotData skillSlotData = SkillModPlayer.GetSkillSlotData(i);
+			// Show cooldown ui on hotbar
+			if (Ability.AbilityList.TryGetValue(Main.LocalPlayer.inventory[i].type, out Ability ability))
+			{
+				AbilityHandler modPlayer = Main.LocalPlayer.GetModPlayer<AbilityHandler>();
+				PlayerAbility? abilitySlot = modPlayer.Abilities.FirstOrDefault(x => x.Slot == i);
 
-            if (skillSlotData != null && skillSlotData.cooldownTimer > 0)
-            {
-                // Cooldown item slot indicator
-                Main.spriteBatch.Draw(
-                    TextureAssets.InventoryBack.Value,
-                    position: new Vector2(positionX, num3) + (Vector2.One * 20),
-                    sourceRectangle: new Rectangle(
-                        0,
-                        0,
-                        52,
-                        (int)(
-                            52 * ((float)skillSlotData.cooldownTimer / skillSlotData.cooldownTotal)
-                        )
-                    ),
-                    color: new Color(15, 15, 15, 128),
-                    rotation: 3.14159f,
-                    origin: new Vector2(26, 26),
-                    scale: new Vector2(Main.inventoryScale),
-                    SpriteEffects.None,
-                    layerDepth: 0f
-                );
+				if (abilitySlot != null && abilitySlot.CooldownTimer > 0)
+				{
+					// Cooldown item slot indicator
+					Main.spriteBatch.Draw(
+						TextureAssets.InventoryBack.Value,
+						position: new Vector2(positionX, num3) + (Vector2.One * 20),
+						sourceRectangle: new Rectangle(
+							0,
+							0,
+							52,
+							(int)(
+								52 * ((float)abilitySlot.CooldownTimer / ability.Cooldown)
+							)
+						),
+						color: new Color(15, 15, 15, 128),
+						rotation: 3.14159f,
+						origin: new Vector2(26, 26),
+						scale: new Vector2(Main.inventoryScale),
+						SpriteEffects.None,
+						layerDepth: 0f
+					);
 
-                // Cooldown countdown text display
-                string currentCooldown = MathF.Ceiling(skillSlotData.cooldownTimer / 60).ToString();
+					// Cooldown countdown text display
+					string currentCooldown = MathF.Ceiling(abilitySlot.CooldownTimer / 60).ToString();
 
-                float width = FontAssets.DeathText.Value.MeasureString(currentCooldown).X;
-                float textScale = Main.inventoryScale * 0.50f;
+					float width = FontAssets.DeathText.Value.MeasureString(currentCooldown).X;
+					float textScale = Main.inventoryScale * 0.50f;
 
-                if (TerrariaCellsConfig.Instance.ShowCooldown)
-                {
-                    ChatManager.DrawColorCodedStringWithShadow(
-                        Main.spriteBatch,
-                        FontAssets.DeathText.Value,
-                        currentCooldown,
-                        new Vector2(positionX, num3)
-                            + (new Vector2(0f - width / 2f, 0f) * textScale)
-                            + (Vector2.One * 20),
-                        Color.White,
-                        0,
-                        Vector2.Zero,
-                        new Vector2(textScale, textScale)
-                    );
-                }
-            }
+					if (TerrariaCellsConfig.Instance.ShowCooldown)
+					{
+						ChatManager.DrawColorCodedStringWithShadow(
+							Main.spriteBatch,
+							FontAssets.DeathText.Value,
+							currentCooldown,
+							new Vector2(positionX, num3)
+								+ (new Vector2(0f - width / 2f, 0f) * textScale)
+								+ (Vector2.One * 20),
+							Color.White,
+							0,
+							Vector2.Zero,
+							new Vector2(textScale, textScale)
+						);
+					}
+				}
+			}
 
             Main.inventoryScale = previousInventoryScale;
             positionX += (int)(TextureAssets.InventoryBack.Width() * Main.hotbarScale[i]) + 4;

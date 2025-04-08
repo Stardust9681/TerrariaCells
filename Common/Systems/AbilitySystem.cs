@@ -150,8 +150,8 @@ namespace TerrariaCells.Common.Systems
 		{
 			this.Slot = slot;
 			this.Keybind = keybind;
-			cooldownTimer = 0;
-			durationTimer = 0;
+			CooldownTimer = 0;
+			DurationTimer = 0;
 		}
 		public delegate void AbilityCooldown(Player player, ref int cooldown);
 		public delegate void AbilityDuration(Player player, ref int duration);
@@ -161,10 +161,10 @@ namespace TerrariaCells.Common.Systems
 		public static event AbilityDuration OnApplyDuration;
 		public static event AbilityTimer OnUpdateDuration;
 
-		private int cooldownTimer;
-		public bool IsOnCooldown => cooldownTimer > 0;
-		private int durationTimer;
-		public bool IsAbilityActive => durationTimer > 0;
+		public int CooldownTimer { get; private set; }
+		public bool IsOnCooldown => CooldownTimer > 0;
+		public int DurationTimer { get; private set; }
+		public bool IsAbilityActive => DurationTimer > 0;
 
 		public readonly int Slot = -1;
 		public bool ValidSlotIndex => Slot > -1;
@@ -203,11 +203,11 @@ namespace TerrariaCells.Common.Systems
 		{
 			int timer = GetCooldown(player);
 			OnApplyCooldown?.Invoke(player, ref timer);
-			cooldownTimer = timer;
+			CooldownTimer = timer;
 
 			timer = GetDuration(player);
 			OnApplyDuration?.Invoke(player, ref timer);
-			durationTimer = timer;
+			DurationTimer = timer;
 		}
 		public bool TryUseAbility(Player player)
 		{
@@ -220,15 +220,15 @@ namespace TerrariaCells.Common.Systems
 		{
 			if (IsOnCooldown)
 			{
-				int newCD = cooldownTimer-1;
+				int newCD = CooldownTimer-1;
 				OnUpdateCooldown?.Invoke(player, ref newCD);
-				cooldownTimer = newCD;
+				CooldownTimer = newCD;
 			}
 			if (IsAbilityActive)
 			{
-				int newDur = durationTimer-1;
+				int newDur = DurationTimer-1;
 				OnUpdateDuration?.Invoke(player, ref newDur);
-				durationTimer = newDur;
+				DurationTimer = newDur;
 			}
 		}
 	}
