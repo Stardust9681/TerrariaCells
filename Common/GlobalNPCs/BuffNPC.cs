@@ -248,6 +248,11 @@ namespace TerrariaCells.Common.GlobalNPCs
 		{
 			return (int)(mult * MathF.Pow(x, 2));
 		}
+		//Set lower bound, increase to be DPS instead of DP2S, apply constant scale multiplier
+		private static int Adjust(int orig)
+		{
+			return Math.Max((int)(1.5f * 2 * orig + 1), 1);
+		}
 
 		public override void UpdateLifeRegen(NPC npc, ref int damage)
 		{
@@ -271,36 +276,36 @@ namespace TerrariaCells.Common.GlobalNPCs
 						if (!npc.HasBuff(BuffID.Oiled))
 						{
 							npc.onFire = true;
-							npc.lifeRegen -= 2 * LinearScale(buffStacks, 1, 3) + 1;
+							npc.lifeRegen -= Adjust(LinearScale(buffStacks, 1, 3));
 						}
 						else //Double efficacy with Oiled debuff
 						{
 							npc.onFire3 = true;
-							npc.lifeRegen -= 2 * LinearScale(buffStacks, 2, 3) + 1;
+							npc.lifeRegen -= 2 * Adjust(LinearScale(buffStacks, 1, 3));
 							damage++;
 						}
 						break;
 					case BuffID.CursedInferno:
 						npc.onFire2 = true;
-						npc.lifeRegen -= 2 * LinearScale(buffStacks, 3, 5) + 1;
+						npc.lifeRegen -= Adjust(LinearScale(buffStacks, 3, 5));
 						damage += 4;
 						break;
 
 					//Front-Loaded DPS
 					case BuffID.Poisoned:
 						npc.poisoned = true;
-						npc.lifeRegen -= 2 * GeometricScale(buffStacks * 0.33f, 2.5f, 0.85f) + 1;
+						npc.lifeRegen -= Adjust(GeometricScale(buffStacks * 0.25f, 3f, 0.8125f));
 						break;
 					case BuffID.Venom:
 						npc.venom = true;
-						npc.lifeRegen -= 2 * GeometricScale(buffStacks * 0.5f, 4f, 0.85f) + 1;
+						npc.lifeRegen -= Adjust(GeometricScale(buffStacks * 0.167f, 5f, 0.8125f));
 						if (damage > 4)
 							damage = damage * 3 / 4; //Tick slightly more frequently
 						break;
 
 					//Exponential-Scaling DPS
 					case BuffID.Bleeding:
-						npc.lifeRegen -= 2 * ExponentialScale(buffStacks, 0.025f) + 1;
+						npc.lifeRegen -= Adjust(ExponentialScale(buffStacks, 0.025f));
 						if (damage > 2)
 							damage /= 2; //Tick more frequently
 						break;
@@ -369,12 +374,13 @@ namespace TerrariaCells.Common.GlobalNPCs
 		}
 
 		//Helper method for applying debuffs consistently
-		public static void AddBuff(NPC npc, int buffType, int time, int damage, int addStacks = 1)
+		public static void AddBuff(NPC npc, int buffType, int time, int damage, int addStacks = 0)
 		{
 			BuffNPC buffNPC = npc.GetGlobalNPC<BuffNPC>();
-			int stacksToAdd = (int)MathF.Sqrt(damage/6) + addStacks;
+			int stacksToAdd = (damage/9) + addStacks;
+			stacksToAdd = Math.Max(stacksToAdd, 1);
 			int buffIndex = npc.FindBuffIndex(buffType);
-			if (buffIndex != -1)
+			if (buffIndex != -1 && buffIndex < NPC.maxBuffs)
 			{
 				if (buffNPC.buffOrigTimes[buffIndex] < time)
 					buffNPC.buffOrigTimes[buffIndex] = time;
@@ -385,8 +391,11 @@ namespace TerrariaCells.Common.GlobalNPCs
 			{
 				npc.AddBuff(buffType, time, false);
 				buffIndex = npc.FindBuffIndex(buffType);
-				buffNPC.buffStacks[buffIndex] += stacksToAdd - 1;
-				buffNPC.buffOrigTimes[buffIndex] = time;
+				if (buffIndex != -1 && buffIndex < NPC.maxBuffs)
+				{
+					buffNPC.buffStacks[buffIndex] += stacksToAdd - 1;
+					buffNPC.buffOrigTimes[buffIndex] = time;
+				}
 			}
 		}
 	}
