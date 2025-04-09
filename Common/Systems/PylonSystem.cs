@@ -112,12 +112,10 @@ namespace TerrariaCells.Common.Systems
         {
             On_TeleportPylonsSystem.HandleTeleportRequest -= HandleTeleportRequest;
         }
+
 		// Multiplayer only
 		// We have to use a separate handle for multiplayer because our other teleport 
 		// checks have no way of accessing the player that is trying to teleport
-		/// <summary>
-		/// 
-		/// </summary>
 		private void HandleTeleportRequest(On_TeleportPylonsSystem.orig_HandleTeleportRequest orig, TeleportPylonsSystem system, TeleportPylonInfo destinationPylonInfo, int playerIndex)
 		{
 			if (!DevConfig.Instance.DoPylonDiscoveries)
@@ -139,7 +137,7 @@ namespace TerrariaCells.Common.Systems
 			// Is nearby pylon modded
 			if (nearbyPylon is TEModdedPylon modEntity)
 			{
-				ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("Nearby pylon is modded"), Color.Red);
+				//ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("Nearby pylon is modded"), Color.Red);
 				modEntity.TryGetModPylon(out ModPylon modPylon);
 				if (modPylon.PylonType == destinationPylonInfo.TypeOfPylon)
 				{
@@ -157,7 +155,7 @@ namespace TerrariaCells.Common.Systems
 			{
 				if (info.PositionInTiles == nearbyPylonPos)
 				{
-					ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("Nearby pylon vanilla type : " + info.TypeOfPylon), Color.Red);
+					//ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("Nearby pylon vanilla type : " + info.TypeOfPylon), Color.Red);
 					if (info.TypeOfPylon == destinationPylonInfo.TypeOfPylon)
 					{
 						orig.Invoke(system, destinationPylonInfo, playerIndex);
