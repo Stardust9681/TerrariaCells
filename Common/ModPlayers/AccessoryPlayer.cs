@@ -30,19 +30,25 @@ namespace TerrariaCells.Common.ModPlayers
 		public bool stalkerQuiver; //Summons a spectral arrow to hit targets hit by your arrows (deals 50% original damage)
 		private int stalkerQuiverTimer;
 		public bool magicCuffs; // restore 100 mana when taking damage
+		public bool celestialStone; //Reduce ability cooldowns by 0.5 sec on critical hit
+		private int numCelestialCrits;
 
 		public override void Load()
 		{
-			//IL_Player.OnHurt_Part2 += IL_Player_OnHurt_Part2;
-			//IL_Player.ApplyEquipFunctional += IL_Player_ApplyEquipFunctional;
-		}
-		public override void Unload()
-		{
-			//IL_Player.OnHurt_Part2 -= IL_Player_OnHurt_Part2;
-			//IL_Player.ApplyEquipFunctional -= IL_Player_ApplyEquipFunctional;
+			Systems.AbilitySlot.OnUpdateCooldown += AbilitySlot_OnUpdateCooldown;
 		}
 
-        public override void OnHurt(Player.HurtInfo info) {
+		private void AbilitySlot_OnUpdateCooldown(Player player, ref int timer)
+		{
+			AccessoryPlayer modPlayer = player.GetModPlayer<AccessoryPlayer>();
+			if (modPlayer.numCelestialCrits > 0)
+			{
+				timer -= 30 * modPlayer.numCelestialCrits;
+				modPlayer.numCelestialCrits = 0;
+			}
+		}
+
+		public override void OnHurt(Player.HurtInfo info) {
 			if (this.magicCuffs) {
 				Player.statMana += 100;
 				if (Player.statMana > Player.statManaMax2) {
@@ -265,6 +271,9 @@ namespace TerrariaCells.Common.ModPlayers
 			else if (stalkerQuiverTimer > 0)
 				stalkerQuiverTimer--;
 			stalkerQuiver = false;
+			if (!celestialStone)
+				numCelestialCrits = 0;
+			celestialStone = false;
 		}
 		public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 		{
@@ -350,6 +359,8 @@ namespace TerrariaCells.Common.ModPlayers
 		}
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
+			OnAnyHitNPC(target, hit, damageDone);
+			if (target.life < 1) OnKill(target, hit, damageDone);
 			if (stalkerQuiver)
 			{
 				if (proj.arrow && proj.type != ProjectileID.PhantasmArrow && stalkerQuiverTimer == 0)
@@ -363,7 +374,8 @@ namespace TerrariaCells.Common.ModPlayers
 		}
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (target.life < 1) OnKill(target, hit, hit.Damage);
+			OnAnyHitNPC(target, hit, damageDone);
+			if (target.life < 1) OnKill(target, hit, damageDone);
 			if (hit.DamageType.CountsAsClass(DamageClass.Melee))
 			{
 				if (nazar)
@@ -380,7 +392,16 @@ namespace TerrariaCells.Common.ModPlayers
 				}
 			}
 		}
-
+		private void OnAnyHitNPC(NPC npc, NPC.HitInfo hit, int damage)
+		{
+			if (hit.Crit)
+			{
+				if (celestialStone)
+				{
+					numCelestialCrits++;
+				}
+			}
+		}
 		private void OnKill(NPC npc, NPC.HitInfo hit, int damage)
 		{
 			if (npc.lifeMax <= 5 || npc.friendly)// || !npc.CanBeChasedBy() || NPCID.Sets.ProjectileNPC[npc.type])

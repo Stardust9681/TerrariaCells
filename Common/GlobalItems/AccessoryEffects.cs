@@ -91,8 +91,9 @@ namespace TerrariaCells.Common.GlobalItems
 				case ItemID.ThePlan:
 					modPlayer.thePlan = true;
 					break;
-				//case ItemID.CelestialShell:
-				//break;
+				case ItemID.CelestialStone:
+					modPlayer.celestialStone = true;
+					break;
 
 				case ItemID.FeralClaws:
 					player.GetAttackSpeed(DamageClass.Melee) += 0.4f;
@@ -198,6 +199,9 @@ namespace TerrariaCells.Common.GlobalItems
                 case ItemID.ReconScope:
                     AddToolTip("30% increased damage when no enemies are nearby");
                     break;
+				case ItemID.CelestialStone:
+					AddToolTip("Critical Strikes reduce the cooldown of your abilities by 0.5 sec");
+					break;
                 default:
                     return;
             }
@@ -207,6 +211,9 @@ namespace TerrariaCells.Common.GlobalItems
         {
             return item.type switch
             {
+				ItemID.CelestialStone => new TooltipLine[] {
+					new TooltipLine(Mod, "Tooltip0", "Critical Strikes reduce the cooldown of your abilities by 0.5 sec"),
+				},
                 ItemID.Nazar => [new(Mod, "Tooltip0", "Melee attacks restore 20 mana")],
                 ItemID.ArcaneFlower =>
                 [
