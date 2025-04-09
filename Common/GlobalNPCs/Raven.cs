@@ -155,7 +155,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                 if (num269 > 50f)
                 {
                     targetHeight -= 100f;
-                    Main.NewText(7);
+                    //Main.NewText(7);
                 }
                 if (npc.position.Y < targetHeight)
                 {
