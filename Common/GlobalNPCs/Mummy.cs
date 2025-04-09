@@ -63,7 +63,8 @@ namespace TerrariaCells.Common.GlobalNPCs
             const int SlamCooldown = 50;
             const int SlamTime = 100;
 
-            npc.ai[2]++;
+			npc.ai[2]++;
+			CombatNPC.ToggleContactDamage(npc, false);
 
 			bool validTarget;
 			if (target != null)
@@ -92,7 +93,7 @@ namespace TerrariaCells.Common.GlobalNPCs
             }
             if (npc.ai[3] == 1)
             {
-                npc.direction = npc.oldDirection;
+				npc.direction = npc.oldDirection;
                 ShouldWalk = false;
                 npc.velocity.X *= 0.9f;
                 if (npc.ai[2] == 70)
