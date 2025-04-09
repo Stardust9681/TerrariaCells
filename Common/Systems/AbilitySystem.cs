@@ -28,6 +28,7 @@ namespace TerrariaCells.Common.Systems
 	///<see cref="AbilityConditions"/> -- Similar to <see cref="Terraria.WorldBuilding.Shapes"/>, contains ability conditions
 	///<see cref="AbilityHandler"/> -- ModPlayer responsible for ability handling and updates.
 	///<see cref="AbilityEdits"/> -- Detours/IL edits. Also item stats and tooltips.
+	///Useful: <see cref="AbilityEdits.SetDefaults(Item)"/>
 
 	//If you want to refactor this, yourself, go for it. Want to split this up into multiple files, redo code, etc, go nuts.
 	//Please be sure to use provided player instance in methods when applicable (over 'Main.LocalPlayer')
@@ -55,8 +56,8 @@ namespace TerrariaCells.Common.Systems
 			RegisterAbility(ItemID.MedusaHead, new Ability(NumberHelpers.SecToFrames(30)));
 			RegisterAbility(ItemID.SnowballLauncher, new Ability(NumberHelpers.SecToFrames(20), 8.SecToFrames()));
 			RegisterAbility(ItemID.ManaPotion, new Ability(NumberHelpers.SecToFrames(30)));
-			RegisterAbility(ItemID.WrathPotion, new Ability(NumberHelpers.SecToFrames(80), 20.SecToFrames()));
-			RegisterAbility(ItemID.MagicPowerPotion, new Ability(NumberHelpers.SecToFrames(60), 20.SecToFrames()));
+			RegisterAbility(ItemID.WrathPotion, new Ability(NumberHelpers.SecToFrames(60), 20.SecToFrames()));
+			RegisterAbility(ItemID.MagicPowerPotion, new Ability(NumberHelpers.SecToFrames(60), 5.SecToFrames()));
 			RegisterAbility(ItemID.SwiftnessPotion, new Ability(NumberHelpers.SecToFrames(60), 20.SecToFrames()));
 		}
 
@@ -444,15 +445,6 @@ namespace TerrariaCells.Common.Systems
 				case ItemID.DD2ExplosiveTrapT1Popper:
 					item.damage = 50;
 					break;
-				case ItemID.MolotovCocktail:
-					item.maxStack = 1;
-					break;
-				case ItemID.BouncyDynamite:
-					item.maxStack = 1;
-					break;
-				case ItemID.SnowballLauncher:
-					item.maxStack = 1;
-					break;
 				case ItemID.ManaPotion:
 					item.healMana = 200;
 					break;
@@ -462,6 +454,7 @@ namespace TerrariaCells.Common.Systems
 				item.buffTime = Ability.AbilityList[item.type].Duration;
 			}
 			item.consumable = false;
+			item.maxStack = 1;
 		}
 
 		//Remove mana cost from abilities
