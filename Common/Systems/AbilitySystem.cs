@@ -321,7 +321,7 @@ namespace TerrariaCells.Common.Systems
 	//ModPlayer that handles abilities
 	public class AbilityHandler : ModPlayer
     {
-		internal List<AbilitySlot> Abilities;
+		internal List<AbilitySlot> Abilities = new List<AbilitySlot>();
 
 		private int prevSelectedItem = -1;
 
@@ -345,7 +345,6 @@ namespace TerrariaCells.Common.Systems
 		}
 		public override void Unload()
 		{
-			Abilities.Clear();
 			Abilities = null;
 		}
 

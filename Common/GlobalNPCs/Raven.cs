@@ -34,13 +34,14 @@ namespace TerrariaCells.Common.GlobalNPCs
 
         public void RavenAI(NPC npc)
         {
-            const float ravenSpeedFactor = 3f;
+            const float ravenSpeedFactor = 1.67f;
+			const float invRavenSpeedFactor = 1f / ravenSpeedFactor;
 
             //make sure npc is real
             if (npc == null || !npc.active) return;
 
-            npc.oldVelocity /= ravenSpeedFactor;
-            npc.velocity /= ravenSpeedFactor;
+            npc.oldVelocity *= invRavenSpeedFactor;
+            npc.velocity *= invRavenSpeedFactor;
 
             VanillaRavenAI(npc);
 
