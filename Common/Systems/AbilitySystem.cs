@@ -578,6 +578,7 @@ namespace TerrariaCells.Common.Systems
 		//Prevent non-ability item pickups from going into ability slots
 		private static bool On_Player_GetItem_FillEmptyInventorySlot(On_Player.orig_GetItem_FillEmptyInventorySlot orig, Player self, int plr, Item newItem, GetItemSettings settings, Item returnItem, int i)
 		{
+			/*
 			if (Ability.IsAbility(newItem.type) //Pickup item is an ability
 				&& self.GetModPlayer<AbilityHandler>().Abilities.Any(x => x.GetAbilityType(self) == newItem.type) //Have ability of the same type
 				&& self.GetModPlayer<AbilityHandler>().Abilities.Any(x => x.Slot == i)) //Is going into ability slot
@@ -588,6 +589,21 @@ namespace TerrariaCells.Common.Systems
 			{
 				return orig.Invoke(self, plr, newItem, settings, returnItem, i);
 			}
+			*/
+			AbilityHandler modPlayer = self.GetModPlayer<AbilityHandler>();
+			if (!modPlayer.Abilities.Any(x => x.Slot == i))
+				goto VanillaPickupLogic;
+
+			if (!Ability.IsAbility(newItem.type))
+				return false;
+
+			if (!modPlayer.Abilities.Any(x => x.GetAbilityType(self) == newItem.type))
+				goto VanillaPickupLogic;
+
+			return false;
+
+		VanillaPickupLogic:
+			return orig.Invoke(self, plr, newItem, settings, returnItem, i);
 		}
 
 		//Prevent abilities on cooldown (and active abilities) from being dropped
