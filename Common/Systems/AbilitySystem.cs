@@ -578,8 +578,9 @@ namespace TerrariaCells.Common.Systems
 		//Prevent non-ability item pickups from going into ability slots
 		private static bool On_Player_GetItem_FillEmptyInventorySlot(On_Player.orig_GetItem_FillEmptyInventorySlot orig, Player self, int plr, Item newItem, GetItemSettings settings, Item returnItem, int i)
 		{
-			if (Ability.AbilityList.ContainsKey(newItem.type) //Pickup item is an ability
-				&& !self.GetModPlayer<AbilityHandler>().Abilities.Any(x => x.GetAbilityType(self).Equals(newItem.type))) //No abilities of the same type
+			if (Ability.IsAbility(newItem.type) //Pickup item is an ability
+				&& self.GetModPlayer<AbilityHandler>().Abilities.Any(x => x.GetAbilityType(self) == newItem.type) //Have ability of the same type
+				&& self.GetModPlayer<AbilityHandler>().Abilities.Any(x => x.Slot == i)) //Is going into ability slot
 			{
 				return false;
 			}

@@ -130,19 +130,12 @@ namespace TerrariaCells.Common.GlobalItems
 
                 // MAGE
                 case ItemID.EmeraldStaff:
-                    item.damage = 15;
+				case ItemID.RubyStaff:
+					item.damage = 15;
                     item.mana = 5;
                     item.useTime = 18;
                     item.knockBack = 0f;
-                    item.shootSpeed = 50;
-                    item.value = 1000;
-                    break;
-                case ItemID.RubyStaff:
-                    item.damage = 15;
-                    item.mana = 5;
-                    item.useTime = 18;
-                    item.knockBack = 0f;
-                    item.shootSpeed = 50;
+                    item.shootSpeed = 10;
                     item.value = 1000;
                     break;
                 case ItemID.InfernoFork:
@@ -248,117 +241,6 @@ namespace TerrariaCells.Common.GlobalItems
             crit = 0;
 
             // ADD/MODIFY CUSTOM CRIT EFFECTS HERE
-        }
-        // Override certain weapon shoots to implement hitscan, follow Emerald staff shoot below for help on hitscans
-        public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
-        {
-            if (item.type == ItemID.EmeraldStaff) 
-            {
-                Vector2 aimDir = Vector2.Normalize(player.Center.DirectionTo(Main.MouseWorld));
-                int distance = 1000;
-                Vector2 endPos = position * distance;
-                Random rand = new();
-                for (int i = 0; i < distance; i++)
-                {
-                    Vector2 checkPos = player.Center + aimDir * i;
-                    Tile tile = Framing.GetTileSafely((int)(checkPos.X / 16), (int)(checkPos.Y / 16));
-                    if (i % 10 == 0) 
-                    {
-                        Dust dust = Dust.NewDustDirect(checkPos, 16, 16, DustID.GemEmerald);
-                        dust.noGravity = true;
-                        dust.velocity = new Vector2(((float)(rand.NextDouble() * 2f) - 1) * 0.9f, ((float)(rand.NextDouble() * 2f) - 1) * 0.9f);
-                    } 
-                    // Hit solid block, so stop
-                    if (tile.HasUnactuatedTile && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType]){
-                        endPos = checkPos;
-                        break;
-                    }
-                    foreach (NPC npc in Main.npc)
-                    {
-                        // Hit enemy, so stop
-                        if (npc.Hitbox.Contains((int)checkPos.X, (int)checkPos.Y) && npc.active)
-                        {
-                            // Create dummy projectile to damage npc and spawn star
-                            Projectile proj = Projectile.NewProjectileDirect(source, npc.Center, Vector2.Zero, ProjectileID.EmeraldBolt, item.damage, 0, player.whoAmI);
-                            proj.penetrate = 0;
-							GlobalNPCs.BuffNPC.AddBuff(npc, BuffID.Poisoned, 60 * 5, damage);
-                            //npc.AddBuff(BuffID.Poisoned, 60 * 5);
-                            for (int j = 0; j < 15; j++)
-                            {
-                                Dust newDust = Dust.NewDustDirect(checkPos, 2, 2, DustID.GemEmerald);
-                                newDust.noGravity = true;
-                                newDust.velocity = new Vector2(((float)(rand.NextDouble() * 2f) - 1) * 3f, ((float)(rand.NextDouble() * 2f) - 1) * 3f);
-
-                            }
-                            return false;
-                        }
-                        
-                    }
-
-                }
-                for (int j = 0; j < 15; j++)
-                {
-                    Dust newDust = Dust.NewDustDirect(endPos, 2, 2, DustID.GemEmerald);
-                    newDust.noGravity = true;
-                    newDust.velocity = new Vector2(((float)(rand.NextDouble() * 2f) - 1) * 3f, ((float)(rand.NextDouble() * 2f) - 1) * 3f);
-
-                }
-                return false;
-            }
-            if (item.type == ItemID.RubyStaff) 
-            {
-                Vector2 aimDir = Vector2.Normalize(player.Center.DirectionTo(Main.MouseWorld));
-                int distance = 1000;
-                Vector2 endPos = position * distance;
-                Random rand = new();
-                for (int i = 0; i < distance; i++)
-                {
-                    Vector2 checkPos = player.Center + aimDir * i;
-                    Tile tile = Framing.GetTileSafely((int)(checkPos.X / 16), (int)(checkPos.Y / 16));
-                    if (i % 10 == 0) 
-                    {
-                        Dust dust = Dust.NewDustDirect(checkPos, 16, 16, DustID.GemRuby);
-                        dust.noGravity = true;
-                        dust.velocity = new Vector2(((float)(rand.NextDouble() * 2f) - 1) * 0.9f, ((float)(rand.NextDouble() * 2f) - 1) * 0.9f);
-                    } 
-                    // Hit solid block, so stop
-                    if (tile.HasUnactuatedTile && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType]){
-                        endPos = checkPos;
-                        break;
-                    }
-                    foreach (NPC npc in Main.npc)
-                    {
-                        // Hit enemy, so stop
-                        if (npc.Hitbox.Contains((int)checkPos.X, (int)checkPos.Y) && npc.active)
-                        {
-                            // Create dummy projectile to damage npc and spawn star
-                            Projectile proj = Projectile.NewProjectileDirect(source, npc.Center, Vector2.Zero, ProjectileID.RubyBolt, item.damage, 0, player.whoAmI);
-                            proj.penetrate = 0;
-							GlobalNPCs.BuffNPC.AddBuff(npc, BuffID.OnFire, 60 * 5, damage);
-                            //npc.AddBuff(BuffID.OnFire, 60 * 5);
-                            for (int j = 0; j < 15; j++)
-                            {
-                                Dust newDust = Dust.NewDustDirect(checkPos, 2, 2, DustID.GemRuby);
-                                newDust.noGravity = true;
-                                newDust.velocity = new Vector2(((float)(rand.NextDouble() * 2f) - 1) * 3f, ((float)(rand.NextDouble() * 2f) - 1) * 3f);
-
-                            }
-                            return false;
-                        }
-                        
-                    }
-
-                }
-                for (int j = 0; j < 15; j++)
-                {
-                    Dust newDust = Dust.NewDustDirect(endPos, 2, 2, DustID.GemRuby);
-                    newDust.noGravity = true;
-                    newDust.velocity = new Vector2(((float)(rand.NextDouble() * 2f) - 1) * 3f, ((float)(rand.NextDouble() * 2f) - 1) * 3f);
-                }
-                return false;
-            }
-
-            return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
         }
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)

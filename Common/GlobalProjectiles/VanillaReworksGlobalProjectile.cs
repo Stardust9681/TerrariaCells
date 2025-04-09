@@ -32,6 +32,11 @@ namespace TerrariaCells.Common.GlobalProjectiles
 				case ProjectileID.PulseBolt:
 					projectile.penetrate = 3;
 					break;
+				case ProjectileID.RubyBolt:
+				case ProjectileID.EmeraldBolt:
+					projectile.penetrate = 1;
+					projectile.extraUpdates = 14;
+					break;
 			}
 		}
 
@@ -161,6 +166,12 @@ namespace TerrariaCells.Common.GlobalProjectiles
 					GlobalNPCs.BuffNPC.AddBuff(target, BuffID.Bleeding, 60 * 3, damageDone);
                     //target.AddBuff(BuffID.Bleeding, 60 * 5);
                     break;
+				case ProjectileID.RubyBolt:
+					GlobalNPCs.BuffNPC.AddBuff(target, BuffID.OnFire, 60 * 5, damageDone);
+					break;
+				case ProjectileID.EmeraldBolt:
+					GlobalNPCs.BuffNPC.AddBuff(target, BuffID.Poisoned, 60 * 5, damageDone);
+					break;
 
 				case ProjectileID.ToxicCloud:
 				case ProjectileID.ToxicCloud2:
