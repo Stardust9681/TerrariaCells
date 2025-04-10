@@ -10,18 +10,19 @@ namespace TerrariaCells.Common.ModPlayers;
 
 public class DeathReset : ModPlayer, IEntitySource
 {
-    public string Context => "TerrariaCells.Common.ModPlayers.DeathReset";
+	public string Context => "TerrariaCells.Common.ModPlayers.DeathReset";
 
-    public override void Kill(
-        double damage,
-        int hitDirection,
-        bool pvp,
-        PlayerDeathReason damageSource
-    )
-    {
+	public override void Kill(
+		double damage,
+		int hitDirection,
+		bool pvp,
+		PlayerDeathReason damageSource
+	)
+	{
 		if (DevConfig.Instance.DropItems)
 		{
-			foreach ((int itemslot, TerraCellsItemCategory _) in InventoryManager.slotCategorizations)
+			Player.DropItems();
+			/*foreach ((int itemslot, TerraCellsItemCategory _) in InventoryManager.slotCategorizations)
 			{
 				Entity.DropItem(this, Entity.Center, ref Entity.inventory[itemslot]);
 			}
@@ -35,7 +36,7 @@ public class DeathReset : ModPlayer, IEntitySource
 			Entity.DropItem(this, Entity.Center, ref Entity.armor[2]);
 			Entity.DropItem(this, Entity.Center, ref Entity.armor[3]);
 			Entity.DropItem(this, Entity.Center, ref Entity.armor[4]);
-			Entity.DropItem(this, Entity.Center, ref Entity.armor[5]);
+			Entity.DropItem(this, Entity.Center, ref Entity.armor[5]);*/
 
 			//Give default inventory on death
 			Item[] startInv = GetStartingItems();
@@ -57,8 +58,8 @@ public class DeathReset : ModPlayer, IEntitySource
 		WorldPylonSystem.ResetPylons();
 	}
 
-    public override void OnEnterWorld()
-    {
+	public override void OnEnterWorld()
+	{
 		foreach ((int itemslot, TerraCellsItemCategory _) in InventoryManager.slotCategorizations)
 		{
 			Entity.inventory[itemslot].TurnToAir();
@@ -81,12 +82,12 @@ public class DeathReset : ModPlayer, IEntitySource
 			if (startInv[i].IsAir)
 				Player.inventory[i].TurnToAir();
 		}
-    }
+	}
 
-    public override void OnRespawn()
+	public override void OnRespawn()
 	{
 		foreach (NPC npc in Main.ActiveNPCs)
-			if(!npc.friendly) npc.active = false; //Kill all NPCs so they aren't re-added to respawn buffer
+			if (!npc.friendly) npc.active = false; //Kill all NPCs so they aren't re-added to respawn buffer
 		foreach (Item item in Main.ActiveItems)
 			item.TurnToAir(true); //Turn all items to air, so player and NPC drops don't remain
 		foreach (Projectile projectile in Main.ActiveProjectiles)
