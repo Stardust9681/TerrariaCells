@@ -39,7 +39,7 @@ namespace TerrariaCells.Common.Systems
 	{
 		public static void LoadAbilities()
 		{
-			RegisterAbility(ItemID.ClingerStaff, new Ability(NumberHelpers.SecToFrames(4) + 30, 10.SecToFrames(), new LineOfSight(), new InSolidTile().Invert()));
+			RegisterAbility(ItemID.ClingerStaff, new Ability(NumberHelpers.SecToFrames(45), 10.SecToFrames(), new LineOfSight(), new InSolidTile().Invert()));
 			//Doesn't actually get used due to -1 duration (never gets started)...
 			//But here's an example of adding extra functionality on ability end.
 			RegisterAbility(ItemID.ToxicFlask, new Ability(NumberHelpers.SecToFrames(30)))
