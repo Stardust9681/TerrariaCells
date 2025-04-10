@@ -31,22 +31,6 @@ namespace TerrariaCells.Common.ModPlayers
 		private int stalkerQuiverTimer;
 		public bool magicCuffs; // restore 100 mana when taking damage
 		public bool celestialStone; //Reduce ability cooldowns by 0.5 sec on critical hit
-		private int numCelestialCrits;
-
-		public override void Load()
-		{
-			Systems.AbilitySlot.OnUpdateCooldown += AbilitySlot_OnUpdateCooldown;
-		}
-
-		private void AbilitySlot_OnUpdateCooldown(Player player, ref int timer)
-		{
-			AccessoryPlayer modPlayer = player.GetModPlayer<AccessoryPlayer>();
-			if (modPlayer.numCelestialCrits > 0)
-			{
-				timer -= 30 * modPlayer.numCelestialCrits;
-				modPlayer.numCelestialCrits = 0;
-			}
-		}
 
 		public override void OnHurt(Player.HurtInfo info) {
 			if (this.magicCuffs) {
@@ -271,8 +255,6 @@ namespace TerrariaCells.Common.ModPlayers
 			else if (stalkerQuiverTimer > 0)
 				stalkerQuiverTimer--;
 			stalkerQuiver = false;
-			if (!celestialStone)
-				numCelestialCrits = 0;
 			celestialStone = false;
 		}
 		public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
@@ -398,7 +380,11 @@ namespace TerrariaCells.Common.ModPlayers
 			{
 				if (celestialStone)
 				{
-					numCelestialCrits++;
+					Common.Systems.AbilityHandler modPlayer = Player.GetModPlayer<Systems.AbilityHandler>();
+					foreach (Systems.AbilitySlot ability in modPlayer.Abilities.Where(x => x.IsOnCooldown))
+					{
+						ability.cooldownTimer -= 30;
+					}
 				}
 			}
 		}

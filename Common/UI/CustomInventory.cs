@@ -173,7 +173,7 @@ public class LimitedStorageUI : UIState
 				AbilityHandler modPlayer = Main.LocalPlayer.GetModPlayer<AbilityHandler>();
 				AbilitySlot? abilitySlot = modPlayer.Abilities.FirstOrDefault(x => x.Slot == i);
 
-				if (abilitySlot != null && abilitySlot.CooldownTimer > 0)
+				if (abilitySlot != null && abilitySlot.cooldownTimer > 0)
 				{
 					// Cooldown item slot indicator
 					Main.spriteBatch.Draw(
@@ -184,7 +184,7 @@ public class LimitedStorageUI : UIState
 							0,
 							52,
 							(int)(
-								52 * ((float)abilitySlot.CooldownTimer / ability.Cooldown)
+								52 * ((float)abilitySlot.cooldownTimer / ability.Cooldown)
 							)
 						),
 						color: new Color(15, 15, 15, 128),
@@ -196,7 +196,7 @@ public class LimitedStorageUI : UIState
 					);
 
 					// Cooldown countdown text display
-					string currentCooldown = MathF.Ceiling(abilitySlot.CooldownTimer / 60).ToString();
+					string currentCooldown = MathF.Ceiling(abilitySlot.cooldownTimer / 60).ToString();
 
 					float width = FontAssets.DeathText.Value.MeasureString(currentCooldown).X;
 					float textScale = Main.inventoryScale * 0.50f;

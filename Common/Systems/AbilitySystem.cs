@@ -177,8 +177,8 @@ namespace TerrariaCells.Common.Systems
 		{
 			this.Slot = slot;
 			this.Keybind = keybind;
-			CooldownTimer = 0;
-			DurationTimer = 0;
+			cooldownTimer = 0;
+			durationTimer = 0;
 		}
 
 		//Not sure if we want these to be a part of the ABILITY or PLAYER ABILITY
@@ -195,12 +195,13 @@ namespace TerrariaCells.Common.Systems
 		///<summary> Called when duration timer is updated </summary>
 		public static event AbilityTimer OnUpdateDuration;
 
-		public int CooldownTimer { get; private set; }
+		public int cooldownTimer;
 		///<remarks> Shorthand for <c>CooldownTimer > 0</c> </remarks>
-		public bool IsOnCooldown => CooldownTimer > 0;
-		public int DurationTimer { get; private set; }
+		public bool IsOnCooldown => cooldownTimer > 0;
+
+		public int durationTimer;
 		///<remarks> Shorthand for <c>DurationTimer > 0</c> </remarks>
-		public bool IsAbilityActive => DurationTimer > 0;
+		public bool IsAbilityActive => durationTimer > 0;
 
 		///<summary> Inventory slot that this ability slot occupies </summary>
 		public readonly int Slot = -1;
@@ -249,23 +250,23 @@ namespace TerrariaCells.Common.Systems
 		///<summary> Sets information for this slot on use </summary>
 		public void UseAbility(Player player)
 		{
-			CooldownTimer = GetCooldown(player);
-			DurationTimer = GetDuration(player);
+			cooldownTimer = GetCooldown(player);
+			durationTimer = GetDuration(player);
 		}
 		///<summary> Update method invoked every frame to update cooldown and duration timers </summary>
 		public void UpdateTimers(Player player)
 		{
 			if (IsOnCooldown)
 			{
-				int newCD = CooldownTimer-1;
+				int newCD = cooldownTimer-1;
 				OnUpdateCooldown?.Invoke(player, ref newCD);
-				CooldownTimer = newCD;
+				cooldownTimer = newCD;
 			}
 			if (IsAbilityActive)
 			{
-				int newDur = DurationTimer-1;
+				int newDur = durationTimer-1;
 				OnUpdateDuration?.Invoke(player, ref newDur);
-				DurationTimer = newDur;
+				durationTimer = newDur;
 			}
 		}
 	}
