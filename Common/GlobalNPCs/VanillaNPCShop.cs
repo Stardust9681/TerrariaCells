@@ -65,13 +65,13 @@ namespace TerrariaCells.Common.GlobalNPCs
 					selectedItems = Weapons;
 					return;
 				}
-				const int MinCount = 4;
+				const int MinCount = 3;
 				List<int> items = new List<int>();
-				foreach (int itemType in Weapons)
+				for(int i = 0; i < Weapons.Length; i++)
 				{
 					if (items.Count > MinCount && !Main.rand.NextBool(items.Count - MinCount)) continue;
 
-					items.Add(itemType);
+					items.Add(Main.rand.Next(Weapons.Where(x => !items.Contains(x)).ToArray()));
 				}
 				selectedItems = items.ToArray();
 			}
@@ -82,13 +82,13 @@ namespace TerrariaCells.Common.GlobalNPCs
 					selectedItems = Accessories;
 					return;
 				}
-				const int MinCount = 3;
+				const int MinCount = 2;
 				List<int> items = new List<int>();
-				foreach (int itemType in Accessories)
+				for (int i = 0; i < Accessories.Length; i++)
 				{
-					if (items.Count > MinCount && Main.rand.NextBool(items.Count - MinCount)) continue;
+					if (items.Count > MinCount && !Main.rand.NextBool(items.Count - MinCount)) continue;
 
-					items.Add(itemType);
+					items.Add(Main.rand.Next(Accessories.Where(x => !items.Contains(x)).ToArray()));
 				}
 				selectedItems = items.ToArray();
 			}
@@ -109,16 +109,16 @@ namespace TerrariaCells.Common.GlobalNPCs
                     selectedItems = SkillsAndArmors;
                     return;
                 }
-                const int MinCount = 1;
+                const int MinCount = 2;
                 List<int> items = new List<int>();
-                foreach (int itemType in SkillsAndArmors)
-                {
-                    if (items.Count > MinCount && Main.rand.NextBool(items.Count - MinCount)) continue;
+				for (int i = 0; i < SkillsAndArmors.Length; i++)
+				{
+					if (items.Count > MinCount && !Main.rand.NextBool(items.Count - MinCount)) continue;
 
-                    items.Add(itemType);
-                }
-                selectedItems = items.ToArray();
-            }
+					items.Add(Main.rand.Next(SkillsAndArmors.Where(x => !items.Contains(x)).ToArray()));
+				}
+				selectedItems = items.ToArray();
+			}
 		}
 		public override void ModifyActiveShop(NPC npc, string shopName, Item[] items)
 		{
