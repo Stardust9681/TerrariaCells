@@ -11,8 +11,8 @@ using static TerrariaCells.Common.Utilities.NPCHelpers;
 
 namespace TerrariaCells.Content.NPCs
 {
-    public class SWATHornet : ModNPC
-    {
+	public class SWATHornet : ModNPC
+	{
 		public override void SetStaticDefaults()
 		{
 			Main.npcFrameCount[NPC.type] = 3;
@@ -96,6 +96,12 @@ namespace TerrariaCells.Content.NPCs
 					Vector2 start = target.Center + offset;
 					Vector2 end = target.Center - offset;
 
+					if (NPC.dontTakeDamage)
+					{
+						NPC.dontTakeDamage = false;
+						NPC.netUpdate = true;
+					}
+
 					int timer = (int)Timer - 90;
 					if (timer < 20)
 					{
@@ -139,11 +145,6 @@ namespace TerrariaCells.Content.NPCs
 				//Shoot bullet(s) and delay
 				else if (Timer < 260)
 				{
-					if (NPC.dontTakeDamage)
-					{
-						NPC.dontTakeDamage = false;
-						NPC.netUpdate = true;
-					}
 					if (Timer == 200)
 					{
 						NPC.ai[1] = Math.Sign(target.position.X - NPC.position.X);
@@ -190,11 +191,11 @@ namespace TerrariaCells.Content.NPCs
 				frameRate = 4;
 
 			NPC.frameCounter++;
-			if (NPC.frameCounter > 60f/frameRate)
+			if (NPC.frameCounter > 60f / frameRate)
 			{
 				NPC.frameCounter = 0;
 				NPC.frame.Y += frameHeight;
-				if (NPC.frame.Y > (Main.npcFrameCount[NPC.type]-1) * frameHeight)
+				if (NPC.frame.Y > (Main.npcFrameCount[NPC.type] - 1) * frameHeight)
 					NPC.frame.Y = 0;
 			}
 		}
