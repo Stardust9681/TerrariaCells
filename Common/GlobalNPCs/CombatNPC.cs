@@ -118,6 +118,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                     npc.damage = 30;
                     break;
                 case NPCID.BloodCrawler:
+				case NPCID.BloodCrawlerWall:
 					npc.buffImmune[BuffID.Poisoned] = false;
                     break;
                 case NPCID.Crimslime:
