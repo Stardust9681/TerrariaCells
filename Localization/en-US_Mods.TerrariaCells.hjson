@@ -246,3 +246,5 @@ Tiles: {
 	CrimsonPylon.MapEntry: Crimson Pylon
 	HivePylon.MapEntry: Hive Pylon
 }
+
+NPCs.SWATHornet.DisplayName: SWAT Hornet

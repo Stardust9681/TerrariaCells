@@ -751,17 +751,17 @@
         { "Name": "hive_premade",
           "SpawnInfo": [
             {
-              "NameOrType": "HornetGun",
+              "NameOrType": "SWATHornet",
               "OffsetX": "86",
               "OffsetY": "105"
             },
             {
-              "NameOrType": "HornetGun",
+              "NameOrType": "SWATHornet",
               "OffsetX": "99",
               "OffsetY": "104"
             },
             {
-              "NameOrType": "HornetGun",
+              "NameOrType": "SWATHornet",
               "OffsetX": "111",
               "OffsetY": "94"
             },
@@ -776,7 +776,7 @@
               "OffsetY": "79"
             },
             {
-              "NameOrType": "HornetGun",
+              "NameOrType": "SWATHornet",
               "OffsetX": "154",
               "OffsetY": "70"
             },
@@ -786,7 +786,7 @@
               "OffsetY": "60"
             },
             {
-              "NameOrType": "HornetGun",
+              "NameOrType": "SWATHornet",
               "OffsetX": "220",
               "OffsetY": "79"
             },
@@ -796,12 +796,12 @@
               "OffsetY": "75"
             },
             {
-              "NameOrType": "HornetGun",
+              "NameOrType": "SWATHornet",
               "OffsetX": "128",
               "OffsetY": "33"
             },
             {
-              "NameOrType": "HornetGun",
+              "NameOrType": "SWATHornet",
               "OffsetX": "140",
               "OffsetY": "32"
             },
@@ -826,17 +826,17 @@
               "OffsetY": "33"
             },
             {
-              "NameOrType": "HornetGun",
+              "NameOrType": "SWATHornet",
               "OffsetX": "92",
               "OffsetY": "42"
             },
             {
-              "NameOrType": "HornetGun",
+              "NameOrType": "SWATHornet",
               "OffsetX": "216",
               "OffsetY": "25"
             },
             {
-              "NameOrType": "HornetGun",
+              "NameOrType": "SWATHornet",
               "OffsetX": "209",
               "OffsetY": "25"
             }
