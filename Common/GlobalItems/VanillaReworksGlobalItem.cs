@@ -131,8 +131,8 @@ namespace TerrariaCells.Common.GlobalItems
                 // MAGE
                 case ItemID.EmeraldStaff:
 				case ItemID.RubyStaff:
-					item.damage = 15;
-                    item.mana = 5;
+					item.damage = 7;
+                    item.mana = 8;
                     item.useTime = 18;
                     item.knockBack = 0f;
                     item.shootSpeed = 10;

@@ -22,6 +22,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 			On_NPC.UpdateNPC_BuffSetFlags += On_NPC_UpdateNPC_BuffSetFlags;
 			On_NPC.DelBuff += On_NPC_DelBuff;
 			On_NPC.UpdateNPC_BuffApplyVFX += On_NPC_UpdateNPC_BuffApplyVFX;
+			On_NPC.Transform += On_NPC_Transform;
 		}
 
 		public override void Unload()
@@ -30,6 +31,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 			On_NPC.UpdateNPC_BuffSetFlags -= On_NPC_UpdateNPC_BuffSetFlags;
 			On_NPC.DelBuff -= On_NPC_DelBuff;
 			On_NPC.UpdateNPC_BuffApplyVFX -= On_NPC_UpdateNPC_BuffApplyVFX;
+			On_NPC.Transform -= On_NPC_Transform;
 		}
 
 		private static readonly HashSet<int> BuffsToClear = new HashSet<int>()
@@ -49,12 +51,15 @@ namespace TerrariaCells.Common.GlobalNPCs
 			orig.Invoke(self, type, time, quiet);
 
 			int buffIndex = self.FindBuffIndex(type);
-			if (buffIndex != -1)
+			if (buffIndex != -1 && buffIndex < NPC.maxBuffs)
 			{
 				BuffNPC buffNPC = self.GetGlobalNPC<BuffNPC>();
 				if (buffNPC.buffOrigTimes[buffIndex] < time)
 					buffNPC.buffOrigTimes[buffIndex] = time;
-				buffNPC.buffStacks[buffIndex]++;
+				if (buffNPC.buffStacks[buffIndex] < 1)
+					buffNPC.buffStacks[buffIndex] = 1;
+				else
+					buffNPC.buffStacks[buffIndex]++;
 			}
 		}
 		///Brought over from <see cref="Systems.VanillaClearingSystem"/>...
@@ -93,7 +98,8 @@ namespace TerrariaCells.Common.GlobalNPCs
 			if (BuffsToClear.Contains(self.buffType[buffIndex]))
 			{
 				BuffNPC buffNPC = self.GetGlobalNPC<BuffNPC>();
-				if (buffNPC.buffStacks[buffIndex] > 1)
+				//Check time bc NPC could gain sudden immunity (eg, to On Fire, while in Water)
+				if (buffNPC.buffStacks[buffIndex] > 1 && self.buffTime[buffIndex] < 1)
 				{
 					buffNPC.buffStacks[buffIndex]--;
 					self.buffTime[buffIndex] = buffNPC.buffOrigTimes[buffIndex];
@@ -114,7 +120,22 @@ namespace TerrariaCells.Common.GlobalNPCs
 				orig.Invoke(self, buffIndex);
 			}
 		}
-		
+
+		//Buff stacks were being reduced to 0 by Blood Crawlers' `NPC.Transform(..)` call
+		private void On_NPC_Transform(On_NPC.orig_Transform orig, NPC self, int newType)
+		{
+			BuffNPC buffNPC = self.GetGlobalNPC<BuffNPC>();
+			int[] oldBuffStacks = buffNPC.buffStacks;
+			int[] oldBuffTimes = buffNPC.buffOrigTimes;
+			orig.Invoke(self, newType);
+			buffNPC = self.GetGlobalNPC<BuffNPC>();
+			for (int i = 0; i < NPC.maxBuffs; i++)
+			{
+				buffNPC.buffStacks[i] = oldBuffStacks[i];
+				buffNPC.buffOrigTimes[i] = oldBuffTimes[i];
+			}
+		}
+
 		//Handles debuff VFX
 		///Didn't use <see cref="GlobalNPC.DrawEffects(NPC, ref Color)"/> because I wanted to now *disable* vanilla VFX
 		private void On_NPC_UpdateNPC_BuffApplyVFX(On_NPC.orig_UpdateNPC_BuffApplyVFX orig, NPC npc)
