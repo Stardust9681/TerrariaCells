@@ -86,7 +86,7 @@ public partial class FunkyModifierItemModifier : GlobalItem
         FunkyModifier.AttackSpeed(1.25f),
         FunkyModifier.ManaCost(0.8f),
         FunkyModifier.ImbuedDamage(1.40f, 1.25f),
-        FunkyModifier.FrenzyFire(1.40f, 0.75f),
+        // FunkyModifier.FrenzyFire(1.40f, 0.75f),
         FunkyModifier.DamageOnDebuff(1.50f, BuffID.OnFire),
         FunkyModifier.DamageOnDebuff(1.50f, BuffID.Poisoned),
         FunkyModifier.CustomBulletAmmo(ProjectileID.ExplosiveBullet),

@@ -78,11 +78,25 @@ namespace TerrariaCells.Common.GlobalItems
             // Iterate through the list of tooltips so we can change vanilla tooltips
             foreach (TooltipLine tooltip in tooltips)
             {
+                const string[] numerals = [
+                    "",
+                    "I",
+                    "II",
+                    "III",
+                    "IV",
+                    "V",
+                    "VI",
+                    "VII",
+                    "VIII",
+                    "IX",
+                    "X",
+                ];
                 // Alter vanilla tooltips here
                 switch (tooltip.Name)
                 {
                     case "ItemName":
                         // tooltip.Text += " [Tier " + itemLevel.ToString() + "]";
+                        tooltip.Text += " " + numerals[itemLevel] + " ";
                         break;
                 }
             }
