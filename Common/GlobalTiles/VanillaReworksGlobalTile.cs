@@ -28,9 +28,9 @@ namespace TerrariaCells.Common.GlobalTiles
 				TileID.Switches,
 				TileID.Lever,
 				ModContent.TileType<Content.Tiles.LevelExitPylon.ForestExitPylon>(),
-				ModContent.TileType<Content.Tiles.LevelExitPylon.DesertExitPylon>(),
-				ModContent.TileType<Content.Tiles.LevelExitPylon.HiveExitPylon>(),
-				ModContent.TileType<Content.Tiles.LevelExitPylon.SnowExitPylon>(),
+				// ModContent.TileType<Content.Tiles.LevelExitPylon.DesertExitPylon>(),
+				// ModContent.TileType<Content.Tiles.LevelExitPylon.HiveExitPylon>(),
+				// ModContent.TileType<Content.Tiles.LevelExitPylon.SnowExitPylon>(),
 			];
         }
 
