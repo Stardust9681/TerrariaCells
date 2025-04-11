@@ -127,9 +127,13 @@ namespace TerrariaCells.Common.GlobalProjectiles
 					ForceCrit = true;
 				else if (source.type == ItemID.PhoenixBlaster && Content.WeaponAnimations.Gun.TryGetGlobalItem(source, out Content.WeaponAnimations.Gun gun))
 				{
-                    if (gun.Ammo < 5)
-                        ForceCrit = true;
-                }
+					if (gun.Ammo < 5)
+						ForceCrit = true;
+				}
+				else if (source.type == ItemID.Minishark && target.DistanceSQ(Main.player[projectile.owner].Center) < 4 * 16 * 4 * 16)
+				{
+					ForceCrit = true;
+				}
 			}
 
             if (ForceCrit)
