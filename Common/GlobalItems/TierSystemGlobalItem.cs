@@ -78,7 +78,7 @@ namespace TerrariaCells.Common.GlobalItems
             // Iterate through the list of tooltips so we can change vanilla tooltips
             foreach (TooltipLine tooltip in tooltips)
             {
-                const string[] numerals = [
+                string[] numerals = [
                     "",
                     "I",
                     "II",
