@@ -25,6 +25,11 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		{
 			if (!npc.HasValidTarget)
 				npc.TargetClosest(false);
+			if (!npc.HasValidTarget)
+			{
+				IdleAI(npc);
+				return;
+			}
 
 			switch ((int)npc.ai[1])
 			{
@@ -45,16 +50,21 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 
 		private void IdleAI(NPC npc)
 		{
+			CombatNPC.ToggleContactDamage(npc, false);
+			if (npc.TargetInAggroRange(420))
+			{
+				npc.ai[2] = Main.rand.Next(new int[] { -1, 1 });
+				npc.ai[1] = Orbit;
+				return;
+			}
+
 			npc.rotation += MathHelper.ToRadians(3 * npc.direction);
 			npc.velocity = Vector2.Lerp(npc.velocity, Vector2.UnitX.RotatedBy(npc.rotation + MathHelper.PiOver2) * 2f, 0.33f);
 
-			if (npc.TargetInAggroRange(420))
+			if (!npc.dontTakeDamage)
 			{
-				npc.GetGlobalNPC<CombatNPC>().allowContactDamage = false;
-				npc.ai[2] = Main.rand.Next(new int[] { -1, 1 });
 				npc.dontTakeDamage = true;
-				npc.ai[1] = Orbit;
-				return;
+				npc.netUpdate = true;
 			}
 		}
 
@@ -62,13 +72,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		{
 			int timer = (int)npc.ai[0];
 			Player target = Main.player[npc.target];
-			Vector2 orbitPeak = target.Center + new Vector2(0, -256);
+			Vector2 orbitPeak = target.Center + new Vector2(0, -(16 * 16));
 			orbitPeak.X += 24 * MathF.Sin(npc.whoAmI);
 			orbitPeak.Y += 32 * MathF.Cos(npc.whoAmI);
 
 			float xModifier = MathF.Sin(timer * 0.0125f * npc.ai[2]);
 			float yModifier = (1 - MathF.Cos(timer * 0.025f)) * 0.5f;
-			Vector2 movePos = orbitPeak + (new Vector2(xModifier * 64, yModifier * 72));
+			Vector2 movePos = orbitPeak + new Vector2(xModifier * (4 * 16), yModifier * (5 * 16));
 
 			//Dust.NewDustDirect(movePos, 1, 1, DustID.GemDiamond).velocity = Vector2.Zero;
 
@@ -83,8 +93,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			//else if (MathF.Abs(npc.position.X - movePos.X) > 80) npc.velocity.X *= 0.97f;
 			//else npc.noTileCollide = false;
 
-			if (npc.velocity.Y < 0 && npc.position.Y < movePos.Y - 64) npc.velocity.Y += 0.125f;
-			if (npc.velocity.Y > 0 && npc.position.Y > movePos.Y + 64) npc.velocity.Y -= 0.175f;
+			if (npc.velocity.Y < 0 && npc.position.Y < movePos.Y - (4 * 16)) npc.velocity.Y += 0.125f;
+			if (npc.velocity.Y > 0 && npc.position.Y > movePos.Y + (1 * 16)) npc.velocity.Y -= 0.175f;
 
 			npc.rotation = npc.DirectionTo(target.Center).ToRotation() - MathHelper.PiOver2;
 			
@@ -102,7 +112,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 
 		private void ChargeAI(NPC npc)
 		{
-			npc.GetGlobalNPC<CombatNPC>().allowContactDamage = true;
+			if (npc.dontTakeDamage)
+			{
+				npc.dontTakeDamage = false;
+				npc.netUpdate = true;
+			}
+
+			CombatNPC.ToggleContactDamage(npc, true);
 			Player target = Main.player[npc.target];
 
 			int timer = (int)npc.ai[0];
@@ -126,7 +142,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			}
 			else
 			{
-				npc.dontTakeDamage = false;
 				if (npc.ai[2] != 0)
 				{
 					npc.velocity = Vector2.Lerp(npc.velocity, Vector2.UnitX.RotatedBy(npc.rotation + MathHelper.PiOver2) * 10f, 0.3f);
@@ -150,11 +165,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 
 			if (timer == 10)
 			{
-				npc.GetGlobalNPC<CombatNPC>().allowContactDamage = false;
+				CombatNPC.ToggleContactDamage(npc, false);
 			}
 			if (timer > 45)
 			{
-				npc.dontTakeDamage = true;
 				npc.ai[1] = Idle;
 				npc.ai[0] = 0;
 				return;

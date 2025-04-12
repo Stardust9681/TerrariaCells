@@ -111,7 +111,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 
 				#region Crimson
 				case NPCID.Crimera:
-                    npc.lifeMax = 40;
+                    npc.lifeMax = 30;
                     break;
                 case NPCID.BloodJelly:
                     npc.lifeMax = 80;
