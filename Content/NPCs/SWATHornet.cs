@@ -31,31 +31,34 @@ namespace TerrariaCells.Content.NPCs
 		private ref float Timer => ref NPC.ai[0];
 		public override void AI()
 		{
-			const float Speed = 2.6f;
+			Vector2 Speed = new Vector2(4.4f, 3.2f);
 
 			//Will only target one player at a time
 			if (!NPC.HasValidTarget)
 				NPC.TargetClosest(false);
 
-			if (!NPC.TargetInAggroRange(24 * 16))
+			if (!NPC.TargetInAggroRange(32 * 16) && Timer < 5)
 			{
 				if (!NPC.dontTakeDamage)
 				{
 					NPC.dontTakeDamage = true;
 					NPC.netUpdate = true;
 				}
+				Common.GlobalNPCs.CombatNPC.ToggleContactDamage(NPC, false);
 
-				if (MathF.Abs(NPC.velocity.X) < 0.2f)
-				{
-					NPC.velocity = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi) * Speed;
-				}
+				NPC.rotation = MathHelper.Lerp(NPC.rotation, MathHelper.ToRadians(NPC.velocity.X) * 4, 0.2f);
+				NPC.spriteDirection = NPC.direction = MathF.Sign(NPC.velocity.X);
 
 				if (NPC.collideY)
 					NPC.velocity.Y = -NPC.oldVelocity.Y * 0.8f;
 				if (NPC.collideX)
 					NPC.velocity.X = -NPC.oldVelocity.X * 0.8f;
 
-				if (NPC.velocity.LengthSquared() < (Speed * Speed))
+				if (MathF.Abs(NPC.velocity.X) < 0.2f)
+				{
+					NPC.velocity = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi) * Speed;
+				}
+				if (NPC.velocity.LengthSquared() < Speed.LengthSquared())
 				{
 					NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.velocity.SafeNormalize(Vector2.Zero) * Speed, 0.08f);
 				}
@@ -65,17 +68,21 @@ namespace TerrariaCells.Content.NPCs
 			if (NPC.TryGetTarget(out Entity target))
 			{
 				//Initial follow to near position
-				if (Timer < 60)
+				if (Timer < 30)
 				{
 					Vector2 followOffset = target.DirectionTo(NPC.Center) * 15 * 16;
 					Vector2 followPos = target.Center + followOffset;
 
-					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, Math.Sign(followPos.X - NPC.position.X) * Speed, 0.15f);
-					NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, Math.Sign(followPos.Y - NPC.position.Y) * Speed, 0.15f);
+					NPC.spriteDirection = NPC.direction = -MathF.Sign(followOffset.X);
+					NPC.rotation = MathHelper.Lerp(NPC.rotation, MathHelper.ToRadians(NPC.velocity.X) * 4, 0.2f);
+
+					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, Math.Sign(followPos.X - NPC.position.X) * Speed.X, 0.02f);
+					NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, Math.Sign(followPos.Y - NPC.position.Y) * Speed.Y, 0.04f);
 
 					if (NPC.ai[2] == 0)
 					{
-						NPC.ai[2] = Main.rand.Next(-24, 24);
+						NPC.ai[2] = Main.rand.Next([-64, -8]);
+						NPC.ai[3] = Main.rand.Next(8, 64);
 						NPC.netUpdate = true;
 					}
 				}
@@ -83,11 +90,21 @@ namespace TerrariaCells.Content.NPCs
 				else if (Timer < 90)
 				{
 					NPC.ai[1] = Math.Sign(NPC.position.X - target.Center.X);
-					Vector2 followOffset = new Vector2(NPC.ai[1] * 15 * 16, NPC.ai[2]);
+					Vector2 followOffset = new Vector2(NPC.ai[1] * (12 * 16 + NPC.ai[3]), NPC.ai[2]);
 					Vector2 followPos = target.Center + followOffset;
 
-					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, Math.Sign(followPos.X - NPC.position.X) * Speed, 0.33f);
-					NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, Math.Sign(followPos.Y - NPC.position.Y) * Speed, 0.33f);
+					NPC.spriteDirection = NPC.direction = -(int)NPC.ai[1];
+					NPC.rotation = MathHelper.ToRadians(NPC.velocity.X) * 3;
+
+					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, Math.Sign(followPos.X - NPC.Center.X) * Speed.X, 0.06f);
+					NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, Math.Sign(followPos.Y - NPC.Center.Y) * Speed.Y, 0.075f);
+
+					bool nearX = MathF.Abs(NPC.position.X - followPos.X) < 2 * 16;
+					bool nearY = MathF.Abs(NPC.position.Y - followPos.Y) < 2 * 16;
+					bool validX = nearX || NPC.collideX;
+					bool validY = nearY || NPC.collideY;
+					if (!validX || !validY)
+						Timer--;
 				}
 				//Perform dash movement
 				else if (Timer < 170)
@@ -106,14 +123,15 @@ namespace TerrariaCells.Content.NPCs
 					if (timer < 20)
 					{
 						NPC.velocity.X = MathHelper.Lerp(4.5f * NPC.ai[1], 0, timer / 15f);
-						NPC.rotation = MathHelper.ToRadians(NPC.velocity.X * 3);
-						NPC.direction = NPC.spriteDirection = (int)-NPC.ai[1];
+						NPC.rotation = MathHelper.ToRadians(NPC.velocity.X) * 3;
+						NPC.spriteDirection = NPC.direction = -(int)NPC.ai[1];
 					}
 					else if (timer < 60)
 					{
-						NPC.velocity.X = MathHelper.Lerp((end.X - start.X) / 30f, 0, MathF.Abs(timer - 15 - 20) / 40f);
-						NPC.rotation = MathHelper.ToRadians(NPC.velocity.X);
-						NPC.direction = NPC.spriteDirection = (int)-NPC.ai[1];
+						NPC.velocity.X = MathHelper.Lerp((end.X - start.X) / 28f, 0, MathF.Abs(timer - 15 - 20) / 40f);
+						NPC.velocity.Y *= 0.95f;
+						NPC.rotation = MathHelper.ToRadians(NPC.velocity.X) * 1.3f;
+						NPC.spriteDirection = NPC.direction = -(int)NPC.ai[1];
 
 						Common.GlobalNPCs.CombatNPC.ToggleContactDamage(NPC, true);
 
@@ -127,8 +145,8 @@ namespace TerrariaCells.Content.NPCs
 					else
 					{
 						NPC.velocity.X = MathHelper.Lerp(0, 4.5f * NPC.ai[1], (timer - 60) / 20f);
-						NPC.rotation = MathHelper.ToRadians(NPC.velocity.X * 3);
-						NPC.direction = NPC.spriteDirection = (int)NPC.ai[1];
+						NPC.rotation = MathHelper.ToRadians(NPC.velocity.X) * 3;
+						NPC.spriteDirection = NPC.direction = (int)NPC.ai[1];
 
 						Common.GlobalNPCs.CombatNPC.ToggleContactDamage(NPC, false);
 					}
@@ -136,11 +154,17 @@ namespace TerrariaCells.Content.NPCs
 				//Basic follow after dash attack
 				else if (Timer < 200)
 				{
-					Vector2 followOffset = target.DirectionTo((NPC.Center + new Vector2(0, -3f))) * 15 * 16;
+					Vector2 followOffset = target.DirectionTo(NPC.Center + new Vector2(0, -80f)) * 15 * 16;
 					Vector2 followPos = target.Center + followOffset;
 
-					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, Math.Sign(followPos.X - NPC.position.X) * Speed, 0.15f);
-					NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, Math.Sign(followPos.Y - NPC.position.Y) * Speed, 0.15f);
+					NPC.spriteDirection = NPC.direction = -MathF.Sign(followOffset.X);
+					float targetRotation = NPC.DirectionTo(target.Center).ToRotation();
+					if (NPC.direction == -1)
+						targetRotation += MathHelper.Pi;
+					NPC.rotation = Utils.AngleLerp(NPC.rotation, targetRotation, 0.1f);
+
+					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, Math.Sign(followPos.X - NPC.position.X) * Speed.X, 0.02f);
+					NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, Math.Sign(followPos.Y - NPC.position.Y) * Speed.Y, 0.09f);
 				}
 				//Shoot bullet(s) and delay
 				else if (Timer < 260)
@@ -166,13 +190,18 @@ namespace TerrariaCells.Content.NPCs
 						}
 					}
 					int timer = (int)Timer - 200;
-					NPC.velocity.X = MathHelper.Lerp(-NPC.ai[1], 0, timer / 60f);
+					NPC.velocity.X = MathHelper.Lerp(-NPC.ai[1] * Speed.X, 0, MathF.Min(timer / 15f, 1));
 					NPC.velocity.Y = MathHelper.Lerp(1f, 0, MathF.Abs(timer - 30) / 30f);
-					NPC.rotation = NPC.ai[1] * MathHelper.ToRadians(timer * 0.8f);
+
+					NPC.rotation = NPC.ai[1] * MathHelper.ToRadians(timer * 0.575f);
+					NPC.spriteDirection = NPC.direction = MathF.Sign(target.position.X - NPC.position.X);
 				}
 				else
 				{
 					Timer = 0;
+					NPC.ai[1] = 0;
+					NPC.ai[2] = 0;
+					NPC.ai[3] = 0;
 				}
 			}
 
@@ -184,11 +213,11 @@ namespace TerrariaCells.Content.NPCs
 		}
 		public override void FindFrame(int frameHeight)
 		{
-			int frameRate = 8;
+			int frameRate = 15;
 			if (Timer > 90 && Timer < 170)
-				frameRate = 10;
+				frameRate = 30;
 			if (Timer > 200 && Timer < 260)
-				frameRate = 4;
+				frameRate = 10;
 
 			NPC.frameCounter++;
 			if (NPC.frameCounter > 60f / frameRate)
