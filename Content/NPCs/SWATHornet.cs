@@ -175,7 +175,7 @@ namespace TerrariaCells.Content.NPCs
 						for (int i = 0; i < 2; i++)
 						{
 							float rotation = MathHelper.ToRadians(15 * ((i - 1) * 2 + 1));
-							Vector2 velocity = NPC.DirectionTo(target.Center).RotatedBy(rotation) * 2.4f;
+							Vector2 velocity = NPC.DirectionTo(target.Center).RotatedBy(rotation) * 5f;
 							Projectile proj = Projectile.NewProjectileDirect(
 								NPC.GetSource_FromAI(),
 								NPC.Center + (velocity * 2),
