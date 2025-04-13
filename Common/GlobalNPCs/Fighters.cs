@@ -109,8 +109,9 @@ namespace TerrariaCells.Common.GlobalNPCs
         }
         public override bool PreAI(NPC npc)
         {
-			if (npc.type is NPCID.GoblinArcher or NPCID.GoblinThief)
+			if (Common.Systems.AIOverwriteSystem.AITypeExists(npc.type))
 				return base.PreAI(npc);
+
             if (npc.aiStyle == NPCAIStyleID.Fighter|| npc.type == NPCID.CultistArcherBlue)
             {
                 Update(npc);

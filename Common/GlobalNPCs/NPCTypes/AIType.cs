@@ -45,14 +45,14 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		public override void Load()
 		{
 			//On_NPC.VanillaFindFrame += On_FindFrame;
-			IL_NPC.VanillaFindFrame += IL_FindFrame;
+			//IL_NPC.VanillaFindFrame += IL_FindFrame;
 			IL_NPC.StrikeNPC_HitInfo_bool_bool += IL_StrikeNPC;
 		}
 
 		public override void Unload()
 		{
 			//On_NPC.VanillaFindFrame -= On_FindFrame;
-			IL_NPC.VanillaFindFrame -= IL_FindFrame;
+			//IL_NPC.VanillaFindFrame -= IL_FindFrame;
 			IL_NPC.StrikeNPC_HitInfo_bool_bool -= IL_StrikeNPC;
 		}
 
@@ -196,6 +196,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			if (!AIOverwriteSystem.TryGetAIType(npc.type, out AIType ai))
 				return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
 			return ai.PreDraw(npc, spriteBatch, screenPos, drawColor);
+		}
+
+		public override void FindFrame(NPC npc, int frameHeight)
+		{
+			if (!AIOverwriteSystem.TryGetAIType(npc.type, out AIType ai))
+				return;
+			ai.FindFrame(npc, frameHeight);
 		}
 	}
 }
