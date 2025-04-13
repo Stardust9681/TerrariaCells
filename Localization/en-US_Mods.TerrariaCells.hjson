@@ -171,6 +171,11 @@ Items: {
 		DisplayName: Hive Pylon
 		Tooltip: ""
 	}
+
+	SoundPlayer: {
+		DisplayName: Sound Player
+		Tooltip: ""
+	}
 }
 
 Projectiles: {

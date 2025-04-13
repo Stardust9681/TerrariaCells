@@ -2,6 +2,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <!-- Import tModLoader mod properties -->
     <Import Project="..\tModLoader.targets" />
+    <ItemGroup>
+      <None Remove="Content\Tiles\SoundPlayerTile.png" />
+    </ItemGroup>
     <!-- General -->
     <ItemGroup>
         <Reference Include="StructureHelper">
