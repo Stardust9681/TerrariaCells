@@ -256,6 +256,7 @@ namespace TerrariaCells.Common.ModPlayers
 				stalkerQuiverTimer--;
 			stalkerQuiver = false;
 			celestialStone = false;
+			magicCuffs = false;
 		}
 		public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 		{
