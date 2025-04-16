@@ -19,7 +19,7 @@ namespace TerrariaCells.Content.NPCs
 		}
 		public override void SetDefaults()
 		{
-			NPC.lifeMax = 40;
+			NPC.lifeMax = 200;
 			NPC.damage = 30;
 			NPC.knockBackResist = 0.8f;
 			NPC.noGravity = true;

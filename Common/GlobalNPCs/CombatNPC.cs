@@ -45,89 +45,94 @@ namespace TerrariaCells.Common.GlobalNPCs
 					npc.damage = 30;
 					break;
                 case NPCID.Raven:
-                    npc.lifeMax = 20;
+                    npc.lifeMax = 40;
                     npc.damage = 20;
                     break;
                 case NPCID.GoblinArcher:
-                    npc.lifeMax = 30;
+                    npc.lifeMax = 40;
                     npc.damage = 25;
                     break;
                 case NPCID.GoblinThief:
-                    npc.lifeMax = 40;
+                    npc.lifeMax = 50;
                     npc.damage = 30;
                     break;
                 case NPCID.GoblinSorcerer:
-                    npc.lifeMax = 10;
+                    npc.lifeMax = 25;
                     npc.damage = 20;
                     break;
 				#endregion
 
 				#region Desert
 				case NPCID.Mummy:
-					npc.lifeMax = 200;
+					npc.lifeMax = 600;
 					npc.damage = 60;
 					break;
                 case NPCID.DesertGhoul:
-                    npc.lifeMax = 50;
+                    npc.lifeMax = 125;
                     npc.damage = 50;
 					break;
 				// Sand Poachers have two NPC IDs???
 				//Yeah they do lmao. Relogic's fuckin hilarious amirite?
                 case NPCID.DesertScorpionWalk:
                 case NPCID.DesertScorpionWall:
-                    npc.lifeMax = 150;
+                    npc.lifeMax = 300;
                     npc.damage = 40;
                     break;
                 case NPCID.DesertDjinn:
-                    npc.lifeMax = 55;
+                    npc.lifeMax = 100;
                     npc.damage = 40;
                     break;
                 case NPCID.Vulture:
-                    npc.lifeMax = 50;
+                    npc.lifeMax = 100;
                     npc.damage = 40;
                     break;
 				#endregion
 
 				#region Frozen City
 				case NPCID.CultistDevote:
-					npc.lifeMax = 100;
+					npc.lifeMax = 200;
 					npc.damage = 40;
 					npc.chaseable = true;
                     break;
 				case NPCID.CultistArcherBlue:
-					npc.lifeMax = 150;
+					npc.lifeMax = 250;
 					npc.damage = 40;
 					npc.chaseable = true;
 					break;
 				case NPCID.IceGolem:
-					npc.lifeMax = 300;
+					npc.lifeMax = 1000;
 					npc.damage = 40;
                     break;
 				case NPCID.IceElemental:
-					npc.lifeMax = 100;
+					npc.lifeMax = 300;
 					npc.damage = 30;
                     break;
-				#endregion
+                #endregion
 
-				#region Crimson
-				case NPCID.Crimera:
+                #region Crimson
+                case NPCID.Crimera:
                     npc.lifeMax = 30;
+                    break;
+                case NPCID.Drippler:
+                    npc.lifeMax = 40;
                     break;
                 case NPCID.BloodJelly:
                     npc.lifeMax = 80;
                     npc.damage = 30;
                     break;
                 case NPCID.BloodCrawler:
-				case NPCID.BloodCrawlerWall:
-					npc.buffImmune[BuffID.Poisoned] = false;
+                    npc.lifeMax = 80;
+                case NPCID.BloodCrawlerWall:
+                    npc.lifeMax = 80;
+                    npc.buffImmune[BuffID.Poisoned] = false;
                     break;
                 case NPCID.Crimslime:
 					npc.buffImmune[BuffID.Poisoned] = false;
-                    npc.lifeMax = 130;
+                    npc.lifeMax = 250;
 					npc.damage = 40;
                     break;
 				case NPCID.BrainofCthulhu:
-					npc.lifeMax = (int)(npc.lifeMax * 1.3f); //This thing squishy as HEYLLLL
+					npc.lifeMax = (int)(npc.lifeMax * 1.3f * 2f); //This thing squishy as HEYLLLL
 					npc.knockBackResist = 0f; //Takes 0 knockback
 					break;
 				case NPCID.Creeper:
@@ -141,6 +146,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 
 				#region Jungle
 				case NPCID.Hornet:
+                    npc.lifeMax = 150;
                     break;
 				#endregion
 
