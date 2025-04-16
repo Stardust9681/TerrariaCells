@@ -60,13 +60,13 @@ namespace TerrariaCells.Common.GlobalItems
                     break;
                 case ItemID.NinjaPants:
                     modPlayer.ninjaPants = true;
-                    player.moveSpeed += 0.35f;
+                    player.moveSpeed += 0.15f;
                     break;
 
                 // Jungle Armor
                 case ItemID.JungleHat:
                     modPlayer.jungleHat = true;
-                    player.GetDamage(DamageClass.Magic) += 0.3f;
+                    player.GetDamage(DamageClass.Magic) += 0.2f;
                     break;
                 case ItemID.JungleShirt:
                     modPlayer.jungleShirt = true;
@@ -74,14 +74,14 @@ namespace TerrariaCells.Common.GlobalItems
                     break;
                 case ItemID.JunglePants:
                     modPlayer.junglePants = true;
-                    player.moveSpeed += 0.2f;
+                    player.moveSpeed += 0.1f;
                     player.GetDamage(DamageClass.Magic) += 0.1f;
                     break;
 
                 // Necro Armor
                 case ItemID.NecroHelmet:
                     modPlayer.necroHelmet = true;
-                    player.GetDamage(DamageClass.Ranged) += 0.3f;
+                    player.GetDamage(DamageClass.Ranged) += 0.2f;
                     break;
                 case ItemID.NecroBreastplate:
                     modPlayer.necroBreastplate = true;
@@ -89,14 +89,14 @@ namespace TerrariaCells.Common.GlobalItems
                     break;
                 case ItemID.NecroGreaves:
                     modPlayer.necroGreaves = true;
-                    player.moveSpeed += 0.2f;
+                    player.moveSpeed += 0.1f;
                     //the last bullet in a magazine deals 50% more damage
                     break;
 
                 // Molten Armor
                 case ItemID.MoltenHelmet:
                     modPlayer.moltenHelmet = true;
-                    player.GetDamage(DamageClass.Melee) += 0.3f;
+                    player.GetDamage(DamageClass.Melee) += 0.2f;
                     break;
                 case ItemID.MoltenBreastplate:
                     modPlayer.moltenBreastplate = true;
@@ -105,7 +105,7 @@ namespace TerrariaCells.Common.GlobalItems
                     break;
                 case ItemID.MoltenGreaves:
                     modPlayer.moltenGreaves = true;
-                    player.moveSpeed += 0.2f;
+                    player.moveSpeed += 0.1f;
                     //leave a trail of flames that ignites enemies (hellfire treads, but functional)
                     break;
 
@@ -142,7 +142,7 @@ namespace TerrariaCells.Common.GlobalItems
                         new (Mod, "Tooltip1", "Set bouns: Become immune after striking an enemy")
                     ],
                     ItemID.NinjaPants => [
-                        new(Mod, "Tooltip0", "30% increased movement speed"),
+                        new(Mod, "Tooltip0", "15% increased movement speed"),
                         new (Mod, "Tooltip1", "Set bouns: Become immune after striking an enemy")
                     ],
                     _ => []
@@ -153,7 +153,7 @@ namespace TerrariaCells.Common.GlobalItems
                 return item.type switch
                 {
                     ItemID.JungleHat => [
-                        new(Mod, "Tooltip0", "30% increased magic damage"),
+                        new(Mod, "Tooltip0", "20% increased magic damage"),
                         new(Mod, "Tooltip1", "Set bonus: Killing an enemy reduces mana cost by 100% for 3 seconds")
                     ],
                     ItemID.JungleShirt => [
@@ -161,7 +161,7 @@ namespace TerrariaCells.Common.GlobalItems
                         new(Mod, "Tooltip1", "Set bonus: Killing an enemy reduces mana cost by 100% for 3 seconds")
                     ],
                     ItemID.JunglePants => [
-                        new(Mod, "Tooltip0", "20% increased movement speed"),
+                        new(Mod, "Tooltip0", "10% increased movement speed"),
                         new(Mod, "Tooltip1", "10% increased magic damage"),
                         new(Mod, "Tooltip2", "Set bonus: Killing an enemy reduces mana cost by 100% for 3 seconds")
                     ],
@@ -173,7 +173,7 @@ namespace TerrariaCells.Common.GlobalItems
                 return item.type switch
                 {
                     ItemID.NecroHelmet => [
-                        new(Mod, "Tooltip0", "30% increased ranged damage"),
+                        new(Mod, "Tooltip0", "20% increased ranged damage"),
                         new(Mod, "Tooltip1", "Set bouns: Bows charge twice as fast,\nguns reload in half the time")
                     ],
                     ItemID.NecroBreastplate => [
@@ -181,7 +181,7 @@ namespace TerrariaCells.Common.GlobalItems
                         new(Mod, "Tooltip1", "Set bouns: Bows charge twice as fast,\nguns reload in half the time")
                     ],
                     ItemID.NecroGreaves => [
-                        new(Mod, "Tooltip0", "20% increased movement speed"),
+                        new(Mod, "Tooltip0", "10% increased movement speed"),
                         new(Mod, "Tooltip1", "The last bullet in a magazine deals 50% more damage"),
                         new(Mod, "Tooltip2", "Set bouns: Bows charge twice as fast,\nguns reload in half the time")
                     ],
@@ -193,7 +193,7 @@ namespace TerrariaCells.Common.GlobalItems
                 return item.type switch
                 {
                     ItemID.MoltenHelmet => [
-                        new(Mod, "Tooltip0", "30% increased melee damage"),
+                        new(Mod, "Tooltip0", "20% increased melee damage"),
                         new(Mod, "Tooltip1", "Set bonus: All fire debuffs are upgraded to Hellfire, with increased damage and duration")
                     ],
                     ItemID.MoltenBreastplate => [
@@ -202,7 +202,7 @@ namespace TerrariaCells.Common.GlobalItems
                         new(Mod, "Tooltip2", "Set bonus: All fire debuffs are upgraded to Hellfire, with increased damage and duration")
                     ],
                     ItemID.MoltenGreaves => [
-                        new(Mod, "Tooltip0", "20% increased movement speed"),
+                        new(Mod, "Tooltip0", "10% increased movement speed"),
                         new(Mod, "Tooltip1", "Leaves a trail of flames in your wake that ignites enemies"),
                         new(Mod, "Tooltip2", "Set bonus: All fire debuffs are upgraded to Hellfire, with increased damage and duration")
                     ],
@@ -214,26 +214,26 @@ namespace TerrariaCells.Common.GlobalItems
             {
                 ItemID.NinjaHood => [new(Mod, "Tooltip0", "15% increased damage")],
                 ItemID.NinjaShirt => [new(Mod, "Tooltip0", "Allows the player to dash")],
-                ItemID.NinjaPants => [new(Mod, "Tooltip0", "30% increased movement speed")],
-                ItemID.JungleHat => [new(Mod, "Tooltip0", "30% increased magic damage")],
+                ItemID.NinjaPants => [new(Mod, "Tooltip0", "15% increased movement speed")],
+                ItemID.JungleHat => [new(Mod, "Tooltip0", "20% increased magic damage")],
                 ItemID.JungleShirt => [new(Mod, "Tooltip0", "Picking up mana stars reduces skil cooldowns by 1/2 second")],
                 ItemID.JunglePants => [
-                    new(Mod, "Tooltip0", "20% increased movement speed"),
+                    new(Mod, "Tooltip0", "10% increased movement speed"),
                     new(Mod, "Tooltip1", "10% increased magic damage"),
                     ],
-                ItemID.NecroHelmet => [new(Mod, "Tooltip0", "30% increased ranged damage")],
+                ItemID.NecroHelmet => [new(Mod, "Tooltip0", "20% increased ranged damage")],
                 ItemID.NecroBreastplate => [new(Mod, "Tooltip0", "Killing an enemy spawns baby spiders, which attack nearby enemies")],
                 ItemID.NecroGreaves => [
-                    new(Mod, "Tooltip0", "20% increased movement speed"),
+                    new(Mod, "Tooltip0", "10% increased movement speed"),
                     new(Mod, "Tooltip1", "The last bullet in a magazine deals 50% more damage"),
                     ],
-                ItemID.MoltenHelmet => [new(Mod, "Tooltip0", "30% increased melee damage")],
+                ItemID.MoltenHelmet => [new(Mod, "Tooltip0", "20% increased melee damage")],
                 ItemID.MoltenBreastplate => [
                     new(Mod, "Tooltip0", "Reduces damage taken by 20%"),
                     new(Mod, "Tooltip1", "Upon taking damage, all nearby enemies are lit on fire"),
                     ],
                 ItemID.MoltenGreaves => [
-                    new(Mod, "Tooltip0", "20% increased movement speed"),
+                    new(Mod, "Tooltip0", "10% increased movement speed"),
                     new(Mod, "Tooltip1", "Leaves a trail of flames in your wake that ignites enemies"),
                     ],
                 _ => [],

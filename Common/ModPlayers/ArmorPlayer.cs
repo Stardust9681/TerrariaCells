@@ -103,7 +103,7 @@ namespace TerrariaCells.Common.ModPlayers
         {
             if (necroGreaves && Gun.TryGetGlobalItem(item, out Gun gun) && gun.Ammo <= 1)
             {
-                damage = (int)(damage * 1.5f);
+                damage = (int)(damage * 1.25f);
             }
         }
 
