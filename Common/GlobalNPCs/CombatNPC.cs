@@ -122,6 +122,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                     break;
                 case NPCID.BloodCrawler:
                     npc.lifeMax = 80;
+                    break;
                 case NPCID.BloodCrawlerWall:
                     npc.lifeMax = 80;
                     npc.buffImmune[BuffID.Poisoned] = false;

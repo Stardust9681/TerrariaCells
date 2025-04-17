@@ -13,6 +13,7 @@ using Terraria.Initializers;
 using Terraria.IO;
 using Terraria.ModLoader;
 using Terraria.Utilities;
+using TerrariaCells.Common.Configs;
 
 namespace TerrariaCells.Common.Systems
 {
@@ -37,6 +38,11 @@ namespace TerrariaCells.Common.Systems
 
         private void On_UIWorldSelect_NewWorldClick(On_UIWorldSelect.orig_NewWorldClick orig, UIWorldSelect self, Terraria.UI.UIMouseEvent evt, Terraria.UI.UIElement listeningElement)
         {
+            if (DevConfig.Instance.EnableCustomWorldGen)
+            {
+                orig.Invoke(self, evt, listeningElement);
+                return;
+            }
             SoundEngine.PlaySound(SoundID.MenuOpen);
             Debug.Write(Main.WorldPath);
             byte[] bytes = ModContent.GetInstance<TerrariaCells>().GetFileBytes("Common/Assets/World/terracellsv0.2.1.wld");
