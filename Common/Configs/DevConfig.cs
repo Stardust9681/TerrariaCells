@@ -21,6 +21,8 @@ namespace TerrariaCells.Common.Configs
         ///<summary>Toggle ability to build. Also allows tiles to be interacted with normally.</summary>
         [DefaultValue(false)]
         public bool BuilderMode;
+        
+        [Header("BuilderSettings")]
 
         /// <summary>Toggle NPC spawns (added to allow builders to build in peace)</summary>
         [DefaultValue(false)]
