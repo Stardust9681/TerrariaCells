@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Intrinsics.X86;
 using System.Security.Cryptography;
 using Microsoft.Build.Evaluation;
 using Microsoft.Xna.Framework.Input;
@@ -22,6 +23,9 @@ namespace TerrariaCells.Common.GlobalItems
     {
         public override void SetDefaults(Item item)
         {
+            if (item == null || item.type <= ItemID.None)
+                return;
+
             //make swords that are juuust too fast for the animation to look right. slowed down a given a bit of damage
             if (item.useStyle == ItemUseStyleID.Swing && !item.noMelee && item.DamageType == DamageClass.Melee && item.useTime == 15)
             {
@@ -203,11 +207,56 @@ namespace TerrariaCells.Common.GlobalItems
                     }
                     break;
                 }
-            } 
+            }
 
-			item.useAnimation = item.useTime;
+            item.useAnimation = item.useTime;
 			if (item.DamageType.CountsAsClass(DamageClass.Ranged))
-				item.knockBack = 0;
+                item.knockBack = 0;
+
+            // Use color rarities to indicate item category:
+            // Weapons(Red)
+            // Skills(Green)
+            // Armor(Blue)
+            // Healing potions(Amber)
+            // Accessories(Yellow)
+            // Large gems(Light Purple)
+
+            try
+            {
+                switch (InventoryManager.GetItemCategorization(item.netID))
+                {
+                    case TerraCellsItemCategory.Weapon:
+                        item.rare = ItemRarityID.Red; // or custom rarity ID
+                        break;
+                    case TerraCellsItemCategory.Skill:
+                        item.rare = ItemRarityID.Green;
+                        break;
+                    case TerraCellsItemCategory.Potion:
+                        item.rare = ItemRarityID.Orange; // Amber-like
+                        break;
+                    case TerraCellsItemCategory.Storage:
+                        switch (InventoryManager.GetStorageItemSubcategorization(item.netID))
+                        {
+                            case StorageItemSubcategorization.Accessory:
+                                item.rare = ItemRarityID.Yellow;
+                                break;
+                            case StorageItemSubcategorization.Armor:
+                                item.rare = ItemRarityID.Blue;
+                                break;
+                            case StorageItemSubcategorization.Coin:
+                                item.rare = ItemRarityID.White;
+                                break;
+                                //default:
+                                //    item.rare = ItemRarityID.LightRed; // Large gems or other Storage items
+                                //    break;
+                        }
+                        break;
+                }
+            }
+            catch (Exception ex) 
+            {
+                Mod.Logger.Warn($"Failed to assign rarity for item {item?.Name} (type {item?.type}): {ex.Message}");
+            }
         }
 
         public override void ModifyHitNPC(Item item, Player player, NPC target, ref NPC.HitModifiers modifiers)
