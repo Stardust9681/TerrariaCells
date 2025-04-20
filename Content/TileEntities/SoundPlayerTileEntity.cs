@@ -24,11 +24,19 @@ namespace TerrariaCells.Content.TileEntities {
                 soundId += SOUNDS.Length;
             }
         }
+        internal static SoundStyle style(string name) => new($"{nameof(TerrariaCells)}/Common/Assets/SoundPlayer/Sounds/{name}");
         public static readonly SoundStyle[] SOUNDS = [
             SoundID.Mech, 
-            new SoundStyle($"{nameof(TerrariaCells)}/Common/Assets/SoundPlayer/Sounds/Secret"),
+            style("SecretZelda"),
+            style("Secret1"),
+            style("Secret2"),
         ];
-        public static readonly string[] LABELS = ["Wire Click", "Zelda Secret"];
+        public static readonly string[] LABELS = [
+            "Wire Click",
+            "Zelda Secret",
+            "Secret 1",
+            "Secret 2",
+        ];
         public override bool IsTileValidForEntity(int x, int y) {
             var tile = Main.tile[x, y];
             return tile.HasTile && tile.TileType == ModContent.TileType<SoundPlayerTile>();
