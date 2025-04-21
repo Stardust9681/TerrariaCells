@@ -31,8 +31,11 @@ namespace TerrariaCells.Common.GlobalItems
 
         public override void SetDefaults(Item item)
         {
-            item.rare = itemLevel;
-            Math.Clamp(item.rare, 0, 10);
+            // Lawro:
+            // Comment this because my task needs weapons to have Red rarity
+
+            //item.rare = itemLevel;
+            //Math.Clamp(item.rare, 0, 10);
         }
 
         public void AddLevels(Item item, int level)

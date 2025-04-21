@@ -232,7 +232,7 @@ namespace TerrariaCells.Common.GlobalItems
                         item.rare = ItemRarityID.Green;
                         break;
                     case TerraCellsItemCategory.Potion:
-                        item.rare = ItemRarityID.Orange; // Amber-like
+                        item.rare = ItemRarityID.Quest; // Amber-like
                         break;
                     case TerraCellsItemCategory.Storage:
                         switch (InventoryManager.GetStorageItemSubcategorization(item.netID))
@@ -245,6 +245,9 @@ namespace TerrariaCells.Common.GlobalItems
                                 break;
                             case StorageItemSubcategorization.Coin:
                                 item.rare = ItemRarityID.White;
+                                break;
+                            default:
+                                item.rare = ItemRarityID.LightPurple;
                                 break;
                                 //default:
                                 //    item.rare = ItemRarityID.LightRed; // Large gems or other Storage items
