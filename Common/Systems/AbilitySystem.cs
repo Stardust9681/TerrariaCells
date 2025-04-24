@@ -549,22 +549,25 @@ namespace TerrariaCells.Common.Systems
 
 				// Emit the delegate (the code)
 				c.EmitDelegate<Func<Item[], int, Texture2D, int, Texture2D>>((inv, slot, originalTexture, context) => {
-
-					if (Main.LocalPlayer.GetModPlayer<AbilityHandler>().Abilities.Any(x => x.Slot == slot))
-					{
-						if (context == 0 || context == 13 && slot != Main.LocalPlayer.selectedItem)
+					try {
+						if (Main.LocalPlayer.GetModPlayer<AbilityHandler>().Abilities.Any(x => x.Slot == slot))
 						{
-							if (inv[slot].favorited)
+							if (context == 0 || context == 13 && slot != Main.LocalPlayer.selectedItem)
 							{
-								return TextureAssets.InventoryBack19.Value;
+								if (inv[slot].favorited)
+								{
+									return TextureAssets.InventoryBack19.Value;
+								}
+
+								return TextureAssets.InventoryBack2.Value;
 							}
 
-							return TextureAssets.InventoryBack2.Value;
 						}
-
+                    } catch (IndexOutOfRangeException) {
+						// prevent main engine crash on player select
 					}
 
-					return originalTexture;
+                    return originalTexture;
 				});
 
 				// Emit return value
