@@ -176,6 +176,52 @@ Items: {
 		DisplayName: Sound Player
 		Tooltip: ""
 	}
+
+	MusicBoxBoss1: {
+		DisplayName: Music Box (Boss 1)
+		Tooltip: ""
+	}
+
+	MusicBoxCaverns: {
+		DisplayName: Music Box (Caverns | Elyse - Tectonic Etude)
+		# TODO: fix tooltips so these can be taken out of the item name
+		Tooltip: Plays Tectonic Etude by Elyse
+	}
+
+	MusicBoxCorruption: {
+		DisplayName: Music Box (Corruption | Elyse - Thistle Thorns)
+		Tooltip: Plays Thisle Thorns by Elise
+	}
+
+	MusicBoxCredits: {
+		DisplayName: Music Box (Credits | Aeolian - Beautiful Isolation)
+		Tooltip: Plays Beautiful Isolation by Aeolian
+	}
+
+	MusicBoxDesert: {
+		DisplayName: Music Box (Desert)
+		Tooltip: ""
+	}
+
+	MusicBoxDesertAmbience: {
+		DisplayName: Music Box (Desert Ambience)
+		Tooltip: ""
+	}
+
+	MusicBoxDungeon: {
+		DisplayName: Music Box (Dungeon | Aeolian - Necrosis)
+		Tooltip: Plays Necrosis by Aeolian
+	}
+
+	MusicBoxFactory: {
+		DisplayName: Music Box (Factory | Aeolian - Apathy)
+		Tooltip: Plays Apathy by Aeolian
+	}
+
+	MusicBoxForest: {
+		DisplayName: Music Box (Forest | NACHOZ)
+		Tooltip: Plays the forest theme by NACHOZ
+	}
 }
 
 Projectiles: {
