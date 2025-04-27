@@ -1,7 +1,7 @@
 {
   "Biomes": [
     {
-      "BiomeName": "Forest1",
+      "BiomeName": "Forest",
       "Rooms": [
         {
           "Name": "forest_1",
@@ -352,12 +352,7 @@
               "OffsetY": "227"
             }
           ]
-        }
-      ]
-    },
-    {
-      "BiomeName": "Forest2",
-      "Rooms": [
+        },
         {
           "Name": "forest_2",
           "SpawnInfo": [
@@ -606,7 +601,7 @@
       ]
     },
     {
-      "BiomeName": "Hive1",
+      "BiomeName": "Hive",
       "Rooms": [
         {
           "Name": "hive_1",
@@ -751,7 +746,7 @@
       ]
     },
     {
-      "BiomeName": "Crimson1",
+      "BiomeName": "Crimson",
       "Rooms": [
         {
           "Name": "crimson_1",
@@ -1031,7 +1026,7 @@
       ]
     },
     {
-      "BiomeName": "Desert1",
+      "BiomeName": "Desert",
       "Rooms": [
         {
           "Name": "desert_1",
@@ -1371,7 +1366,7 @@
       ]
     },
     {
-      "BiomeName": "FrozenCity1",
+      "BiomeName": "FrozenCity",
       "Rooms": [
         {
           "Name": "frozencity_1",
