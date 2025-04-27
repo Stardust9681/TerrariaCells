@@ -7,6 +7,20 @@
     "PlacementStartOffsetY": 150,
     "LevelData": [
         {
+            "Name": "Inn",
+            "Structures": [
+                {
+                    "Name": "innbetween",
+                    "Path": "Content/Structures/innbetween.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": 800,
+                    "SpawnX": 35,
+                    "SpawnY": 31
+                }
+            ],
+            "Surface": false
+        },
+        {
             "Name": "Forest",
             "Structures": [
                 {
@@ -14,8 +28,16 @@
                     "Path": "Content/Structures/forest_1.shstruct",
                     "OffsetX": 0,
                     "OffsetY": -29,
-                    "SpawnX": 324,
-                    "SpawnY": 210
+                    "SpawnX": 777,
+                    "SpawnY": 234
+                },
+                {
+                    "Name": "forest_2",
+                    "Path": "Content/Structures/forest_2.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -29,
+                    "SpawnX": 615,
+                    "SpawnY": 95
                 }
             ],
             "Surface": false

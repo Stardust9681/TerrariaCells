@@ -37,7 +37,12 @@ namespace TerrariaCells.Common.Systems
             totalDamage = damag;
         }
 
-        private void On_UIWorldSelect_NewWorldClick(On_UIWorldSelect.orig_NewWorldClick orig, UIWorldSelect self, Terraria.UI.UIMouseEvent evt, Terraria.UI.UIElement listeningElement)
+        private void On_UIWorldSelect_NewWorldClick(
+            On_UIWorldSelect.orig_NewWorldClick orig,
+            UIWorldSelect self,
+            Terraria.UI.UIMouseEvent evt,
+            Terraria.UI.UIElement listeningElement
+        )
         {
             if (DevConfig.Instance.EnableCustomWorldGen)
             {
@@ -64,7 +69,7 @@ namespace TerrariaCells.Common.Systems
                 WorldGen.WorldGenParam_Evil = -1;
 
                 Main.ActiveWorldFileData = WorldFile.CreateMetadata(
-                    Main.worldName = "terracellsv0.3.3",
+                    Main.worldName = "terracellsv0_3_3",
                     false,
                     Main.GameMode
                 );
@@ -74,45 +79,19 @@ namespace TerrariaCells.Common.Systems
                 // else
                 //     Main.ActiveWorldFileData.SetSeed(processedSeed);
 
-                Main.menuMode = 10;
-                WorldGen.CreateNewWorld();
+                // Main.menuMode = 10;
 
-                // WorldGen.generatingWorld = true;
-                // Main.rand = new UnifiedRandom(Main.ActiveWorldFileData.Seed);
-                // WorldGen.gen = true;
-                // Main.menuMode = 888;
-                // try
-                // {
-                //     Main.MenuUI.SetState(new UIWorldLoad());
-                // }
-                // catch { }
+                var task = WorldGen.CreateNewWorld();
 
-                // try
-                // {
-                //     // do_worldGenCallBack(threadContext);
-                //     WorldGen.clearWorld();
-                //     WorldGen.GenerateWorld(Main.ActiveWorldFileData.Seed);
-                //     WorldFile.SaveWorld(Main.ActiveWorldFileData.IsCloudSave, resetTime: true);
+                var awaiter = task.GetAwaiter();
 
-                //     // BackupIO.archiveLock = false;
-
-                //     // if (Main.menuMode == 10 || Main.menuMode == 888)
-                //     //     Main.menuMode = 6;
-
-                //     // SoundEngine.PlaySound(10);
-                //     WorldGen.generatingWorld = false;
-                // }
-                // catch (Exception e)
-                // {
-                //     Utils.ShowFancyErrorMessage(
-                //         Language.GetTextValue("tModLoader.WorldGenError") + "\n" + e,
-                //         0
-                //     );
-                // }
-
-                FileUtilities.Copy(Main.worldPathName + ".bak", Main.worldPathName, false);
-
-                WorldGen.playWorld();
+                awaiter.OnCompleted(
+                    delegate
+                    {
+                        FileUtilities.Copy(Main.worldPathName, Main.worldPathName + ".bak", false);
+                        WorldGen.playWorld();
+                    }
+                );
 
                 return;
             }
