@@ -28,13 +28,28 @@ public class BasicWorldGeneration : ModSystem
         // "Terrain",
         // "Spawn Point"
     ];
+    private BasicWorldGenData basicWorldGenData;
 
     /// <summary>
     /// Returns the TerraCells related data this world was generated with, if any.
     ///
     /// Returns null if the world was not generated with any.
     /// </summary>
-    public BasicWorldGenData BasicWorldGenData { get; private set; }
+    public BasicWorldGenData BasicWorldGenData
+    {
+        get
+        {
+            if (basicWorldGenData == null)
+            {
+                Main.NewText(
+                    "TerraCells world generation data missing! Some TerraCells features may not work."
+                );
+                Mod.Logger.Error("Missing BasicWorldGenData!");
+            }
+            return basicWorldGenData;
+        }
+        private set => basicWorldGenData = value;
+    }
     public static List<Level> StaticLevelData { get; private set; }
 
     public override void SetStaticDefaults()
@@ -44,7 +59,9 @@ public class BasicWorldGeneration : ModSystem
         );
         if (BasicWorldGenData == null)
         {
-            throw new System.Exception("Could not deserialize world gen data");
+            throw new Exception(
+                "Could not deserialize worldgen.json! (If building, check if worldgen.json is present in the source.)"
+            );
         }
         StaticLevelData = BasicWorldGenData.LevelData;
     }
