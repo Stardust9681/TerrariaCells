@@ -11,8 +11,10 @@ using Terraria.GameContent.UI.States;
 using Terraria.ID;
 using Terraria.Initializers;
 using Terraria.IO;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.Utilities;
+using Terraria.WorldBuilding;
 using TerrariaCells.Common.Configs;
 
 namespace TerrariaCells.Common.Systems
@@ -27,7 +29,6 @@ namespace TerrariaCells.Common.Systems
             On_Player.PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool += NoAmmoDamage;
         }
 
-       
 
         private void NoAmmoDamage(On_Player.orig_PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool orig, Player self, Item sItem, ref int projToShoot, ref float speed, ref bool canShoot, ref int totalDamage, ref float KnockBack, out int usedAmmoItemId, bool dontConsume)
         {
@@ -40,7 +41,79 @@ namespace TerrariaCells.Common.Systems
         {
             if (DevConfig.Instance.EnableCustomWorldGen)
             {
-                orig.Invoke(self, evt, listeningElement);
+                // orig.Invoke(self, evt, listeningElement);
+
+                // UIWorldCreation.FinishCreatingWorld();
+
+                // UIWorldCreation.
+
+                // // Main.spawnTileX = 840;
+                // // Main.spawnTileY = 240;
+                // // case WorldSizeId.Large:
+                Main.maxTilesX = 8400;
+                Main.maxTilesY = 2400;
+                Main.worldSurface = 400;
+                Main.rockLayer = 800;
+
+                WorldGen.setWorldSize();
+
+                // // case WorldDifficultyId.Creative:
+                Main.GameMode = 3;
+
+                // // case WorldEvilId.Random:
+                WorldGen.WorldGenParam_Evil = -1;
+
+                Main.ActiveWorldFileData = WorldFile.CreateMetadata(
+                    Main.worldName = "terracellsv0.3.3",
+                    false,
+                    Main.GameMode
+                );
+
+                // if (processedSeed.Length == 0)
+                Main.ActiveWorldFileData.SetSeedToRandom();
+                // else
+                //     Main.ActiveWorldFileData.SetSeed(processedSeed);
+
+                Main.menuMode = 10;
+                WorldGen.CreateNewWorld();
+
+                // WorldGen.generatingWorld = true;
+                // Main.rand = new UnifiedRandom(Main.ActiveWorldFileData.Seed);
+                // WorldGen.gen = true;
+                // Main.menuMode = 888;
+                // try
+                // {
+                //     Main.MenuUI.SetState(new UIWorldLoad());
+                // }
+                // catch { }
+
+                // try
+                // {
+                //     // do_worldGenCallBack(threadContext);
+                //     WorldGen.clearWorld();
+                //     WorldGen.GenerateWorld(Main.ActiveWorldFileData.Seed);
+                //     WorldFile.SaveWorld(Main.ActiveWorldFileData.IsCloudSave, resetTime: true);
+
+                //     // BackupIO.archiveLock = false;
+
+                //     // if (Main.menuMode == 10 || Main.menuMode == 888)
+                //     //     Main.menuMode = 6;
+
+                //     // SoundEngine.PlaySound(10);
+                //     WorldGen.generatingWorld = false;
+                // }
+                // catch (Exception e)
+                // {
+                //     Utils.ShowFancyErrorMessage(
+                //         Language.GetTextValue("tModLoader.WorldGenError") + "\n" + e,
+                //         0
+                //     );
+                // }
+
+                FileUtilities.Copy(Main.worldPathName + ".bak", Main.worldPathName, false);
+
+                WorldGen.playWorld();
+
                 return;
             }
             SoundEngine.PlaySound(SoundID.MenuOpen);

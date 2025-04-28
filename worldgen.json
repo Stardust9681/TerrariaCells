@@ -1,16 +1,20 @@
 {
+    "WorldSpawnX": 590,
+    "WorldSpawnY": 240,
     "MarginsX": 0,
     "MarginsY": 0,
     "PlacementStartOffsetX": 240,
     "PlacementStartOffsetY": 150,
-    "Levels": [
+    "LevelData": [
         {
             "Name": "Forest",
             "Structures": [
                 {
                     "Path": "Content/Structures/forest_1.shstruct",
-                    "SpawnOffsetX": 0,
-                    "SpawnOffsetY": -29
+                    "OffsetX": 0,
+                    "OffsetY": -29,
+                    "SpawnX": 324,
+                    "SpawnY": 210
                 }
             ],
             "Surface": false
@@ -20,8 +24,8 @@
             "Structures": [
                 {
                     "Path": "Content/Structures/crimson_1.shstruct",
-                    "SpawnOffsetX": 0,
-                    "SpawnOffsetY": 0
+                    "OffsetX": 0,
+                    "OffsetY": 0
                 }
             ],
             "Surface": false
@@ -31,8 +35,8 @@
             "Structures": [
                 {
                     "Path": "Content/Structures/frozencity_1.shstruct",
-                    "SpawnOffsetX": 0,
-                    "SpawnOffsetY": 0
+                    "OffsetX": 0,
+                    "OffsetY": 0
                 }
             ],
             "Surface": false
@@ -42,8 +46,8 @@
             "Structures": [
                 {
                     "Path": "Content/Structures/pyramid_1.shstruct",
-                    "SpawnOffsetX": 0,
-                    "SpawnOffsetY": 150
+                    "OffsetX": 0,
+                    "OffsetY": 150
                 }
             ],
             "Surface": false
