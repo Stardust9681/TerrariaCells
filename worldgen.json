@@ -10,6 +10,7 @@
             "Name": "Forest",
             "Structures": [
                 {
+                    "Name": "forest_1",
                     "Path": "Content/Structures/forest_1.shstruct",
                     "OffsetX": 0,
                     "OffsetY": -29,
@@ -23,6 +24,7 @@
             "Name": "Crimson",
             "Structures": [
                 {
+                    "Name": "crimson_1",
                     "Path": "Content/Structures/crimson_1.shstruct",
                     "OffsetX": 0,
                     "OffsetY": 0
@@ -31,9 +33,10 @@
             "Surface": false
         },
         {
-            "Name": "Frozen City",
+            "Name": "FrozenCity",
             "Structures": [
                 {
+                    "Name": "frozencity_1",
                     "Path": "Content/Structures/frozencity_1.shstruct",
                     "OffsetX": 0,
                     "OffsetY": 0
@@ -45,6 +48,7 @@
             "Name": "Desert",
             "Structures": [
                 {
+                    "Name": "pyramid_1",
                     "Path": "Content/Structures/pyramid_1.shstruct",
                     "OffsetX": 0,
                     "OffsetY": 150

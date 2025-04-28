@@ -34,7 +34,7 @@ public class BasicWorldGeneration : ModSystem
     ///
     /// Returns null if the world was not generated with any.
     /// </summary>
-    public static BasicWorldGenData BasicWorldGenData { get; private set; }
+    public BasicWorldGenData BasicWorldGenData { get; private set; }
 
     public override void SetStaticDefaults()
     {
@@ -67,11 +67,6 @@ public class BasicWorldGeneration : ModSystem
         tasks.Add(new CustomWorldGenPass("TerraCells World Gen", 1.0));
     }
 
-    public override void OnWorldUnload()
-    {
-        BasicWorldGenData = null;
-    }
-
     public override void SaveWorldData(TagCompound tag)
     {
         tag["TerraCellsWorldGenData"] = BasicWorldGenData.SerializeData();
@@ -86,12 +81,14 @@ public class BasicWorldGeneration : ModSystem
             );
             if (BasicWorldGenData.GeneratedWithModVersion != Mod.Version.ToString())
             {
-                throw new Exception();
+                throw new Exception("Invalid mod version!");
             }
         }
-        catch
+        catch (Exception e)
         {
             BasicWorldGenData = null;
+
+            Mod.Logger.Error(e);
         }
     }
 }
@@ -100,12 +97,17 @@ public class CustomWorldGenPass(string name, double loadWeight) : GenPass(name, 
 {
     protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
     {
-        PlaceStructures(BasicWorldGeneration.BasicWorldGenData);
+        BasicWorldGenData data = ModContent
+            .GetContent<BasicWorldGeneration>()
+            .First()
+            .BasicWorldGenData;
+
+        PlaceStructures(data);
 
         Main.spawnTileX = Main.tile.Width / 2;
         Main.spawnTileY = Main.tile.Height / 2;
-        Main.spawnTileX = BasicWorldGeneration.BasicWorldGenData.WorldSpawnX;
-        Main.spawnTileY = BasicWorldGeneration.BasicWorldGenData.WorldSpawnY;
+        Main.spawnTileX = data.WorldSpawnX;
+        Main.spawnTileY = data.WorldSpawnY;
     }
 
     public static void PlaceStructures(BasicWorldGenData basicWorldGenData)
@@ -121,12 +123,13 @@ public class CustomWorldGenPass(string name, double loadWeight) : GenPass(name, 
         foreach (Level level in basicWorldGenData.LevelData)
         {
             int index = WorldGen.genRand.Next(level.Structures.Count);
-            basicWorldGenData.PickedLevels.Add(level.Name, index);
+            basicWorldGenData.LevelVariations.Add(level.Name, index);
             LevelStructure structure = level.Structures[index];
 
             string path = structure.Path;
             Point16 pos = offset + new Point16(structure.OffsetX, structure.OffsetY);
             StructureHelper.API.Generator.GenerateStructure(path, pos, mod);
+            basicWorldGenData.LevelPositions.Add(level.Name, pos);
 
             WorldGen.PlaceTile(pos.X, pos.Y, TileID.LunarOre);
 
@@ -182,12 +185,20 @@ public class BasicWorldGenData : TagSerializable
     ///
     /// The dictionary maps each generated level's name to the picked variations index in the list of LevelStructure data.
     /// <summary>
-    public Dictionary<string, int> PickedLevels = [];
+    public Dictionary<string, int> LevelVariations = [];
+
+    /// <summary>
+    /// After generating the world, these are the tile positions of each level's placement.
+    ///
+    /// The dictionary maps each generated level's name to the picked variations index in the list of LevelStructure data.
+    /// <summary>
+    public Dictionary<string, Point16> LevelPositions = [];
 
     public TagCompound SerializeData()
     {
-        var levels = PickedLevels.Keys.ToList();
-        var indices = PickedLevels.Values.ToList();
+        var levelOrdering = LevelVariations.Keys.ToList();
+        var indices = LevelVariations.Values.ToList();
+        var positions = LevelPositions.Values.ToList();
 
         return new TagCompound
         {
@@ -198,8 +209,9 @@ public class BasicWorldGenData : TagSerializable
             ["MarginsY"] = MarginsY,
             ["PlacementStartOffsetX"] = PlacementStartOffsetX,
             ["PlacementStartOffsetY"] = PlacementStartOffsetY,
-            ["PickedLevelsKeys"] = levels,
-            ["PickedLevelsIndices"] = indices,
+            ["Levels"] = levelOrdering,
+            ["LevelVariations"] = indices,
+            ["LevelPositions"] = positions,
         };
     }
 
@@ -214,8 +226,11 @@ public class BasicWorldGenData : TagSerializable
             MarginsY = (short)compound["MarginsY"],
             PlacementStartOffsetX = (short)compound["PlacementStartOffsetX"],
             PlacementStartOffsetY = (short)compound["PlacementStartOffsetY"],
-            PickedLevels = ((List<string>)compound["PickedLevelsKeys"])
-                .Zip((List<int>)compound["PickedLevelsIndices"])
+            LevelVariations = ((List<string>)compound.GetList<string>("Levels"))
+                .Zip((List<int>)compound.GetList<int>("LevelVaraitions"))
+                .ToDictionary(),
+            LevelPositions = ((List<string>)compound.GetList<string>("Levels"))
+                .Zip((List<Point16>)compound.GetList<Point16>("LevelPositions"))
                 .ToDictionary(),
         };
 
@@ -223,7 +238,10 @@ public class BasicWorldGenData : TagSerializable
     }
 }
 
-public class Level : TagSerializable
+/// <summary>
+/// Level data pulled from worldgen.json
+/// </summary>
+public class Level
 {
     [JsonInclude]
     public string Name;
@@ -233,15 +251,13 @@ public class Level : TagSerializable
 
     [JsonInclude]
     public bool Surface;
-
-    public TagCompound SerializeData()
-    {
-        throw new System.NotImplementedException();
-    }
 }
 
 public class LevelStructure
 {
+    [JsonInclude]
+    public string Name;
+
     [JsonInclude]
     public string Path;
 
@@ -257,3 +273,4 @@ public class LevelStructure
     [JsonInclude]
     public short SpawnY;
 }
+
