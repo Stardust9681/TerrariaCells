@@ -138,7 +138,7 @@ public class ForestExitPylon : ModPylon, ITerraCellsCategorization
 
     public override bool RightClick(int i, int j)
     {
-        Mod.GetContent<TeleportTracker>().First().Teleport();
+        Mod.GetContent<TeleportTracker>().First().Teleport("Inn");
         // return base.RightClick(i, j);
         return true;
     }

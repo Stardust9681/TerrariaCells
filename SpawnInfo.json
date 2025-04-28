@@ -1,6 +1,21 @@
 {
   "Biomes": [
     {
+      "BiomeName": "Inn",
+      "Rooms": [
+        {
+          "Name": "innbetween",
+          "SpawnInfo": [
+            {
+              "NameOrType": "GoblinTinkerer",
+              "OffsetX": "36",
+              "OffsetY": "49"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "BiomeName": "Forest",
       "Rooms": [
         {

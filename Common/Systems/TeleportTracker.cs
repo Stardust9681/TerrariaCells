@@ -1,6 +1,8 @@
 using System;
+using System.Linq;
 using System.Security.Cryptography.Pkcs;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -8,71 +10,90 @@ namespace TerrariaCells.Common.Systems;
 
 public class TeleportTracker : ModSystem
 {
-    public int teleports = 0;
-
     // determines the tier of items dropped from chests
     public int level = 1;
+    private string nextLevel = "forest";
 
     public override void OnModLoad()
     {
         base.OnModLoad();
     }
 
-    public void Reset()
-    {
-        teleports = 0;
-        level = 1;
-    }
-
     public override void OnWorldLoad()
     {
-        teleports = 0;
 		Main.dayTime = true;
 		Main.time = 4f * 3600f;
 		Main.StopRain();
+        nextLevel = "forest";
+        level = 1;
     }
 
-    public void Teleport()
+    public void Teleport(string destination)
     {
-        teleports += 1;
-		Vector2 position;
-		// forest --> crimson --> desert --> hive --> frozen city
+        Mod.Logger.Info($"Teleporting to {destination}:");
+        BasicWorldGenData worldLevelData = Mod.GetContent<BasicWorldGeneration>()
+            .First()
+            .BasicWorldGenData;
+        int variation = worldLevelData.LevelVariations[destination];
+        Mod.Logger.Info($"	Variation: {variation}");
+        Point16 roomPos = worldLevelData.LevelPositions[destination];
+
+        LevelStructure levelStructure = BasicWorldGeneration
+            .StaticLevelData.Find(x => x.Name == destination)
+            .Structures[variation];
+
+        Vector2 position = (
+            roomPos + new Point16(levelStructure.SpawnX, levelStructure.SpawnY)
+        ).ToWorldCoordinates();
+        Mod.Logger.Info($"	Found structure. Teleporting to {position}.");
+
+        destination = destination.ToLower();
+        if (destination != "inn")
+        {
+            nextLevel = destination;
+            Main.LocalPlayer.Teleport(
+                position.ToWorldCoordinates(),
+                TeleportationStyleID.TeleportationPylon
+            );
+            NetMessage.SendData(
+                MessageID.TeleportPlayerThroughPortal,
+                -1,
+                -1,
+                null,
+                Main.LocalPlayer.whoAmI,
+                (int)position.X,
+                (int)position.Y
+            );
+            return;
+        }
+
 		float hour = 7.5f;
 		bool day = true;
 		float rain = 0f;
-		switch (teleports)
+        switch (destination.ToLower())
         {
-			case 10: //Forest
-				position = new Vector2(12026.719f, 5990);
-				teleports = 0;
+            case "forest": //Forest
 				hour = 4f;
 				break;
-			case 2: //Crimson
-				position = new Vector2(4433, 453) * 16;
+            case "crimson": //Crimson
 				hour = 2.5f;
                 level = 2;
 				break;
-			case 4: //Desert
-				position = new Vector2(91387.836f, 7734);
+            case "desert": //Desert
                 level = 3;
 				break;
-			case 6: //Hive
-				position = new Vector2(47393.8f, 7158);
+            case "hive": //Hive
 				hour = 4;
 				day = false;
                 level = 4;
 				break;
-			case 8: //Frozen City
-				position = new Vector2(25136.639f, 6134);
+            case "frozencity": //Frozen City
 				hour = 4.5f;
 				rain = 1f;
                 level = 5;
 				var bottle = new Item(ItemID.CloudinaBottle);
 				Utils.Swap(ref Main.LocalPlayer.armor[5], ref bottle);
-				break;
-			default: //Inn-Between
-				position = new Vector2(19623f, 10326f);
-				break;
+                break;
 			//case 10: //Caverns
 			//  position = new Vector2(28818.312f, 17606);
 			//  return;
@@ -85,7 +106,7 @@ public class TeleportTracker : ModSystem
 		if (Main.netMode == NetmodeID.SinglePlayer)
 		{
 			Main.LocalPlayer.Teleport(
-				position,
+                position,
 				TeleportationStyleID.TeleportationPylon);
 				return;
 		}

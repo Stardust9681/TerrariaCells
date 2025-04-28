@@ -45,8 +45,8 @@ namespace TerrariaCells.Common.Systems
             foreach (var (levelName, variation) in data.LevelVariations)
             {
                 Point16 pos = data.LevelPositions[levelName];
-                LevelStructure levelStructure = data
-                    .LevelData.Find(x => x.Name == levelName)
+                LevelStructure levelStructure = BasicWorldGeneration
+                    .StaticLevelData.Find(x => x.Name == levelName)
                     .Structures[variation];
                 string roomName = levelStructure.Name;
                 ushort width = (ushort)

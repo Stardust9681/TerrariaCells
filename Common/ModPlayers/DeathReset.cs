@@ -52,7 +52,7 @@ public class DeathReset : ModPlayer, IEntitySource
 		Player.statMana = Player.statManaMax2;
 
 		//Reset systems
-		ModContent.GetInstance<TeleportTracker>().Reset();
+        // ModContent.GetInstance<TeleportTracker>().Reset();
 		ModContent.GetInstance<ClickedHeartsTracker>().Reset();
 		ModContent.GetInstance<ChestLootSpawner>().Reset();
 		WorldPylonSystem.ResetPylons();
