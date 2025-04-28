@@ -79,6 +79,7 @@ Configs: {
 			BuilderSettings: Builder Settings
 			InventorySettings: Inventory Settings
 			DebugAndPlaytesting: Debug And Playtesting Header
+			GameplaySettings: Gameplay Settings Header
 		}
 
 		EnableInventoryChanges: {
@@ -111,8 +112,8 @@ Configs: {
 			Tooltip: ""
 		}
 
-		DisableSpawns: {
-			Label: Disable Spawns
+		EnableCustomWorldGen: {
+			Label: Enable Custom World Gen
 			Tooltip: ""
 		}
 

@@ -1,0 +1,45 @@
+{
+    "Margins": {
+        "X": 1000,
+        "Y": 200
+    },
+    "PlacementStartOffset": {
+        "X": 2400,
+        "Y": 3000
+    },
+    "Levels": [
+        {
+            "Name": "NotDesert",
+            "StructurePaths": [
+                "Content/Structures/crimson_premade"
+            ],
+            "SpawnOffset": {
+                "X": 20,
+                "Y": 20
+            },
+            "Surface": false
+        },
+        {
+            "Name": "NotCrimson",
+            "StructurePaths": [
+                "Content/Structures/frozencity_premade_2"
+            ],
+            "SpawnOffset": {
+                "X": 20,
+                "Y": 20
+            },
+            "Surface": false
+        },
+        {
+            "Name": "NotFrozenCity",
+            "StructurePaths": [
+                "Content/Structures/desert_premade_2"
+            ],
+            "SpawnOffset": {
+                "X": 20,
+                "Y": 20
+            },
+            "Surface": false
+        }
+    ]
+}

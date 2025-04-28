@@ -17,51 +17,53 @@ namespace TerrariaCells.Common.Configs
 		public static DevConfig Instance => _instance ??= Terraria.ModLoader.ModContent.GetInstance<DevConfig>();
 
 
-        [Header("BuilderSettings")]
+        [Header("GameplaySettings")]
+        ///<summary>Toggle ability to build. Also allows tiles to be interacted with normally.</summary>
+        [DefaultValue(false)]
+        public bool BuilderMode;
 
-		///<summary>Toggle ability to build. Also allows tiles to be interacted with normally.</summary>
-		[DefaultValue(false)]
-		public bool BuilderMode;
+        /// <summary>Toggle NPC spawns (added to allow builders to build in peace)</summary>
+        [DefaultValue(false)]
+        public bool DisableSpawns;
 
-		/// <summary>Toggle NPC spawns (added to allow builders to build in peace)</summary>
-		[DefaultValue(false)]
-		public bool DisableSpawns;
+        [DefaultValue(true)]
+        public bool DisableUsingMouseItem;
 
-		[DefaultValue(true)]
-		public bool DisableUsingMouseItem;
+        /// <summary>Prevents tile damage from explosives.</summary>
+        [DefaultValue(true)]
+        public bool PreventExplosionDamage;
 
-		/// <summary>Prevents tile damage from explosives.</summary>
-		[DefaultValue(true)]
-		public bool PreventExplosionDamage;
+        /// <summary>Toggles intended Pylon mechanics.</summary>
+        [DefaultValue(true)]
+        public bool DoPylonDiscoveries;
 
-		/// <summary>Toggles intended Pylon mechanics.</summary>
-		[DefaultValue(true)]
-		public bool DoPylonDiscoveries;
+        /// <summary>When active, drops all of the players items onto the ground on death.</summary>
+        [DefaultValue(true)]
+        public bool DropItems;
 
-		[Header("InventorySettings")]
+        /// <summary>When active, replaces vanilla world generation with custom worldgen.</summary>
+        [DefaultValue(true)]
+        public bool EnableCustomWorldGen;
 
-		/// <summary>Effectively controls whether this mod affects the interface.</summary>
-		[DefaultValue(true)]
-		public bool EnableInventoryChanges;
+        [Header("InventorySettings")]
+        /// <summary>Effectively controls whether this mod affects the interface.</summary>
+        [DefaultValue(true)]
+        public bool EnableInventoryChanges;
 
-		/// <summary>If enabled, activate the chest limiting feature that disables the chest interface and drops items from chests instead.</summary>
-		[DefaultValue(true)]
-		public bool EnableChestChanges;
+        /// <summary>If enabled, activate the chest limiting feature that disables the chest interface and drops items from chests instead.</summary>
+        [DefaultValue(true)]
+        public bool EnableChestChanges;
 
-		/// <summary>Since the default inventory is used and manipulated in this mod, you can disable that behaviour here if you wish.</summary>
-		[DefaultValue(true)]
-		public bool EnableInventoryLock;
+        /// <summary>Since the default inventory is used and manipulated in this mod, you can disable that behaviour here if you wish.</summary>
+        [DefaultValue(true)]
+        public bool EnableInventoryLock;
 
-		/// <summary>When active, drops all of the players items onto the ground on death.</summary>
-		[DefaultValue(true)]
-		public bool DropItems;
-
-		/// <summary>
-		/// Disables the interfaces that show the inventory.
-		/// <para>Note that this disables the functionality of the visible inventory as well.</para>
-		/// </summary>
-		[DefaultValue(true)]
-		public bool HideVanillaInventory;
+        /// <summary>
+        /// Disables the interfaces that show the inventory.
+        /// <para>Note that this disables the functionality of the visible inventory as well.</para>
+        /// </summary>
+        [DefaultValue(true)]
+        public bool HideVanillaInventory;
 
 		[Header("DebugAndPlaytesting")]
 		
