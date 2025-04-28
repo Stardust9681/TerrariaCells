@@ -52,7 +52,7 @@ public class TeleportTracker : ModSystem
         {
             nextLevel = destination;
             Main.LocalPlayer.Teleport(
-                position.ToWorldCoordinates(),
+                position,
                 TeleportationStyleID.TeleportationPylon
             );
             NetMessage.SendData(
@@ -66,7 +66,6 @@ public class TeleportTracker : ModSystem
             );
             return;
         }
-
 		float hour = 7.5f;
 		bool day = true;
 		float rain = 0f;
