@@ -1,1396 +1,1393 @@
 {
   "Biomes": [
-    { "BiomeName": "Forest",
+    {
+      "BiomeName": "Forest1",
       "Rooms": [
-        { "Name": "forest_medium_scaffolds",
-          "SpawnInfo": [
-            {
-              "NameOrType": "GoblinArcher",
-              "OffsetX": "40",
-              "OffsetY": "11"
-            },
-            {
-              "NameOrType": "GoblinThief",
-              "OffsetX": "23",
-              "OffsetY": "5"
-            }
-          ]
-        },
-        { "Name": "forest_large_cavern",
-          "SpawnInfo": [
-            {
-              "NameOrType": "Raven",
-              "OffsetX": "40",
-              "OffsetY": "31"
-            },
-            {
-              "NameOrType": "Raven",
-              "OffsetX": "44",
-              "OffsetY": "31"
-            },
-            {
-              "NameOrType": "Raven",
-              "OffsetX": "100",
-              "OffsetY": "24"
-            },
-            {
-              "NameOrType": "GoblinThief",
-              "OffsetX": "13",
-              "OffsetY": "28"
-            },
-            {
-              "NameOrType": "GoblinArcher",
-              "OffsetX": "68",
-              "OffsetY": "20"
-            },
-            {
-              "NameOrType": "GoblinSorcerer",
-              "OffsetX": "25",
-              "OffsetY": "9"
-            }
-          ]
-        },
-        { "Name": "forest_large_ruinedhouse",
+        {
+          "Name": "forest_1",
           "SpawnInfo": [
             {
               "NameOrType": "GoblinThief",
-              "OffsetX": "20",
-              "OffsetY": "19"
+              "OffsetX": "576",
+              "OffsetY": "36"
             },
             {
               "NameOrType": "GoblinThief",
-              "OffsetX": "44",
-              "OffsetY": "17"
-            },
-            {
-              "NameOrType": "Raven",
-              "OffsetX": "25",
-              "OffsetY": "53"
-            },
-            {
-              "NameOrType": "GoblinThief",
-              "OffsetX": "103",
-              "OffsetY": "21"
-            },
-            {
-              "NameOrType": "GoblinSorcerer",
-              "OffsetX": "100",
-              "OffsetY": "39"
-            },
-            {
-              "NameOrType": "GoblinSorcerer",
-              "OffsetX": "110",
-              "OffsetY": "39"
-            }
-          ]
-        },
-        { "Name": "forest_large_windmill",
-          "SpawnInfo": [
-            {
-              "NameOrType": "Wolf",
-              "OffsetX": "17",
-              "OffsetY": "6"
-            },
-            {
-              "NameOrType": "Raven",
-              "OffsetX": "30",
-              "OffsetY": "13"
-            },
-            {
-              "NameOrType": "GoblinArcher",
-              "OffsetX": "71",
-              "OffsetY": "5"
-            },
-            {
-              "NameOrType": "GoblinThief",
-              "OffsetX": "30",
-              "OffsetY": "4"
-            },
-            {
-              "NameOrType": "GoblinSorcerer",
-              "OffsetX": "57",
-              "OffsetY": "13"
-            },
-            {
-              "NameOrType": "GoblinArcher",
-              "OffsetX": "103",
-              "OffsetY": "27"
-            }
-          ]
-        },
-        { "Name": "forest_medium_bigtree",
-          "SpawnInfo": [
-            {
-              "NameOrType": "Wolf",
-              "OffsetX": "12",
-              "OffsetY": "7"
-            }
-          ]
-        },
-        { "Name": "forest_medium_log",
-          "SpawnInfo": [
-            {
-              "NameOrType": "Wolf",
-              "OffsetX": "22",
-              "OffsetY": "4"
-            },
-            {
-              "NameOrType": "Raven",
-              "OffsetX": "16",
-              "OffsetY": "16"
-            },
-            {
-              "NameOrType": "Raven",
-              "OffsetX": "30",
-              "OffsetY": "17"
-            }
-          ]
-        },
-        { "Name": "forest_large_water",
-          "SpawnInfo": [
-            {
-              "NameOrType": "GoblinArcher",
-              "OffsetX": "43",
-              "OffsetY": "32"
-            },
-            {
-              "NameOrType": "GoblinSorcerer",
-              "OffsetX": "28",
-              "OffsetY": "32"
-            },
-            {
-              "NameOrType": "GoblinThief",
-              "OffsetX": "62",
-              "OffsetY": "27"
-            },
-            {
-              "NameOrType": "GoblinThief",
-              "OffsetX": "65",
-              "OffsetY": "27"
-            },
-            {
-              "NameOrType": "GoblinThief",
-              "OffsetX": "57",
-              "OffsetY": "25"
+              "OffsetX": "591",
+              "OffsetY": "36"
             },
             {
               "NameOrType": "Wolf",
-              "OffsetX": "9",
-              "OffsetY": "30"
+              "OffsetX": "544",
+              "OffsetY": "35"
             },
             {
-              "NameOrType": "Wolf",
-              "OffsetX": "176",
-              "OffsetY": "32"
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "528",
+              "OffsetY": "47"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "576",
+              "OffsetY": "36"
             },
             {
               "NameOrType": "Raven",
-              "OffsetX": "170",
-              "OffsetY": "44"
+              "OffsetX": "495",
+              "OffsetY": "46"
             },
             {
               "NameOrType": "Raven",
-              "OffsetX": "184",
+              "OffsetX": "493",
               "OffsetY": "45"
             },
             {
               "NameOrType": "Wolf",
-              "OffsetX": "216",
-              "OffsetY": "35"
-            }
-          ]
-        }
-      ]
-    },
-    { "BiomeName": "ForestPremade",
-      "Rooms": [
-        { "Name": "forest_premade",
-          "SpawnInfo": [
-            {
-              "NameOrType": "GoblinArcher",
-              "OffsetX": "102",
-              "OffsetY": "32"
-            },
-            {
-              "NameOrType": "GoblinSorcerer",
-              "OffsetX": "87",
-              "OffsetY": "32"
-            },
-            {
-              "NameOrType": "GoblinThief",
-              "OffsetX": "121",
-              "OffsetY": "27"
-            },
-            {
-              "NameOrType": "GoblinThief",
-              "OffsetX": "124",
-              "OffsetY": "27"
-            },
-            {
-              "NameOrType": "GoblinThief",
-              "OffsetX": "116",
-              "OffsetY": "25"
+              "OffsetX": "451",
+              "OffsetY": "33"
             },
             {
               "NameOrType": "Wolf",
-              "OffsetX": "69",
-              "OffsetY": "30"
-            },
-            {
-              "NameOrType": "GoblinArcher",
-              "OffsetX": "304",
-              "OffsetY": "43"
-            },
-            {
-              "NameOrType": "GoblinThief",
-              "OffsetX": "287",
-              "OffsetY": "37"
-            },
-            {
-              "NameOrType": "Raven",
-              "OffsetX": "359",
-              "OffsetY": "41"
-            },
-            {
-              "NameOrType": "Raven",
-              "OffsetX": "363",
-              "OffsetY": "41"
-            },
-            {
-              "NameOrType": "Raven",
-              "OffsetX": "419",
+              "OffsetX": "471",
               "OffsetY": "34"
             },
             {
-              "NameOrType": "GoblinThief",
-              "OffsetX": "332",
-              "OffsetY": "38"
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "516",
+              "OffsetY": "49"
             },
             {
               "NameOrType": "GoblinArcher",
-              "OffsetX": "387",
-              "OffsetY": "30"
-            },
-            {
-              "NameOrType": "GoblinSorcerer",
-              "OffsetX": "344",
-              "OffsetY": "19"
+              "OffsetX": "534",
+              "OffsetY": "63"
             },
             {
               "NameOrType": "GoblinThief",
-              "OffsetX": "450",
-              "OffsetY": "27"
-            },
-            {
-              "NameOrType": "GoblinThief",
-              "OffsetX": "474",
-              "OffsetY": "25"
-            },
-            {
-              "NameOrType": "Raven",
-              "OffsetX": "455",
+              "OffsetX": "527",
               "OffsetY": "61"
             },
             {
               "NameOrType": "GoblinThief",
-              "OffsetX": "533",
-              "OffsetY": "29"
+              "OffsetX": "517",
+              "OffsetY": "64"
             },
             {
-              "NameOrType": "GoblinSorcerer",
-              "OffsetX": "530",
-              "OffsetY": "47"
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "552",
+              "OffsetY": "64"
             },
             {
-              "NameOrType": "GoblinSorcerer",
-              "OffsetX": "540",
-              "OffsetY": "47"
-            },
-            {
-              "NameOrType": "Wolf",
-              "OffsetX": "658",
-              "OffsetY": "29"
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "392",
+              "OffsetY": "48"
             },
             {
               "NameOrType": "Raven",
-              "OffsetX": "671",
-              "OffsetY": "36"
+              "OffsetX": "403",
+              "OffsetY": "48"
             },
             {
-              "NameOrType": "GoblinArcher",
-              "OffsetX": "712",
-              "OffsetY": "28"
+              "NameOrType": "Raven",
+              "OffsetX": "406",
+              "OffsetY": "48"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "413",
+              "OffsetY": "52"
             },
             {
               "NameOrType": "GoblinThief",
-              "OffsetX": "671",
-              "OffsetY": "7"
+              "OffsetX": "358",
+              "OffsetY": "44"
             },
             {
-              "NameOrType": "GoblinSorcerer",
-              "OffsetX": "697",
-              "OffsetY": "36"
+              "NameOrType": "GoblinThief",
+              "OffsetX": "342",
+              "OffsetY": "45"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "581",
+              "OffsetY": "63"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "590",
+              "OffsetY": "63"
             },
             {
               "NameOrType": "GoblinArcher",
-              "OffsetX": "744",
-              "OffsetY": "50"
+              "OffsetX": "599",
+              "OffsetY": "54"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "577",
+              "OffsetY": "54"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "579",
+              "OffsetY": "72"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "590",
+              "OffsetY": "72"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "542",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "544",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "538",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "526",
+              "OffsetY": "72"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "568",
+              "OffsetY": "109"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "624",
+              "OffsetY": "114"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "626",
+              "OffsetY": "143"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "689",
+              "OffsetY": "142"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "714",
+              "OffsetY": "140"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "710",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "703",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "705",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "707",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "709",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "683",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "762",
+              "OffsetY": "145"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "770",
+              "OffsetY": "145"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "779",
+              "OffsetY": "163"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "777",
+              "OffsetY": "176"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "808",
+              "OffsetY": "143"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "813",
+              "OffsetY": "144"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "557",
+              "OffsetY": "165"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "547",
+              "OffsetY": "165"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "549",
+              "OffsetY": "147"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "521",
+              "OffsetY": "154"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "478",
+              "OffsetY": "152"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "493",
+              "OffsetY": "162"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "431",
+              "OffsetY": "149"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "442",
+              "OffsetY": "161"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "422",
+              "OffsetY": "162"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "383",
+              "OffsetY": "149"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "504",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "487",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "459",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "425",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "390",
+              "OffsetY": "204"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "394",
+              "OffsetY": "223"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "385",
+              "OffsetY": "241"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "394",
+              "OffsetY": "241"
+            },
+            {
+              "NameOrType": "BoundGoblin",
+              "OffsetX": "350",
+              "OffsetY": "124"
+            },
+            {
+              "NameOrType": "ArmsDealer",
+              "OffsetX": "321",
+              "OffsetY": "59"
+            },
+            {
+              "NameOrType": "Guide",
+              "OffsetX": "780",
+              "OffsetY": "36"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "348",
+              "OffsetY": "227"
             }
           ]
         }
       ]
     },
-    { "BiomeName": "FrozenCityPremade",
+    {
+      "BiomeName": "Forest2",
       "Rooms": [
-        { "Name": "frozencity_premade",
+        {
+          "Name": "forest_2",
           "SpawnInfo": [
             {
-              "NameOrType": "IceGolem",
-              "OffsetX": "138",
-              "OffsetY": "107"
+              "NameOrType": "Guide",
+              "OffsetX": "618",
+              "OffsetY": "192"
             },
             {
-              "NameOrType": "CultistArcherBlue",
-              "OffsetX": "157",
-              "OffsetY": "118"
+              "NameOrType": "Merchant",
+              "OffsetX": "1234",
+              "OffsetY": "182"
             },
             {
-              "NameOrType": "CultistArcherBlue",
-              "OffsetX": "162",
+              "NameOrType": "GoblinThief",
+              "OffsetX": "313",
+              "OffsetY": "96"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "335",
+              "OffsetY": "96"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "366",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "418",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "430",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "439",
+              "OffsetY": "96"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "432",
+              "OffsetY": "109"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "417",
+              "OffsetY": "185"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "399",
+              "OffsetY": "203"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "427",
+              "OffsetY": "248"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "435",
+              "OffsetY": "248"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "481",
+              "OffsetY": "252"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "500",
+              "OffsetY": "252"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "498",
+              "OffsetY": "117"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "480",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "490",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "492",
+              "OffsetY": "204"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "521",
+              "OffsetY": "196"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "546",
+              "OffsetY": "207"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "549",
+              "OffsetY": "189"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "556",
+              "OffsetY": "207"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "558",
+              "OffsetY": "207"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "798",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "863",
+              "OffsetY": "195"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "812",
+              "OffsetY": "207"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "882",
+              "OffsetY": "196"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "885",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "887",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "896",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "898",
+              "OffsetY": "195"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "914",
+              "OffsetY": "197"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "914",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "883",
+              "OffsetY": "152"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "890",
+              "OffsetY": "152"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "951",
+              "OffsetY": "151"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "960",
+              "OffsetY": "151"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "907",
+              "OffsetY": "176"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "842",
+              "OffsetY": "157"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "1117",
+              "OffsetY": "172"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "1121",
+              "OffsetY": "172"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "1139",
+              "OffsetY": "170"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "1085",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1132",
+              "OffsetY": "158"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "1194",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "BoundGoblin",
+              "OffsetX": "528",
+              "OffsetY": "91"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "1196",
+              "OffsetY": "168"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "BiomeName": "Hive1",
+      "Rooms": [
+        {
+          "Name": "hive_1",
+          "SpawnInfo": [
+            {
+              "NameOrType": "SWATHornet",
+              "OffsetX": "32",
+              "OffsetY": "136"
+            },
+            {
+              "NameOrType": "SWATHornet",
+              "OffsetX": "40",
+              "OffsetY": "146"
+            },
+            {
+              "NameOrType": "SWATHornet",
+              "OffsetX": "54",
+              "OffsetY": "144"
+            },
+            {
+              "NameOrType": "SWATHornet",
+              "OffsetX": "153",
               "OffsetY": "113"
             },
             {
-              "NameOrType": "IceElemental",
-              "OffsetX": "179",
-              "OffsetY": "93"
+              "NameOrType": "Hornet",
+              "OffsetX": "172",
+              "OffsetY": "102"
             },
             {
-              "NameOrType": "IceElemental",
-              "OffsetX": "217",
+              "NameOrType": "Hornet",
+              "OffsetX": "180",
+              "OffsetY": "112"
+            },
+            {
+              "NameOrType": "Hornet",
+              "OffsetX": "206",
+              "OffsetY": "116"
+            },
+            {
+              "NameOrType": "Hornet",
+              "OffsetX": "219",
               "OffsetY": "114"
             },
             {
-              "NameOrType": "IceElemental",
-              "OffsetX": "215",
-              "OffsetY": "123"
-            },
-            {
-              "NameOrType": "CultistDevote",
-              "OffsetX": "221",
-              "OffsetY": "104"
-            },
-            {
-              "NameOrType": "CultistArcherBlue",
-              "OffsetX": "238",
-              "OffsetY": "125"
-            },
-            {
-              "NameOrType": "CultistArcherBlue",
-              "OffsetX": "237",
-              "OffsetY": "113"
-            },
-            {
-              "NameOrType": "CultistDevote",
-              "OffsetX": "251",
-              "OffsetY": "107"
-            },
-            {
-              "NameOrType": "IceElemental",
-              "OffsetX": "250",
+              "NameOrType": "Hornet",
+              "OffsetX": "233",
               "OffsetY": "119"
             },
             {
-              "NameOrType": "IceElemental",
-              "OffsetX": "244",
-              "OffsetY": "119"
+              "NameOrType": "SWATHornet",
+              "OffsetX": "228",
+              "OffsetY": "155"
             },
             {
-              "NameOrType": "CultistDevote",
-              "OffsetX": "283",
-              "OffsetY": "83"
+              "NameOrType": "Hornet",
+              "OffsetX": "263",
+              "OffsetY": "167"
             },
             {
-              "NameOrType": "CultistDevote",
-              "OffsetX": "306",
-              "OffsetY": "71"
+              "NameOrType": "Hornet",
+              "OffsetX": "272",
+              "OffsetY": "168"
             },
             {
-              "NameOrType": "CultistArcherBlue",
-              "OffsetX": "289",
-              "OffsetY": "73"
+              "NameOrType": "Hornet",
+              "OffsetX": "185",
+              "OffsetY": "159"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "Hornet",
+              "OffsetX": "181",
+              "OffsetY": "169"
+            },
+            {
+              "NameOrType": "SWATHornet",
+              "OffsetX": "264",
+              "OffsetY": "111"
+            },
+            {
+              "NameOrType": "Hornet",
+              "OffsetX": "254",
+              "OffsetY": "86"
+            },
+            {
+              "NameOrType": "Hornet",
+              "OffsetX": "299",
+              "OffsetY": "93"
+            },
+            {
+              "NameOrType": "Hornet",
               "OffsetX": "325",
               "OffsetY": "91"
             },
             {
-              "NameOrType": "CultistArcherBlue",
-              "OffsetX": "351",
-              "OffsetY": "114"
+              "NameOrType": "Hornet",
+              "OffsetX": "330",
+              "OffsetY": "97"
             },
             {
-              "NameOrType": "IceElemental",
-              "OffsetX": "365",
-              "OffsetY": "116"
-            },
-            {
-              "NameOrType": "IceElemental",
-              "OffsetX": "369",
-              "OffsetY": "114"
-            },
-            {
-              "NameOrType": "IceGolem",
-              "OffsetX": "408",
-              "OffsetY": "46"
-            },
-            {
-              "NameOrType": "CultistArcherBlue",
-              "OffsetX": "413",
-              "OffsetY": "71"
-            },
-            {
-              "NameOrType": "CultistArcherBlue",
-              "OffsetX": "428",
-              "OffsetY": "46"
-            },
-            {
-              "NameOrType": "CultistDevote",
-              "OffsetX": "426",
-              "OffsetY": "121"
-            },
-            {
-              "NameOrType": "CultistDevote",
-              "OffsetX": "434",
-              "OffsetY": "121"
-            },
-            {
-              "NameOrType": "CultistDevote",
-              "OffsetX": "440",
-              "OffsetY": "121"
-            },
-            {
-              "NameOrType": "CultistArcherBlue",
-              "OffsetX": "446",
-              "OffsetY": "122"
-            },
-            {
-              "NameOrType": "CultistDevote",
-              "OffsetX": "443",
-              "OffsetY": "150"
-            },
-            {
-              "NameOrType": "CultistDevote",
-              "OffsetX": "442",
-              "OffsetY": "152"
-            },
-            {
-              "NameOrType": "IceElemental",
-              "OffsetX": "441",
-              "OffsetY": "155"
-            },
-            {
-              "NameOrType": "CultistArcherBlue",
-              "OffsetX": "535",
-              "OffsetY": "112"
-            },
-            {
-              "NameOrType": "CultistDevote",
-              "OffsetX": "530",
-              "OffsetY": "118"
-            },
-            {
-              "NameOrType": "CultistDevote",
-              "OffsetX": "660",
-              "OffsetY": "110"
-            },
-            {
-              "NameOrType": "CultistDevote",
-              "OffsetX": "666",
-              "OffsetY": "114"
-            },
-            {
-              "NameOrType": "CultistDevote",
-              "OffsetX": "666",
-              "OffsetY": "120"
-            },
-            {
-              "NameOrType": "CultistDevote",
-              "OffsetX": "666",
-              "OffsetY": "126"
-            },
-            {
-              "NameOrType": "CultistArcherBlue",
-              "OffsetX": "660",
-              "OffsetY": "130"
-            },
-            {
-              "NameOrType": "CultistArcherBlue",
-              "OffsetX": "645",
-              "OffsetY": "114"
-            },
-            {
-              "NameOrType": "IceElemental",
-              "OffsetX": "657",
-              "OffsetY": "120"
-            },
-            {
-              "NameOrType": "IceElemental",
-              "OffsetX": "666",
-              "OffsetY": "124"
-            },
-            {
-              "NameOrType": "CultistArcherBlue",
-              "OffsetX": "675",
-              "OffsetY": "132"
-            }
-          ]
-        }
-      ]
-    },
-    { "BiomeName": "DesertPremade",
-      "Rooms": [
-        { "Name": "desert_premade",
-          "SpawnInfo": [
-            {
-              "NameOrType": "Vulture",
-              "OffsetX": "179",
-              "OffsetY": "165"
-            },
-            {
-              "NameOrType": "Vulture",
-              "OffsetX": "201",
-              "OffsetY": "169"
-            },
-            {
-              "NameOrType": "Vulture",
-              "OffsetX": "226",
-              "OffsetY": "168"
-            },
-            {
-              "NameOrType": "Vulture",
-              "OffsetX": "234",
-              "OffsetY": "168"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "257",
-              "OffsetY": "153"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "272",
-              "OffsetY": "153"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "304",
-              "OffsetY": "125"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "319",
-              "OffsetY": "124"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
+              "NameOrType": "Hornet",
               "OffsetX": "338",
-              "OffsetY": "125"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "345",
-              "OffsetY": "127"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "367",
-              "OffsetY": "153"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "482",
-              "OffsetY": "153"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "527",
-              "OffsetY": "153"
-            },
-            {
-              "NameOrType": "Vulture",
-              "OffsetX": "524",
-              "OffsetY": "165"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "504",
-              "OffsetY": "116"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "506",
-              "OffsetY": "116"
-            },
-            {
-              "NameOrType": "Mummy",
-              "OffsetX": "531",
-              "OffsetY": "118"
-            },
-            {
-              "NameOrType": "Mummy",
-              "OffsetX": "489",
-              "OffsetY": "95"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "519",
-              "OffsetY": "95"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "530",
-              "OffsetY": "96"
-            },
-            {
-              "NameOrType": "DesertDjinn",
-              "OffsetX": "545",
-              "OffsetY": "102"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "563",
-              "OffsetY": "95"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "602",
-              "OffsetY": "69"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "606",
-              "OffsetY": "69"
-            },
-            {
-              "NameOrType": "FlameWheel",
-              "OffsetX": "505",
-              "OffsetY": "116"
-            },
-            {
-              "NameOrType": "SpikeBall",
-              "OffsetX": "603",
-              "OffsetY": "56"
-            },
-            {
-              "NameOrType": "DesertDjinn",
-              "OffsetX": "601",
-              "OffsetY": "57"
-            },
-            {
-              "NameOrType": "DesertDjinn",
-              "OffsetX": "586",
-              "OffsetY": "39"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "617",
-              "OffsetY": "45"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "601",
-              "OffsetY": "39"
-            },
-            {
-              "NameOrType": "Mummy",
-              "OffsetX": "593",
-              "OffsetY": "89"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "600",
-              "OffsetY": "89"
-            },
-            {
-              "NameOrType": "SpikeWheel",
-              "OffsetX": "642",
-              "OffsetY": "79"
-            },
-            {
-              "NameOrType": "Mummy",
-              "OffsetX": "593",
-              "OffsetY": "89"
-            },
-            {
-              "NameOrType": "DesertDjinn",
-              "OffsetX": "673",
-              "OffsetY": "80"
-            },
-            {
-              "NameOrType": "DesertDjinn",
-              "OffsetX": "675",
-              "OffsetY": "68"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "690",
-              "OffsetY": "68"
-            },
-            {
-              "NameOrType": "DesertDjinn",
-              "OffsetX": "720",
-              "OffsetY": "75"
-            }
-          ]
-        }
-      ]
-    },
-    { "BiomeName": "HivePremade",
-      "Rooms": [
-        { "Name": "hive_premade",
-          "SpawnInfo": [
-            {
-              "NameOrType": "SWATHornet",
-              "OffsetX": "86",
-              "OffsetY": "105"
+              "OffsetY": "92"
             },
             {
               "NameOrType": "SWATHornet",
-              "OffsetX": "99",
-              "OffsetY": "104"
+              "OffsetX": "286",
+              "OffsetY": "44"
             },
             {
               "NameOrType": "SWATHornet",
-              "OffsetX": "111",
-              "OffsetY": "94"
-            },
-            {
-              "NameOrType": "Hornet",
-              "OffsetX": "179",
-              "OffsetY": "89"
-            },
-            {
-              "NameOrType": "Hornet",
-              "OffsetX": "173",
-              "OffsetY": "79"
-            },
-            {
-              "NameOrType": "SWATHornet",
-              "OffsetX": "154",
-              "OffsetY": "70"
-            },
-            {
-              "NameOrType": "Hornet",
-              "OffsetX": "154",
-              "OffsetY": "60"
-            },
-            {
-              "NameOrType": "SWATHornet",
-              "OffsetX": "220",
-              "OffsetY": "79"
-            },
-            {
-              "NameOrType": "Hornet",
-              "OffsetX": "224",
-              "OffsetY": "75"
-            },
-            {
-              "NameOrType": "SWATHornet",
-              "OffsetX": "128",
-              "OffsetY": "33"
-            },
-            {
-              "NameOrType": "SWATHornet",
-              "OffsetX": "140",
-              "OffsetY": "32"
-            },
-            {
-              "NameOrType": "Hornet",
-              "OffsetX": "135",
-              "OffsetY": "33"
-            },
-            {
-              "NameOrType": "Hornet",
-              "OffsetX": "65",
-              "OffsetY": "31"
-            },
-            {
-              "NameOrType": "Hornet",
-              "OffsetX": "60",
-              "OffsetY": "35"
-            },
-            {
-              "NameOrType": "Hornet",
-              "OffsetX": "63",
-              "OffsetY": "33"
-            },
-            {
-              "NameOrType": "SWATHornet",
-              "OffsetX": "92",
+              "OffsetX": "328",
               "OffsetY": "42"
             },
             {
               "NameOrType": "SWATHornet",
-              "OffsetX": "216",
-              "OffsetY": "25"
+              "OffsetX": "335",
+              "OffsetY": "43"
+            },
+            {
+              "NameOrType": "Hornet",
+              "OffsetX": "279",
+              "OffsetY": "53"
             },
             {
               "NameOrType": "SWATHornet",
-              "OffsetX": "209",
-              "OffsetY": "25"
+              "OffsetX": "214",
+              "OffsetY": "48"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "214",
+              "OffsetY": "48"
+            },
+            {
+              "NameOrType": "WitchDoctor",
+              "OffsetX": "11",
+              "OffsetY": "135"
             }
           ]
         }
       ]
     },
-    { "BiomeName": "CrimsonPremade",
+    {
+      "BiomeName": "Crimson1",
       "Rooms": [
-        { "Name": "crimson_premade",
+        {
+          "Name": "crimson_1",
           "SpawnInfo": [
             {
               "NameOrType": "BloodCrawler",
-              "OffsetX": "98",
-              "OffsetY": "97"
+              "OffsetX": "221",
+              "OffsetY": "153"
             },
             {
               "NameOrType": "BloodCrawler",
-              "OffsetX": "106",
-              "OffsetY": "86"
-            },
-            {
-              "NameOrType": "BloodJelly",
-              "OffsetX": "133",
-              "OffsetY": "80"
-            },
-            {
-              "NameOrType": "BloodCrawler",
-              "OffsetX": "165",
-              "OffsetY": "97"
+              "OffsetX": "236",
+              "OffsetY": "152"
             },
             {
               "NameOrType": "Crimera",
-              "OffsetX": "181",
+              "OffsetX": "235",
+              "OffsetY": "158"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "277",
+              "OffsetY": "171"
+            },
+            {
+              "NameOrType": "Crimslime",
+              "OffsetX": "339",
+              "OffsetY": "172"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "357",
+              "OffsetY": "184"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "348",
+              "OffsetY": "193"
+            },
+            {
+              "NameOrType": "Crimslime",
+              "OffsetX": "367",
+              "OffsetY": "175"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "431",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "221",
+              "OffsetY": "153"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "313",
+              "OffsetY": "152"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "349",
+              "OffsetY": "157"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "221",
+              "OffsetY": "153"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "317",
+              "OffsetY": "112"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "324",
+              "OffsetY": "104"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "322",
+              "OffsetY": "130"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "354",
               "OffsetY": "121"
             },
             {
-              "NameOrType": "BloodCrawler",
-              "OffsetX": "217",
-              "OffsetY": "97"
-            },
-            {
               "NameOrType": "Crimera",
-              "OffsetX": "212",
-              "OffsetY": "108"
-            },
-            {
-              "NameOrType": "BloodJelly",
-              "OffsetX": "242",
-              "OffsetY": "95"
-            },
-            {
-              "NameOrType": "Crimera",
-              "OffsetX": "254",
-              "OffsetY": "102"
-            },
-            {
-              "NameOrType": "Crimera",
-              "OffsetX": "260",
-              "OffsetY": "103"
-            },
-            {
-              "NameOrType": "Crimslime",
-              "OffsetX": "298",
-              "OffsetY": "95"
-            },
-            {
-              "NameOrType": "Crimslime",
-              "OffsetX": "322",
-              "OffsetY": "94"
-            },
-            {
-              "NameOrType": "Crimera",
-              "OffsetX": "309",
-              "OffsetY": "96"
-            },
-            {
-              "NameOrType": "Crimera",
-              "OffsetX": "335",
-              "OffsetY": "95"
-            },
-            {
-              "NameOrType": "BloodCrawler",
-              "OffsetX": "355",
-              "OffsetY": "97"
-            },
-            {
-              "NameOrType": "BloodCrawler",
-              "OffsetX": "388",
-              "OffsetY": "57"
-            },
-            {
-              "NameOrType": "BloodJelly",
-              "OffsetX": "431",
-              "OffsetY": "49"
-            },
-            {
-              "NameOrType": "BloodJelly",
-              "OffsetX": "426",
-              "OffsetY": "63"
-            },
-            {
-              "NameOrType": "BloodJelly",
-              "OffsetX": "477",
-              "OffsetY": "63"
-            },
-            {
-              "NameOrType": "BloodJelly",
-              "OffsetX": "526",
-              "OffsetY": "70"
-            },
-            {
-              "NameOrType": "BloodCrawler",
-              "OffsetX": "440",
-              "OffsetY": "66"
-            },
-            {
-              "NameOrType": "BloodCrawler",
-              "OffsetX": "455",
-              "OffsetY": "47"
-            },
-            {
-              "NameOrType": "BloodCrawler",
-              "OffsetX": "476",
-              "OffsetY": "61"
-            },
-            {
-              "NameOrType": "BloodCrawler",
-              "OffsetX": "530",
-              "OffsetY": "71"
-            },
-            {
-              "NameOrType": "BloodCrawler",
-              "OffsetX": "571",
-              "OffsetY": "101"
-            },
-            {
-              "NameOrType": "Crimera",
-              "OffsetX": "516",
-              "OffsetY": "99"
-            },
-            {
-              "NameOrType": "Crimera",
-              "OffsetX": "575",
-              "OffsetY": "103"
-            },
-            {
-              "NameOrType": "Crimslime",
-              "OffsetX": "651",
-              "OffsetY": "125"
-            },
-            {
-              "NameOrType": "Crimera",
-              "OffsetX": "645",
-              "OffsetY": "124"
-            },
-            {
-              "NameOrType": "Crimera",
-              "OffsetX": "614",
+              "OffsetX": "290",
               "OffsetY": "114"
             },
             {
-              "NameOrType": "BloodCrawler",
-              "OffsetX": "663",
-              "OffsetY": "107"
+              "NameOrType": "Crimera",
+              "OffsetX": "253",
+              "OffsetY": "109"
             },
             {
-              "NameOrType": "BloodCrawler",
-              "OffsetX": "633",
+              "NameOrType": "Crimera",
+              "OffsetX": "268",
+              "OffsetY": "112"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "236",
               "OffsetY": "106"
             },
             {
-              "NameOrType": "BloodCrawler",
-              "OffsetX": "673",
-              "OffsetY": "110"
-            },
-            {
-              "NameOrType": "BloodCrawler",
-              "OffsetX": "673",
-              "OffsetY": "110"
-            },
-            {
-              "NameOrType": "BloodCrawler",
-              "OffsetX": "711",
-              "OffsetY": "114"
+              "NameOrType": "Crimera",
+              "OffsetX": "224",
+              "OffsetY": "108"
             },
             {
               "NameOrType": "Crimera",
-              "OffsetX": "679",
-              "OffsetY": "117"
+              "OffsetX": "201",
+              "OffsetY": "109"
             },
             {
               "NameOrType": "BloodCrawler",
-              "OffsetX": "753",
-              "OffsetY": "126"
+              "OffsetX": "159",
+              "OffsetY": "101"
+            },
+            {
+              "NameOrType": "Crimslime",
+              "OffsetX": "366",
+              "OffsetY": "101"
             },
             {
               "NameOrType": "BloodCrawler",
-              "OffsetX": "749",
-              "OffsetY": "114"
+              "OffsetX": "398",
+              "OffsetY": "99"
             },
             {
-              "NameOrType": "BrainofCthulhu",
-              "OffsetX": "896",
-              "OffsetY": "67"
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "421",
+              "OffsetY": "98"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "221",
+              "OffsetY": "153"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "377",
+              "OffsetY": "115"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "422",
+              "OffsetY": "120"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "464",
+              "OffsetY": "102"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "492",
+              "OffsetY": "142"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "495",
+              "OffsetY": "149"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "459",
+              "OffsetY": "167"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "480",
+              "OffsetY": "169"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "512",
+              "OffsetY": "157"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "525",
+              "OffsetY": "179"
+            },
+            {
+              "NameOrType": "Crimslime",
+              "OffsetX": "515",
+              "OffsetY": "187"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "511",
+              "OffsetY": "196"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "498",
+              "OffsetY": "192"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "519",
+              "OffsetY": "190"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "541",
+              "OffsetY": "101"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "574",
+              "OffsetY": "103"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "563",
+              "OffsetY": "111"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "611",
+              "OffsetY": "109"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "627",
+              "OffsetY": "108"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "613",
+              "OffsetY": "120"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "587",
+              "OffsetY": "115"
+            },
+            {
+              "NameOrType": "Crimslime",
+              "OffsetX": "704",
+              "OffsetY": "105"
+            },
+            {
+              "NameOrType": "Crimslime",
+              "OffsetX": "543",
+              "OffsetY": "243"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "568",
+              "OffsetY": "246"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "576",
+              "OffsetY": "238"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "602",
+              "OffsetY": "242"
+            },
+            {
+              "NameOrType": "Crimslime",
+              "OffsetX": "624",
+              "OffsetY": "234"
             }
           ]
         }
       ]
     },
-    { "BiomeName": "DesertPremade2",
+    {
+      "BiomeName": "Desert1",
       "Rooms": [
-        { "Name": "desert_premade_2",
+        {
+          "Name": "desert_1",
           "SpawnInfo": [
             {
-              "NameOrType": "Vulture",
-              "OffsetX": "136",
-              "OffsetY": "190"
+              "NameOrType": "DesertScorpionWalk",
+              "OffsetX": "109",
+              "OffsetY": "255"
             },
             {
               "NameOrType": "Vulture",
-              "OffsetX": "149",
-              "OffsetY": "181"
+              "OffsetX": "116",
+              "OffsetY": "267"
+            },
+            {
+              "NameOrType": "Vulture",
+              "OffsetX": "121",
+              "OffsetY": "268"
+            },
+            {
+              "NameOrType": "Vulture",
+              "OffsetX": "148",
+              "OffsetY": "268"
+            },
+            {
+              "NameOrType": "Vulture",
+              "OffsetX": "113",
+              "OffsetY": "255"
+            },
+            {
+              "NameOrType": "Vulture",
+              "OffsetX": "156",
+              "OffsetY": "266"
             },
             {
               "NameOrType": "Vulture",
               "OffsetX": "171",
-              "OffsetY": "183"
+              "OffsetY": "270"
+            },
+            {
+              "NameOrType": "DesertScorpionWalk",
+              "OffsetX": "206",
+              "OffsetY": "255"
+            },
+            {
+              "NameOrType": "DesertScorpionWalk",
+              "OffsetX": "294",
+              "OffsetY": "255"
             },
             {
               "NameOrType": "Vulture",
-              "OffsetX": "179",
-              "OffsetY": "184"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "241",
-              "OffsetY": "171"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "299",
-              "OffsetY": "168"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "440",
-              "OffsetY": "140"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "465",
-              "OffsetY": "141"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "433",
-              "OffsetY": "140"
+              "OffsetX": "364",
+              "OffsetY": "257"
             },
             {
               "NameOrType": "Vulture",
-              "OffsetX": "475",
-              "OffsetY": "170"
-            },
-            {
-              "NameOrType": "Vulture",
-              "OffsetX": "483",
-              "OffsetY": "170"
+              "OffsetX": "370",
+              "OffsetY": "255"
             },
             {
               "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "519",
-              "OffsetY": "165"
-            },
-            {
-              "NameOrType": "Vulture",
-              "OffsetX": "219",
-              "OffsetY": "168"
-            },
-            {
-              "NameOrType": "Vulture",
-              "OffsetX": "221",
-              "OffsetY": "168"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "330",
-              "OffsetY": "123"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "325",
-              "OffsetY": "123"
-            },
-            {
-              "NameOrType": "Mummy",
-              "OffsetX": "349",
-              "OffsetY": "131"
-            },
-            {
-              "NameOrType": "DesertDjinn",
-              "OffsetX": "345",
-              "OffsetY": "120"
-            },
-            {
-              "NameOrType": "Mummy",
-              "OffsetX": "383",
-              "OffsetY": "120"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "390",
-              "OffsetY": "120"
-            },
-            {
-              "NameOrType": "Mummy",
-              "OffsetX": "415",
-              "OffsetY": "123"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "423",
-              "OffsetY": "114"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "418",
-              "OffsetY": "114"
-            },
-            {
-              "NameOrType": "DesertDjinn",
-              "OffsetX": "420",
-              "OffsetY": "103"
-            },
-            {
-              "NameOrType": "DesertDjinn",
-              "OffsetX": "421",
-              "OffsetY": "103"
-            },
-            {
-              "NameOrType": "DesertGhoul",
               "OffsetX": "389",
-              "OffsetY": "93"
+              "OffsetY": "257"
             },
             {
-              "NameOrType": "Mummy",
-              "OffsetX": "425",
-              "OffsetY": "71"
+              "NameOrType": "Vulture",
+              "OffsetX": "411",
+              "OffsetY": "263"
             },
             {
-              "NameOrType": "Mummy",
-              "OffsetX": "439",
-              "OffsetY": "68"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "485",
-              "OffsetY": "106"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "470",
-              "OffsetY": "103"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "367",
-              "OffsetY": "97"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "352",
-              "OffsetY": "97"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "358",
-              "OffsetY": "81"
-            },
-            {
-              "NameOrType": "Mummy",
-              "OffsetX": "327",
-              "OffsetY": "81"
+              "NameOrType": "Vulture",
+              "OffsetX": "502",
+              "OffsetY": "260"
             },
             {
               "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "303",
-              "OffsetY": "82"
+              "OffsetX": "439",
+              "OffsetY": "227"
             },
             {
-              "NameOrType": "DesertDjinn",
-              "OffsetX": "332",
-              "OffsetY": "73"
+              "NameOrType": "DesertScorpionWalk",
+              "OffsetX": "464",
+              "OffsetY": "228"
             },
             {
               "NameOrType": "DesertGhoul",
-              "OffsetX": "324",
-              "OffsetY": "63"
+              "OffsetX": "322",
+              "OffsetY": "218"
             },
             {
               "NameOrType": "DesertGhoul",
               "OffsetX": "326",
-              "OffsetY": "63"
+              "OffsetY": "210"
             },
             {
               "NameOrType": "DesertGhoul",
-              "OffsetX": "337",
-              "OffsetY": "63"
-            },
-            {
-              "NameOrType": "Mummy",
-              "OffsetX": "270",
-              "OffsetY": "72"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "252",
-              "OffsetY": "69"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "247",
-              "OffsetY": "69"
-            },
-            {
-              "NameOrType": "Mummy",
-              "OffsetX": "255",
-              "OffsetY": "59"
+              "OffsetX": "336",
+              "OffsetY": "218"
             },
             {
               "NameOrType": "DesertDjinn",
-              "OffsetX": "254",
-              "OffsetY": "69"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "276",
-              "OffsetY": "58"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "324",
-              "OffsetY": "63"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "224",
-              "OffsetY": "69"
+              "OffsetX": "345",
+              "OffsetY": "208"
             },
             {
               "NameOrType": "Mummy",
-              "OffsetX": "207",
-              "OffsetY": "78"
+              "OffsetX": "370",
+              "OffsetY": "208"
+            },
+            {
+              "NameOrType": "DesertScorpionWalk",
+              "OffsetX": "383",
+              "OffsetY": "207"
+            },
+            {
+              "NameOrType": "Mummy",
+              "OffsetX": "415",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "DesertDjinn",
+              "OffsetX": "405",
+              "OffsetY": "202"
             },
             {
               "NameOrType": "DesertGhoul",
-              "OffsetX": "191",
-              "OffsetY": "78"
+              "OffsetX": "418",
+              "OffsetY": "201"
+            },
+            {
+              "NameOrType": "DesertGhoul",
+              "OffsetX": "423",
+              "OffsetY": "201"
+            },
+            {
+              "NameOrType": "DesertGhoul",
+              "OffsetX": "403",
+              "OffsetY": "191"
+            },
+            {
+              "NameOrType": "DesertGhoul",
+              "OffsetX": "418",
+              "OffsetY": "191"
+            },
+            {
+              "NameOrType": "DesertDjinn",
+              "OffsetX": "424",
+              "OffsetY": "167"
+            },
+            {
+              "NameOrType": "DesertGhoul",
+              "OffsetX": "413",
+              "OffsetY": "164"
+            },
+            {
+              "NameOrType": "DesertMummy",
+              "OffsetX": "438",
+              "OffsetY": "155"
+            },
+            {
+              "NameOrType": "DesertScorpionWalk",
+              "OffsetX": "462",
+              "OffsetY": "190"
+            },
+            {
+              "NameOrType": "DesertDjinn",
+              "OffsetX": "459",
+              "OffsetY": "199"
+            },
+            {
+              "NameOrType": "DesertGhoul",
+              "OffsetX": "484",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "Mummy",
+              "OffsetX": "503",
+              "OffsetY": "192"
+            },
+            {
+              "NameOrType": "DesertDjinn",
+              "OffsetX": "338",
+              "OffsetY": "178"
+            },
+            {
+              "NameOrType": "DesertGhoul",
+              "OffsetX": "361",
+              "OffsetY": "187"
+            },
+            {
+              "NameOrType": "DesertGhoul",
+              "OffsetX": "365",
+              "OffsetY": "189"
+            },
+            {
+              "NameOrType": "DesertGhoul",
+              "OffsetX": "350",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "DesertGhoul",
+              "OffsetX": "364",
+              "OffsetY": "170"
+            },
+            {
+              "NameOrType": "Mummy",
+              "OffsetX": "311",
+              "OffsetY": "171"
+            },
+            {
+              "NameOrType": "Mummy",
+              "OffsetX": "274",
+              "OffsetY": "171"
+            },
+            {
+              "NameOrType": "DesertDjinn",
+              "OffsetX": "262",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "DesertGhoul",
+              "OffsetX": "262",
+              "OffsetY": "183"
+            },
+            {
+              "NameOrType": "DesertScorpionWalk",
+              "OffsetX": "245",
+              "OffsetY": "182"
             },
             {
               "NameOrType": "DesertDjinn",
               "OffsetX": "178",
-              "OffsetY": "88"
-            },
-            {
-              "NameOrType": "Mummy",
-              "OffsetX": "156",
-              "OffsetY": "78"
+              "OffsetY": "176"
             },
             {
               "NameOrType": "DesertGhoul",
-              "OffsetX": "133",
-              "OffsetY": "78"
+              "OffsetX": "187",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "DesertGhoul",
+              "OffsetX": "171",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "DesertScorpionWalk",
+              "OffsetX": "146",
+              "OffsetY": "167"
             },
             {
               "NameOrType": "DesertDjinn",
-              "OffsetX": "115",
-              "OffsetY": "78"
-            },
-            {
-              "NameOrType": "DesertDjinn",
-              "OffsetX": "100",
-              "OffsetY": "86"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "107",
-              "OffsetY": "79"
-            },
-            {
-              "NameOrType": "DesertGhoul",
               "OffsetX": "114",
-              "OffsetY": "86"
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "DesertScorpionWalk",
+              "OffsetX": "123",
+              "OffsetY": "166"
             },
             {
               "NameOrType": "DesertGhoul",
-              "OffsetX": "198",
-              "OffsetY": "94"
+              "OffsetX": "124",
+              "OffsetY": "175"
             },
             {
               "NameOrType": "DesertGhoul",
-              "OffsetX": "200",
-              "OffsetY": "94"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "219",
-              "OffsetY": "94"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "225",
-              "OffsetY": "94"
+              "OffsetX": "112",
+              "OffsetY": "175"
             },
             {
               "NameOrType": "Mummy",
-              "OffsetX": "241",
-              "OffsetY": "94"
+              "OffsetX": "139",
+              "OffsetY": "127"
+            },
+            {
+              "NameOrType": "Mummy",
+              "OffsetX": "158",
+              "OffsetY": "126"
+            },
+            {
+              "NameOrType": "DesertDjinn",
+              "OffsetX": "129",
+              "OffsetY": "134"
+            },
+            {
+              "NameOrType": "DesertDjinn",
+              "OffsetX": "213",
+              "OffsetY": "167"
+            },
+            {
+              "NameOrType": "Mummy",
+              "OffsetX": "221",
+              "OffsetY": "157"
+            },
+            {
+              "NameOrType": "Ghoul",
+              "OffsetX": "248",
+              "OffsetY": "157"
             },
             {
               "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "252",
-              "OffsetY": "94"
+              "OffsetX": "271",
+              "OffsetY": "160"
+            },
+            {
+              "NameOrType": "DesertDjinn",
+              "OffsetX": "285",
+              "OffsetY": "151"
+            },
+            {
+              "NameOrType": "Mummy",
+              "OffsetX": "329",
+              "OffsetY": "153"
+            },
+            {
+              "NameOrType": "DesertGhoul",
+              "OffsetX": "321",
+              "OffsetY": "159"
+            },
+            {
+              "NameOrType": "DesertGhoul",
+              "OffsetX": "328",
+              "OffsetY": "160"
+            },
+            {
+              "NameOrType": "DesertGhoul",
+              "OffsetX": "333",
+              "OffsetY": "159"
             },
             {
               "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "261",
-              "OffsetY": "88"
-            },
-            {
-              "NameOrType": "DesertScorpionWalk",
-              "OffsetX": "266",
-              "OffsetY": "82"
+              "OffsetX": "247",
+              "OffsetY": "117"
             }
           ]
         }
       ]
     },
-    { "BiomeName": "FrozenCityPremade2",
+    {
+      "BiomeName": "FrozenCity1",
       "Rooms": [
-        { "Name": "frozencity_premade_2",
+        {
+          "Name": "frozencity_1",
           "SpawnInfo": [
             {
               "NameOrType": "IceGolem",
-              "OffsetX": "151",
+              "OffsetX": "173",
               "OffsetY": "306"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "156",
               "OffsetY": "317"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "181",
               "OffsetY": "306"
             },
@@ -1415,49 +1412,44 @@
               "OffsetY": "168"
             },
             {
-              "NameOrType": "CultistDevote",
+              "NameOrType": "CultistMage",
               "OffsetX": "253",
               "OffsetY": "241"
             },
             {
-              "NameOrType": "CultistDevote",
+              "NameOrType": "CultistMage",
               "OffsetX": "262",
               "OffsetY": "248"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "244",
               "OffsetY": "338"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "250",
               "OffsetY": "338"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "290",
               "OffsetY": "334"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "163",
               "OffsetY": "138"
             },
             {
-              "NameOrType": "CultistDevote",
+              "NameOrType": "CultistMage",
               "OffsetX": "149",
               "OffsetY": "149"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "138",
               "OffsetY": "133"
-            },
-            {
-              "NameOrType": "DesertGhoul",
-              "OffsetX": "325",
-              "OffsetY": "123"
             },
             {
               "NameOrType": "IceElemental",
@@ -1465,17 +1457,17 @@
               "OffsetY": "124"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "176",
               "OffsetY": "146"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "394",
               "OffsetY": "58"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "400",
               "OffsetY": "58"
             },
@@ -1485,57 +1477,57 @@
               "OffsetY": "48"
             },
             {
-              "NameOrType": "CultistDevote",
+              "NameOrType": "CultistMage",
               "OffsetX": "393",
               "OffsetY": "48"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "390",
               "OffsetY": "48"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "387",
               "OffsetY": "39"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "368",
               "OffsetY": "19"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "375",
               "OffsetY": "19"
             },
             {
-              "NameOrType": "CultistDevote",
+              "NameOrType": "CultistMage",
               "OffsetX": "400",
               "OffsetY": "322"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "400",
               "OffsetY": "322"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "381",
               "OffsetY": "329"
             },
             {
-              "NameOrType": "CultistDevote",
+              "NameOrType": "CultistMage",
               "OffsetX": "472",
               "OffsetY": "232"
             },
             {
-              "NameOrType": "CultistDevote",
+              "NameOrType": "CultistMage",
               "OffsetX": "494",
               "OffsetY": "220"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "502",
               "OffsetY": "89"
             },
@@ -1545,22 +1537,22 @@
               "OffsetY": "227"
             },
             {
-              "NameOrType": "CultistDevote",
+              "NameOrType": "CultistMage",
               "OffsetX": "599",
               "OffsetY": "190"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "575",
               "OffsetY": "322"
             },
             {
-              "NameOrType": "CultistDevote",
+              "NameOrType": "CultistMage",
               "OffsetX": "585",
               "OffsetY": "332"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "590",
               "OffsetY": "345"
             },
@@ -1585,27 +1577,27 @@
               "OffsetY": "257"
             },
             {
-              "NameOrType": "CultistDevote",
+              "NameOrType": "CultistMage",
               "OffsetX": "665",
               "OffsetY": "257"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "683",
               "OffsetY": "313"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "698",
               "OffsetY": "315"
             },
             {
-              "NameOrType": "CultistArcherBlue",
+              "NameOrType": "CultistArcher",
               "OffsetX": "690",
               "OffsetY": "322"
             },
             {
-              "NameOrType": "CultistDevote",
+              "NameOrType": "CultistMage",
               "OffsetX": "678",
               "OffsetY": "319"
             }

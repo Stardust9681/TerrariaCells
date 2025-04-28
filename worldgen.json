@@ -1,44 +1,51 @@
 {
-    "Margins": {
-        "X": 1000,
-        "Y": 200
-    },
-    "PlacementStartOffset": {
-        "X": 2400,
-        "Y": 3000
-    },
+    "MarginsX": 0,
+    "MarginsY": 0,
+    "PlacementStartOffsetX": 240,
+    "PlacementStartOffsetY": 150,
     "Levels": [
         {
-            "Name": "NotDesert",
-            "StructurePaths": [
-                "Content/Structures/crimson_premade"
+            "Name": "Forest",
+            "Structures": [
+                {
+                    "Path": "Content/Structures/forest_1.shstruct",
+                    "SpawnOffsetX": 0,
+                    "SpawnOffsetY": -29
+                }
             ],
-            "SpawnOffset": {
-                "X": 20,
-                "Y": 20
-            },
             "Surface": false
         },
         {
-            "Name": "NotCrimson",
-            "StructurePaths": [
-                "Content/Structures/frozencity_premade_2"
+            "Name": "Crimson",
+            "Structures": [
+                {
+                    "Path": "Content/Structures/crimson_1.shstruct",
+                    "SpawnOffsetX": 0,
+                    "SpawnOffsetY": 0
+                }
             ],
-            "SpawnOffset": {
-                "X": 20,
-                "Y": 20
-            },
             "Surface": false
         },
         {
-            "Name": "NotFrozenCity",
-            "StructurePaths": [
-                "Content/Structures/desert_premade_2"
+            "Name": "Frozen City",
+            "Structures": [
+                {
+                    "Path": "Content/Structures/frozencity_1.shstruct",
+                    "SpawnOffsetX": 0,
+                    "SpawnOffsetY": 0
+                }
             ],
-            "SpawnOffset": {
-                "X": 20,
-                "Y": 20
-            },
+            "Surface": false
+        },
+        {
+            "Name": "Desert",
+            "Structures": [
+                {
+                    "Path": "Content/Structures/pyramid_1.shstruct",
+                    "SpawnOffsetX": 0,
+                    "SpawnOffsetY": 150
+                }
+            ],
             "Surface": false
         }
     ]

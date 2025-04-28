@@ -126,6 +126,11 @@ Configs: {
 			Label: List Categorization Tooltip
 			Tooltip: ""
 		}
+
+		DisableSpawns: {
+			Label: Disable Spawns
+			Tooltip: ""
+		}
 	}
 
 	DebuffIndicators: {

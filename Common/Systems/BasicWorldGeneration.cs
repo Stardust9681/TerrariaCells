@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using StructureHelper;
+using StructureHelper.API;
+using StructureHelper.Models;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.IO;
@@ -18,7 +20,7 @@ namespace TerrariaCells.Common.Systems;
 public class BasicWorldGeneration : ModSystem
 {
     private const string WorldGenFilePath = "worldgen.json";
-    public BasicWorldGenData basicWorldGenData;
+    public static BasicWorldGenData basicWorldGenData;
 
     public override void SetStaticDefaults()
     {
@@ -29,7 +31,6 @@ public class BasicWorldGeneration : ModSystem
         {
             throw new System.Exception("Could not deserialize world gen data");
         }
-        basicWorldGenData.Validate();
     }
 
     public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
@@ -59,17 +60,24 @@ public class CustomWorldGenPass(string name, double loadWeight) : GenPass(name, 
 {
     protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
     {
-        PlaceStructures(ModContent.GetContent<BasicWorldGeneration>().First().basicWorldGenData);
+        PlaceStructures(BasicWorldGeneration.basicWorldGenData);
     }
 
     public static void PlaceStructures(BasicWorldGenData worldGenData)
     {
-        Point16 offset = worldGenData.PlacementStartOffset;
+        Mod mod = ModLoader.GetMod("TerrariaCells");
+        Point16 offset = new Point16(
+            worldGenData.PlacementStartOffsetX,
+            worldGenData.PlacementStartOffsetY
+        );
         foreach (Level level in worldGenData.Levels)
         {
-            TagCompound structure = level.Structures.First();
-            Generator.Generate(structure, offset);
-            offset += new Point16((level.Size + worldGenData.Margins).X, (short)0);
+            Structure structure = level.Structures.First();
+            string path = structure.Path;
+            Point16 pos = offset + new Point16(structure.SpawnOffsetX, structure.SpawnOffsetY);
+            StructureHelper.API.Generator.GenerateStructure(path, pos, mod);
+            short width = (short)StructureHelper.API.Generator.GetStructureData(path, mod).width;
+            offset += new Point16(width + worldGenData.MarginsX, 0);
         }
     }
 }
@@ -80,39 +88,27 @@ public class BasicWorldGenData
     /// How many tiles should seperate each level
     /// </summary>
     [JsonInclude]
-    public Point16 Margins;
+    public short MarginsX;
+    public short MarginsY;
 
     [JsonInclude]
-    public Point16 PlacementStartOffset;
+    public short PlacementStartOffsetX;
+
+    [JsonInclude]
+    public short PlacementStartOffsetY;
 
     [JsonInclude]
     public List<Level> Levels;
 
-    public Dictionary<string, TagCompound> Structures =>
-        structures ??= Levels
-            .Select(level => level.StructurePaths.Select(path => path))
-            .SelectMany(item => item)
-            .Select(item => KeyValuePair.Create(item, TagIO.FromFile(item)))
-            .ToDictionary();
+    // public Dictionary<string, StructureData> Structures =>
+    //     structures ??= Levels
+    //         .Select(level => level.StructurePaths.Select(path => path))
+    //         .SelectMany(flatten => flatten)
+    // .Select(path => KeyValuePair.Create(path, TagIO.FromFile(path)))
+    // .ToDictionary();
 
-    private Dictionary<string, TagCompound> structures;
+    private Dictionary<string, StructureData> structures;
 
-    public bool Validate()
-    {
-        int totalWidth = PlacementStartOffset.X;
-        foreach (Level level in Levels)
-        {
-            totalWidth += level.Size.X;
-        }
-        if (totalWidth > Main.tile.Width)
-        {
-            // throw exception for now since its more visible
-            throw new System.Exception(
-                $"Level width is too large! Cannot safely fit all levels {totalWidth}"
-            );
-        }
-        return true;
-    }
 }
 
 public class Level
@@ -121,52 +117,20 @@ public class Level
     public string Name;
 
     [JsonInclude]
-    public List<string> StructurePaths;
-
-    [JsonInclude]
-    public Point16 SpawnOffset;
+    public List<Structure> Structures;
 
     [JsonInclude]
     public bool Surface;
-    private Point16? size;
-    private TagCompound[] structures;
+}
 
-    public Point16 Size
-    {
-        get
-        {
-            if (size == null)
-            {
-                int maxSizeX = 0;
-                int maxSizeY = 0;
-                foreach (var structure in Structures)
-                {
-                    Point16 size = new Point16(
-                        structure.Get<int>("Width"),
-                        structure.Get<int>("Height")
-                    );
-                    if (maxSizeX < size.X)
-                    {
-                        maxSizeX = size.X;
-                    }
-                    if (maxSizeY < size.Y)
-                    {
-                        maxSizeY = size.Y;
-                    }
-                }
-                size = new Point16(maxSizeX, maxSizeY);
-            }
-            return size.Value;
-        }
-    }
+public class Structure
+{
+    [JsonInclude]
+    public string Path;
 
-    public TagCompound[] Structures => structures ??= [.. StructurePaths.Select(GetStructure)];
+    [JsonInclude]
+    public short SpawnOffsetX;
 
-    static TagCompound GetStructure(string path)
-    {
-        System.IO.Stream stream = ModContent.GetInstance<TerrariaCells>().GetFileStream(path);
-        TagCompound tagCompound = TagIO.FromStream(stream);
-        stream.Dispose();
-        return tagCompound;
-    }
+    [JsonInclude]
+    public short SpawnOffsetY;
 }
