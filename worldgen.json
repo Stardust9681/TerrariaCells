@@ -70,8 +70,8 @@
             "Name": "Desert",
             "Structures": [
                 {
-                    "Name": "pyramid_1",
-                    "Path": "Content/Structures/pyramid_1.shstruct",
+                    "Name": "desert_1",
+                    "Path": "Content/Structures/desert_1.shstruct",
                     "OffsetX": 0,
                     "OffsetY": 150
                 }

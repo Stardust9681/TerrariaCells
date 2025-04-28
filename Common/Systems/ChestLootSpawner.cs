@@ -40,7 +40,7 @@ public class ChestLootSpawner : ModSystem, IEntitySource
 
     public override void OnWorldLoad()
     {
-        Reset();
+        lootedChests.Clear();
     }
 
     public void Reset()
