@@ -4,7 +4,7 @@
     "MarginsX": 0,
     "MarginsY": 0,
     "PlacementStartOffsetX": 240,
-    "PlacementStartOffsetY": 150,
+    "PlacementStartOffsetY": 200,
     "LevelData": [
         {
             "Name": "Inn",
@@ -27,7 +27,7 @@
                     "Name": "forest_1",
                     "Path": "Content/Structures/forest_1.shstruct",
                     "OffsetX": 0,
-                    "OffsetY": -29,
+                    "OffsetY": -50,
                     "SpawnX": 777,
                     "SpawnY": 234
                 },
@@ -35,7 +35,7 @@
                     "Name": "forest_2",
                     "Path": "Content/Structures/forest_2.shstruct",
                     "OffsetX": 0,
-                    "OffsetY": -29,
+                    "OffsetY": -80,
                     "SpawnX": 615,
                     "SpawnY": 95
                 }
@@ -49,7 +49,7 @@
                     "Name": "crimson_1",
                     "Path": "Content/Structures/crimson_1.shstruct",
                     "OffsetX": 0,
-                    "OffsetY": 0,
+                    "OffsetY": 11,
                     "SpawnX": 55,
                     "SpawnY": 42
                 }
@@ -77,9 +77,9 @@
                     "Name": "hive_1",
                     "Path": "Content/Structures/hive_1.shstruct",
                     "OffsetX": 0,
-                    "OffsetY": 0,
+                    "OffsetY": 25,
                     "SpawnX": 93,
-                    "SpawnY": 88
+                    "SpawnY": 84
                 }
             ],
             "Surface": false
@@ -91,9 +91,9 @@
                     "Name": "desert_1",
                     "Path": "Content/Structures/desert_1.shstruct",
                     "OffsetX": 0,
-                    "OffsetY": 0,
+                    "OffsetY": 150,
                     "SpawnX": 55,
-                    "SpawnY": 42
+                    "SpawnY": 38
                 }
             ],
             "Surface": false

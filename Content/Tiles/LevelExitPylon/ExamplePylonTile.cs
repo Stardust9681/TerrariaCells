@@ -87,7 +87,40 @@ public class ForestExitPylon : ModTile, ITerraCellsCategorization
     public override void MouseOver(int i, int j)
     {
         Main.LocalPlayer.cursorItemIconEnabled = true;
-        Main.LocalPlayer.cursorItemIconText = "Leave";
+
+        Point16 origin = GetTopLeftTileInMultitile(i, j);
+
+        ForestExitPylonTileEntity entity;
+
+        // TileEntity.ByPosition is a Dictionary<Point16, TileEntity> which contains all placed TileEntity instances in the world
+        // TryGetValue is used to both check if the dictionary has the key, origin, and get the value from that key if it's there
+        if (
+            TileEntity.ByPosition.TryGetValue(origin, out TileEntity existing)
+            && existing is ForestExitPylonTileEntity existingAsT
+        )
+        {
+            entity = existingAsT;
+        }
+        else
+        {
+            return;
+        }
+
+        if (entity.Destination.Equals("Inn", System.StringComparison.CurrentCultureIgnoreCase))
+        {
+            Main.instance.MouseText(
+                "Continue to the " + Mod.GetContent<TeleportTracker>().First().NextLevel
+            );
+            Main.mouseText = true;
+            // Main.LocalPlayer.cursorItemIconText =
+            //     "Continue to the " + Mod.GetContent<TeleportTracker>().First().NextLevel;
+        }
+        else
+        {
+            Main.instance.MouseText("Leave for the " + entity.Destination);
+            Main.mouseText = true;
+            // Main.LocalPlayer.cursorItemIconText = "Leave for the " + entity.Destination;
+        }
     }
 
     public override void KillMultiTile(int i, int j, int frameX, int frameY)
