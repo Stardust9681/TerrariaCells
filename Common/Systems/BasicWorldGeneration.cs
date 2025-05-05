@@ -14,6 +14,7 @@ using Terraria.ID;
 using Terraria.IO;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using Terraria.ObjectData;
 using Terraria.WorldBuilding;
 using TerrariaCells.Common.Configs;
 
@@ -163,8 +164,26 @@ public class CustomWorldGenPass(string name, double loadWeight) : GenPass(name, 
             WorldGen.PlaceTile(pos.X, pos.Y, TileID.LunarOre);
 
             short width = (short)StructureHelper.API.Generator.GetStructureData(path, mod).width;
+            short height = (short)StructureHelper.API.Generator.GetStructureData(path, mod).height;
+
             offset += new Point16(width + basicWorldGenData.MarginsX, 0);
+
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    Tile tile = Main.tile[i + pos.X, j + pos.Y];
+                    if (TileID.Sets.BasicChest[tile.TileType])
+                    {
+                        if (tile.TileFrameX % 36 == 0 && tile.TileFrameY % 36 == 0)
+                        {
+                            Chest.CreateChest(i + pos.X, j + pos.Y);
+                        }
+                    }
+                }
+            }
         }
+
     }
 }
 
