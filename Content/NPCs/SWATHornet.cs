@@ -39,11 +39,6 @@ namespace TerrariaCells.Content.NPCs
 
 			if (!NPC.TargetInAggroRange(32 * 16) && Timer < 5)
 			{
-				if (!NPC.dontTakeDamage)
-				{
-					NPC.dontTakeDamage = true;
-					NPC.netUpdate = true;
-				}
 				Common.GlobalNPCs.CombatNPC.ToggleContactDamage(NPC, false);
 
 				NPC.rotation = MathHelper.Lerp(NPC.rotation, MathHelper.ToRadians(NPC.velocity.X) * 4, 0.2f);
@@ -112,12 +107,6 @@ namespace TerrariaCells.Content.NPCs
 					Vector2 offset = new Vector2(NPC.ai[1] * 15 * 16, 0);
 					Vector2 start = target.Center + offset;
 					Vector2 end = target.Center - offset;
-
-					if (NPC.dontTakeDamage)
-					{
-						NPC.dontTakeDamage = false;
-						NPC.netUpdate = true;
-					}
 
 					int timer = (int)Timer - 90;
 					if (timer < 20)
