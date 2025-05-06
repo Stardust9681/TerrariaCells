@@ -1,0 +1,32 @@
+[
+    {
+        "potType": "ALL Pots (temp, rework later) (also side note about potType, its completely unnecessary, but is nice for labelling)",
+        "useful link": "https://terraria.wiki.gg/wiki/Tile_IDs/Part1 (its all the way at the bottom of the section)",
+        "styles": [
+            0, 1, 2, 3,
+            4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36
+        ],
+        "lootPool": [
+            71, 71, 71, 4009, 72,
+            71, 71, 71, 4009, 72,
+            71, 71, 71, 4009,
+            71, 71, 71, 
+            71, 71, 71, 
+            71, 71, 71, 4009, 72,
+            71, 71, 71, 4009, 72,
+            71, 71, 71, 4009,
+            71, 71, 71, 4034,
+            71, 71, 71, 4034,
+            73
+        ]
+    },
+    {
+        "potType": "Tundra Pots",
+        "styles": [
+            4, 5, 6
+        ],
+        "lootPool": [
+
+        ]
+    }
+]
