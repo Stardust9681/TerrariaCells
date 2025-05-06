@@ -1662,12 +1662,12 @@
               "OffsetY": "306"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "156",
               "OffsetY": "317"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "181",
               "OffsetY": "306"
             },
@@ -1692,42 +1692,42 @@
               "OffsetY": "168"
             },
             {
-              "NameOrType": "CultistMage",
+              "NameOrType": "CultistDevote",
               "OffsetX": "253",
               "OffsetY": "241"
             },
             {
-              "NameOrType": "CultistMage",
+              "NameOrType": "CultistDevote",
               "OffsetX": "262",
               "OffsetY": "248"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "244",
               "OffsetY": "338"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "250",
               "OffsetY": "338"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "290",
               "OffsetY": "334"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "163",
               "OffsetY": "138"
             },
             {
-              "NameOrType": "CultistMage",
+              "NameOrType": "CultistDevote",
               "OffsetX": "149",
               "OffsetY": "149"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "138",
               "OffsetY": "133"
             },
@@ -1737,17 +1737,17 @@
               "OffsetY": "124"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "176",
               "OffsetY": "146"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "394",
               "OffsetY": "58"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "400",
               "OffsetY": "58"
             },
@@ -1757,57 +1757,57 @@
               "OffsetY": "48"
             },
             {
-              "NameOrType": "CultistMage",
+              "NameOrType": "CultistDevote",
               "OffsetX": "393",
               "OffsetY": "48"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "390",
               "OffsetY": "48"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "387",
               "OffsetY": "39"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "368",
               "OffsetY": "19"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "375",
               "OffsetY": "19"
             },
             {
-              "NameOrType": "CultistMage",
+              "NameOrType": "CultistDevote",
               "OffsetX": "400",
               "OffsetY": "322"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "400",
               "OffsetY": "322"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "381",
               "OffsetY": "329"
             },
             {
-              "NameOrType": "CultistMage",
+              "NameOrType": "CultistDevote",
               "OffsetX": "472",
               "OffsetY": "232"
             },
             {
-              "NameOrType": "CultistMage",
+              "NameOrType": "CultistDevote",
               "OffsetX": "494",
               "OffsetY": "220"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "502",
               "OffsetY": "89"
             },
@@ -1817,22 +1817,22 @@
               "OffsetY": "227"
             },
             {
-              "NameOrType": "CultistMage",
+              "NameOrType": "CultistDevote",
               "OffsetX": "599",
               "OffsetY": "190"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "575",
               "OffsetY": "322"
             },
             {
-              "NameOrType": "CultistMage",
+              "NameOrType": "CultistDevote",
               "OffsetX": "585",
               "OffsetY": "332"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "590",
               "OffsetY": "345"
             },
@@ -1857,27 +1857,27 @@
               "OffsetY": "257"
             },
             {
-              "NameOrType": "CultistMage",
+              "NameOrType": "CultistDevote",
               "OffsetX": "665",
               "OffsetY": "257"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "683",
               "OffsetY": "313"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "698",
               "OffsetY": "315"
             },
             {
-              "NameOrType": "CultistArcher",
+              "NameOrType": "CultistArcherBlue",
               "OffsetX": "690",
               "OffsetY": "322"
             },
             {
-              "NameOrType": "CultistMage",
+              "NameOrType": "CultistDevote",
               "OffsetX": "678",
               "OffsetY": "319"
             }

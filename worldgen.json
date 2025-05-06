@@ -64,8 +64,8 @@
                     "Path": "Content/Structures/frozencity_1.shstruct",
                     "OffsetX": 0,
                     "OffsetY": 0,
-                    "SpawnX": 0,
-                    "SpawnY": 0
+                    "SpawnX": 70,
+                    "SpawnY": 192
                 }
             ],
             "Surface": false
