@@ -1,5 +1,6 @@
 {
   "Biomes": [
+<<<<<<< Updated upstream
     {
       "BiomeName": "Inn",
       "Rooms": [
@@ -20,11 +21,24 @@
       "Rooms": [
         {
           "Name": "forest_1",
+=======
+    { "BiomeName": "Forest1",
+      "Rooms": [
+        { "Name": "forest_1",
+>>>>>>> Stashed changes
           "SpawnInfo": [
             {
               "NameOrType": "GoblinThief",
               "OffsetX": "576",
               "OffsetY": "36"
+<<<<<<< Updated upstream
+=======
+            },
+            {
+              "NameOrType": "TargetDummy",
+              "OffsetX": "750",
+              "OffsetY": "33"
+>>>>>>> Stashed changes
             },
             {
               "NameOrType": "GoblinThief",
@@ -259,12 +273,16 @@
             {
               "NameOrType": "GoblinSorcerer",
               "OffsetX": "557",
+<<<<<<< Updated upstream
               "OffsetY": "165"
             },
             {
               "NameOrType": "GoblinSorcerer",
               "OffsetX": "547",
               "OffsetY": "165"
+=======
+              "OffsetY": "153"
+>>>>>>> Stashed changes
             },
             {
               "NameOrType": "GoblinThief",
@@ -365,6 +383,7 @@
               "NameOrType": "Wolf",
               "OffsetX": "348",
               "OffsetY": "227"
+<<<<<<< Updated upstream
             }
           ]
         },
@@ -610,11 +629,14 @@
               "NameOrType": "Raven",
               "OffsetX": "1196",
               "OffsetY": "168"
+=======
+>>>>>>> Stashed changes
             }
           ]
         }
       ]
     },
+<<<<<<< Updated upstream
     {
       "BiomeName": "Hive",
       "Rooms": [
@@ -632,6 +654,284 @@
               "OffsetY": "146"
             },
             {
+=======
+    { "BiomeName": "Forest2",
+      "Rooms": [
+        { "Name": "forest_2",
+          "SpawnInfo": [
+            {
+              "NameOrType": "Guide",
+              "OffsetX": "618",
+              "OffsetY": "192"
+            },
+            {
+              "NameOrType": "Merchant",
+              "OffsetX": "1234",
+              "OffsetY": "182"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "313",
+              "OffsetY": "96"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "335",
+              "OffsetY": "96"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "366",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "418",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "430",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "439",
+              "OffsetY": "96"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "432",
+              "OffsetY": "109"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "417",
+              "OffsetY": "185"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "399",
+              "OffsetY": "203"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "427",
+              "OffsetY": "248"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "435",
+              "OffsetY": "248"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "481",
+              "OffsetY": "252"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "500",
+              "OffsetY": "252"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "498",
+              "OffsetY": "117"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "480",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "490",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "492",
+              "OffsetY": "204"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "521",
+              "OffsetY": "196"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "546",
+              "OffsetY": "207"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "549",
+              "OffsetY": "189"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "556",
+              "OffsetY": "207"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "558",
+              "OffsetY": "207"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "798",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "863",
+              "OffsetY": "195"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "812",
+              "OffsetY": "207"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "882",
+              "OffsetY": "196"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "885",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "887",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "896",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "898",
+              "OffsetY": "195"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "914",
+              "OffsetY": "197"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "914",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "883",
+              "OffsetY": "152"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "890",
+              "OffsetY": "152"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "951",
+              "OffsetY": "151"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "960",
+              "OffsetY": "151"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "907",
+              "OffsetY": "176"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "842",
+              "OffsetY": "157"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "1117",
+              "OffsetY": "172"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "1121",
+              "OffsetY": "172"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "1139",
+              "OffsetY": "170"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "1085",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1132",
+              "OffsetY": "158"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "1194",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "BoundGoblin",
+              "OffsetX": "528",
+              "OffsetY": "91"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "1196",
+              "OffsetY": "168"
+            }
+          ]
+        }
+      ]
+    },
+    { "BiomeName": "InnBetween",
+      "Rooms": [
+        { "Name": "innbetween",
+          "SpawnInfo": [
+            {
+              "NameOrType": "GoblinTinkerer",
+              "OffsetX": "36",
+              "OffsetY": "49"
+            }
+          ]
+        }
+      ]
+    },
+    { "BiomeName": "Hive1",
+      "Rooms": [
+        { "Name": "hive_1",
+          "SpawnInfo": [
+            {
+              "NameOrType": "SWATHornet",
+              "OffsetX": "32",
+              "OffsetY": "136"
+            },
+            {
+              "NameOrType": "SWATHornet",
+              "OffsetX": "40",
+              "OffsetY": "146"
+            },
+            {
+>>>>>>> Stashed changes
               "NameOrType": "SWATHornet",
               "OffsetX": "54",
               "OffsetY": "144"
@@ -760,11 +1060,17 @@
         }
       ]
     },
+<<<<<<< Updated upstream
     {
       "BiomeName": "Crimson",
       "Rooms": [
         {
           "Name": "crimson_1",
+=======
+    { "BiomeName": "Crimson1",
+      "Rooms": [
+        { "Name": "crimson_1",
+>>>>>>> Stashed changes
           "SpawnInfo": [
             {
               "NameOrType": "BloodCrawler",
@@ -860,6 +1166,7 @@
               "NameOrType": "Crimera",
               "OffsetX": "253",
               "OffsetY": "109"
+<<<<<<< Updated upstream
             },
             {
               "NameOrType": "Crimera",
@@ -1035,16 +1342,467 @@
               "NameOrType": "Crimslime",
               "OffsetX": "624",
               "OffsetY": "234"
+=======
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "268",
+              "OffsetY": "112"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "236",
+              "OffsetY": "106"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "224",
+              "OffsetY": "108"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "201",
+              "OffsetY": "109"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "159",
+              "OffsetY": "101"
+            },
+            {
+              "NameOrType": "Crimslime",
+              "OffsetX": "366",
+              "OffsetY": "101"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "398",
+              "OffsetY": "99"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "421",
+              "OffsetY": "98"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "221",
+              "OffsetY": "153"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "377",
+              "OffsetY": "115"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "422",
+              "OffsetY": "120"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "464",
+              "OffsetY": "102"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "492",
+              "OffsetY": "142"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "495",
+              "OffsetY": "149"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "459",
+              "OffsetY": "167"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "480",
+              "OffsetY": "169"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "512",
+              "OffsetY": "157"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "525",
+              "OffsetY": "179"
+            },
+            {
+              "NameOrType": "Crimslime",
+              "OffsetX": "515",
+              "OffsetY": "187"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "511",
+              "OffsetY": "196"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "498",
+              "OffsetY": "192"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "519",
+              "OffsetY": "190"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "541",
+              "OffsetY": "101"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "574",
+              "OffsetY": "103"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "563",
+              "OffsetY": "111"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "611",
+              "OffsetY": "109"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "627",
+              "OffsetY": "108"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "613",
+              "OffsetY": "120"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "587",
+              "OffsetY": "115"
+            },
+            {
+              "NameOrType": "Crimslime",
+              "OffsetX": "704",
+              "OffsetY": "105"
+            },
+            {
+              "NameOrType": "Crimslime",
+              "OffsetX": "543",
+              "OffsetY": "243"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "568",
+              "OffsetY": "246"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "576",
+              "OffsetY": "238"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "602",
+              "OffsetY": "242"
+            },
+            {
+              "NameOrType": "Crimslime",
+              "OffsetX": "624",
+              "OffsetY": "234"
+            },
+            {
+              "NameOrType": "BrainofCthulhu",
+              "OffsetX": "781",
+              "OffsetY": "58"
             }
           ]
         }
       ]
     },
+    { "BiomeName": "Crimson2",
+      "Rooms": [
+        { "Name": "crimson_2",
+          "SpawnInfo": [
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "461",
+              "OffsetY": "51"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "458",
+              "OffsetY": "54"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "470",
+              "OffsetY": "60"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "440",
+              "OffsetY": "48"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "433",
+              "OffsetY": "45"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "425",
+              "OffsetY": "49"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "418",
+              "OffsetY": "46"
+            },
+            {
+              "NameOrType": "Crimslime",
+              "OffsetX": "363",
+              "OffsetY": "36"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "391",
+              "OffsetY": "48"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "365",
+              "OffsetY": "52"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "313",
+              "OffsetY": "39"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "268",
+              "OffsetY": "39"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "255",
+              "OffsetY": "37"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "241",
+              "OffsetY": "57"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "152",
+              "OffsetY": "169"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "198",
+              "OffsetY": "160"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "191",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "208",
+              "OffsetY": "170"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "215",
+              "OffsetY": "172"
+            },
+            {
+              "NameOrType": "Crimslime",
+              "OffsetX": "246",
+              "OffsetY": "163"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "236",
+              "OffsetY": "172"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "314",
+              "OffsetY": "203"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "262",
+              "OffsetY": "190"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "327",
+              "OffsetY": "199"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "367",
+              "OffsetY": "172"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "375",
+              "OffsetY": "169"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "380",
+              "OffsetY": "175"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "392",
+              "OffsetY": "165"
+            },
+            {
+              "NameOrType": "Crimslime",
+              "OffsetX": "416",
+              "OffsetY": "163"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "383",
+              "OffsetY": "107"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "410",
+              "OffsetY": "111"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "370",
+              "OffsetY": "121"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "387",
+              "OffsetY": "132"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "405",
+              "OffsetY": "127"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "413",
+              "OffsetY": "125"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "442",
+              "OffsetY": "135"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "487",
+              "OffsetY": "134"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "521",
+              "OffsetY": "165"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "501",
+              "OffsetY": "165"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "522",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "561",
+              "OffsetY": "171"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "575",
+              "OffsetY": "192"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "590",
+              "OffsetY": "181"
+            },
+            {
+              "NameOrType": "Drippler",
+              "OffsetX": "600",
+              "OffsetY": "182"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "599",
+              "OffsetY": "211"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "630",
+              "OffsetY": "179"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "638",
+              "OffsetY": "180"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "654",
+              "OffsetY": "175"
+            },
+            {
+              "NameOrType": "BloodCrawler",
+              "OffsetX": "677",
+              "OffsetY": "170"
+            },
+            {
+              "NameOrType": "Crimera",
+              "OffsetX": "458",
+              "OffsetY": "54"
+            },
+            {
+              "NameOrType": "BrainofCthulhu",
+              "OffsetX": "779",
+              "OffsetY": "123"
+>>>>>>> Stashed changes
+            }
+          ]
+        }
+      ]
+    },
+<<<<<<< Updated upstream
     {
       "BiomeName": "Desert",
       "Rooms": [
         {
           "Name": "desert_1",
+=======
+    { "BiomeName": "Desert1",
+      "Rooms": [
+        { "Name": "desert_1",
+>>>>>>> Stashed changes
           "SpawnInfo": [
             {
               "NameOrType": "DesertScorpionWalk",
@@ -1370,6 +2128,14 @@
               "NameOrType": "DesertGhoul",
               "OffsetX": "333",
               "OffsetY": "159"
+<<<<<<< Updated upstream
+=======
+            },
+            {
+              "NameOrType": "TargetDummy",
+              "OffsetX": "368",
+              "OffsetY": "7"
+>>>>>>> Stashed changes
             },
             {
               "NameOrType": "DesertScorpionWalk",
@@ -1380,11 +2146,17 @@
         }
       ]
     },
+<<<<<<< Updated upstream
     {
       "BiomeName": "FrozenCity",
       "Rooms": [
         {
           "Name": "frozencity_1",
+=======
+    { "BiomeName": "FrozenCity1",
+      "Rooms": [
+        { "Name": "frozencity_1",
+>>>>>>> Stashed changes
           "SpawnInfo": [
             {
               "NameOrType": "IceGolem",
