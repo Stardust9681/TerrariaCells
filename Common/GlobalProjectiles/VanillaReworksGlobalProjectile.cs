@@ -208,7 +208,7 @@ namespace TerrariaCells.Common.GlobalProjectiles
             }
         }
 
-        /*public override void AI(Projectile projectile)
+		/*public override void AI(Projectile projectile)
         {
 			//Literally wasn't doing anything ?
 			/*if (projectile.type == ProjectileID.Starfury)
@@ -224,12 +224,17 @@ namespace TerrariaCells.Common.GlobalProjectiles
 
 		public override bool PreAI(Projectile projectile)
 		{
-			if (projectile.type == ProjectileID.DesertDjinnCurse)
+			switch (projectile.type)
 			{
-				projectile.velocity = Vector2.Zero;
-				Lighting.AddLight(projectile.Center, Color.White.ToVector3() * 0.5f);
-				return false;
+				case ProjectileID.DesertDjinnCurse:
+					projectile.velocity = Vector2.Zero;
+					Lighting.AddLight(projectile.Center, Color.White.ToVector3() * 0.5f);
+					return false;
+				case ProjectileID.RockGolemRock:
+					projectile.velocity.Y += 0.07f;
+					break;
 			}
+			
 			return base.PreAI(projectile);
 		}
 

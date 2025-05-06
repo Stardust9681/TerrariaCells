@@ -237,7 +237,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 					//3 frame follow-through (18-20)
 					if (npc.ai[0] == 24)
 					{
-						Vector2 vel = npc.DirectionTo(target.Center - new Vector2(0, MathF.Abs(npc.position.X - target.position.X) * 0.1f)).RotatedByRandom(MathHelper.ToRadians(RockSpread_Deg)) * RockSpeed;
+						Vector2 vel = npc.DirectionTo(target.Center - new Vector2(0, MathF.Abs(npc.position.X - target.position.X) * 0.2f)).RotatedByRandom(MathHelper.ToRadians(RockSpread_Deg)) * RockSpeed;
 						Projectile proj = Projectile.NewProjectileDirect(
 							npc.GetSource_FromAI(),
 							npc.Center + vel,
@@ -263,13 +263,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 					if (npc.ai[0] == 40 && npc.ai[2] > 1)
 					{
 						npc.ai[2] -= 2;
-						Vector2 vel = npc.DirectionTo(target.Center - new Vector2(0, MathF.Abs(npc.position.X - target.position.X) * 0.1f)) * RockSpeed;
+						Vector2 vel = npc.DirectionTo(target.Center - new Vector2(0, MathF.Abs(npc.position.X - target.position.X) * 0.2f)) * RockSpeed;
 						for (int i = 0; i < 2; i++)
 						{
 							Projectile proj = Projectile.NewProjectileDirect(
 								npc.GetSource_FromAI(),
 								npc.Center + vel,
-								vel.RotatedByRandom(MathHelper.ToRadians(3 * RockSpread_Deg)),
+								vel.RotatedByRandom(MathHelper.ToRadians(2 * RockSpread_Deg)),
 								ProjectileID.RockGolemRock,
 								Common.Utilities.TCellsUtils.ScaledHostileDamage(30),
 								1f,
