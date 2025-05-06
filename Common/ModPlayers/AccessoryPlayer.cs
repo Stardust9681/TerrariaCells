@@ -342,8 +342,6 @@ namespace TerrariaCells.Common.ModPlayers
 		}
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			OnAnyHitNPC(target, hit, damageDone);
-			if (target.life < 1) OnKill(target, hit, damageDone);
 			if (stalkerQuiver)
 			{
 				if (proj.arrow && proj.type != ProjectileID.PhantasmArrow && stalkerQuiverTimer == 0)
@@ -357,7 +355,6 @@ namespace TerrariaCells.Common.ModPlayers
 		}
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			OnAnyHitNPC(target, hit, damageDone);
 			if (target.life < 1) OnKill(target, hit, damageDone);
 			if (hit.DamageType.CountsAsClass(DamageClass.Melee))
 			{
@@ -374,9 +371,6 @@ namespace TerrariaCells.Common.ModPlayers
 					bersTimer = 150; //2.5 sec
 				}
 			}
-		}
-		private void OnAnyHitNPC(NPC npc, NPC.HitInfo hit, int damage)
-		{
 			if (hit.Crit)
 			{
 				if (celestialStone)
