@@ -34,6 +34,9 @@ namespace TerrariaCells.Common.GlobalNPCs
 		public override void SetStaticDefaults()
 		{
 			NPCID.Sets.ProjectileNPC[NPCID.Creeper] = true;
+
+			NPCID.Sets.TrailCacheLength[NPCID.Crimslime] = 10;
+			NPCID.Sets.TrailingMode[NPCID.Crimslime] = 1;
 		}
 		public override void SetDefaults(NPC npc)
 		{
@@ -131,6 +134,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 					npc.buffImmune[BuffID.Poisoned] = false;
                     npc.lifeMax = 250;
 					npc.damage = 40;
+					npc.noGravity = true;
                     break;
 				case NPCID.BrainofCthulhu:
 					npc.lifeMax = (int)(npc.lifeMax * 1.3f * 2f); //This thing squishy as HEYLLLL
