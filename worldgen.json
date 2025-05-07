@@ -28,16 +28,16 @@
                     "Path": "Content/Structures/forest_1.shstruct",
                     "OffsetX": 0,
                     "OffsetY": -50,
-                    "SpawnX": 777,
-                    "SpawnY": 234
+                    "SpawnX": 774,
+                    "SpawnY": 233
                 },
                 {
                     "Name": "forest_2",
                     "Path": "Content/Structures/forest_2.shstruct",
                     "OffsetX": 0,
                     "OffsetY": -80,
-                    "SpawnX": 615,
-                    "SpawnY": 95
+                    "SpawnX": 611,
+                    "SpawnY": 100
                 }
             ],
             "Surface": false
@@ -52,6 +52,14 @@
                     "OffsetY": 11,
                     "SpawnX": 169,
                     "SpawnY": 138
+                },
+                {
+                    "Name": "crimson_2",
+                    "Path": "Content/Structures/crimson_2.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": 11,
+                    "SpawnX": 0,
+                    "SpawnY": 0
                 }
             ],
             "Surface": false
