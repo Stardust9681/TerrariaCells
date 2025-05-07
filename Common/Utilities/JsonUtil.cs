@@ -20,7 +20,7 @@ namespace TerrariaCells.Common.Utilities
 		/// <returns></returns>
 		public static T? GetItem<T>(this JToken token, string key, T defaultValue = default(T))
 		{
-			if (token is not JObject obj) throw new Exception();
+			if (token is not JObject obj) return defaultValue;
 
 			if (obj.TryGetValue(key, out JToken? result)) return result.ToObject<T>();
 

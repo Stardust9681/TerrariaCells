@@ -9,91 +9,105 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using TerrariaCells.Content.Tiles.LevelExitPylon;
+using TerrariaCells.Common.Utilities;
+using static TerrariaCells.Common.Utilities.JsonUtil;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace TerrariaCells.Common.Systems;
 
 public class ModifyPotLoot : GlobalTile, IEntitySource
 {
-    const string ChestLootPoolsFileName = "pot loot tables.json";
-    public string Context => "TerrariaCells.Common.Systems.ModifyPotLoot";
-    public Dictionary<int, int[]> potLootPools = [];
+	const string ChestLootPoolsFileName = "pot loot tables.json";
+	public string Context => "TerrariaCells.Common.Systems.ModifyPotLoot";
+	//Dictionary of Dictionaries is pretty undesireable, but I really didn't feel like naming json fields :/
+	public Dictionary<int, Dictionary<int, float>> potLootPools = new Dictionary<int, Dictionary<int, float>>();
 
-    public override void SetStaticDefaults()
-    {
-        potLootPools = [];
+	public override void Load()
+	{
+		Terraria.On_WorldGen.SpawnThingsFromPot += KillPotLoot;
+	}
+	public override void Unload()
+	{
+		Terraria.On_WorldGen.SpawnThingsFromPot -= KillPotLoot;
+	}
+	private void KillPotLoot(On_WorldGen.orig_SpawnThingsFromPot orig, int i, int j, int x2, int y2, int style) { }
 
-        JsonArray json = JsonSerializer.Deserialize<JsonArray>(
-            Encoding.UTF8.GetString(Mod.GetFileBytes(ChestLootPoolsFileName))
-        );
+	public override void SetStaticDefaults()
+	{
+		using (System.IO.StreamReader reader = new System.IO.StreamReader(Mod.GetFileStream(ChestLootPoolsFileName)))
+		{
+			string json = reader.ReadToEnd();
+			JArray rootArr = (JArray)JsonConvert.DeserializeObject(json);
+			JObject obj = (JObject)rootArr.First;
 
-        foreach (JsonNode chest in json)
-        {
-            JsonObject obj = chest.AsObject();
-            foreach (JsonNode style in obj["styles"].AsArray())
-            {
-                int[] lootPool = obj["lootPool"].AsArray().Select(x => (int)x).ToArray();
+			Dictionary<int, float> pool = obj.GetItem<Dictionary<int, float>>("newLootPool");
+			int[] styles = obj.GetItem<int[]>("styles");
+			foreach (int s in styles)
+				potLootPools[s] = pool;
+		}
+	}
 
-                potLootPools.Add((int)style, lootPool);
-            }
-        }
-    }
+	public override void KillTile(
+		int i,
+		int j,
+		int type,
+		ref bool fail,
+		ref bool effectOnly,
+		ref bool noItem
+	)
+	{
+		if (type != TileID.Pots && type != TileID.PotsEcho)
+		{
+			return;
+		}
+		//tMod doesn't actually route this through vanilla pot loot
+		//But I kept this here for Rubblemaker pots, so they won't drop their original materials (tragic)
+		noItem = true;
 
-    public override void KillTile(
-        int i,
-        int j,
-        int type,
-        ref bool fail,
-        ref bool effectOnly,
-        ref bool noItem
-    )
-    {
-        if (type != TileID.Pots)
-        {
-            return;
-        }
-        noItem = true;
+		if (Main.tile[i, j].TileFrameX % 36 != 0)
+		{
+			return;
+		}
+		if (Main.tile[i, j].TileFrameY % 36 != 0)
+		{
+			return;
+		}
+		PotLoot(i, j, type);
+	}
 
-        if (Main.tile[i, j].TileFrameX % 36 != 0)
-        {
-            return;
-        }
-        if (Main.tile[i, j].TileFrameY % 36 != 0)
-        {
-            return;
-        }
-        Drop(i, j, type);
-    }
+	public void PotLoot(int i, int j, int type)
+	{
+		int style = 0,
+			alt = 0;
 
-    public override void Drop(int i, int j, int type)
-    {
-        int style = 0,
-            alt = 0;
+		TileObjectData.GetTileInfo(Main.tile[i, j], ref style, ref alt);
 
-        TileObjectData.GetTileInfo(Main.tile[i, j], ref style, ref alt);
+		Dictionary<int, float> pool = potLootPools[style];
+		Terraria.Utilities.WeightedRandom<int> wRand = new Terraria.Utilities.WeightedRandom<int>(Main.rand);
+		foreach (KeyValuePair<int, float> KVP in pool)
+		{
+			wRand.Add(KVP.Key, KVP.Value);
+		}
 
-        int[] pool = potLootPools[style];
+		int itemType = wRand.Get();
+		Item item = new Item(itemType);
 
-        int itemType = pool[Main.rand.Next(pool.Length)];
-        Item item = new(itemType);
+		switch (itemType)
+		{
+			case ItemID.CopperCoin:
+				item.stack = Main.rand.Next(40, 100);
+				break;
+			case ItemID.SilverCoin:
+				item.stack = Main.rand.Next(51);
+				break;
 
-        switch (itemType)
-        {
-            case ItemID.CopperCoin:
-                item.stack = Main.rand.Next(2500);
-                int stack = item.stack;
-                if (stack > item.maxStack)
-                {
-                    item = new(ItemID.SilverCoin);
-                    item.stack = stack / 100;
-                }
-                break;
-            case ItemID.SilverCoin:
-                item.stack = Main.rand.Next(26) + 25;
-                break;
-        }
+			case ItemID.Apple: //4009
+				itemType = GlobalNPCs.DropFoodHeals.PickFoodItem();
+				item = new Item(itemType);
+				break;
+		}
 
-        Item.NewItem(this, Rectangle.Empty with { X = i * 16, Y = j * 16 }, item);
-
-        // Main.NewText((style, pool.Length, item.Name));
-    }
+		Item.NewItem(this, Rectangle.Empty with { X = i * 16, Y = j * 16 }, item);
+	}
 }
