@@ -99,7 +99,21 @@ namespace TerrariaCells.Common.ModPlayers
             }
         }
 
-        public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+		public override bool OnPickup(Item item)
+		{
+			if (item.type is ItemID.Star or ItemID.SoulCake or ItemID.SugarPlum)
+			{
+				Systems.AbilityHandler modPlayer = Player.GetModPlayer<Systems.AbilityHandler>();
+				foreach (Systems.AbilitySlot ability in modPlayer.Abilities)
+				{
+					if (ability.IsOnCooldown)
+						ability.cooldownTimer -= 30;
+				}
+			}
+			return base.OnPickup(item);
+		}
+
+		public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
             if (necroGreaves && Gun.TryGetGlobalItem(item, out Gun gun) && gun.Ammo <= 1)
             {
