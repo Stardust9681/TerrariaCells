@@ -47,6 +47,13 @@ namespace TerrariaCells.Common.Systems
 		{
 			SmartInteractWhitelist = new int[] {
 				TileID.TeleportationPylon,
+				TileID.Containers,
+				TileID.Containers2,
+				TileID.FakeContainers,
+				TileID.FakeContainers2,
+				TileID.Heart,
+				TileID.CatBast,
+				TileID.ManaCrystal,
 				ModContent.TileType<Content.Tiles.HivePylon>(),
 				ModContent.TileType<Content.Tiles.CrimsonPylon>(),
 			};
