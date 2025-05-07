@@ -1,10 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameContent;
 using Terraria.ModLoader.UI;
@@ -59,6 +55,7 @@ namespace TerrariaCells.Common.UI {
 
         internal class State : UIState {
             internal SoundPlayerTileEntity? tile;
+            internal (int, int) tileCoords = (0, 0);
             public DraggableUIPanel panel;
             public UIText soundLabel;
 
@@ -100,9 +97,9 @@ namespace TerrariaCells.Common.UI {
                     if (tile is not null) {
                         SoundEngine.PlaySound(SoundID.MenuTick);
                         tile.y--;
-                        if (tile.y < 0) {
-                            tile.y += Main.tile.Height;
-                        }
+                        //if (tile.y < 0) {
+                        //    tile.y += Main.tile.Height;
+                        //}
                     }
                 });
                 panel.Append(shiftUp);
@@ -113,7 +110,7 @@ namespace TerrariaCells.Common.UI {
                     if (tile is not null) {
                         SoundEngine.PlaySound(SoundID.MenuTick);
                         tile.y++;
-                        tile.y %= Main.tile.Height;
+                        //tile.y %= Main.tile.Height;
                     }
                 });
                 panel.Append(shiftDown);
@@ -124,9 +121,9 @@ namespace TerrariaCells.Common.UI {
                     if (tile is not null) {
                         SoundEngine.PlaySound(SoundID.MenuTick);
                         tile.x--;
-                        if (tile.x < 0) {
-                            tile.x += Main.tile.Width;
-                        }
+                        //if (tile.x < 0) {
+                        //    tile.x += Main.tile.Width;
+                        //}
                     }
                 });
                 panel.Append(shiftLeft);
@@ -137,7 +134,7 @@ namespace TerrariaCells.Common.UI {
                     if (tile is not null) {
                         SoundEngine.PlaySound(SoundID.MenuTick);
                         tile.x++;
-                        tile.x %= Main.tile.Width;
+                        //tile.x %= Main.tile.Width;
                     }
                 });
                 panel.Append(shiftRight);
@@ -168,7 +165,10 @@ namespace TerrariaCells.Common.UI {
                     ModContent.Request<Texture2D>(
                         $"{nameof(TerrariaCells)}/Common/Assets/SoundPlayer/Icon"
                     ).Value,
-                    new Point(tile.x, tile.y).ToWorldCoordinates() - Main.screenPosition,
+                    new Point(
+                        tile.x + tile.Position.X,
+                        tile.y + tile.Position.Y
+                    ).ToWorldCoordinates() - Main.screenPosition,
                     null,
                     Color.White * 0.6f,
                     0,

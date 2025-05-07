@@ -90,7 +90,7 @@ namespace TerrariaCells.Content.Tiles {
             if (SoundPlayerTileEntity.TryGet(i, j, out var entity)) {
                 SoundEngine.PlaySound(
                     entity.sound,
-                    new(entity.x * 16, entity.y * 16)
+                    new((entity.x + i) * 16, (entity.y + j) * 16)
                 );
             }
         }
