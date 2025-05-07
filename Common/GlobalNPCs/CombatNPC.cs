@@ -135,6 +135,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                     npc.lifeMax = 250;
 					npc.damage = 40;
 					npc.noGravity = true;
+					npc.knockBackResist = 0f;
                     break;
 				case NPCID.BrainofCthulhu:
 					npc.lifeMax = (int)(npc.lifeMax * 1.3f * 2f); //This thing squishy as HEYLLLL

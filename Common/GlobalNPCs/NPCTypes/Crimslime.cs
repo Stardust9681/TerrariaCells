@@ -105,9 +105,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				npc.netUpdate = true;
 			}
 
-			const int Start = 35;
-			const int End = 105;
-			HorizontalMovement(npc, npc.ai[0], 4f * npc.ai[2], Start, End);
+			const int Start = 25;
+			const int End = 85;
+			HorizontalMovement(npc, npc.ai[0], 3f * npc.ai[2], Start, End);
 			npc.velocity.Y += 0.2f;
 			if (npc.ai[0] > (End + Start))
 			{
@@ -130,9 +130,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				npc.ai[2] = DirectionFromTo(npc.Center.X, target.Center.X);
 			}
 
-			const int Start = 35;
-			const int End = 105;
-			HorizontalMovement(npc, npc.ai[0], 6f * npc.ai[2], Start, End);
+			const int Start = 25;
+			const int End = 85;
+			HorizontalMovement(npc, npc.ai[0], 5f * npc.ai[2], Start, End);
 			npc.velocity.Y += 0.2f;
 			CombatNPC.ToggleContactDamage(npc, MathF.Abs(npc.velocity.X) > 3);
 
