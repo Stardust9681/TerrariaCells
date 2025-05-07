@@ -17,21 +17,75 @@ using Terraria.ModLoader;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 using TerrariaCells.Common.Configs;
+using Terraria.GameContent.ObjectInteractions;
 
 namespace TerrariaCells.Common.Systems
 {
     public class Detours : ModSystem
     {
-        public override void Load()
+		public override void Load()
         {
-            Terraria.On_Main.DoDraw_UpdateCameraPosition += On_Main_DoDraw_UpdateCameraPosition;
+            On_Main.DoDraw_UpdateCameraPosition += On_Main_DoDraw_UpdateCameraPosition;
             On_Player.PickupItem += On_Player_PickupItem;
             On_UIWorldSelect.NewWorldClick += On_UIWorldSelect_NewWorldClick;
             On_Player.PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool +=
                 NoAmmoDamage;
+			On_TileSmartInteractCandidateProvider.FillPotentialTargetTiles += On_TileSmartInteractCandidateProvider_FillPotentialTargetTiles;
         }
 
-        private void NoAmmoDamage(
+		public override void Unload()
+		{
+			On_Main.DoDraw_UpdateCameraPosition -= On_Main_DoDraw_UpdateCameraPosition;
+			On_Player.PickupItem -= On_Player_PickupItem;
+			On_UIWorldSelect.NewWorldClick -= On_UIWorldSelect_NewWorldClick;
+			On_Player.PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool -= NoAmmoDamage;
+			On_TileSmartInteractCandidateProvider.FillPotentialTargetTiles -= On_TileSmartInteractCandidateProvider_FillPotentialTargetTiles;
+		}
+
+		//That this exists on ModSystem feels cursed as shit btw
+		public override void SetStaticDefaults()
+		{
+			SmartInteractWhitelist = new int[] {
+				TileID.TeleportationPylon,
+				ModContent.TileType<Content.Tiles.HivePylon>(),
+				ModContent.TileType<Content.Tiles.CrimsonPylon>(),
+			};
+		}
+
+		static int[] SmartInteractWhitelist;
+		private static System.Reflection.FieldInfo TileSmartInteract_Targets = typeof(TileSmartInteractCandidateProvider).GetField("targets", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+		private void On_TileSmartInteractCandidateProvider_FillPotentialTargetTiles(On_TileSmartInteractCandidateProvider.orig_FillPotentialTargetTiles orig, TileSmartInteractCandidateProvider self, SmartInteractScanSettings settings)
+		{
+			orig.Invoke(self, settings);
+			if (DevConfig.Instance.BuilderMode)
+				return;
+			List<Tuple<int, int>> targets = (List<Tuple<int, int>>)TileSmartInteract_Targets.GetValue(self);
+			if (targets.Count > 0)
+			{
+				List<int> toRemove = new List<int>();
+				for (int i = 0; i < targets.Count; i++)
+				{
+					Tuple<int, int> tuple_XY = targets[i];
+					if (!WorldGen.InWorld(tuple_XY.Item1, tuple_XY.Item2))
+						goto RemoveAndContinue;
+					Tile tile = Framing.GetTileSafely(tuple_XY.Item1, tuple_XY.Item2);
+					if (!SmartInteractWhitelist.Contains(tile.TileType))
+						goto RemoveAndContinue;
+
+					continue;
+
+				RemoveAndContinue:
+					toRemove.Add(i);
+				}
+				for (int i = toRemove.Count - 1; i >= 0; i--)
+				{
+					targets.RemoveAt(toRemove[i]);
+				}
+			}
+			TileSmartInteract_Targets.SetValue(self, targets);
+		}
+
+		private void NoAmmoDamage(
             On_Player.orig_PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool orig,
             Player self,
             Item sItem,
