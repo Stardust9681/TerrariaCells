@@ -491,6 +491,12 @@ namespace TerrariaCells.Common.Systems
 
 			return null;
 		}
+
+		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+		{
+			tooltips.Where(x => x.Name.Equals("EtherianManaWarning")).First().Hide();
+			tooltips.Where(x => x.Name.Equals("BuffTime")).First().Hide();
+		}
 		#endregion
 
 		public override void Load()
@@ -550,6 +556,11 @@ namespace TerrariaCells.Common.Systems
 				// Emit the delegate (the code)
 				c.EmitDelegate<Func<Item[], int, Texture2D, int, Texture2D>>((inv, slot, originalTexture, context) => {
 					try {
+						if (Main.gameMenu)
+							return originalTexture;
+						if (!Configs.DevConfig.Instance.EnableInventoryChanges)
+							return originalTexture;
+
 						if (Main.LocalPlayer.GetModPlayer<AbilityHandler>().Abilities.Any(x => x.Slot == slot))
 						{
 							if (context == 0 || context == 13 && slot != Main.LocalPlayer.selectedItem)
@@ -582,18 +593,9 @@ namespace TerrariaCells.Common.Systems
 		//Prevent non-ability item pickups from going into ability slots
 		private static bool On_Player_GetItem_FillEmptyInventorySlot(On_Player.orig_GetItem_FillEmptyInventorySlot orig, Player self, int plr, Item newItem, GetItemSettings settings, Item returnItem, int i)
 		{
-			/*
-			if (Ability.IsAbility(newItem.type) //Pickup item is an ability
-				&& self.GetModPlayer<AbilityHandler>().Abilities.Any(x => x.GetAbilityType(self) == newItem.type) //Have ability of the same type
-				&& self.GetModPlayer<AbilityHandler>().Abilities.Any(x => x.Slot == i)) //Is going into ability slot
-			{
-				return false;
-			}
-			else
-			{
-				return orig.Invoke(self, plr, newItem, settings, returnItem, i);
-			}
-			*/
+			if (!Configs.DevConfig.Instance.EnableInventoryChanges)
+				goto VanillaPickupLogic;
+
 			AbilityHandler modPlayer = self.GetModPlayer<AbilityHandler>();
 			if (!modPlayer.Abilities.Any(x => x.Slot == i))
 				goto VanillaPickupLogic;
@@ -653,6 +655,9 @@ namespace TerrariaCells.Common.Systems
 		//Prevent non-ability items being placed into ability slots
 		private static int ItemSlot_PickItemMovementAction(On_ItemSlot.orig_PickItemMovementAction orig, Item[] inv, int context, int slot, Item item)
 		{
+			if (!Configs.DevConfig.Instance.EnableInventoryChanges)
+				goto VanillaItemSlotLogic;
+
 			if (context == 0)
 			{
 				AbilityHandler modPlayer = Main.LocalPlayer.GetModPlayer<AbilityHandler>();
