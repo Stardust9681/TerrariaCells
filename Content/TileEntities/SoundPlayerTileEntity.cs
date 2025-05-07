@@ -64,8 +64,8 @@ namespace TerrariaCells.Content.TileEntities {
 
             if (TryGet(i, j, out var entity)) {
                 entity.soundId = 0;
-                entity.x = i;
-                entity.y = j;
+                entity.x = 0;
+                entity.y = 0;
             }
             return ret;
         }
