@@ -55,7 +55,6 @@ namespace TerrariaCells.Common.UI {
 
         internal class State : UIState {
             internal SoundPlayerTileEntity? tile;
-            internal (int, int) tileCoords = (0, 0);
             public DraggableUIPanel panel;
             public UIText soundLabel;
 
