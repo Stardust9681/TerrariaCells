@@ -12,7 +12,8 @@ public class TeleportTracker : ModSystem
 {
     // determines the tier of items dropped from chests
     public int level = 1;
-    private string nextLevel = "forest";
+    private string nextLevel = "Forest";
+    private int nextLevelVariation = 0;
 
     public string NextLevel
     {
@@ -30,64 +31,87 @@ public class TeleportTracker : ModSystem
         Main.dayTime = true;
         Main.time = 4f * 3600f;
         Main.StopRain();
-        nextLevel = "forest";
         level = 1;
+        nextLevel = "Forest";
+        nextLevelVariation = 0;
+        GoToNextLevel();
     }
 
     public void Teleport(string destination)
     {
-        Mod.Logger.Info($"Teleporting to {destination}:");
-        BasicWorldGenData worldLevelData = Mod.GetContent<BasicWorldGeneration>()
-            .First()
-            .BasicWorldGenData;
-        int variation = worldLevelData.LevelVariations[destination];
-        Mod.Logger.Info($"	Variation: {variation}");
-        Vector2 position;
-        LevelStructure levelStructure;
-        Point16 roomPos;
-        if (!destination.Equals("inn", StringComparison.CurrentCultureIgnoreCase))
+        if (destination.Equals("inn", StringComparison.CurrentCultureIgnoreCase))
         {
-            Mod.Logger.Info($"	Detouring to inn.");
-
-            nextLevel = destination;
-            roomPos = worldLevelData.LevelPositions[destination];
-
-            levelStructure = BasicWorldGeneration
-                .StaticLevelData.Find(x =>
-                    x.Name.Equals("inn", StringComparison.CurrentCultureIgnoreCase)
-                )
-                .Structures[0];
-            roomPos = worldLevelData.LevelPositions["Inn"];
-
-            position = (
-                roomPos + new Point16(levelStructure.SpawnX, levelStructure.SpawnY)
-            ).ToWorldCoordinates();
-            Main.LocalPlayer.Teleport(position, TeleportationStyleID.TeleportationPylon);
-            NetMessage.SendData(
-                MessageID.TeleportPlayerThroughPortal,
-                -1,
-                -1,
-                null,
-                Main.LocalPlayer.whoAmI,
-                (int)position.X,
-                (int)position.Y
-            );
-
+            Mod.Logger.Info($"Teleporting to next level: {nextLevel}:");
+            GoToNextLevel();
             return;
         }
 
-        roomPos = worldLevelData.LevelPositions[nextLevel];
+        Mod.Logger.Info($"Detouring to inn.");
+        DetourToInn(destination);
+    }
 
-        levelStructure = BasicWorldGeneration
+    private void DetourToInn(string destination)
+    {
+        BasicWorldGenData worldLevelData = Mod.GetContent<BasicWorldGeneration>()
+            .First()
+            .BasicWorldGenData;
+
+        nextLevel = destination;
+        nextLevelVariation = worldLevelData.LevelVariations[destination];
+
+        Point16 roomPos = worldLevelData.LevelPositions[destination];
+
+        LevelStructure levelStructure = BasicWorldGeneration
+            .StaticLevelData.Find(x =>
+                x.Name.Equals("inn", StringComparison.CurrentCultureIgnoreCase)
+            )
+            .Structures[0];
+
+        roomPos = worldLevelData.LevelPositions["Inn"];
+
+        Vector2 position = (
+            roomPos + new Point16(levelStructure.SpawnX, levelStructure.SpawnY)
+        ).ToWorldCoordinates();
+
+        if (Main.netMode == NetmodeID.SinglePlayer)
+        {
+            Main.LocalPlayer.Teleport(position, TeleportationStyleID.TeleportationPylon);
+            return;
+        }
+        // Teleports player on the server, if we're not on singleplayer
+        NetMessage.SendData(
+            MessageID.TeleportPlayerThroughPortal,
+            -1,
+            -1,
+            null,
+            Main.LocalPlayer.whoAmI,
+            (int)position.X,
+            (int)position.Y
+        );
+    }
+
+    private void GoToNextLevel()
+    {
+        BasicWorldGenData worldLevelData = Mod.GetContent<BasicWorldGeneration>()
+            .First()
+            .BasicWorldGenData;
+
+        Mod.Logger.Info($"	Variation: {nextLevelVariation}");
+
+        Point16 roomPos = worldLevelData.LevelPositions[nextLevel];
+
+        LevelStructure levelStructure = BasicWorldGeneration
             .StaticLevelData.Find(x =>
                 x.Name.Equals(nextLevel, StringComparison.CurrentCultureIgnoreCase)
             )
-            .Structures[variation];
+            .Structures[nextLevelVariation];
 
-        position = (
+        Vector2 position = (
             roomPos + new Point16(levelStructure.SpawnX, levelStructure.SpawnY)
         ).ToWorldCoordinates();
-        Mod.Logger.Info($"	Found structure. Teleporting to {position}.");
+
+        Mod.Logger.Info($"	Found structure. Teleporting to position {position}.");
+
         float hour = 7.5f;
         bool day = true;
         float rain = 0f;
@@ -140,5 +164,7 @@ public class TeleportTracker : ModSystem
             (int)position.Y
         );
         nextLevel = "Inn";
+        nextLevelVariation = 0;
+        return;
     }
 }
