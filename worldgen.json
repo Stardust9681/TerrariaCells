@@ -58,8 +58,8 @@
                     "Path": "Content/Structures/crimson_2.shstruct",
                     "OffsetX": 0,
                     "OffsetY": 11,
-                    "SpawnX": 0,
-                    "SpawnY": 0
+                    "SpawnX": 107,
+                    "SpawnY": 75
                 }
             ],
             "Surface": false
