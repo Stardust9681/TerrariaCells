@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Security.Cryptography.Pkcs;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -15,25 +14,38 @@ public class TeleportTracker : ModSystem
     private string nextLevel = "Forest";
     private int nextLevelVariation = 0;
 
+    /// <summary>
+    /// setting Main.time during world loading is borked for some reason, so its delayed until its more convenient.
+    /// </summary>
+    private bool deferredTimeSet = true;
+
     public string NextLevel
     {
         get => nextLevel;
         set => nextLevel = value;
     }
 
-    public override void OnModLoad()
+    public override void ClearWorld()
     {
-        base.OnModLoad();
-    }
-
-    public override void OnWorldLoad()
-    {
-        Main.dayTime = true;
-        Main.time = 4f * 3600f;
+        deferredTimeSet = true;
+        Mod.Logger.Info($"b4: {Main.time};{Main.dayTime}");
+        Main.dayTime = false;
+        Main.time = 1f * 3600f;
         Main.StopRain();
+        Mod.Logger.Info($"af: {Main.time};{Main.dayTime}");
+        // Mod.Logger.Info($"after time: ");
         level = 1;
         nextLevel = "Forest";
         nextLevelVariation = 0;
+    }
+
+    public override void PreUpdateWorld()
+    {
+        if (deferredTimeSet)
+        {
+            ClearWorld();
+            deferredTimeSet = false;
+        }
     }
 
     public void Teleport(string destination)
@@ -111,7 +123,7 @@ public class TeleportTracker : ModSystem
 
         Mod.Logger.Info($"	Found structure. Teleporting to position {position}.");
 
-        float hour = 7.5f;
+        float hour = 8.5f;
         bool day = true;
         float rain = 0f;
         switch (nextLevel.ToLower())
