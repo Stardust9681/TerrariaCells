@@ -34,7 +34,6 @@ public class TeleportTracker : ModSystem
         level = 1;
         nextLevel = "Forest";
         nextLevelVariation = 0;
-        GoToNextLevel();
     }
 
     public void Teleport(string destination)
