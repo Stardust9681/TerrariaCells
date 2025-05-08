@@ -102,7 +102,7 @@ public class DeathReset : ModPlayer, IEntitySource
 			new Item(Terraria.ID.ItemID.WoodenBow), //Weapon Slot 2
 			new Item(0, 0), //Skill Slot 1 (idk if this'll keep it open I hope it does tho)
 			new Item(0, 0), //Skill Slot 2
-			new Item(Terraria.ID.ItemID.LesserHealingPotion, 0), //Potion Slot
+			new Item(Terraria.ID.ItemID.LesserHealingPotion, 2), //Potion Slot
 		};
 	public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath) => GetStartingItems();
 	public override void ModifyStartingInventory(IReadOnlyDictionary<string, List<Item>> itemsByMod, bool mediumCoreDeath)
