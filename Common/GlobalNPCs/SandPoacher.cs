@@ -117,6 +117,20 @@ namespace TerrariaCells.Common.GlobalNPCs
                     position.X += -150 * target.direction;
                     position.Y = TCellsUtils.FindGround(new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height)).Y;
                     npc.position = position + new Vector2(0, -npc.height);
+
+                    for (int i = 0; i < 100; i += 1)
+                    {
+                        Point point = npc.position.ToTileCoordinates();
+                        point.Y += (npc.height / 16) - 1;
+                        if (Main.tile[point].HasTile)
+                        {
+                            npc.position.Y -= 16;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
                 }
                 Dust.NewDustDirect(npc.BottomLeft, npc.width, 0, DustID.Sand, 0, -4);
             }

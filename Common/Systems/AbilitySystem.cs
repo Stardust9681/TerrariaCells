@@ -494,8 +494,8 @@ namespace TerrariaCells.Common.Systems
 
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 		{
-			tooltips.Where(x => x.Name.Equals("EtherianManaWarning")).First().Hide();
-			tooltips.Where(x => x.Name.Equals("BuffTime")).First().Hide();
+            tooltips.Find(x => x.Name.Equals("EtherianManaWarning"))?.Hide();
+            tooltips.Find(x => x.Name.Equals("BuffTime"))?.Hide();
 		}
 		#endregion
 
