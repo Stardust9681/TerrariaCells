@@ -38,6 +38,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		public abstract void Behaviour(NPC npc);
 		public virtual bool FindFrame(NPC npc, int frameHeight) => true;
 		public virtual bool PreDraw(NPC npc, SpriteBatch spritebatch, Vector2 screenPos, Color lightColor) { return true; }
+
+        public virtual void ModifyNPCLoot(NPC npc, NPCLoot npcLoot) { }
 	}
 
 	internal class AITypeHandler : GlobalNPC
@@ -204,5 +206,14 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				return;
 			ai.FindFrame(npc, frameHeight);
 		}
+
+        public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
+        {
+            if (!AIOverwriteSystem.TryGetAIType(npc.type, out AIType ai))
+            {
+                return;
+            }
+            ai.ModifyNPCLoot(npc, npcLoot);
+        }
 	}
 }
