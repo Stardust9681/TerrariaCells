@@ -147,8 +147,6 @@ public class TeleportTracker : ModSystem
                 hour = 4.5f;
                 rain = 1f;
                 level = 5;
-                var bottle = new Item(ItemID.CloudinaBottle);
-                Utils.Swap(ref Main.LocalPlayer.armor[5], ref bottle);
                 break;
             //case 10: //Caverns
             //  position = new Vector2(28818.312f, 17606);

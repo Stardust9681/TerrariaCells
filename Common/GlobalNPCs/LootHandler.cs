@@ -85,13 +85,16 @@ namespace TerrariaCells.Common.GlobalNPCs
         public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
         {
             npcLoot.RemoveWhere(x => true);
-            IItemDropRule commonLesserHealthPotion = ItemDropRule.NotScalingWithLuck(LesserHealingPotion, 1, 2, 3);
+            IItemDropRule commonLesserHealthPotion = ItemDropRule.NotScalingWithLuck(LesserHealingPotion, 1, 2, 2);
             IItemDropRule commonHealthPotion = ItemDropRule.NotScalingWithLuck(HealingPotion, 1, 2, 3);
             IItemDropRule commonGreaterHealthPotion = ItemDropRule.NotScalingWithLuck(GreaterHealingPotion, 1, 2, 3);
             switch (npc.type)
             {
-                case NPCID.EyeofCthulhu:
                 case NPCID.BrainofCthulhu:
+                    npcLoot.Add(commonLesserHealthPotion);
+                    npcLoot.Add(new CommonDrop(ItemID.CloudinaBottle, 1));
+                    break;
+                case NPCID.EyeofCthulhu:
                 case NPCID.KingSlime:
                     npcLoot.Add(commonLesserHealthPotion);
                     break;
