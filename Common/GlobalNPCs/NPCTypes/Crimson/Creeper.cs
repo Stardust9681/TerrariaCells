@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 
-namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
+namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 {
 	public class Creeper : AIType
 	{
@@ -18,7 +19,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		{
 			bool horizontalMovement = npc.ai[1] != 0;
 
-			if(npc.ai[0] == 0 && npc.TryGetGlobalNPC<CombatNPC>(out CombatNPC cNPC))
+			if(npc.ai[0] == 0 && npc.TryGetGlobalNPC(out CombatNPC cNPC))
 				cNPC.allowContactDamage = true;
 
 			if (npc.ai[0] > 100 + Main.rand.Next(60))

@@ -15,7 +15,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-namespace TerrariaCells.Common.GlobalNPCs
+namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 {
     public partial class Fighters : GlobalNPC
     {

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
-
+using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 
-namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
+namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 {
 	public class GoblinSorcerer : AIType
 	{
@@ -60,7 +60,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 
 			for (int i = 0; i < 2; i++)
 			{
-				Dust dust = Dust.NewDustDirect(npc.Center + (Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi) * 24), 1, 1, Terraria.ID.DustID.Shadowflame);
+				Dust dust = Dust.NewDustDirect(npc.Center + Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi) * 24, 1, 1, Terraria.ID.DustID.Shadowflame);
 				dust.scale = Main.rand.NextFloat(0.95f, 1.25f);
 				dust.noGravity = true;
 				dust.velocity = new Vector2(0, (dust.position.Y - npc.Center.Y) * 0.12f);
@@ -101,13 +101,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				Vector2[] rays = new Vector2[RayCount];
 				for (int i = 0; i < RayCount; i++)
 				{
-					float rayAngle = (float)((i - (RayCount / 2)) / (float)RayCount) * TotalAngle;
+					float rayAngle = (float)((i - RayCount / 2) / (float)RayCount) * TotalAngle;
 					rays[i] = (Vector2.UnitX * -direction).RotatedBy(MathHelper.ToRadians(rayAngle)) * PxPerTile;
 				}
 
 				for (int i = 0; i < RayCount; i++)
 				{
-					Vector2 start = target.Center + (rays[i] * MinDistance / PxPerTile);
+					Vector2 start = target.Center + rays[i] * MinDistance / PxPerTile;
 					for (int j = MinDistance / PxPerTile; j < MaxDistance / PxPerTile; j++)
 					{
 						//Rectangle tpRect = new Rectangle((int)start.X - (npc.width / 2), (int)start.Y - (npc.height / 2), npc.width, npc.height);
@@ -128,8 +128,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				availablePositions.AddRange(rays.Where(x =>
 				{
 					float len = (x - target.Center).Length();
-					return len < (MaxDistance + PxPerTile)
-					&& len > (MinDistance - PxPerTile);
+					return len < MaxDistance + PxPerTile
+					&& len > MinDistance - PxPerTile;
 				}));
 				if (availablePositions.Count == 0)
 				{

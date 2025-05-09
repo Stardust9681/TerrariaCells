@@ -7,7 +7,9 @@ using Microsoft.Xna.Framework;
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
+using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
+
+namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 {
 	public class Crimera : AIType
 	{
@@ -93,8 +95,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			//else if (MathF.Abs(npc.position.X - movePos.X) > 80) npc.velocity.X *= 0.97f;
 			//else npc.noTileCollide = false;
 
-			if (npc.velocity.Y < 0 && npc.position.Y < movePos.Y - (4 * 16)) npc.velocity.Y += 0.125f;
-			if (npc.velocity.Y > 0 && npc.position.Y > movePos.Y + (1 * 16)) npc.velocity.Y -= 0.175f;
+			if (npc.velocity.Y < 0 && npc.position.Y < movePos.Y - 4 * 16) npc.velocity.Y += 0.125f;
+			if (npc.velocity.Y > 0 && npc.position.Y > movePos.Y + 1 * 16) npc.velocity.Y -= 0.175f;
 
 			npc.rotation = npc.DirectionTo(target.Center).ToRotation() - MathHelper.PiOver2;
 			

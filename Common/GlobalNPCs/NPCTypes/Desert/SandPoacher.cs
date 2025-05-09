@@ -17,7 +17,7 @@ using TerrariaCells.Content.Projectiles;
 
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 
-namespace TerrariaCells.Common.GlobalNPCs
+namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 {
     public partial class Fighters
     {

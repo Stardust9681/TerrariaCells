@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 using TerrariaCells.Common.Utilities;
 using TerrariaCells.Content.Projectiles;
 
-namespace TerrariaCells.Common.GlobalNPCs
+namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 {
     public partial class Casters : GlobalNPC
     {

@@ -7,11 +7,12 @@ using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TerrariaCells.Common.Utilities;
+using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 using static TerrariaCells.Common.Utilities.NumberHelpers;
 
-namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
+namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 {
 	public class Crimslime : AIType
 	{
@@ -109,7 +110,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			const int End = 85;
 			HorizontalMovement(npc, npc.ai[0], 3f * npc.ai[2], Start, End);
 			npc.velocity.Y += 0.2f;
-			if (npc.ai[0] > (End + Start))
+			if (npc.ai[0] > End + Start)
 			{
 				ResetAI(npc);
 				return;
@@ -136,7 +137,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			npc.velocity.Y += 0.2f;
 			CombatNPC.ToggleContactDamage(npc, MathF.Abs(npc.velocity.X) > 3);
 
-			if (npc.ai[0] > (End + Start) && MathF.Abs(npc.velocity.X) < 0.1f)
+			if (npc.ai[0] > End + Start && MathF.Abs(npc.velocity.X) < 0.1f)
 			{
 				ResetAI(npc);
 				return;
@@ -174,7 +175,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 
 				//NPC not moving horizontally
 				//Direction To Target is not the same as Direction Of Motion
-				if (MathF.Abs(npc.velocity.X) < (NudgeForce * 0.9f) || (DirectionFromTo(npc.position.X, target.position.X) * npc.velocity.X) < 0)
+				if (MathF.Abs(npc.velocity.X) < NudgeForce * 0.9f || DirectionFromTo(npc.position.X, target.position.X) * npc.velocity.X < 0)
 				{
 					npc.velocity.X *= 0.5f;
 					npc.velocity.Y = MathF.Min(npc.velocity.Y + 0.07f, 8f);
@@ -240,7 +241,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				float[] accelX = new float[npc.oldPos.Length - 2];
 				for (int i = 0; i < accelX.Length; i++)
 				{
-					accelX[i] = (npc.oldPos[i].X + npc.oldPos[i + 2].X) - (2 * npc.oldPos[i + 1].X);
+					accelX[i] = npc.oldPos[i].X + npc.oldPos[i + 2].X - 2 * npc.oldPos[i + 1].X;
 				}
 				float[] dAccelX = new float[accelX.Length - 1];
 				for (int j = 0; j < dAccelX.Length; j++)
@@ -268,7 +269,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				{
 					oldVelY[i] = npc.oldPos[i].Y - npc.oldPos[i + 1].Y;
 				}
-				float avgVelY = oldVelY.Sum() / (float)oldVelY.Length;
+				float avgVelY = oldVelY.Sum() / oldVelY.Length;
 				if (npc.collideY)
 					avgVelY *= 0.25f;
 				float scaleY = 1 + MathHelper.Clamp(MathF.Abs(avgVelY) * 0.33f, 0, 0.33f);

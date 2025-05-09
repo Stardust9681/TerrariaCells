@@ -7,8 +7,9 @@ using Microsoft.Xna.Framework;
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
+using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 
-namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
+namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 {
 	public class RockGolem : AIType
 	{
@@ -243,7 +244,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 							npc.Center + vel,
 							vel,
 							ProjectileID.RockGolemRock,
-							Common.Utilities.TCellsUtils.ScaledHostileDamage(45),
+							Utilities.TCellsUtils.ScaledHostileDamage(45),
 							1f,
 							Main.myPlayer
 						);
@@ -271,7 +272,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 								npc.Center + vel,
 								vel.RotatedByRandom(MathHelper.ToRadians(2 * RockSpread_Deg)),
 								ProjectileID.RockGolemRock,
-								Common.Utilities.TCellsUtils.ScaledHostileDamage(30),
+								Utilities.TCellsUtils.ScaledHostileDamage(30),
 								1f,
 								Main.myPlayer
 							);
@@ -295,7 +296,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 							npc.Center + vel,
 							vel,
 							ProjectileID.Boulder,
-							Common.Utilities.TCellsUtils.ScaledHostileDamage(60),
+							Utilities.TCellsUtils.ScaledHostileDamage(60),
 							1f,
 							Main.myPlayer
 						);
@@ -397,7 +398,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 						}
 						else
 						{
-							frameNum = Math.Max(3 - ((int)(npc.ai[0]-24) / 8), 0);
+							frameNum = Math.Max(3 - (int)(npc.ai[0]-24) / 8, 0);
 							frameNum += 9;
 						}
 						break;

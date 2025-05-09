@@ -1,9 +1,9 @@
 ﻿using System;
 using Terraria;
-
+using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 
-namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
+namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 {
 	public class GoblinArcher : AIType
 	{
@@ -59,10 +59,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 
 			npc.direction = MathF.Sign(npc.ai[1]);
 
-			float newVel = npc.velocity.X + (npc.direction * Accel);
+			float newVel = npc.velocity.X + npc.direction * Accel;
 			if (npc.direction == 0)
 			{
-				newVel = npc.velocity.X + (npc.spriteDirection * Accel);
+				newVel = npc.velocity.X + npc.spriteDirection * Accel;
 				npc.direction = MathF.Sign(newVel);
 			}
 			const float IdleMaxSpeed = MaxSpeed * 0.67f;
@@ -94,7 +94,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			}
 
 			Vector2 nextGround = npc.FindGroundInFront();
-			if (npc.Grounded() && nextGround.Y > (npc.Bottom.Y + npc.height))
+			if (npc.Grounded() && nextGround.Y > npc.Bottom.Y + npc.height)
 			{
 				npc.velocity.X *= 0.5f;
 				npc.ai[1] = -npc.direction;
@@ -121,7 +121,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			Vector2 distance = new Vector2(MathF.Abs(target.position.X - npc.position.X), MathF.Abs(target.position.Y - npc.position.Y));
 			float additiveDist = distance.X + distance.Y;
 			//Within ~5 tiles or between 15-20 tiles away, try to fire arrows instead
-			if(additiveDist < 80 || (240 < additiveDist && additiveDist < 320))
+			if(additiveDist < 80 || 240 < additiveDist && additiveDist < 320)
 			{
 				if (npc.LineOfSight(target.position))
 				{
@@ -132,13 +132,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 
 			//npc.stairFall = target.position.Y > npc.position.Y;
 
-			float newVel = npc.velocity.X + (directionToMove * Accel);
+			float newVel = npc.velocity.X + directionToMove * Accel;
 			if (MathF.Abs(newVel) < MaxSpeed)
 				npc.velocity.X = newVel;
 			else
 				npc.velocity.X = npc.direction * MaxSpeed;
 
-			if (npc.FindGroundInFront().Y > (npc.Bottom.Y + npc.height))
+			if (npc.FindGroundInFront().Y > npc.Bottom.Y + npc.height)
 			{
 				if (!npc.TargetInAggroRange(target))
 				{
@@ -223,7 +223,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				int[] arrowsToFire = new int[] { Terraria.ID.ProjectileID.WoodenArrowHostile, Terraria.ID.ProjectileID.FireArrow };
 
 				int xy = (int)npc.ai[3];
-				(ushort x, ushort y) = Common.Utilities.NPCHelpers.Unpack(xy);
+				(ushort x, ushort y) = Unpack(xy);
 				Vector2 vel = new Vector2(x * 16 + 8, y * 16 + 8);
 				vel.Y -= MathF.Abs(npc.position.X - vel.X) * 0.00625f;
 				vel = npc.DirectionTo(vel) * 8.5f;

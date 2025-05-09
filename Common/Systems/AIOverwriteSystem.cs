@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.ModLoader;
 
 using TerrariaCells.Common.GlobalNPCs.NPCTypes;
+using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 
 namespace TerrariaCells.Common.Systems
 {

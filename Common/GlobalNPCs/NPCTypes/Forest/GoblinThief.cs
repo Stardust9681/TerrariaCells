@@ -1,9 +1,9 @@
 ﻿using System;
 using Terraria;
-
+using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 
-namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
+namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 {
 	/// <remarks>
 	/// Also used for <see cref="Terraria.ID.NPCID.Wolf"/>
@@ -53,10 +53,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 
 			npc.direction = MathF.Sign(npc.ai[1]);
 
-			float newVel = npc.velocity.X + (npc.direction * Accel);
+			float newVel = npc.velocity.X + npc.direction * Accel;
 			if (npc.direction == 0)
 			{
-				newVel = npc.velocity.X + (npc.spriteDirection * Accel);
+				newVel = npc.velocity.X + npc.spriteDirection * Accel;
 				npc.direction = MathF.Sign(newVel);
 			}
 			const float IdleMaxSpeed = MaxSpeed * 0.5f;
@@ -88,7 +88,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			}
 
 			Vector2 nextGround = npc.FindGroundInFront();
-			if (npc.Grounded() && nextGround.Y > (npc.Bottom.Y + npc.height))
+			if (npc.Grounded() && nextGround.Y > npc.Bottom.Y + npc.height)
 			{
 				npc.velocity.X *= 0.5f;
 				npc.ai[1] = -npc.direction;
@@ -110,7 +110,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		{
 			if (
 				!npc.TryGetTarget(out Entity target)
-				|| (npc.Timer() == 0 && !npc.TargetInAggroRange(target, lineOfSight: false))
+				|| npc.Timer() == 0 && !npc.TargetInAggroRange(target, lineOfSight: false)
 				|| !npc.TargetInAggroRange(target, 480, false))
 			{
 				npc.Phase(Idle);
@@ -122,7 +122,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			if (
 				MathF.Abs(npc.velocity.X) > 2.8f
 				&& npc.IsFacingTarget(target)
-				&& ((96 < distance.X && distance.X < 128) || (128 < distance.X && distance.X < 160 && distance.Y > 48)))
+				&& (96 < distance.X && distance.X < 128 || 128 < distance.X && distance.X < 160 && distance.Y > 48))
 			{
 				npc.Phase(Jump);
 				return;
@@ -139,7 +139,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				npc.velocity.X = npc.direction * MaxSpeed;
 
 			CombatNPC.ToggleContactDamage(npc, Math.Abs(npc.velocity.X) > MaxSpeed * 0.67f);
-			if (npc.FindGroundInFront().Y > (npc.Bottom.Y + (npc.height * 2)))
+			if (npc.FindGroundInFront().Y > npc.Bottom.Y + npc.height * 2)
 			{
 				npc.Phase(Jump);
 				return;

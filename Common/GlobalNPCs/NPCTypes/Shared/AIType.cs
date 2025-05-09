@@ -16,15 +16,8 @@ using MonoMod.RuntimeDetour;
 using System.Collections.Concurrent;
 using Terraria.ID;
 
-namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
+namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 {
-	//Using ILoadable instead of IModType, because this isn't content, but this is still something I want loaded
-	//Not sure if it would make sense to separate these into static classes w/ static methods instead?
-		//But then we lose the super nice inheritence structure, the blueprint methods, etc
-	//Anyway if you want to redo this fine, I just want a better system, honest.
-
-	//~ Star
-
 	public abstract class AIType : ILoadable
 	{
 		public void Load(Mod mod)
@@ -44,18 +37,15 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 	{
 		public override void Load()
 		{
-			//On_NPC.VanillaFindFrame += On_FindFrame;
-			//IL_NPC.VanillaFindFrame += IL_FindFrame;
 			IL_NPC.StrikeNPC_HitInfo_bool_bool += IL_StrikeNPC;
 		}
 
 		public override void Unload()
 		{
-			//On_NPC.VanillaFindFrame -= On_FindFrame;
-			//IL_NPC.VanillaFindFrame -= IL_FindFrame;
 			IL_NPC.StrikeNPC_HitInfo_bool_bool -= IL_StrikeNPC;
 		}
 
+		//Disable vanilla type-specific "on hit" modifications (eg, changing AI values when hit)
 		private void IL_StrikeNPC(ILContext context)
 		{
 			log4net.ILog GetInstanceLogger() => ModContent.GetInstance<TerrariaCells>().Logger;
@@ -127,9 +117,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			}
 		}
 
-		//I have banged my HEAD AGAINST THE WALL for this FUCKING thing for FOUR DAYS now. AT LEAST.
-		//SOMETIMES, it works JUST FINE! And SOMETIMES, it just doesn't fucking do ANYTHING.
-		//Dude I'm SO just.. done. I'm pissed at whatever-the-fuck is going on.
+		//Find frame is finicky. Not sure what the problem is.
 		private static void IL_FindFrame(ILContext context)
 		{
 			log4net.ILog GetInstanceLogger() => ModContent.GetInstance<TerrariaCells>().Logger;

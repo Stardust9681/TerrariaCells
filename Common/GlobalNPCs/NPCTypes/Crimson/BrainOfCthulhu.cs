@@ -14,7 +14,9 @@ using Terraria.DataStructures;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 
-namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
+using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
+
+namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 {
 	public class BrainOfCthulhu : AIType
 	{
@@ -118,7 +120,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			CombatNPC globalNPC = npc.GetGlobalNPC<CombatNPC>();
 
 			Systems.CameraManipulation.SetZoom(45, new Vector2(95, 55) * 16, null);
-			Systems.CameraManipulation.SetCamera(45, centre - (Main.ScreenSize.ToVector2() * 0.5f));
+			Systems.CameraManipulation.SetCamera(45, centre - Main.ScreenSize.ToVector2() * 0.5f);
 
 			void Entrance()
 			{
@@ -187,7 +189,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				npc.velocity.X = 2 * offset / Duration;
 
 				int opacityTime = 8;
-				npc.Opacity = MathF.Min(1, Duration / (2f * opacityTime) - MathF.Abs(((2 * (timer - Start)) - Duration) / (2 * opacityTime)));
+				npc.Opacity = MathF.Min(1, Duration / (2f * opacityTime) - MathF.Abs((2 * (timer - Start) - Duration) / (2 * opacityTime)));
 			}
 			void WarnCross()
 			{
@@ -276,10 +278,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 					npc.Center = newPos;
 				}
 
-				npc.Center = TCellsUtils.LerpVector2(newPos, (2*centre)-newPos, timer - Start, Duration, TCellsUtils.LerpEasing.InOutSine);
+				npc.Center = TCellsUtils.LerpVector2(newPos, 2*centre-newPos, timer - Start, Duration, TCellsUtils.LerpEasing.InOutSine);
 
 				int opacityTime = 6;
-				npc.Opacity = MathHelper.Clamp(Duration / (2f * opacityTime) - MathF.Abs(((2 * (timer-Start)) - Duration) / (2 * opacityTime)), 0, 1);
+				npc.Opacity = MathHelper.Clamp(Duration / (2f * opacityTime) - MathF.Abs((2 * (timer-Start) - Duration) / (2 * opacityTime)), 0, 1);
 				if (timer == End) npc.Opacity = 0;
 			}
 			void Tendrils()
@@ -298,11 +300,11 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				if (RightTentacles.Contains(timer)) vel.X = -4;
 				if (vel.X != 0)
 				{
-					Vector2 position = centre + new Vector2(44 * 16 * -MathF.Sign(vel.X), (36.5f * 16) - (Main.rand.Next(PlatformHeights) * 16));
+					Vector2 position = centre + new Vector2(44 * 16 * -MathF.Sign(vel.X), 36.5f * 16 - Main.rand.Next(PlatformHeights) * 16);
 					TelegraphWarning.CreateWarning(
 						npc.GetSource_FromAI(),
 						position,
-						(position + (vel * 16 * 6)),
+						position + vel * 16 * 6,
 						25,
 						TelegraphWarning.Orange,
 						0.25f);
@@ -316,7 +318,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 						1f,
 						Main.myPlayer,
 						position.X,
-						centre.X - (vel.X * 6 * 4),
+						centre.X - vel.X * 6 * 4,
 						40
 						);
 					proj.timeLeft = 65;
@@ -348,8 +350,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 							0,
 							0,
 							Main.myPlayer,
-							(centre + (targetDirection * 240f)).X,
-							(centre + (targetDirection * 240f)).Y,
+							(centre + targetDirection * 240f).X,
+							(centre + targetDirection * 240f).Y,
 							TelegraphWarning.Yellow
 						);
 					proj.localAI[0] = 0.333f;
@@ -383,12 +385,12 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				}
 
 				int opacityTime = 15;
-				if (timer < Start + opacityTime) npc.Opacity = MathF.Min(1, Duration / (2f * opacityTime) - MathF.Abs(((2f * (timer - Start)) - Duration) / (2f * opacityTime)));
+				if (timer < Start + opacityTime) npc.Opacity = MathF.Min(1, Duration / (2f * opacityTime) - MathF.Abs((2f * (timer - Start) - Duration) / (2f * opacityTime)));
 				else npc.Opacity = 1;
 
 				globalNPC.allowContactDamage = false;
 
-				if (npc.Center.Y < centre.Y - (20 * 16) || npc.Center.Y > centre.Y + (8 * 16))
+				if (npc.Center.Y < centre.Y - 20 * 16 || npc.Center.Y > centre.Y + 8 * 16)
 				{
 					npc.oldVelocity.Y = npc.velocity.Y;
 					npc.velocity.Y = -npc.velocity.Y;
@@ -446,13 +448,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				if (npc.ai[3] < CreeperSpawnTime)
 				{
 					npc.ai[3]++;
-					if (npc.ai[3] > 0 && (((int)npc.ai[3] % 15 == 0 && Main.rand.NextBool(3)) || (int)npc.ai[3] % 30 == 0))
+					if (npc.ai[3] > 0 && ((int)npc.ai[3] % 15 == 0 && Main.rand.NextBool(3) || (int)npc.ai[3] % 30 == 0))
 					{
 						int cycle = timer / 333;
 						int maxCycles = Duration / 333;
 						if ((int)npc.ai[3] % 15 == 0)
 						{
-							float xOffset = MathF.Sin((float)(cycle + 3) * MathHelper.Pi / (float)maxCycles) * 32;
+							float xOffset = MathF.Sin((cycle + 3) * MathHelper.Pi / maxCycles) * 32;
 							Vector2 spawnPos = centre + new Vector2(xOffset, -352);
 							NPC creeper = NPC.NewNPCDirect(
 									npc.GetSource_FromAI(),
@@ -464,7 +466,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 						}
 						if ((int)npc.ai[3] % 30 == 0)
 						{
-							float xOffset = MathF.Sin((float)(cycle + 2) * MathHelper.TwoPi / (float)maxCycles) * 32;
+							float xOffset = MathF.Sin((cycle + 2) * MathHelper.TwoPi / maxCycles) * 32;
 							Vector2 spawnPos = new Vector2(npc.ai[2] + xOffset, centre.Y - 352);
 							NPC creeper = NPC.NewNPCDirect(
 									npc.GetSource_FromAI(),
@@ -525,13 +527,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				if (npc.ai[3] < CreeperSpawnTime)
 				{
 					npc.ai[3]++;
-					if (npc.ai[3] > 0 && (((int)npc.ai[3] % 6 == 0 && Main.rand.NextBool()) || (int)npc.ai[3] % 12 == 0))
+					if (npc.ai[3] > 0 && ((int)npc.ai[3] % 6 == 0 && Main.rand.NextBool() || (int)npc.ai[3] % 12 == 0))
 					{
 						int cycle = timer / 333;
 						int maxCycles = Duration / 333;
 						if ((int)npc.ai[3] % 6 == 0)
 						{
-							float xOffset = MathF.Sin((float)(cycle + 3) * MathHelper.Pi / (float)maxCycles) * 32;
+							float xOffset = MathF.Sin((cycle + 3) * MathHelper.Pi / maxCycles) * 32;
 							Vector2 spawnPos = centre + new Vector2(xOffset, -352);
 							NPC creeper = NPC.NewNPCDirect(
 									npc.GetSource_FromAI(),
@@ -543,7 +545,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 						}
 						if ((int)npc.ai[3] % 12 == 0)
 						{
-							float xOffset = MathF.Sin((float)(cycle + 2) * MathHelper.TwoPi / (float)maxCycles) * 32;
+							float xOffset = MathF.Sin((cycle + 2) * MathHelper.TwoPi / maxCycles) * 32;
 							Vector2 spawnPos = new Vector2(npc.ai[2] + xOffset, centre.Y - 352);
 							NPC creeper = NPC.NewNPCDirect(
 									npc.GetSource_FromAI(),
@@ -605,13 +607,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				if (npc.ai[3] < CreeperSpawnTime)
 				{
 					npc.ai[3]++;
-					int tDiffA = (int)MathHelper.Lerp(18, 6, (float)cycle / (float)maxCycles);
-					int tDiffB = (int)MathHelper.Lerp(24, 8, (float)cycle / (float)maxCycles);
+					int tDiffA = (int)MathHelper.Lerp(18, 6, cycle / (float)maxCycles);
+					int tDiffB = (int)MathHelper.Lerp(24, 8, cycle / (float)maxCycles);
 					if (npc.ai[3] > 0)
 					{
 						if ((int)npc.ai[3] % tDiffA == 0 && Main.rand.NextBool())
 						{
-							float xOffset = MathF.Sin((float)(cycle + 3) * MathHelper.Pi / (float)maxCycles) * 32;
+							float xOffset = MathF.Sin((cycle + 3) * MathHelper.Pi / maxCycles) * 32;
 							Vector2 spawnPos = centre + new Vector2(xOffset, -352);
 							NPC creeper = NPC.NewNPCDirect(
 									npc.GetSource_FromAI(),
@@ -623,7 +625,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 						}
 						if ((int)npc.ai[3] % tDiffB == 0 && Main.rand.NextBool(3))
 						{
-							float xOffset = MathF.Sin((float)(cycle + 2) * MathHelper.TwoPi / (float)maxCycles) * 32;
+							float xOffset = MathF.Sin((cycle + 2) * MathHelper.TwoPi / maxCycles) * 32;
 							Vector2 spawnPos = new Vector2(npc.ai[2] + xOffset, centre.Y - 352);
 							NPC creeper = NPC.NewNPCDirect(
 									npc.GetSource_FromAI(),
@@ -734,8 +736,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 					const int SpikeCount = 5;
 					for (int i = 0; i < SpikeCount; i++)
 					{
-						if (i == (SpikeCount/2)) continue;
-						int offsetX = (i - (SpikeCount/2)) * 32;
+						if (i == SpikeCount/2) continue;
+						int offsetX = (i - SpikeCount/2) * 32;
 						Point spawnPos = worldPos + new Vector2(offsetX, 0).ToTileCoordinates();
 						for (int j = 0; j < 16; j++)
 						{
@@ -786,7 +788,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 					TelegraphWarning.CreateWarning(
 						npc.GetSource_FromAI(),
 						bottom,
-						bottom + (Vector2.UnitY * -5 * 16),
+						bottom + Vector2.UnitY * -5 * 16,
 						Duration,
 						TelegraphWarning.Orange,
 						5f);
@@ -794,10 +796,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				if ((timer - Start) % 10 == 0)
 				{
 					IEntitySource npcSource = npc.GetSource_FromAI();
-					float invProgress = 1 - ((float)(timer - Start) / (float)Duration);
-					Vector2 diff = new Vector2((65*16/2) * invProgress, 0);
+					float invProgress = 1 - (timer - Start) / (float)Duration;
+					Vector2 diff = new Vector2(65*16/2 * invProgress, 0);
 					int height = 50 + (int)((1 - invProgress) * 100);
-					Vector2 bottom = centre + new Vector2(0, (18 * 16));
+					Vector2 bottom = centre + new Vector2(0, 18 * 16);
 
 					Projectile proj;
 
@@ -943,7 +945,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 	/// <summary>
 	/// <para><c><see cref="Projectile.ai"/>[0]</c> --> Target position X</para>
 	/// <para><c><see cref="Projectile.ai"/>[1]</c> --> Target position Y</para>
-	/// <para><c><see cref="Projectile.ai"/>[2]</c> --> Index of colour to use in <c><see cref="Terraria.Utils.DrawLine(SpriteBatch, Vector2, Vector2, Color, Color, float)"/></c></para>
+	/// <para><c><see cref="Projectile.ai"/>[2]</c> --> Index of colour to use in <c><see cref="Utils.DrawLine(SpriteBatch, Vector2, Vector2, Color, Color, float)"/></c></para>
 	/// <para><c><see cref="Projectile.localAI"/>[0]</c> --> Width multiplier (multiplied into <c><see cref="Projectile.timeLeft"/></c>)</para>
 	/// </summary>
 	internal class TelegraphWarning : ModProjectile
@@ -976,7 +978,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			Color.MediumVioletRed,
 		};
 
-		public static Projectile CreateWarning(Terraria.DataStructures.IEntitySource source, Vector2 start, Vector2 end, int lifetime = 200, int colourIndex = Violet, float widthMult = 2)
+		public static Projectile CreateWarning(IEntitySource source, Vector2 start, Vector2 end, int lifetime = 200, int colourIndex = Violet, float widthMult = 2)
 		{
 			Projectile proj = Projectile.NewProjectileDirect(source, start, Vector2.Zero, ModContent.ProjectileType<TelegraphWarning>(), 0, 0, Main.myPlayer, end.X, end.Y, colourIndex);
 			proj.localAI[0] = widthMult;
@@ -985,7 +987,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			return proj;
 		}
 
-		public override string Texture => $"Terraria/Images/Projectile_{Terraria.ID.ProjectileID.None}";
+		public override string Texture => $"Terraria/Images/Projectile_{ProjectileID.None}";
 
 		public override void SetDefaults()
 		{
@@ -1019,15 +1021,15 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 	}
 
 	/// <summary>
-	/// <para><c><see cref="Projectile.ai"/>[0]</c> --> Start position (use <c><see cref="NPCHelpers.PositionToFloat(Vector2)"/></c>)</para>
-	/// <para><c><see cref="Projectile.ai"/>[1]</c> --> Midway point (use <c><see cref="NPCHelpers.PositionToFloat(Vector2)"/></c>)</para>
+	/// <para><c><see cref="Projectile.ai"/>[0]</c> --> Start position (use <c><see cref="PositionToFloat(Vector2)"/></c>)</para>
+	/// <para><c><see cref="Projectile.ai"/>[1]</c> --> Midway point (use <c><see cref="PositionToFloat(Vector2)"/></c>)</para>
 	/// <para><c><see cref="Projectile.ai"/>[2]</c> --> Duration of attack (in ticks)</para>
 	/// </summary>
 	internal class IllusionBrainHitbox : ModProjectile
 	{
 		private static Rectangle? BoCFrame = null;
 
-		public override string Texture => $"Terraria/Images/NPC_{Terraria.ID.NPCID.BrainofCthulhu}";
+		public override string Texture => $"Terraria/Images/NPC_{NPCID.BrainofCthulhu}";
 		public override void SetDefaults()
 		{
 			Projectile.hostile = true;
@@ -1048,7 +1050,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			Vector2 start = FloatToPosition(Projectile.ai[0]);
 			Vector2 centre = FloatToPosition(Projectile.ai[1]);
 
-			Projectile.Center = TCellsUtils.LerpVector2(start, (2 * centre) - start, Projectile.ai[2] - Projectile.timeLeft, Projectile.ai[2], TCellsUtils.LerpEasing.InOutSine);
+			Projectile.Center = TCellsUtils.LerpVector2(start, 2 * centre - start, Projectile.ai[2] - Projectile.timeLeft, Projectile.ai[2], TCellsUtils.LerpEasing.InOutSine);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -1096,9 +1098,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 		{
 			float lerpValue;
 			if (Projectile.timeLeft < Projectile.ai[2] * 0.5f)
-				lerpValue = (6f / MathF.Pow(Projectile.ai[2], 2f)) * MathF.Pow(Projectile.timeLeft, 2f);
+				lerpValue = 6f / MathF.Pow(Projectile.ai[2], 2f) * MathF.Pow(Projectile.timeLeft, 2f);
 			else if (Projectile.timeLeft < Projectile.ai[2])
-				lerpValue = (6f / MathF.Pow(Projectile.ai[2], 2f)) * MathF.Pow(Projectile.timeLeft - Projectile.ai[2], 2);
+				lerpValue = 6f / MathF.Pow(Projectile.ai[2], 2f) * MathF.Pow(Projectile.timeLeft - Projectile.ai[2], 2);
 			else goto IgnorePosition;
 
 			lerpValue = MathF.Min(lerpValue, 1);
@@ -1117,7 +1119,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			if (Projectile.timeLeft < Projectile.ai[2])
 			{
 				int segmentsCount = Projectile.width / 28;
-				int remainder = Projectile.width - (segmentsCount * 28);
+				int remainder = Projectile.width - segmentsCount * 28;
 				Vector2 anchor = new Vector2(Anchor, Projectile.position.Y) - Main.screenPosition;
 				Vector2 start = anchor;
 				Color drawColour = Color.Lerp(Color.OrangeRed, Color.DarkRed, 0.4f);
