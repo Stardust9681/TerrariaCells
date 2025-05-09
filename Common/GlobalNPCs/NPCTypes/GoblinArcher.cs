@@ -227,7 +227,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 				Vector2 vel = new Vector2(x * 16 + 8, y * 16 + 8);
 				vel.Y -= MathF.Abs(npc.position.X - vel.X) * 0.00625f;
 				vel = npc.DirectionTo(vel) * 8.5f;
-				Projectile proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center, vel, Main.rand.Next(arrowsToFire), npc.damage / 5, 1f, Main.myPlayer);
+				Projectile proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center, vel, Main.rand.Next(arrowsToFire), npc.damage, 1f, Main.myPlayer);
 				proj.hostile = true;
 				proj.friendly = false;
 
