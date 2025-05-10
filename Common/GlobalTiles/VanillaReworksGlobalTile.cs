@@ -27,6 +27,7 @@ namespace TerrariaCells.Common.GlobalTiles
 				TileID.ManaCrystal,
 				TileID.Switches,
 				TileID.Lever,
+                TileID.CatBast,
 				ModContent.TileType<Content.Tiles.LevelExitPylon.ForestExitPylon>(),
 				// ModContent.TileType<Content.Tiles.LevelExitPylon.DesertExitPylon>(),
 				// ModContent.TileType<Content.Tiles.LevelExitPylon.HiveExitPylon>(),
