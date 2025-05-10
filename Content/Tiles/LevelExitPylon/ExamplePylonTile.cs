@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -5,14 +6,13 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
-using Terraria.GameContent.UI.Chat;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Default;
 using Terraria.ObjectData;
 using TerrariaCells.Common.Items;
 using TerrariaCells.Common.Systems;
+//using TerrariaCells.Common.UI; // only needed if using the debug drawing
 using TerrariaCells.Content.Items.Placeable;
 using TerrariaCells.Content.TileEntities;
 
@@ -244,4 +244,31 @@ public class ForestExitPylon : ModTile, ITerraCellsCategorization
 
         return new Point16(x - frameX, y - frameY);
     }
+
+    public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData) {
+        //DrawUtils.highlightTileRegion(spriteBatch, new(i + 12, j + 12), Color.Red);
+        //DrawUtils.highlightTileRegion(spriteBatch, new(i + 12, j + 12 + drawData.tileTop), Color.Green);
+        if (TileObjectData.IsTopLeft(i, j)) {
+            //Main.NewText($"{i} {j} {Main.tile[i, j].TileType} {ModContent.TileType<ForestExitPylon>()}");
+            Main.instance.TilesRenderer.AddSpecialLegacyPoint(i, j);
+        }
+    }
+
+    List<DrawData> voidLensData = [];
+    public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch) {
+        // *why* is it off by 12???
+        //DrawUtils.highlightTileRegion(spriteBatch, new(i + 12, j + 12), Color.White);
+        var gateHelper = new PotionOfReturnGateHelper(
+            PotionOfReturnGateHelper.GateType.EntryPoint,
+            new((i + 12) * 16 + 24, (j + 12) * 16 + 32),
+            1f
+        );
+        voidLensData.Clear();
+        gateHelper.DrawToDrawData(voidLensData, 0);
+        foreach (var datum in voidLensData) {
+            datum.Draw(spriteBatch);
+        }
+    }
+
+    // TODO: draw Extra_175 as a map icon
 }
