@@ -98,7 +98,7 @@ public class LimitedStorageUI : UIState
         int positionX = 20;
         for (int i = 0; i < 5; i++)
         {
-
+			bool isSelectedItem = Main.LocalPlayer.selectedItem == i;
             switch (inventorySlots[i].Item3)
             {
                 case TerraCellsItemCategory.Default:
@@ -118,7 +118,7 @@ public class LimitedStorageUI : UIState
                     break;
             }
 
-            if (i == Main.LocalPlayer.selectedItem)
+            if (isSelectedItem)
             {
                 if (Main.hotbarScale[i] < 1f)
                     Main.hotbarScale[i] += 0.05f;
@@ -175,20 +175,19 @@ public class LimitedStorageUI : UIState
 
 				if (abilitySlot != null && abilitySlot.cooldownTimer > 0)
 				{
-					// Cooldown item slot indicator
 					Main.spriteBatch.Draw(
 						TextureAssets.InventoryBack.Value,
-						position: new Vector2(positionX, num3) + (Vector2.One * 20),
+						//I DON'T KNOW WHY THERE NEEDS TO BE AN EXTRA +6 TO THE MULTIPLIER HERE
+						//WHY ISN'T IT ALREADY HANDLED I DON'T UNDERSTANDDDDDDD
+						position: new Vector2(positionX, num3) + (Vector2.One * (isSelectedItem ? 26 : 20)),
 						sourceRectangle: new Rectangle(
 							0,
 							0,
 							52,
-							(int)(
-								52 * ((float)abilitySlot.cooldownTimer / ability.Cooldown)
-							)
+							(int)(52 * ((float)abilitySlot.cooldownTimer / ability.Cooldown))
 						),
 						color: new Color(15, 15, 15, 128),
-						rotation: 3.14159f,
+						rotation: MathHelper.Pi,
 						origin: new Vector2(26, 26),
 						scale: new Vector2(Main.inventoryScale),
 						SpriteEffects.None,
