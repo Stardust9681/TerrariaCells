@@ -109,7 +109,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			const int Start = 25;
 			const int End = 85;
 			HorizontalMovement(npc, npc.ai[0], 3f * npc.ai[2], Start, End);
-			npc.velocity.Y += 0.2f;
+			//npc.velocity.Y += 0.2f;
 			if (npc.ai[0] > End + Start)
 			{
 				ResetAI(npc);
@@ -134,7 +134,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			const int Start = 25;
 			const int End = 85;
 			HorizontalMovement(npc, npc.ai[0], 5f * npc.ai[2], Start, End);
-			npc.velocity.Y += 0.2f;
+			//npc.velocity.Y += 0.2f;
 			CombatNPC.ToggleContactDamage(npc, MathF.Abs(npc.velocity.X) > 3);
 
 			if (npc.ai[0] > End + Start && MathF.Abs(npc.velocity.X) < 0.1f)
@@ -143,7 +143,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 				return;
 			}
 
-			npc.ai[0]++;
+			if (npc.ai[0] > Start || npc.Grounded())
+			{
+				npc.ai[0]++;
+			}
 		}
 
 		private void JumpAI(NPC npc)
@@ -159,18 +162,19 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			const int Start = 45;
 			if ((int)npc.ai[0] == Start)
 			{
-				npc.velocity.Y = -7f;
+				npc.velocity.Y = -9f;
 			}
-			npc.velocity.Y += 0.18f;
+			if (npc.velocity.Y != 0)
+				npc.velocity.Y -= 0.01f;
 			if (npc.velocity.Y > 0)
 				npc.velocity.Y *= 1.01f;
 
 			if (npc.ai[0] > Start)
 			{
-				const float NudgeForce = 0.28f;
+				const float NudgeForce = 0.32f;
 				if (Distance(npc.position.X, target.position.X) > ToTileDist(3))
 				{
-					npc.velocity.X = MathHelper.Clamp(npc.velocity.X + DirectionFromTo(npc.position.X, target.position.X) * NudgeForce, -2.4f, 2.4f);
+					npc.velocity.X = MathHelper.Clamp(npc.velocity.X + DirectionFromTo(npc.position.X, target.position.X) * NudgeForce, -3.2f, 3.2f);
 				}
 
 				//NPC not moving horizontally
@@ -187,23 +191,26 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 					ResetAI(npc);
 					return;
 				}
-			}
 
-			if (npc.collideY && npc.oldVelocity.Y > npc.velocity.Y)
-			{
-				int dustCount = Main.rand.Next(6, 10);
-				for (int i = 0; i < dustCount; i++)
+				if (npc.Grounded())
 				{
-					Dust d = Dust.NewDustDirect(npc.BottomLeft, npc.width, 2, DustID.Crimslime);
-					d.noGravity = true;
-					d.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-					d.scale = Main.rand.NextFloat(1f, 1.5f);
-					d.velocity = new Vector2(Main.rand.NextDirection() * 3f, -3f).RotatedByRandom(MathHelper.ToRadians(15));
-					d.alpha = 50;
+					int dustCount = Main.rand.Next(6, 10);
+					for (int i = 0; i < dustCount; i++)
+					{
+						Dust d = Dust.NewDustDirect(npc.BottomLeft, npc.width, 2, DustID.Crimslime);
+						d.noGravity = true;
+						d.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+						d.scale = Main.rand.NextFloat(1f, 1.5f);
+						d.velocity = new Vector2(Main.rand.NextDirection() * 3f, -3f).RotatedByRandom(MathHelper.ToRadians(15));
+						d.alpha = 50;
+					}
 				}
-			}
+			}			
 
-			npc.ai[0]++;
+			if (npc.ai[0] >= Start || npc.Grounded())
+			{
+				npc.ai[0]++;
+			}
 		}
 
 		public override bool FindFrame(NPC npc, int frameHeight)

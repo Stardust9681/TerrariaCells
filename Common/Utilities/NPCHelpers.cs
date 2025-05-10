@@ -53,7 +53,7 @@ namespace TerrariaCells.Common.Utilities
 
 		///<returns>True if NPC is determined to be on ground. False otherwise.</returns>
 		public static bool Grounded(this NPC npc)
-			=> npc.collideY && npc.oldVelocity.Y > npc.velocity.Y && npc.oldVelocity.Y > 0;
+			=> npc.oldVelocity.Y >= npc.velocity.Y && npc.velocity.Y == 0;
 
 		/// <summary>
 		/// 

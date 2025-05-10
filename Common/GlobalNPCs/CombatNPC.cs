@@ -134,7 +134,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 					npc.buffImmune[BuffID.Poisoned] = false;
                     npc.lifeMax = 250;
 					npc.damage = 40;
-					npc.noGravity = true;
+					//npc.noGravity = true;
 					npc.knockBackResist = 0f;
                     break;
 				case NPCID.BrainofCthulhu:
