@@ -11,7 +11,7 @@ namespace TerrariaCells.Content.Buffs
 {
     public class ShadowDodgeBuff : ModBuff
     {
-        public override string Texture => "Terraria/Images/Buff_" + BuffID.ShadowFlame;
+        public override string Texture => "Terraria/Images/Buff_" + BuffID.ShadowDodge;
 
         public override void SetStaticDefaults()
         {
