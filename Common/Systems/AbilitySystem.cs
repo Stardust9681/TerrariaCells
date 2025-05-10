@@ -674,8 +674,8 @@ namespace TerrariaCells.Common.Systems
 					//Guaranteed slots is an ability slot not on cooldown
 					if (!Ability.IsAbility(item.type)) return -1;
 
-					//If held item exists as "equipped" ability already
-					if (modPlayer.Abilities.Any(x => modPlayer.Player.inventory[x.Slot].type == item.type)) return -1;
+					//If held item exists as "equipped" ability already (excepting the slot the player is clicking at)
+					if (modPlayer.Abilities.Any(x => x.Slot != slot && modPlayer.Player.inventory[x.Slot].type == item.type)) return -1;
 				}
 			}
 
