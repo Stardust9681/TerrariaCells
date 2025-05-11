@@ -1317,7 +1317,9 @@ public class LimitedStorageUI : UIState
                             && ItemLoader.CanReforge(Main.reforgeItem)
                         )
                         {
-                            if (Main.reforgeItem.TryGetGlobalItem(out FunkyModifierItemModifier modifier)) {
+                            if (InventoryManager.GetItemCategorization(Main.reforgeItem.type) == TerraCellsItemCategory.Weapon
+                                && Main.reforgeItem.TryGetGlobalItem(out FunkyModifierItemModifier modifier)) 
+                            {
 
                                 Main.LocalPlayer.BuyItem(reforgeCost);
                                 // Disabled reforge system, using FunkyModifier system now >:3
@@ -1337,10 +1339,12 @@ public class LimitedStorageUI : UIState
 
                                 // ItemLoader.PostReforge(Main.reforgeItem);
 
-                                foreach (var mod in modifier.modifiers)
+                                for (int i = 0; i < modifier.modifiers.Length; i++)
                                 {
+                                    FunkyModifier mod = modifier.modifiers[i];
                                     var item = Main.reforgeItem.Clone();
                                     item.SetNameOverride(mod.ToString());
+                                    item.rare = i; 
                                     PopupText.NewText(
                                         PopupTextContext.ItemReforge,
                                         item,
@@ -1349,6 +1353,20 @@ public class LimitedStorageUI : UIState
                                         longText: true
                                     );
                                 }
+
+                                if (modifier.modifiers.Length == 0) {
+                                    var item = Main.reforgeItem.Clone();
+                                    item.SetNameOverride("Nothing...");
+                                    item.rare = ItemRarityID.Gray; 
+                                    PopupText.NewText(
+                                        PopupTextContext.ItemReforge,
+                                        item,
+                                        Main.reforgeItem.stack,
+                                        noStack: true,
+                                        longText: true
+                                    );
+                                }
+                                SoundEngine.PlaySound(SoundID.Item37);
                             } else {
                                 var item = Main.reforgeItem.Clone();
                                 item.SetNameOverride("Could not reforge!");
@@ -1360,7 +1378,6 @@ public class LimitedStorageUI : UIState
                                     longText: true
                                 );
                             }
-                            SoundEngine.PlaySound(SoundID.Item37);
                         }
                     }
                     else
