@@ -274,7 +274,7 @@ namespace TerrariaCells.Common.GlobalItems
                 modifiers.SetCrit();
                 Projectile.NewProjectileDirect(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ProjectileID.GladiusStab, item.damage, item.knockBack, player.whoAmI, ai1: 1);
             }
-            if (item.type == ItemID.Katana && player.GetModPlayer<HurtPlayer>().timeSinceLastHurt < 60 * 8)
+            if (item.type == ItemID.Katana && player.GetModPlayer<WeaponPlayer>().swingType == 0)
             {
                 modifiers.SetCrit();
             }
