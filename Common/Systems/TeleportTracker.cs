@@ -109,7 +109,11 @@ public class TeleportTracker : ModSystem
 
         Mod.Logger.Info($"	Variation: {nextLevelVariation}");
 
-        Point16 roomPos = worldLevelData.LevelPositions[nextLevel];
+        if (!worldLevelData.LevelPositions.TryGetValue(nextLevel, out Point16 roomPos)) {
+            Main.NewText($"Could not go to {nextLevelVariation}, for the level does not yet exist.");
+            Mod.Logger.Error($"Tried to go to level {nextLevelVariation}, but it doesn't exist.");
+            return;
+        }
 
         LevelStructure levelStructure = BasicWorldGeneration
             .StaticLevelData.Find(x =>
