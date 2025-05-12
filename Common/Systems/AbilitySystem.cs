@@ -466,29 +466,27 @@ namespace TerrariaCells.Common.Systems
 		//Check that ability is off cooldown for use
 		public override bool CanUseItem(Item item, Player player)
 		{
-			//Item passed in is 'Player.inventory[Player.selectedItem]'
-
-			///<see cref="Player.ItemCheck"/> -> <c> Player.ItemCheck_Inner() </c>
-			// -> Item item = this.inventory[this.selectedItem]
-			///<see cref="Player.ItemCheck"/> -> <c> Player.ItemCheck_CheckCanUse(Item sItem) </c>
-			///<see cref="CombinedHooks.CanUseItem(Player, Item)"
-
-			if (AbilityHandler.TryGetSelectedAbility(player, out AbilitySlot ability))
+			AbilityHandler modPlayer = player.GetModPlayer<AbilityHandler>();
+			foreach (AbilitySlot slot in modPlayer.Abilities)
 			{
-				return ability.CanUseAbility(player);
+				if (player.inventory[slot.Slot].Equals(item))
+					return slot.CanUseAbility(player);
 			}
-			return base.CanUseItem(item, player);
+			return false;
 		}
 
 		//Set timers for ability use
 		public override bool? UseItem(Item item, Player player)
 		{
-			if (player.ItemAnimationJustStarted)
+			AbilityHandler modPlayer = player.GetModPlayer<AbilityHandler>();
+			foreach (AbilitySlot slot in modPlayer.Abilities)
 			{
-				if (AbilityHandler.TryGetSelectedAbility(player, out AbilitySlot ability))
-					ability.UseAbility(player);
+				if (player.inventory[slot.Slot].Equals(item))
+				{
+					slot.UseAbility(player);
+					break;
+				}
 			}
-
 			return null;
 		}
 
