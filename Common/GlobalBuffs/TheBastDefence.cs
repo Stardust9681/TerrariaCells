@@ -25,7 +25,8 @@ namespace TerrariaCells.Common.GlobalBuffs {
             if (type != BuffID.CatBast) {
                 return;
             }
-            tip = "20% reduced damage";
+            buffName = "The Bast Defence"; // Vindictive Brit attack >:)
+            tip = "20% reduced damage taken";
         }
     }
 }
