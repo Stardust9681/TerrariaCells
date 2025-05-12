@@ -223,7 +223,7 @@ namespace TerrariaCells.Common.GlobalItems
 
             try
             {
-                switch (InventoryManager.GetItemCategorization(item.netID))
+                switch (InventoryManager.GetItemCategorization(item.type))
                 {
                     case TerraCellsItemCategory.Weapon:
                         item.rare = ItemRarityID.Red; // or custom rarity ID
@@ -235,7 +235,7 @@ namespace TerrariaCells.Common.GlobalItems
                         item.rare = ItemRarityID.Quest; // Amber-like
                         break;
                     case TerraCellsItemCategory.Storage:
-                        switch (InventoryManager.GetStorageItemSubcategorization(item.netID))
+                        switch (InventoryManager.GetStorageItemSubcategorization(item.type))
                         {
                             case StorageItemSubcategorization.Accessory:
                                 item.rare = ItemRarityID.Yellow;
@@ -274,7 +274,7 @@ namespace TerrariaCells.Common.GlobalItems
                 modifiers.SetCrit();
                 Projectile.NewProjectileDirect(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ProjectileID.GladiusStab, item.damage, item.knockBack, player.whoAmI, ai1: 1);
             }
-            if (item.type == ItemID.Katana && player.GetModPlayer<HurtPlayer>().timeSinceLastHurt < 60 * 8)
+            if (item.type == ItemID.Katana && player.GetModPlayer<WeaponPlayer>().swingType == 0)
             {
                 modifiers.SetCrit();
             }

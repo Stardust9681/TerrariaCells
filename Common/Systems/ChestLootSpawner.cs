@@ -92,27 +92,31 @@ public class ChestLootSpawner : ModSystem, IEntitySource
 
         if (DevConfig.Instance.EnableChestChanges)
         {
-
             if (isNewChest)
             {
-                int length = ChestLootTables[tileFrame].Length;
-                if (length > 0)
+                if (ChestLootTables.TryGetValue(tileFrame, out int[] loot_ids)) 
                 {
-                    int i = Item.NewItem(
-                        this,
-                        new Point16(x, y).ToWorldCoordinates(),
-                        0,
-                        0,
-                        ChestLootTables[tileFrame][Main.rand.Next(length)]
-                    );
-                    Item item = Main.item[i];
-
-                    if (item.TryGetGlobalItem<TierSystemGlobalItem>(out var tierSystem))
+                    if (loot_ids.Length > 0)
                     {
-                        int level = Mod.GetContent<TeleportTracker>().First().level;
-                        tierSystem.SetLevel(item, level);
+                        int i = Item.NewItem(
+                            this,
+                            new Point16(x, y).ToWorldCoordinates(),
+                            0,
+                            0,
+                            loot_ids[Main.rand.Next(loot_ids.Length)]
+                        );
+                        Item item = Main.item[i];
+
+                        if (item.TryGetGlobalItem<TierSystemGlobalItem>(out var tierSystem))
+                        {
+                            int level = Mod.GetContent<TeleportTracker>().First().level;
+                            tierSystem.SetLevel(item, level);
+                        }
+
+                        FunkyModifierItemModifier.Reforge(item);
+                    } else {
+                        NPC.NewNPC(this, x * 16, y * 16, NPCID.Firefly);
                     }
-                    FunkyModifierItemModifier.Reforge(item);
                 }
             }
         }
@@ -156,24 +160,30 @@ public class ChestLootSpawner : ModSystem, IEntitySource
 
             if (isNewChest)
             {
-                int length = ChestLootTables[tileFrame].Length;
-                if (length > 0)
+                if (ChestLootTables.TryGetValue(tileFrame, out int[] loot_ids)) 
                 {
-                    Item item = Main.item[
-                        Item.NewItem(
-                        this,
-                        new Point16(x, y).ToWorldCoordinates(),
-                        0,
-                        0,
-                        ChestLootTables[tileFrame][Main.rand.Next(length)]
-                        )
-                    ];
-                    if (item.TryGetGlobalItem<TierSystemGlobalItem>(out var tierSystem))
+                    if (loot_ids.Length > 0)
                     {
-                        int level = Mod.GetContent<TeleportTracker>().First().level;
-                        tierSystem.SetLevel(item, level);
+                        Item item = Main.item[
+                            Item.NewItem(
+                            this,
+                            new Point16(x, y).ToWorldCoordinates(),
+                            0,
+                            0,
+                            loot_ids[Main.rand.Next(loot_ids.Length)]
+                            )
+                        ];
+
+                        if (item.TryGetGlobalItem<TierSystemGlobalItem>(out var tierSystem))
+                        {
+                            int level = Mod.GetContent<TeleportTracker>().First().level;
+                            tierSystem.SetLevel(item, level);
+                        }
+
+                        FunkyModifierItemModifier.Reforge(item);
                     }
-                    FunkyModifierItemModifier.Reforge(item);
+                } else {
+                    NPC.NewNPC(this, (x + 1) * 16, y * 16, NPCID.Firefly);
                 }
             }
         }

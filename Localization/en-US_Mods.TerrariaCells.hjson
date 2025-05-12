@@ -228,6 +228,11 @@ Items: {
 		DisplayName: Music Box (Forest | NACHOZ)
 		Tooltip: Plays the forest theme by NACHOZ
 	}
+
+	TickTimer: {
+		DisplayName: Tick Timer
+		Tooltip: ""
+	}
 }
 
 Projectiles: {

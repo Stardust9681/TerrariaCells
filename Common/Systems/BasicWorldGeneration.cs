@@ -91,6 +91,11 @@ public class BasicWorldGeneration : ModSystem
 
     public override void SaveWorldData(TagCompound tag)
     {
+        var data = BasicWorldGenData;
+        if (data is null) {
+            // TerraCells didn't generate this world, skip saving its data
+            return;
+        }
         tag["TerraCellsWorldGenData"] = BasicWorldGenData.SerializeData();
     }
 
@@ -110,6 +115,9 @@ public class BasicWorldGeneration : ModSystem
             {
                 throw new Exception("Invalid mod version!");
             }
+            Mod.Logger.Info("Deserialized worldgen data successfully");
+        
+            NPCRoomSpawner.ResetSpawns();
         }
         catch (Exception e)
         {

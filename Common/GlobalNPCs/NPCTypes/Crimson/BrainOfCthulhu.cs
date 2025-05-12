@@ -15,6 +15,7 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 
 using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
+using TerrariaCells.Common.GlobalItems;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 {
@@ -109,6 +110,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 				npc.EncourageDespawn(0);
 				npc.GetGlobalNPC<CombatNPC>().allowContactDamage = false;
 				npc.Opacity = 0;
+
+				PowerupPickups.brainOfCthuluSpawnPoint = npc.position + (Vector2.UnitX * 80);
 				return;
 			}
 
@@ -163,6 +166,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 
 					npc.Opacity = 1;
 				}
+
 			}
 			void WarnCharge()
 			{
