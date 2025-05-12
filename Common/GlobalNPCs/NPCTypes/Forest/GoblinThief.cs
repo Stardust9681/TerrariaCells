@@ -25,8 +25,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 		public override void Behaviour(NPC npc)
 		{
 			if (!npc.HasValidTarget)
-				npc.TargetClosest();
-			switch (npc.Phase())
+				npc.TargetClosest(false);
+			switch (npc.ai[1])
 			{
 				case Idle:
 					IdleAI(npc);
@@ -38,26 +38,26 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 					JumpAI(npc);
 					break;
 				default:
-					npc.Phase(0);
+					npc.ai[1] = Idle;
 					break;
 			}
+			npc.spriteDirection = npc.direction;
 		}
 
 		void IdleAI(NPC npc)
 		{
-			if (npc.TargetInAggroRange(lineOfSight:false))
+			if (npc.TargetInAggroRange(lineOfSight: true))
 			{
-				npc.Phase(ApproachTarget);
+				npc.ai[1] = ApproachTarget;
 				return;
 			}
 
-			npc.direction = MathF.Sign(npc.ai[1]);
-
+			npc.direction = MathF.Sign(npc.ai[3]);
 			float newVel = npc.velocity.X + npc.direction * Accel;
 			if (npc.direction == 0)
 			{
 				newVel = npc.velocity.X + npc.spriteDirection * Accel;
-				npc.direction = MathF.Sign(newVel);
+				npc.direction = npc.spriteDirection;
 			}
 			const float IdleMaxSpeed = MaxSpeed * 0.5f;
 			if (MathF.Abs(newVel) < IdleMaxSpeed)
@@ -73,8 +73,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 				if (npc.position.Equals(oldPos))
 				{
 					npc.position -= npc.oldVelocity * 2;
-					npc.ai[1] = -npc.direction;
-					npc.Phase(Idle);
+					npc.ai[3] = -npc.direction;
+					npc.ai[1] = Idle;
 					return;
 				}
 				else
@@ -83,7 +83,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 					{
 						npc.velocity.X = (npc.velocity.X + oldVel.X) * 0.5f;
 					}
-					npc.DoTimer(-2);
+					npc.ai[0] -= 2;
 				}
 			}
 
@@ -91,29 +91,31 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 			if (npc.Grounded() && nextGround.Y > npc.Bottom.Y + npc.height)
 			{
 				npc.velocity.X *= 0.5f;
-				npc.ai[1] = -npc.direction;
-				npc.Phase(Idle);
+				npc.ai[0] = 0;
+				npc.ai[3] = -npc.direction;
+				npc.ai[1] = Idle;
 				return;
 			}
 
-			if (npc.Timer() > 90)
+			if (npc.ai[0] > 90)
 			{
-				npc.ai[1] = -npc.direction;
-				npc.Phase(Idle);
+				npc.ai[0] = 0;
+				npc.ai[3] = -npc.direction;
+				npc.ai[1] = Idle;
 				return;
 			}
 
 			npc.velocity.Y += 0.036f; //Apply gravity
-			npc.DoTimer();
+			npc.ai[0]++;
 		} //Hitbox doesn't matter, target too far to take contact damage
 		void ApproachTargetAI(NPC npc) //No hitbox when walking
 		{
 			if (
 				!npc.TryGetTarget(out Entity target)
-				|| npc.Timer() == 0 && !npc.TargetInAggroRange(target, lineOfSight: false)
-				|| !npc.TargetInAggroRange(target, 480, false))
+				|| npc.ai[0] == 0 && !npc.TargetInAggroRange(target, lineOfSight: true)
+				|| !npc.TargetInAggroRange(target, 480, true))
 			{
-				npc.Phase(Idle);
+				npc.ai[1] = Idle;
 				return;
 			}
 
@@ -124,12 +126,12 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 				&& npc.IsFacingTarget(target)
 				&& (96 < distance.X && distance.X < 128 || 128 < distance.X && distance.X < 160 && distance.Y > 48))
 			{
-				npc.Phase(Jump);
+				npc.ai[1] = Jump;
 				return;
 			}
 
 			int directionToMove = target.position.X < npc.position.X ? -1 : 1;
-			if (npc.Timer() < 60 && !npc.IsFacingTarget(target) && distance.X < 80)
+			if (npc.ai[0] < 60 && !npc.IsFacingTarget(target) && distance.X < 80)
 				directionToMove *= -1;
 
 			float newVel = npc.velocity.X + directionToMove * Accel;
@@ -141,7 +143,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 			CombatNPC.ToggleContactDamage(npc, Math.Abs(npc.velocity.X) > MaxSpeed * 0.67f);
 			if (npc.FindGroundInFront().Y > npc.Bottom.Y + npc.height * 2)
 			{
-				npc.Phase(Jump);
+				npc.ai[1] = Jump;
 				return;
 			}
 
@@ -152,26 +154,26 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 				Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
 				if (oldPos == npc.position && oldVel == npc.velocity && npc.Grounded())
 				{
-					npc.Phase(Jump);
+					npc.ai[1] = Jump;
 					return;
 				}
 			}
 			npc.velocity.Y += 0.036f; //Apply gravity
-			npc.DoTimer();
+			npc.ai[0]++;
 		}
 		void JumpAI(NPC npc) //Hitbox when jumping
 		{
-			if (npc.Timer() == 0)
+			if (npc.ai[0] == 0)
 				CombatNPC.ToggleContactDamage(npc, true);
 			if (npc.Grounded())
 			{
-				if (npc.Timer() == 0)
+				if (npc.ai[0] == 0)
 				{
 					npc.velocity.Y -= 7.2f;
 				}
 				else
 				{
-					npc.Phase(ApproachTarget);
+					npc.ai[1] = ApproachTarget;
 					return;
 				}
 			}
@@ -183,7 +185,27 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 				npc.velocity.X *= 0.996f;
 			}
 			npc.velocity.Y += 0.024f;
-			npc.Timer(npc.Timer() + 1);
+			npc.ai[0]++;
+		}
+
+		public override bool FindFrame(NPC npc, int frameHeight)
+		{
+			npc.frameCounter += (int)(npc.velocity.X);
+			if (Math.Abs(npc.frameCounter) > 5)
+			{
+				int newFrame = (npc.frame.Y / frameHeight) + Math.Sign(npc.frameCounter * npc.spriteDirection);
+				if (newFrame > Main.npcFrameCount[npc.type] - 2)// || newFrameY < 2 * frameHeight)
+				{
+					newFrame = 2;
+				}
+				else if (newFrame < 2)
+				{
+					newFrame = Main.npcFrameCount[npc.type] - 2;
+				}
+				npc.frame.Y = newFrame * frameHeight;
+				npc.frameCounter = 0;
+			}
+			return false;
 		}
 	}
 }

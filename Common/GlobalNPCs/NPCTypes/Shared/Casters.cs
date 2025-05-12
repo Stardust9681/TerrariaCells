@@ -81,6 +81,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
         public override bool PreAI(NPC npc)
         {
+			if (Common.Systems.AIOverwriteSystem.AITypeExists(npc.type))
+				return base.PreAI(npc);
+
             npc.TargetClosest();
             Player target = null;
             if (npc.HasValidTarget)

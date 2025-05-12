@@ -38,11 +38,15 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 		public override void Load()
 		{
 			IL_NPC.StrikeNPC_HitInfo_bool_bool += IL_StrikeNPC;
+			//IL_NPC.VanillaFindFrame += IL_FindFrame;
+			//On_NPC.VanillaFindFrame += On_NPC_VanillaFindFrame;
 		}
 
 		public override void Unload()
 		{
 			IL_NPC.StrikeNPC_HitInfo_bool_bool -= IL_StrikeNPC;
+			//IL_NPC.VanillaFindFrame -= IL_FindFrame;
+			//On_NPC.VanillaFindFrame -= On_NPC_VanillaFindFrame;
 		}
 
 		//Disable vanilla type-specific "on hit" modifications (eg, changing AI values when hit)
@@ -64,30 +68,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 					return;
 				}
 				ILLabel? IL_0161 = cursor.MarkLabel(); //IL Instruction 0161 (by ilSpy)
-				/*if (IL_0161 == null)
-				{
-					//Matched correctly but didn't get Label ???
-					GetInstanceLogger().Error($"IL Label {nameof(IL_0161)} not found in IL Patch {context.Method.Name} @ {cursor.Index}");
-					return;
-				}*/
-
-				/*ILLabel? IL_01C9 = null; //IL Instruction 01C9 (by ilSpy)
-				if (!cursor.TryGotoNext(MoveType.Before,
-						i => i.MatchLdarg0(), //NPC self
-						i => i.MatchLdfld<NPC>("townNPC"), //bool self.townNPC
-						i => i.MatchBrfalse(out _))) //if(self.townNPC)
-				{
-					//Couldn't match given instructions, perform no further edits
-					GetInstanceLogger().Error($"Couldn't match IL Patch: {context.Method.Name} @ {cursor.Index}");
-					return;
-				}
-				if (IL_01C9 == null)
-				{
-					//Matched correctly but didn't get Label ???
-					GetInstanceLogger().Error($"IL Label {nameof(IL_01C9)} not found in IL Patch {context.Method.Name} @ {cursor.Index}");
-					return;
-				}*/
-
 				
 				if (!cursor.TryGotoNext(MoveType.Before,
 						i => i.MatchLdarg0(), //NPC self
@@ -99,12 +79,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 					return;
 				}
 				ILLabel? IL_04A1 = cursor.MarkLabel(); //IL Instruction 04A1 (by ilSpy)
-				/*if (IL_04A1 == null)
-				{
-					//Matched correctly but didn't get Label ???
-					GetInstanceLogger().Error($"IL Label {nameof(IL_04A1)} not found in IL Patch {context.Method.Name} @ {cursor.Index}");
-					return;
-				}*/
 
 				cursor.GotoLabel(IL_0161, MoveType.Before);
 				cursor.Emit(OpCodes.Br, IL_04A1);
@@ -117,7 +91,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 			}
 		}
 
-		//Find frame is finicky. Not sure what the problem is.
+		//Trying to disable 'VanillaFindFrame' such that GlobalNPC.FindFrame can be used unobstructed to modify NPC animations
+		//If you attempt to resolve this problem, please add the length of time you spent doing so, here:
+		// ___
 		private static void IL_FindFrame(ILContext context)
 		{
 			log4net.ILog GetInstanceLogger() => ModContent.GetInstance<TerrariaCells>().Logger;
@@ -127,17 +103,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
 				cursor.EmitLdarg0();
 				cursor.EmitLdarg1();
-				cursor.EmitDelegate((NPC npc, int frameHeight) => {
-					if (AIOverwriteSystem.TryGetAIType(npc.type, out AIType ai))
-					{
-						if(!ai.FindFrame(npc, frameHeight))
-						{
-							npc.position -= npc.netOffset;
-							return false;
-						}
-					}
-					return true;
-				});
+				cursor.EmitDelegate(TryEditVanillaFrame);
 
 				ILLabel label = cursor.DefineLabel();
 				cursor.EmitBrtrue(label);
@@ -163,6 +129,33 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 			catch (Exception x)
 			{
 				GetInstanceLogger().Error(x.Message);
+			}
+		}
+		private void On_NPC_VanillaFindFrame(On_NPC.orig_VanillaFindFrame orig, NPC self, int num, bool isLikeATownNPC, int type)
+		{
+			if (TryEditVanillaFrame(self, num))
+			{
+				orig.Invoke(self, num, isLikeATownNPC, type);
+			}
+		}
+		private static bool TryEditVanillaFrame(NPC npc, int frameHeight)
+		{
+			try
+			{
+				if (AIOverwriteSystem.TryGetAIType(npc.type, out AIType ai))
+				{
+					if (!ai.FindFrame(npc, frameHeight))
+					{
+						npc.position -= npc.netOffset;
+						return false;
+					}
+				}
+				return true;
+			}
+			catch (Exception x)
+			{
+				ModContent.GetInstance<TerrariaCells>().Logger.Warn(x);
+				return true;
 			}
 		}
 

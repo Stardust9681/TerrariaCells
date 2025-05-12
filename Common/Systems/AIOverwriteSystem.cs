@@ -36,14 +36,23 @@ namespace TerrariaCells.Common.Systems
 		}
 		public static bool TryGetAIType(int forNPC, out AIType ai)
 		{
-			int index = _AIPointers[forNPC];
-			if (index == -1)
+			try
 			{
+				int index = _AIPointers[forNPC];
+				if (index == -1)
+				{
+					ai = null;
+					return false;
+				}
+				ai = _AITypesByIndex[index];
+				return true;
+			}
+			catch (Exception x)
+			{
+				ModContent.GetInstance<TerrariaCells>().Logger.Error(x);
 				ai = null;
 				return false;
 			}
-			ai = _AITypesByIndex[index];
-			return true;
 		}
 	}
 }
