@@ -107,11 +107,11 @@ public class InventoryManager : ModSystem, IEntitySource
     /// DOES NOT CONTAIN MODDED ITEMS. It only contains categorizations for items with a vanilla ItemID.
     /// Categorization for modded items are contained within their own classes, using ITerraCellsCategorization
     /// <summary>
-    private static Dictionary<short, TerraCellsItemCategory> VanillaItemCategorizations;
+    private static Dictionary<short, TerraCellsItemCategory> VanillaItemCategorizations = [];
 
-    private static Dictionary<short, StorageItemSubcategorization> StorageSubcategorizations;
+    private static Dictionary<short, StorageItemSubcategorization> StorageSubcategorizations = [];
 
-    public override void SetStaticDefaults()
+    public override void Load()
     {
         Dictionary<string, string> deserialized;
 

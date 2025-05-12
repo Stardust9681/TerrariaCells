@@ -24,11 +24,10 @@ namespace TerrariaCells.Common.Systems
 			NPCRespawnHandler.RespawnMarkers?.Clear();
 			if (RoomMarkers is null) RoomMarkers = new List<RoomMarker>();
 			else RoomMarkers.Clear();
-			foreach (NPC npc in Main.npc.Where(x => x.active && !x.friendly)) npc.active = false; //Disable all current NPCs
+			foreach (NPC npc in Main.npc.Where(x => x.active)) npc.active = false; //Disable all current NPCs
 
             BasicWorldGenData data = ModContent
-                .GetContent<BasicWorldGeneration>()
-                .First()
+                .GetInstance<BasicWorldGeneration>()
                 .BasicWorldGenData;
 
             if (data is null)
@@ -66,11 +65,6 @@ namespace TerrariaCells.Common.Systems
                         + pos.ToString()
                 );
             }
-		}
-
-		public override void ClearWorld()
-		{
-			ResetSpawns();
 		}
 
 		/// <summary> Add entries to this list during biome generation. </summary>
