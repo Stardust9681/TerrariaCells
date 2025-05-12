@@ -28,7 +28,7 @@ namespace TerrariaCells.Common.Systems
 				return _pylonDiscoveries ??= new Dictionary<Point16, bool>();
 			}
 		}
-		public const int MAX_PYLON_RANGE = 7;
+		public const int MAX_PYLON_RANGE = 10;
 
 		public static bool PylonFound(Point16 pylonPos)
 		{
@@ -47,6 +47,14 @@ namespace TerrariaCells.Common.Systems
 				return; //Error
 			}
 			WorldPylonSystem._PylonDiscoveries[tilePos] = true;
+			Vector2 worldCoords = tilePos.ToWorldCoordinates();
+			int[] dustTypes = new int[] { 219, 220, 221, 222, 223 }; //Firework Fountains
+			for (int i = 0; i < 8+Main.rand.Next(8); i++)
+			{
+				Dust d = Dust.NewDustDirect(worldCoords, 32, 64, Main.rand.Next(dustTypes));
+				d.velocity = -Vector2.UnitY.RotatedByRandom(MathHelper.ToRadians(30)) * Main.rand.NextFloat(3, 6);
+			}
+			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item29, worldCoords);
 		}
 		//Clear discovered pylons, and populate it with all the pylons in the world (effectively resetting it to "default" state)
 		public static void ResetPylons()
