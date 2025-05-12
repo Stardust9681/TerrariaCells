@@ -223,7 +223,7 @@ namespace TerrariaCells.Common.GlobalItems
 
             try
             {
-                switch (InventoryManager.GetItemCategorization(item.netID))
+                switch (InventoryManager.GetItemCategorization(item.type))
                 {
                     case TerraCellsItemCategory.Weapon:
                         item.rare = ItemRarityID.Red; // or custom rarity ID
@@ -235,7 +235,7 @@ namespace TerrariaCells.Common.GlobalItems
                         item.rare = ItemRarityID.Quest; // Amber-like
                         break;
                     case TerraCellsItemCategory.Storage:
-                        switch (InventoryManager.GetStorageItemSubcategorization(item.netID))
+                        switch (InventoryManager.GetStorageItemSubcategorization(item.type))
                         {
                             case StorageItemSubcategorization.Accessory:
                                 item.rare = ItemRarityID.Yellow;

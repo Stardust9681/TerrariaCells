@@ -21,22 +21,24 @@ public class DeathReset : ModPlayer, IEntitySource
 	{
 		if (DevConfig.Instance.DropItems)
 		{
-			Player.DropItems();
-			/*foreach ((int itemslot, TerraCellsItemCategory _) in InventoryManager.slotCategorizations)
+			// Player.DropItems(); // let me keep my vanity pleas ;-;
+			foreach ((int itemslot, TerraCellsItemCategory _) in InventoryManager.slotCategorizations)
 			{
+				Entity.inventory[itemslot].shimmered = true;
 				Entity.DropItem(this, Entity.Center, ref Entity.inventory[itemslot]);
 			}
-			Entity.DropItem(this, Entity.Center, ref Entity.inventory[50]);
-			Entity.DropItem(this, Entity.Center, ref Entity.inventory[51]);
-			Entity.DropItem(this, Entity.Center, ref Entity.inventory[52]);
-			Entity.DropItem(this, Entity.Center, ref Entity.inventory[53]);
-			Entity.DropItem(this, Entity.Center, ref Entity.inventory[58]);
-			Entity.DropItem(this, Entity.Center, ref Entity.armor[0]);
-			Entity.DropItem(this, Entity.Center, ref Entity.armor[1]);
-			Entity.DropItem(this, Entity.Center, ref Entity.armor[2]);
-			Entity.DropItem(this, Entity.Center, ref Entity.armor[3]);
-			Entity.DropItem(this, Entity.Center, ref Entity.armor[4]);
-			Entity.DropItem(this, Entity.Center, ref Entity.armor[5]);*/
+			
+			Entity.inventory[50].shimmered = true; Entity.DropItem(this, Entity.Center, ref Entity.inventory[50]); 
+			Entity.inventory[51].shimmered = true; Entity.DropItem(this, Entity.Center, ref Entity.inventory[51]); 
+			Entity.inventory[52].shimmered = true; Entity.DropItem(this, Entity.Center, ref Entity.inventory[52]); 
+			Entity.inventory[53].shimmered = true; Entity.DropItem(this, Entity.Center, ref Entity.inventory[53]); 
+			Entity.inventory[58].shimmered = true; Entity.DropItem(this, Entity.Center, ref Entity.inventory[58]); 
+			Entity.armor[0].shimmered =      true; Entity.DropItem(this, Entity.Center, ref Entity.armor[0]);      
+			Entity.armor[1].shimmered =      true; Entity.DropItem(this, Entity.Center, ref Entity.armor[1]);      
+			Entity.armor[2].shimmered =      true; Entity.DropItem(this, Entity.Center, ref Entity.armor[2]);      
+			Entity.armor[3].shimmered =      true; Entity.DropItem(this, Entity.Center, ref Entity.armor[3]);      
+			Entity.armor[4].shimmered =      true; Entity.DropItem(this, Entity.Center, ref Entity.armor[4]);      
+			Entity.armor[5].shimmered =      true; Entity.DropItem(this, Entity.Center, ref Entity.armor[5]);      
 
 			//Give default inventory on death
 			Item[] startInv = GetStartingItems();
