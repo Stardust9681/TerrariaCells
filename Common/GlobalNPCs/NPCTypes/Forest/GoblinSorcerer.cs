@@ -73,7 +73,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 			{
 				NPC ball = NPC.NewNPCDirect(npc.GetSource_FromAI(), npc.Center, Terraria.ID.NPCID.ChaosBall);
 				ball.velocity = npc.DirectionTo(Main.player[npc.target].Center) * 3f;
-				ball.damage = npc.damage / 3;
+				ball.damage = npc.damage * 3 / 2;
 				ball.netUpdate = true;
 			}
 			if (timer > 45 * 3)
