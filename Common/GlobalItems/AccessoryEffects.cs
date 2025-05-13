@@ -194,7 +194,7 @@ namespace TerrariaCells.Common.GlobalItems
                     AddToolTip("40% increased melee attack speed");
                     break;
                 case ItemID.ThePlan:
-                    AddToolTip("50% increased damage against healthy enemies");
+                    AddToolTip("30% increased damage against healthy enemies");
                     break;
                 case ItemID.ReconScope:
                     AddToolTip("30% increased damage when no enemies are nearby");

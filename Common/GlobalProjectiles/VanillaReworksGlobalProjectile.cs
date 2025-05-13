@@ -130,7 +130,7 @@ namespace TerrariaCells.Common.GlobalProjectiles
 					if (gun.Ammo < 5)
 						ForceCrit = true;
 				}
-				else if (source.type == ItemID.Minishark && target.DistanceSQ(Main.player[projectile.owner].Center) < 4 * 16 * 4 * 16)
+				else if (source.type == ItemID.Minishark && target.DistanceSQ(Main.player[projectile.owner].Center) < MathF.Pow(5.5f*16, 2))
 				{
 					ForceCrit = true;
 				}

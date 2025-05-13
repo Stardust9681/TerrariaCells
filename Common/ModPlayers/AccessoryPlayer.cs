@@ -317,7 +317,9 @@ namespace TerrariaCells.Common.ModPlayers
 				{
 					NPC npc = Main.npc[i];
 					if (!npc.active) continue;
-					if (MathF.Abs(npc.position.X - Player.position.X) + MathF.Abs(npc.position.Y - Player.position.Y) < 6 * 16)
+					if (npc.friendly) continue;
+					if (npc.lifeMax < 10 || !npc.dontTakeDamage) continue;
+					if (MathF.Abs(npc.position.X - Player.position.X) + MathF.Abs(npc.position.Y - Player.position.Y) < 12 * 16)
 					{
 						anyNearbyEnemies = true;
 						break;
@@ -333,7 +335,7 @@ namespace TerrariaCells.Common.ModPlayers
 		{
 			if (thePlan)
 			{
-				if (target.life > (int)(target.lifeMax * 0.9f)) modifiers.SourceDamage += 0.5f;
+				if (target.life > (int)(target.lifeMax * 0.9f)) modifiers.SourceDamage += 0.3f;
 			}
 			if (bersGlove)
 			{
