@@ -79,7 +79,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 			if (MathF.Abs(newVel) < IdleMaxSpeed)
 				npc.velocity.X = newVel;
 			else
-				npc.velocity.X = npc.direction * IdleMaxSpeed;
+				npc.velocity.X = MathF.Sign(npc.velocity.X) * IdleMaxSpeed;
 
 			if (npc.collideX)
 			{
@@ -142,45 +142,48 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 				}
 			}
 
-			float newVel = npc.velocity.X + directionToMove * Accel;
-			if (MathF.Abs(newVel) < MaxSpeed)
-				npc.velocity.X = newVel;
-			else
-				npc.velocity.X = npc.direction * MaxSpeed;
-
-			if (npc.FindGroundInFront().Y > npc.Bottom.Y + npc.height)
-			{
-				if (!npc.TargetInAggroRange(target, NumberHelpers.ToTileDist(18)))
-				{
+            if (npc.FindGroundInFront().Y > npc.Bottom.Y + npc.height)
+            {
+                if (!npc.TargetInAggroRange(target, NumberHelpers.ToTileDist(22), false))
+                {
                     ResetAI(npc);
-					npc.ai[2] = -npc.direction;
-					npc.ai[1] = Idle;
-				}
-				else if (npc.LineOfSight(target.position))
-				{
+                    npc.ai[2] = -npc.direction;
+                    npc.ai[1] = Idle;
+                }
+                else if (npc.LineOfSight(target.position))
+                {
                     ResetAI(npc);
+                    npc.velocity.X = 0;
                     npc.ai[1] = FireArrows;
-				}
-				else
-				{
+                }
+                else
+                {
                     ResetAI(npc);
-					npc.ai[1] = Jump;
-				}
-				return;
-			}
+                    npc.ai[1] = Jump;
+                }
+                return;
+            }
+            else
+            {
+                float newVel = npc.velocity.X + directionToMove * Accel;
+                if (MathF.Abs(newVel) < MaxSpeed)
+                    npc.velocity.X = newVel;
+                else
+                    npc.velocity.X = npc.direction * MaxSpeed;
+            }
 
-			if (npc.collideX)
-			{
-				//Vector2 oldPos = npc.position;
-				//Vector2 oldVel = npc.velocity;
-				Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
-				if (npc.Grounded())
-				{
+            if (npc.collideX)
+            {
+                //Vector2 oldPos = npc.position;
+                //Vector2 oldVel = npc.velocity;
+                Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
+                if (npc.Grounded())
+                {
                     ResetAI(npc);
-					npc.ai[1]=Jump;
-					return;
-				}
-			}
+                    npc.ai[1] = Jump;
+                    return;
+                }
+            }
 			npc.velocity.Y += 0.036f; //Apply gravity
 			npc.ai[0]++;
 		}
