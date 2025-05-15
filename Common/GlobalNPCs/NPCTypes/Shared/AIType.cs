@@ -154,5 +154,12 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 				return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
 			return ai.PreDraw(npc, spriteBatch, screenPos, drawColor);
 		}
-	}
+
+        public override bool? CanFallThroughPlatforms(NPC npc)
+        {
+            if (!AIOverwriteSystem.AITypeExists(npc.type))
+                return base.CanFallThroughPlatforms(npc);
+            return npc.velocity.Y > npc.maxFallSpeed;
+        }
+    }
 }
