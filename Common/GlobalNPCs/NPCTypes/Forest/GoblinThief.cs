@@ -46,9 +46,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 
 		void IdleAI(NPC npc)
 		{
-			if (npc.TargetInAggroRange(lineOfSight: true))
-			{
-				npc.ai[1] = ApproachTarget;
+            if (npc.TargetInAggroRange(lineOfSight: true))
+            {
+                npc.ai[1] = ApproachTarget;
 				return;
 			}
 
@@ -194,7 +194,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 			if (Math.Abs(npc.frameCounter) > 5)
 			{
 				int newFrame = (npc.frame.Y / frameHeight) + Math.Sign(npc.frameCounter * npc.spriteDirection);
-				if (newFrame > Main.npcFrameCount[npc.type] - 2)// || newFrameY < 2 * frameHeight)
+				if (newFrame > Main.npcFrameCount[npc.type] - 2)
 				{
 					newFrame = 2;
 				}

@@ -15,6 +15,7 @@ using TerrariaCells.Common.Systems;
 using MonoMod.RuntimeDetour;
 using System.Collections.Concurrent;
 using Terraria.ID;
+using Terraria.ModLoader.Core;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 {
@@ -35,19 +36,17 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
 	internal class AITypeHandler : GlobalNPC
 	{
-		public override void Load()
+        internal static readonly FieldInfo NPCLoader_HookFindFrame = typeof(NPCLoader).GetField("HookFindFrame", BindingFlags.NonPublic | BindingFlags.Static);
+        public override void Load()
 		{
 			IL_NPC.StrikeNPC_HitInfo_bool_bool += IL_StrikeNPC;
-			//IL_NPC.VanillaFindFrame += IL_FindFrame;
-			//On_NPC.VanillaFindFrame += On_NPC_VanillaFindFrame;
+            IL_NPC.FindFrame += IL_NPC_FindFrame;
 		}
-
-		public override void Unload()
+        public override void Unload()
 		{
 			IL_NPC.StrikeNPC_HitInfo_bool_bool -= IL_StrikeNPC;
-			//IL_NPC.VanillaFindFrame -= IL_FindFrame;
-			//On_NPC.VanillaFindFrame -= On_NPC_VanillaFindFrame;
-		}
+            IL_NPC.FindFrame -= IL_NPC_FindFrame;
+        }
 
 		//Disable vanilla type-specific "on hit" modifications (eg, changing AI values when hit)
 		private void IL_StrikeNPC(ILContext context)
@@ -90,76 +89,53 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 				MonoModHooks.DumpIL(ModContent.GetInstance<TerrariaCells>(), context);
 			}
 		}
+        private void IL_NPC_FindFrame(ILContext context)
+        {
+            try
+            {
+                ILCursor cursor = new ILCursor(context);
 
-		//Trying to disable 'VanillaFindFrame' such that GlobalNPC.FindFrame can be used unobstructed to modify NPC animations
-		//If you attempt to resolve this problem, please add the length of time you spent doing so, here:
-		// ___
-		private static void IL_FindFrame(ILContext context)
-		{
-			log4net.ILog GetInstanceLogger() => ModContent.GetInstance<TerrariaCells>().Logger;
-			try
-			{
-				ILCursor cursor = new ILCursor(context);
+                if (!cursor.TryGotoNext(
+                    i => i.Match(OpCodes.Ldarg_0),
+                    i => i.Match(OpCodes.Ldloc_0),
+                    i => i.MatchCall(typeof(NPCLoader).FullName, nameof(NPCLoader.FindFrame))))
+                {
+                    return;
+                }
+                cursor.Emit(OpCodes.Ldarg_0);
+                cursor.Emit(OpCodes.Ldloc_0);
 
-				cursor.EmitLdarg0();
-				cursor.EmitLdarg1();
-				cursor.EmitDelegate(TryEditVanillaFrame);
+                //NPCLoader.FindFrame(NPC, int)
+                cursor.EmitDelegate((NPC npc, int frameHeight) => {
+                    bool isLikeTownNPC = npc.isLikeATownNPC;
+                    int? num = npc.ModNPC?.AnimationType;
+                    int animationType = (num.HasValue && num.GetValueOrDefault() > 0) ? num.Value : npc.type;
+                    bool shouldRunVanillAFrame = true;
+                    if (AIOverwriteSystem.TryGetAIType(animationType, out AIType ai))
+                    {
+                        shouldRunVanillAFrame = ai.FindFrame(npc, frameHeight);
+                    }
+                    if (shouldRunVanillAFrame)
+                    {
+                        npc.VanillaFindFrame(frameHeight, isLikeTownNPC, animationType);
+                    }
 
-				ILLabel label = cursor.DefineLabel();
-				cursor.EmitBrtrue(label);
-				cursor.EmitRet();
-				cursor.MarkLabel(label);
+                    npc.ModNPC?.FindFrame(frameHeight);
+                    EntityGlobalsEnumerator<GlobalNPC> enumerator = ((GlobalHookList<GlobalNPC>)NPCLoader_HookFindFrame.GetValue(null)).Enumerate(npc).GetEnumerator();
+                    while (enumerator.MoveNext())
+                    {
+                        enumerator.Current.FindFrame(npc, frameHeight);
+                    }
+                });
+                cursor.Emit(OpCodes.Ret);
+            }
+            catch (Exception x)
+            {
 
-				return;
-				//One of several attempts to get this working
-				//It's suddenly working again for me and I can't bloody tell why
-				//And seemingly this isn't needed
-				int offset = 0;
-				for (int i = 0; i < cursor.Index; i++)
-				{
-					int instrSize = cursor.Instrs[i].GetSize();
-					cursor.Instrs[i].Offset += offset;
-					offset += instrSize;
-				}
-				for (int i = cursor.Index; i < context.Instrs.Count; i++)
-				{
-					cursor.Instrs[i].Offset += offset;
-				}
-			}
-			catch (Exception x)
-			{
-				GetInstanceLogger().Error(x.Message);
-			}
-		}
-		private void On_NPC_VanillaFindFrame(On_NPC.orig_VanillaFindFrame orig, NPC self, int num, bool isLikeATownNPC, int type)
-		{
-			if (TryEditVanillaFrame(self, num))
-			{
-				orig.Invoke(self, num, isLikeATownNPC, type);
-			}
-		}
-		private static bool TryEditVanillaFrame(NPC npc, int frameHeight)
-		{
-			try
-			{
-				if (AIOverwriteSystem.TryGetAIType(npc.type, out AIType ai))
-				{
-					if (!ai.FindFrame(npc, frameHeight))
-					{
-						npc.position -= npc.netOffset;
-						return false;
-					}
-				}
-				return true;
-			}
-			catch (Exception x)
-			{
-				ModContent.GetInstance<TerrariaCells>().Logger.Warn(x);
-				return true;
-			}
-		}
+            }
+        }
 
-		public override void OnSpawn(NPC npc, IEntitySource source)
+        public override void OnSpawn(NPC npc, IEntitySource source)
 		{
 			npc.GetGlobalNPC<CombatNPC>().allowContactDamage = !AIOverwriteSystem.AITypeExists(npc.type);
 		}
@@ -177,13 +153,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 			if (!AIOverwriteSystem.TryGetAIType(npc.type, out AIType ai))
 				return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
 			return ai.PreDraw(npc, spriteBatch, screenPos, drawColor);
-		}
-
-		public override void FindFrame(NPC npc, int frameHeight)
-		{
-			if (!AIOverwriteSystem.TryGetAIType(npc.type, out AIType ai))
-				return;
-			ai.FindFrame(npc, frameHeight);
 		}
 	}
 }
