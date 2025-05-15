@@ -2,6 +2,8 @@
 using Terraria;
 using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 using static TerrariaCells.Common.Utilities.NPCHelpers;
+using TerrariaCells.Common.Utilities;
+using static Terraria.GameContent.Animations.IL_Actions.Sprites;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 {
@@ -21,15 +23,21 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 		const float Accel = 0.075f;
 		const float JumpStrength = 5.5f;
 
+        private static void ResetAI(NPC npc)
+        {
+            CombatNPC.ToggleContactDamage(npc, false);
+            npc.ai[0] = 0;
+            npc.ai[1] = Idle;
+            npc.ai[2] = 0;
+            npc.ai[3] = 0;
+        }
+
 		public override void Behaviour(NPC npc)
 		{
 			if (!npc.HasValidTarget)
 				npc.TargetClosest(false);
 
-			//This gets continually recalculated, so I need to continually reset it :(
-			npc.stairFall = false;
-
-			switch (npc.Phase())
+            switch (npc.ai[1])
 			{
 				case Idle:
 					IdleAI(npc);
@@ -44,20 +52,22 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 					FireArrowsAI(npc);
 					break;
 				default:
-					npc.Phase(Idle);
+                    ResetAI(npc);
 					break;
 			}
+            npc.spriteDirection = npc.direction;
 		}
 
 		void IdleAI(NPC npc)
 		{
-			if (npc.TargetInAggroRange())
+			if (npc.TargetInAggroRange(NumberHelpers.ToTileDist(22)))
 			{
-				npc.Phase(ApproachTarget);
+                ResetAI(npc);
+				npc.ai[1] = ApproachTarget;
 				return;
 			}
 
-			npc.direction = MathF.Sign(npc.ai[1]);
+			npc.direction = MathF.Sign(npc.ai[2]);
 
 			float newVel = npc.velocity.X + npc.direction * Accel;
 			if (npc.direction == 0)
@@ -78,9 +88,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 				Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
 				if (npc.position.Equals(oldPos))
 				{
-					npc.position -= npc.oldVelocity * 2;
-					npc.ai[1] = -npc.direction;
-					npc.Phase(Idle);
+                    ResetAI(npc);
+                    npc.position -= npc.oldVelocity * 2;
+					npc.ai[2] = -npc.direction;
+					npc.ai[1] = Idle;
 					return;
 				}
 				else
@@ -89,7 +100,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 					{
 						npc.velocity.X = (npc.velocity.X + oldVel.X) * 0.5f;
 					}
-					npc.DoTimer(-3);
+					npc.ai[0] -= 3;
 				}
 			}
 
@@ -97,40 +108,39 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 			if (npc.Grounded() && nextGround.Y > npc.Bottom.Y + npc.height)
 			{
 				npc.velocity.X *= 0.5f;
-				npc.ai[1] = -npc.direction;
-				npc.Phase(Idle);
+                ResetAI(npc);
+                npc.ai[2] = -npc.direction;
+				npc.ai[1] = Idle;
 				return;
 			}
 
-			if (npc.Timer() > 150)
+			if (npc.ai[0] > 150)
 			{
-				npc.ai[1] = -npc.direction;
-				npc.Phase(Idle);
+                ResetAI(npc);
+				npc.ai[2] = -npc.direction;
+				npc.ai[1] = Idle;
 				return;
 			}
 
 			npc.velocity.Y += 0.036f; //Apply gravity
-			npc.DoTimer();
+            npc.ai[0]++;
 		} //Hitbox doesn't matter, target not near enough to take contact damage
 		void ApproachTargetAI(NPC npc) //No hitbox when walking
 		{
-			if (npc.Timer() == 0)
-				CombatNPC.ToggleContactDamage(npc, false);
 			Player target = Main.player[npc.target];
 			int directionToMove = target.position.X < npc.position.X ? -1 : 1;
 			Vector2 distance = new Vector2(MathF.Abs(target.position.X - npc.position.X), MathF.Abs(target.position.Y - npc.position.Y));
 			float additiveDist = distance.X + distance.Y;
 			//Within ~5 tiles or between 15-20 tiles away, try to fire arrows instead
-			if(additiveDist < 80 || 240 < additiveDist && additiveDist < 320)
+			if(additiveDist < NumberHelpers.ToTileDist(10) || (NumberHelpers.ToTileDist(15) < additiveDist && additiveDist < NumberHelpers.ToTileDist(25)))
 			{
 				if (npc.LineOfSight(target.position))
 				{
-					npc.Phase(FireArrows);
+                    ResetAI(npc);
+					npc.ai[1] = FireArrows;
 					return;
 				}
 			}
-
-			//npc.stairFall = target.position.Y > npc.position.Y;
 
 			float newVel = npc.velocity.X + directionToMove * Accel;
 			if (MathF.Abs(newVel) < MaxSpeed)
@@ -140,19 +150,21 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 
 			if (npc.FindGroundInFront().Y > npc.Bottom.Y + npc.height)
 			{
-				if (!npc.TargetInAggroRange(target))
+				if (!npc.TargetInAggroRange(target, NumberHelpers.ToTileDist(18)))
 				{
-					npc.ai[1] = -npc.direction;
-					npc.Phase(Idle);
+                    ResetAI(npc);
+					npc.ai[2] = -npc.direction;
+					npc.ai[1] = Idle;
 				}
 				else if (npc.LineOfSight(target.position))
 				{
-					npc.velocity.X = 0;
-					npc.Phase(FireArrows);
+                    ResetAI(npc);
+                    npc.ai[1] = FireArrows;
 				}
 				else
 				{
-					npc.Phase(Jump);
+                    ResetAI(npc);
+					npc.ai[1] = Jump;
 				}
 				return;
 			}
@@ -164,26 +176,26 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 				Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
 				if (npc.Grounded())
 				{
-					npc.Phase(Jump);
+                    ResetAI(npc);
+					npc.ai[1]=Jump;
 					return;
 				}
 			}
 			npc.velocity.Y += 0.036f; //Apply gravity
-			npc.DoTimer();
+			npc.ai[0]++;
 		}
 		void JumpAI(NPC npc) //Hitbox when jumping
 		{
-			if (npc.Timer() == 0)
-				CombatNPC.ToggleContactDamage(npc, true);
 			if (npc.Grounded())
 			{
-				if (npc.Timer() == 0)
+				if (npc.ai[0] == 0)
 				{
 					npc.velocity.Y -= JumpStrength;
 				}
 				else
 				{
-					npc.Phase(Idle);
+                    ResetAI(npc);
+					npc.ai[1]=Idle;
 					return;
 				}
 			}
@@ -194,56 +206,110 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 			if (MathF.Abs(npc.velocity.X) < 1.4f)
 				npc.velocity.X += npc.direction * 0.014f;
 			npc.velocity.Y += 0.036f;
-			npc.DoTimer();
+            npc.ai[0]++;
 		}
 		void FireArrowsAI(NPC npc) //No hitbox when firing arrows
 		{
-			if (npc.Timer() == 0)
-				CombatNPC.ToggleContactDamage(npc, false);
 			Player target = Main.player[npc.target];
-			
-			int time = npc.Timer();
-			if (50 < time && time < 55)
+
+            int time = (int)npc.ai[0];
+			if (5 < time && time < 55)
 			{
-				//Lossy compression into only ai[3] because for some reason ai[2] turns the archer INVISIBLE when used ???
-				//Didn't want projectile fired DIRECTLY at player, so there's some opportunity to respond
-				npc.ai[3] = Pack(target.Center.ToTileCoordinates16());
-				for (int i = 0; i < 5; i++)
-				{
-					Dust d = Dust.NewDustDirect(npc.Center + new Vector2(0, -4), 4, 4, Terraria.ID.DustID.Torch);
-					d.noGravity = true;
-					d.scale = Main.rand.NextFloat(1.6f);
-					d.velocity = npc.DirectionTo(target.Center) * (3.5f - d.scale) * i;
-					d.velocity = d.velocity.RotatedByRandom(MathHelper.ToRadians(15));
-				}
+                npc.direction = MathF.Sign(target.position.X - npc.position.X);
+
+                //Lossy compression into only ai[3] because for some reason ai[2] turns the archer INVISIBLE when used ???
+                //Didn't want projectile fired DIRECTLY at player, so there's some opportunity to respond
+                //npc.ai[3] = Pack(target.Center.ToTileCoordinates16());
+                Vector2 aimDirection = (target.Center - npc.Center);
+                aimDirection.Y -= MathF.Abs(aimDirection.X) * 0.02f;
+                float rotation = aimDirection.ToRotation();
+                npc.ai[3] = rotation;
+
+                if (time > 50)
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        Dust d = Dust.NewDustDirect(npc.Center + new Vector2(0, -4), 4, 4, Terraria.ID.DustID.Torch);
+                        d.noGravity = true;
+                        d.scale = Main.rand.NextFloat(1.6f);
+                        d.velocity = npc.DirectionTo(target.Center) * (3.5f - d.scale) * i;
+                        d.velocity = d.velocity.RotatedByRandom(MathHelper.ToRadians(10));
+                    }
+                }
 			}
 			else if (time > 75)
 			{
 				//Just add new projectile types in if you want to adjust this I guess I dunno
 				int[] arrowsToFire = new int[] { Terraria.ID.ProjectileID.WoodenArrowHostile, Terraria.ID.ProjectileID.FireArrow };
 
-				int xy = (int)npc.ai[3];
-				(ushort x, ushort y) = Unpack(xy);
-				Vector2 vel = new Vector2(x * 16 + 8, y * 16 + 8);
-				vel.Y -= MathF.Abs(npc.position.X - vel.X) * 0.00625f;
-				vel = npc.DirectionTo(vel) * 8.5f;
+                float rotation = npc.ai[3];
+                Vector2 vel = Vector2.UnitX.RotatedBy(rotation) * 9f;
 				Projectile proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center, vel, Main.rand.Next(arrowsToFire), npc.damage, 1f, Main.myPlayer);
 				proj.hostile = true;
 				proj.friendly = false;
 
-				if (npc.TargetInAggroRange())
-				{
-					npc.Phase(ApproachTarget);
-				}
+                if (npc.TargetInAggroRange(NumberHelpers.ToTileDist(22), false))
+                {
+                    ResetAI(npc);
+                    npc.ai[1] = ApproachTarget;
+                    return;
+                }
 				else
 				{
-					npc.ai[1] = -npc.direction;
-					npc.Phase(Idle);
+                    ResetAI(npc);
+                    npc.ai[2] = npc.direction;
+					npc.ai[1] = Idle;
+                    return;
 				}
-				return;
 			}
 			npc.velocity.X *= 0.9f;
-			npc.DoTimer();
+			npc.ai[0]++;
 		}
-	}
+
+        public override bool FindFrame(NPC npc, int frameHeight)
+        {
+            //Frames 0-4 = Aim bow down-up
+            //Frames 5,6 = ???
+            //Frames 7+ = Walk Cycle
+
+            if (npc.ai[1] == FireArrows && npc.ai[0] > 5)
+            {
+                float rotation = npc.ai[3];
+                rotation = (rotation + MathHelper.TwoPi) % MathHelper.TwoPi;
+
+                if (rotation > MathHelper.PiOver2 && rotation < 3 * MathHelper.PiOver2)
+                {
+                    rotation -= MathHelper.PiOver2; //0-Pi
+                }
+                else
+                {
+                    //Range from -Pi/2 - Pi/2
+                    if (rotation > MathHelper.Pi) //3Pi/2 - 2Pi
+                        rotation -= MathHelper.TwoPi; //-Pi/2 - 0
+                    rotation += MathHelper.PiOver2; //0 - Pi/2 + Pi/2 - Pi
+                    rotation = MathHelper.Pi - rotation;
+                }
+                //rotation now from 0-Pi
+                float mult = rotation / MathHelper.Pi;
+                int frameNum = (int)((mult + 0.025f) * 4);
+                frameNum = (int)MathHelper.Clamp(frameNum, 0, 4);
+                npc.frame.Y = frameNum * frameHeight;
+            }
+            else
+            {
+                npc.frameCounter += (int)(npc.velocity.X);
+                if (Math.Abs(npc.frameCounter) > 4)
+                {
+                    const int Offset = 7;
+                    int frameCount = Main.npcFrameCount[npc.type];
+                    int cFrame = npc.frame.Y / frameHeight;
+                    int newFrame = cFrame + Math.Sign(npc.frameCounter * npc.spriteDirection);
+                    newFrame = Offset + (((newFrame - Offset) + (frameCount - Offset)) % (frameCount - Offset));
+                    npc.frame.Y = newFrame * frameHeight;
+                    npc.frameCounter = 0;
+                }
+            }
+            return false;
+        }
+    }
 }
