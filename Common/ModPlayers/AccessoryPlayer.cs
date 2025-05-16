@@ -310,7 +310,7 @@ namespace TerrariaCells.Common.ModPlayers
 		}
 		public override void UpdateEquips()
 		{
-			if (reconScope)
+			if (reconScope)// && !Player.HasBuff<Content.Buffs.ReconScope>())
 			{
 				bool anyNearbyEnemies = false;
 				for (int i = 0; i < Main.maxNPCs; i++)
@@ -318,7 +318,7 @@ namespace TerrariaCells.Common.ModPlayers
 					NPC npc = Main.npc[i];
 					if (!npc.active) continue;
 					if (npc.friendly) continue;
-					if (npc.lifeMax < 10 || !npc.dontTakeDamage) continue;
+					if (npc.lifeMax < 10 || npc.dontTakeDamage) continue;
 					if (MathF.Abs(npc.position.X - Player.position.X) + MathF.Abs(npc.position.Y - Player.position.Y) < 12 * 16)
 					{
 						anyNearbyEnemies = true;
@@ -327,7 +327,7 @@ namespace TerrariaCells.Common.ModPlayers
 				}
 				if (!anyNearbyEnemies)
 				{
-					Player.GetDamage(DamageClass.Generic) += 0.3f;
+                    Player.AddBuff(ModContent.BuffType<Content.Buffs.ReconScope>(), 2);
 				}
 			}
 		}

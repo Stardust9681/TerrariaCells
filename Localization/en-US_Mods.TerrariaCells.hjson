@@ -302,6 +302,11 @@ Buffs: {
 		DisplayName: Shadow Dodge Buff
 		Description: Mods.TerrariaCells.Buffs.ShadowDodgeBuff.Description
 	}
+
+	ReconScope: {
+		DisplayName: Recon Scope
+		Description: +30% increased damage
+	}
 }
 
 Tiles: {
