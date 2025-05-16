@@ -267,7 +267,7 @@ namespace TerrariaCells.Common.GlobalItems
             if (item.type == ItemID.FieryGreatsword && target.HasBuff(BuffID.Oiled))
             {
                 modifiers.SetCrit();
-                Projectile.NewProjectileDirect(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ProjectileID.Volcano, item.damage, 5, player.whoAmI, ai1: 1);
+                Projectile.NewProjectileDirect(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ProjectileID.Volcano, item.damage, modifiers.GetKnockback(item.knockBack), player.whoAmI, ai1: 1);
             }
             if (item.type == ItemID.Gladius && (target.HasBuff(BuffID.Poisoned) || target.HasBuff(BuffID.BloodButcherer)))
             {

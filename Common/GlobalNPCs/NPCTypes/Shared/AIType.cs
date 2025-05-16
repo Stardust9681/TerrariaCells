@@ -81,6 +81,20 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
 				cursor.GotoLabel(IL_0161, MoveType.Before);
 				cursor.Emit(OpCodes.Br, IL_04A1);
+
+                ILLabel? exitCritKbBonus = default;
+                if (!cursor.TryGotoNext(
+                    MoveType.Before,
+                    i => i.Match(OpCodes.Ldloc_2),
+                    i => i.MatchBrfalse(out exitCritKbBonus),
+                    i => i.Match(OpCodes.Ldloc_S, 8),
+                    i => i.Match(OpCodes.Ldc_R4)))
+                {
+                    GetInstanceLogger().Error("Failed to patch crit knockback bonus");
+                    return;
+                }
+
+                cursor.EmitBr(exitCritKbBonus);
 			}
 			catch (Exception x)
 			{
