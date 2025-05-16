@@ -215,26 +215,21 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 
 		public override bool FindFrame(NPC npc, int frameHeight)
 		{
-			int limit = 0;
-			if (MathF.Abs(npc.velocity.X) < 1)
+            npc.frameCounter++;
+			int limit = 12;
+			if (MathF.Abs(npc.velocity.Y) > 3)
 			{
-				npc.ai[3]++;
-				limit = 75;
-			}
-			if (MathF.Abs(npc.velocity.Y) > 1)
-			{
-				npc.ai[3]++;
-				limit = 40;
+                limit = 18;
 			}
 
-			if (npc.ai[3] > limit && limit != 0)
+			if (npc.frameCounter > limit && limit != 0)
 			{
 				int newFrameY = npc.frame.Y + frameHeight;
 				if (newFrameY >= frameHeight * Main.npcFrameCount[npc.type])
 				{
 					newFrameY = 0;
 				}
-				npc.ai[3] = 0;
+                npc.frameCounter = 0;
 				npc.frame.Y = newFrameY;
 			}
 			return false;
