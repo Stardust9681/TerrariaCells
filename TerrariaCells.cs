@@ -9,6 +9,10 @@ namespace TerrariaCells
     //Contributions already present are by no means absolute, conventions are negotiable.
     public class TerrariaCells : Mod 
     {
+        public TerrariaCells()
+        {
+            MusicSkipsVolumeRemap = true;
+        }
         public override void HandlePacket(BinaryReader reader, int whoAmI) 
         {
             ModNetHandler.HandlePacket(reader, whoAmI);
