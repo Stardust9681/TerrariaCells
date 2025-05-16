@@ -11,10 +11,22 @@ using Terraria.WorldBuilding;
 using TerrariaCells.Content.Buffs;
 using TerrariaCells.Content.Projectiles.HeldProjectiles;
 
+using MonoMod.Cil;
+using Mono.Cecil.Cil;
+
 namespace TerrariaCells.Common.GlobalProjectiles
 {
     public class VanillaReworksGlobalProjectile : GlobalProjectile
     {
+        public override void Load()
+        {
+            IL_Projectile.StatusNPC += IL_Projectile_StatusNPC;
+        }
+        public override void Unload()
+        {
+            IL_Projectile.StatusNPC -= IL_Projectile_StatusNPC;
+        }
+
         // Used for stake launcher bonus damage
         private static int[] undeadNPCs = { NPCID.Zombie, NPCID.Skeleton };
         private static int[] bossNPCs = { NPCID.EyeofCthulhu };
@@ -40,7 +52,74 @@ namespace TerrariaCells.Common.GlobalProjectiles
 			}
 		}
 
-		public override bool OnTileCollide(Projectile projectile, Vector2 oldVelocity)
+        //This had to be either detour-no-orig or IL
+        //No orig could have other effects, I earnestly believe IL is going to be more friendly to existing functionality
+        private void IL_Projectile_StatusNPC(ILContext context)
+        {
+            try
+            {
+                ReplaceProjectileDebuff(context, ProjectileID.InfernoFriendlyBolt, BuffID.OnFire3, BuffID.OnFire);
+                ReplaceProjectileDebuff(context, ProjectileID.InfernoFriendlyBlast, BuffID.OnFire3, BuffID.OnFire);
+            }
+            catch (Exception x)
+            {
+                ModContent.GetInstance<TerrariaCells>().Logger.Error(x);
+            }
+        }
+        private static bool ReplaceProjectileDebuff(ILContext context, int projID, int oldBuffID, int newBuffID)
+        {
+            ILCursor cursor = new ILCursor(context);
+
+            if (!cursor.TryGotoNext(
+                i => i.Match(OpCodes.Ldarg_0),
+                i => i.Match(OpCodes.Ldfld),
+                i => i.Match(OpCodes.Ldc_I4, projID)))
+            {
+                return false;
+            }
+            if (!cursor.TryGotoNext(
+                    i => i.Match(OpCodes.Ldc_I4, oldBuffID)))
+            {
+                return false;
+            }
+
+            cursor.Remove();
+            cursor.Emit(OpCodes.Ldc_I4, newBuffID);
+
+            return true;
+        }
+        private static bool RemoveProjectileDebuff(ILContext context, int projID, int buffID)
+        {
+            ILCursor cursor = new ILCursor(context);
+
+            if (!cursor.TryGotoNext(
+                i => i.Match(OpCodes.Ldarg_0),
+                i => i.Match(OpCodes.Ldfld),
+                i => i.Match(OpCodes.Ldc_I4, projID)))
+            {
+                return false;
+            }
+            ILLabel beforeIf = cursor.MarkLabel();
+            if (!cursor.TryGotoNext(
+                    i => i.Match(OpCodes.Ldc_I4, buffID)))
+            {
+                return false;
+            }
+            ILLabel exitIf = default;
+            if (!cursor.TryGotoPrev(
+                MoveType.Before,
+                i => i.MatchBneUn(out exitIf)))
+            {
+                return false;
+            }
+
+            cursor.GotoLabel(beforeIf);
+            cursor.EmitBr(exitIf);
+
+            return true;
+        }
+
+        public override bool OnTileCollide(Projectile projectile, Vector2 oldVelocity)
         {
             if (projectile.type == ProjectileID.PulseBolt)
             {
