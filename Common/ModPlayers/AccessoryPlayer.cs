@@ -319,7 +319,7 @@ namespace TerrariaCells.Common.ModPlayers
 					if (!npc.active) continue;
 					if (npc.friendly) continue;
 					if (npc.lifeMax < 10 || npc.dontTakeDamage) continue;
-					if (MathF.Abs(npc.position.X - Player.position.X) + MathF.Abs(npc.position.Y - Player.position.Y) < 12 * 16)
+					if (Player.DistanceSQ(npc.position) < MathF.Pow(12 * 16, 2))
 					{
 						anyNearbyEnemies = true;
 						break;
