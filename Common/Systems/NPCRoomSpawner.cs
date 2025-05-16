@@ -254,8 +254,9 @@ namespace TerrariaCells.Common.Systems
 			if (didSpawns) return;
 			foreach (NPCSpawnInfo info in GetNPCSpawns().NPCs)
 			{
-				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (Left + info.OffsetX)*16, (Top + info.OffsetY)*16, info.NPCType);
-			}
+				int whoAmI = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (Left + info.OffsetX)*16, (Top + info.OffsetY)*16, info.NPCType);
+                NPCRespawnHandler.HandleSpecialSpawn(Main.npc[whoAmI], (Left + info.OffsetX), (Top + info.OffsetY));
+            }
 			didSpawns = true;
 		}
 
@@ -299,7 +300,8 @@ namespace TerrariaCells.Common.Systems
 			if (didSpawns) return;
 			foreach (NPCSpawnInfo info in GetNPCSpawns().NPCs)
 			{
-				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (Left + info.OffsetX) * 16 + 8, (Top + a_height - info.OffsetY) * 16 + 8, info.NPCType);
+				int whoAmI = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (Left + info.OffsetX) * 16 + 8, (Top + a_height - info.OffsetY) * 16 + 8, info.NPCType);
+                NPCRespawnHandler.HandleSpecialSpawn(Main.npc[whoAmI], (Left + info.OffsetX), (Top + a_height - info.OffsetY));
 			}
 			didSpawns = true;
 		}

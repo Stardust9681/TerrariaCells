@@ -83,6 +83,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
         {
 			if (Common.Systems.AIOverwriteSystem.AITypeExists(npc.type))
 				return base.PreAI(npc);
+            if (npc.type != NPCID.DesertDjinn && npc.type != NPCID.CultistDevote)
+                return base.PreAI(npc);
 
             npc.TargetClosest();
             Player target = null;
