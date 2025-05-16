@@ -453,6 +453,11 @@ namespace TerrariaCells.Common.Systems
 			{
 				item.buffTime = Ability.AbilityList[item.type].Duration;
 			}
+            item.useTime = 8;
+            item.reuseDelay = 0;
+            item.autoReuse = false;
+            item.useAnimation = item.useTime;
+
 			item.consumable = false;
 			item.maxStack = 1;
 		}
