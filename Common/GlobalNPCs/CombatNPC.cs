@@ -37,7 +37,10 @@ namespace TerrariaCells.Common.GlobalNPCs
 
 			NPCID.Sets.TrailCacheLength[NPCID.Crimslime] = 10;
 			NPCID.Sets.TrailingMode[NPCID.Crimslime] = 1;
-		}
+
+            NPCID.Sets.SpecialSpawningRules[NPCID.DesertDjinn] = 0;
+
+        }
 		public override void SetDefaults(NPC npc)
 		{
 			switch (npc.type)

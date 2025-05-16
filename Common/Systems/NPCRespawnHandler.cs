@@ -50,10 +50,13 @@ namespace TerrariaCells.Common.Systems
             orig.Invoke(self);
             if (self.life > 1 && !NPCID.Sets.ProjectileNPC[self.type] && wasActive && !self.active)
             {
+                Vector2 savePos = self.position;
+                if (NPCID.Sets.SpecialSpawningRules.TryGetValue(self.type, out int value) && value == 0)
+                    savePos = new Vector2(self.ai[0], self.ai[1]).ToWorldCoordinates();
                 RespawnMarkers.Add(
                     new NPCRespawnMarker(
                         self.type,
-                        Utilities.TCellsUtils.FindGround(self.getRect(), 20) - new Vector2(self.width * 0.5f, self.height * 0.5f),
+                         savePos, //Utilities.TCellsUtils.FindGround(self.getRect(), 20) - new Vector2(self.width * 0.5f, self.height * 0.5f),
                         self.life));
             }
         }
