@@ -8,6 +8,8 @@ using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrariaCells.Common.Configs;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 
 namespace TerrariaCells.Common.GlobalTiles
 {
@@ -16,8 +18,17 @@ namespace TerrariaCells.Common.GlobalTiles
         public override void Load()
         {
             On_TileSmartInteractCandidateProvider.FillPotentialTargetTiles += On_TileSmartInteractCandidateProvider_FillPotentialTargetTiles;
+            IL_TileSmartInteractCandidateProvider.FillPotentialTargetTiles += IL_TileSmartInteractCandidateProvider_FillPotentialTargetTiles;
             On_Player.TileInteractionsUse += On_Player_TileInteractionsUse;
             On_Player.InInteractionRange += On_Player_InInteractionRange;
+        }
+
+        public override void Unload()
+        {
+            On_TileSmartInteractCandidateProvider.FillPotentialTargetTiles -= On_TileSmartInteractCandidateProvider_FillPotentialTargetTiles;
+            IL_TileSmartInteractCandidateProvider.FillPotentialTargetTiles -= IL_TileSmartInteractCandidateProvider_FillPotentialTargetTiles;
+            On_Player.TileInteractionsUse -= On_Player_TileInteractionsUse;
+            On_Player.InInteractionRange -= On_Player_InInteractionRange;
         }
 
         public override void SetStaticDefaults()
@@ -92,6 +103,35 @@ namespace TerrariaCells.Common.GlobalTiles
                 }
             }
             TileSmartInteract_Targets.SetValue(self, targets);
+        }
+        private void IL_TileSmartInteractCandidateProvider_FillPotentialTargetTiles(ILContext context)
+        {
+            try
+            {
+                ILCursor cursor = new ILCursor(context);
+
+                if (!cursor.TryGotoNext(
+                    i => i.Match(OpCodes.Ldloca_S),
+                    i => i.MatchCall<Tile>("get_type")))
+                    return;
+
+                cursor.EmitLdloc(2); //Tile
+                //cursor.EmitCall(typeof(Tile).GetProperty("TileType", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).GetMethod); //Tile type
+                cursor.Emit(OpCodes.Ldarg_0); //TileSmartInteractCandidateProvider
+                cursor.EmitLdfld(typeof(TileSmartInteractCandidateProvider).GetField("targets", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)); //List<Tuple<int, int>>
+                cursor.Emit(OpCodes.Ldloc_0); //int
+                cursor.Emit(OpCodes.Ldloc_1); //int
+                cursor.EmitDelegate((Tile tile, List<Tuple<int, int>> targets, int i, int j) => {
+                    int type = tile.TileType;
+                    Tuple<int, int> tilePos = new Tuple<int, int>(i, j);
+                    if (CanSmartCursor(type) && !targets.Contains(tilePos))
+                        targets.Add(tilePos);
+                });
+
+            }
+            catch (Exception x)
+            {
+            }
         }
         private bool On_Player_InInteractionRange(On_Player.orig_InInteractionRange orig, Player self, int interactX, int interactY, Terraria.DataStructures.TileReachCheckSettings settings)
         {
