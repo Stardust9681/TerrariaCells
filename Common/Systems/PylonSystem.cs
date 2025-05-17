@@ -15,6 +15,8 @@ using Terraria.Localization;
 using TerrariaCells.Content.TileEntities;
 using Terraria.GameContent.Tile_Entities;
 using Terraria.ModLoader.Default;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 
 namespace TerrariaCells.Common.Systems
 {
@@ -112,13 +114,16 @@ namespace TerrariaCells.Common.Systems
 	}
 	public class PylonSystem : GlobalPylon
 	{
-        public override void SetStaticDefaults()
+        public override void Load()
         {
 			On_TeleportPylonsSystem.HandleTeleportRequest += HandleTeleportRequest;
+            Terraria.GameContent.Drawing.IL_TileDrawing.DrawTeleportationPylons += IL_ModifyPylonColour;
         }
-		public override void Unload()
+
+        public override void Unload()
         {
             On_TeleportPylonsSystem.HandleTeleportRequest -= HandleTeleportRequest;
+            Terraria.GameContent.Drawing.IL_TileDrawing.DrawTeleportationPylons -= IL_ModifyPylonColour;
         }
 
 		// Multiplayer only
@@ -175,6 +180,53 @@ namespace TerrariaCells.Common.Systems
 			}
 			return;
 		}
+        private void IL_ModifyPylonColour(ILContext context)
+        {
+            try
+            {
+                
+                ILCursor cursor = new ILCursor(context);
+
+                if (!cursor.TryGotoNext(
+                        MoveType.After,
+                        i => i.Match(OpCodes.Ldc_I4_S),
+                        i => i.Match(OpCodes.Div),
+                        i => i.Match(OpCodes.Stloc_S)))
+                    return;
+
+                cursor.EmitLdloc3();
+                cursor.EmitLdloc(6);
+                cursor.EmitDelegate((Point tilePos, int frameNumX) => {
+                    if (WorldPylonSystem.PylonFound(new Point16(tilePos)))
+                        return frameNumX;
+                    return -2;
+                });
+                cursor.EmitStloc(6);
+
+                if (!cursor.TryGotoNext(
+                    MoveType.After,
+                    i => i.Match(OpCodes.Ldloc_S),
+                    i => i.MatchCall(typeof(Color).GetProperty("White", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static).GetMethod),
+                    i => i.MatchLdcR4(0.8f),
+                    i => i.MatchCall(typeof(Color).GetMethod("Lerp", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)),
+                    i => i.Match(OpCodes.Stloc_S)))
+                {
+                    return;
+                }
+                cursor.EmitLdloc3(); //Point p, Pylon position
+                cursor.EmitLdloc(17); //Color color, Pylon draw colour
+                cursor.EmitDelegate((Point tilePos, Color colour) => {
+                    if (WorldPylonSystem.PylonFound(new Point16(tilePos)))
+                        return colour;
+                    return colour * .3f;
+                });
+                cursor.EmitStloc(17);
+            }
+            catch (Exception x)
+            {
+                ModContent.GetInstance<TerrariaCells>().Logger.Error(x);
+            }
+        }
         public override bool? ValidTeleportCheck_PreNPCCount(TeleportPylonInfo pylonInfo, ref int defaultNecessaryNPCCount)
 		{
 			defaultNecessaryNPCCount = 0;
