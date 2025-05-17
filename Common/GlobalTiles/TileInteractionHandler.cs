@@ -21,6 +21,7 @@ namespace TerrariaCells.Common.GlobalTiles
             IL_TileSmartInteractCandidateProvider.FillPotentialTargetTiles += IL_TileSmartInteractCandidateProvider_FillPotentialTargetTiles;
             On_Player.TileInteractionsUse += On_Player_TileInteractionsUse;
             On_Player.InInteractionRange += On_Player_InInteractionRange;
+            On_Player.TileInteractionsMouseOver += On_Player_TileInteractionsMouseOver;
         }
 
         public override void Unload()
@@ -29,6 +30,7 @@ namespace TerrariaCells.Common.GlobalTiles
             IL_TileSmartInteractCandidateProvider.FillPotentialTargetTiles -= IL_TileSmartInteractCandidateProvider_FillPotentialTargetTiles;
             On_Player.TileInteractionsUse -= On_Player_TileInteractionsUse;
             On_Player.InInteractionRange -= On_Player_InInteractionRange;
+            On_Player.TileInteractionsMouseOver -= On_Player_TileInteractionsMouseOver;
         }
 
         public override void SetStaticDefaults()
@@ -67,10 +69,37 @@ namespace TerrariaCells.Common.GlobalTiles
         {
             return InteractionTargets.Contains(tileID);
         }
-        public static bool CanSmartCursor(int tileID)
+        public static bool CanSmartInteract(int tileID)
         {
             if (!CanInteract(tileID)) return false;
             return !InvalidSmartCursorTargets.Contains(tileID);
+        }
+        public static bool IsSpent(int i, int j)
+        {
+            return IsSpent(i, j, Framing.GetTileSafely(i, j));
+        }
+        public static bool IsSpent(int i, int j, Tile tile)
+        {
+            switch (tile.TileType)
+            {
+                case TileID.Containers:
+                case TileID.Containers2:
+                case TileID.FakeContainers:
+                case TileID.FakeContainers2:
+                    Systems.ChestLootSpawner instance = ModContent.GetInstance<Systems.ChestLootSpawner>();
+                    if (tile.TileFrameX % 36 != 0)
+                        i--;
+                    if (tile.TileFrameY % 38 != 0)
+                        j--;
+                    return instance.lootedChests.Any(c => (Main.chest[c].x == i && Main.chest[c].y == j) && Main.chest[c].frame > 0);
+                case TileID.Heart:
+                case TileID.ManaCrystal:
+                    return tile.IsActuated;
+                case TileID.CatBast:
+                    return tile.TileFrameX > 72;
+                default:
+                    return false;
+            }
         }
 
         private static System.Reflection.FieldInfo TileSmartInteract_Targets = typeof(TileSmartInteractCandidateProvider).GetField("targets", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
@@ -89,7 +118,7 @@ namespace TerrariaCells.Common.GlobalTiles
                     if (!WorldGen.InWorld(tuple_XY.Item1, tuple_XY.Item2))
                         goto RemoveAndContinue;
                     Tile tile = Framing.GetTileSafely(tuple_XY.Item1, tuple_XY.Item2);
-                    if (!CanSmartCursor(tile.TileType))
+                    if (!CanSmartInteract(tile.TileType) || IsSpent(tuple_XY.Item1, tuple_XY.Item2, tile))
                         goto RemoveAndContinue;
 
                     continue;
@@ -124,13 +153,39 @@ namespace TerrariaCells.Common.GlobalTiles
                 cursor.EmitDelegate((Tile tile, List<Tuple<int, int>> targets, int i, int j) => {
                     int type = tile.TileType;
                     Tuple<int, int> tilePos = new Tuple<int, int>(i, j);
-                    if (CanSmartCursor(type) && !targets.Contains(tilePos))
+                    if (CanSmartInteract(type) && !targets.Contains(tilePos))
                         targets.Add(tilePos);
                 });
 
             }
             catch (Exception x)
             {
+            }
+        }
+        private void On_Player_TileInteractionsMouseOver(On_Player.orig_TileInteractionsMouseOver orig, Player self, int myX, int myY)
+        {
+            orig.Invoke(self, myX, myY);
+            if (self.cursorItemIconID == self.HeldItem.type)
+            {
+                self.cursorItemIconEnabled = false;
+                return;
+            }
+            Tile tile = Framing.GetTileSafely(myX, myY);
+            if (CanInteract(tile.TileType) && !IsSpent(myX, myY, tile))
+            {
+                self.cursorItemIconID = tile.TileType switch
+                {
+                    TileID.Heart => ItemID.LifeCrystal,
+                    TileID.CatBast => ItemID.CatBast,
+                    TileID.ManaCrystal => ItemID.ManaCrystal,
+                    _ => self.cursorItemIconID,
+                };
+                self.cursorItemIconEnabled = self.cursorItemIconID != 0;
+            }
+            else
+            {
+                self.cursorItemIconEnabled = false;
+                return;
             }
         }
         private bool On_Player_InInteractionRange(On_Player.orig_InInteractionRange orig, Player self, int interactX, int interactY, Terraria.DataStructures.TileReachCheckSettings settings)
