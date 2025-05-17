@@ -55,8 +55,8 @@ namespace TerrariaCells.Common.GlobalTiles
             if (typeT >= 481 && typeT <= 483)
             {
                 noItem = true;
-                Tile tile2 = Main.tile[i, j];
-                tile2.TileType = 0;
+                Tile tile2 = Framing.GetTileSafely(i, j);
+                tile2.ClearTile();
                 int fallType = (int)(typeT - 481 + 736);
                 if (Main.netMode == 0)
                 {
@@ -108,8 +108,9 @@ namespace TerrariaCells.Common.GlobalTiles
                         nearbyCrackedX++;
                         nearbyCrackedY++;
                     }
-                    Tile tile3 = Main.tile[nearbyCrackedX, nearbyCrackedY];
-                    if (tile3.TileType >= 481 && tile3.TileType <= 483)
+                    Tile tile3 = Framing.GetTileSafely(nearbyCrackedX, nearbyCrackedY);
+                    
+                    if (tile3.TileType >= TileID.CrackedBlueDungeonBrick && tile3.TileType <= TileID.CrackedPinkDungeonBrick)
                     {
                         WorldGen.KillTile(nearbyCrackedX, nearbyCrackedY, false, false, true);
                     }
