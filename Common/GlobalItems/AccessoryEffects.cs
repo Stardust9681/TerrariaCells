@@ -142,6 +142,8 @@ namespace TerrariaCells.Common.GlobalItems
 
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 		{
+            //Why'd we even keep this method if it don't DO anything :(
+            return;
 			int ttCounter = 0;
 			void AddToolTip(string text)
 			{
@@ -257,7 +259,7 @@ namespace TerrariaCells.Common.GlobalItems
                 ItemID.FeralClaws => [new(Mod, "Tooltip0", "40% increased melee attack speed")],
                 ItemID.ThePlan =>
                 [
-                    new(Mod, "Tooltip0", "50% increased damage against healthy enemies"),
+                    new(Mod, "Tooltip0", "30% increased damage against healthy enemies"),
                 ],
                 ItemID.ReconScope =>
                 [
