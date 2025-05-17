@@ -47,7 +47,7 @@ namespace TerrariaCells.Common.GlobalItems
                     item.damage = 10;
                     item.knockBack = 0f;
                     item.value = 1000;
-					break;
+                    break;
                 case ItemID.SniperRifle:
                     item.damage = 60;
                     item.useTime = 25;
@@ -70,10 +70,10 @@ namespace TerrariaCells.Common.GlobalItems
                     item.useTime = 16;
                     item.value = 1000;
                     break;
-				case ItemID.PlatinumBow:
-					item.damage = 22;
+                case ItemID.PlatinumBow:
+                    item.damage = 22;
                     item.value = 1000;
-					break;
+                    break;
                 // Launchers
                 case ItemID.Toxikarp:
                     item.damage = 2;
@@ -91,7 +91,7 @@ namespace TerrariaCells.Common.GlobalItems
                     item.useAnimation = 30;
                     item.reuseDelay = 15;
                     item.value = 1000;
-					return;
+                    return;
                 case ItemID.GrenadeLauncher:
                     item.damage = 80;
                     item.useTime = 70;
@@ -101,7 +101,7 @@ namespace TerrariaCells.Common.GlobalItems
                 case ItemID.AleThrowingGlove:
                     item.damage = 20;
                     item.value = 1000;
-					break;
+                    break;
 
                 // MELEE
                 // Swords
@@ -115,10 +115,10 @@ namespace TerrariaCells.Common.GlobalItems
                     item.useTime = 20;
                     item.value = 1000;
                     break;
-				case ItemID.PlatinumBroadsword:
-					item.damage = 20;
+                case ItemID.PlatinumBroadsword:
+                    item.damage = 20;
                     item.value = 1000;
-					break;
+                    break;
                 case ItemID.Gladius:
                     item.damage = 8;
                     item.value = 1000;
@@ -129,13 +129,14 @@ namespace TerrariaCells.Common.GlobalItems
                     item.value = 1000;
                     break;
                 case ItemID.SawtoothShark:
+                    item.axe = 0;
                     item.value = 1000;
                     break;
 
                 // MAGE
                 case ItemID.EmeraldStaff:
-				case ItemID.RubyStaff:
-					item.damage = 7;
+                case ItemID.RubyStaff:
+                    item.damage = 7;
                     item.mana = 8;
                     item.useTime = 18;
                     item.knockBack = 0f;
@@ -170,7 +171,7 @@ namespace TerrariaCells.Common.GlobalItems
                     item.knockBack = 0f;
                     item.value = 1000;
                     break;
-                case ItemID.BookofSkulls: 
+                case ItemID.BookofSkulls:
                     item.damage = 40;
                     item.mana = 40;
                     item.useTime = 20;
@@ -188,9 +189,12 @@ namespace TerrariaCells.Common.GlobalItems
             }
 
             Dictionary<string, int[]> chestLootTables = ModContent.GetContent<ChestLootSpawner>().First().ChestLootTables;
-            foreach (var key in chestLootTables.Keys) {
-                if (chestLootTables[key].Contains(item.type)) {
-                    switch (key) {
+            foreach (var key in chestLootTables.Keys)
+            {
+                if (chestLootTables[key].Contains(item.type))
+                {
+                    switch (key)
+                    {
                         case "1":
                             // multiplied by 5 so that I can input sell price instead of buy price
                             item.value = 5 * 500;
@@ -210,7 +214,7 @@ namespace TerrariaCells.Common.GlobalItems
             }
 
             item.useAnimation = item.useTime;
-			if (item.DamageType.CountsAsClass(DamageClass.Ranged))
+            if (item.DamageType.CountsAsClass(DamageClass.Ranged))
                 item.knockBack = 0;
 
             // Use color rarities to indicate item category:
@@ -256,7 +260,7 @@ namespace TerrariaCells.Common.GlobalItems
                         break;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Mod.Logger.Warn($"Failed to assign rarity for item {item?.Name} (type {item?.type}): {ex.Message}");
             }
@@ -305,15 +309,15 @@ namespace TerrariaCells.Common.GlobalItems
                 // CHANGE VANILLA TOOLTIPS HERE
                 switch (tooltip.Name)
                 {
-					//Tooltips to be hidden
+                    //Tooltips to be hidden
                     // case "Favorite":
                     // case "FavoriteDesc":
                     case "Material":
                     case "Consumable":
-					case "EtherianManaWarning":
-					case "OneDropLogo":
-					case "JourneyResearch":
-						tooltip.Hide();
+                    case "EtherianManaWarning":
+                    case "OneDropLogo":
+                    case "JourneyResearch":
+                        tooltip.Hide();
                         break;
 
                     case "Knockback":
@@ -533,20 +537,20 @@ namespace TerrariaCells.Common.GlobalItems
         }
 
         public override void AddRecipes()
-		{
-			for (int i = 0; i < Recipe.numRecipes; i++)
-			{
-				Recipe recipe = Main.recipe[i];
-				if (recipe is null) continue;
+        {
+            for (int i = 0; i < Recipe.numRecipes; i++)
+            {
+                Recipe recipe = Main.recipe[i];
+                if (recipe is null) continue;
 
-				if (
-					!recipe.Disabled && (
-					recipe.HasIngredient(ItemID.CopperCoin)
-					|| recipe.HasIngredient(ItemID.SilverCoin)
-					|| recipe.HasIngredient(ItemID.GoldCoin)
-					|| recipe.HasIngredient(ItemID.PlatinumCoin)))
-					recipe.DisableRecipe();
-			}
-		}
+                if (
+                    !recipe.Disabled && (
+                    recipe.HasIngredient(ItemID.CopperCoin)
+                    || recipe.HasIngredient(ItemID.SilverCoin)
+                    || recipe.HasIngredient(ItemID.GoldCoin)
+                    || recipe.HasIngredient(ItemID.PlatinumCoin)))
+                    recipe.DisableRecipe();
+            }
+        }
     }
 }
