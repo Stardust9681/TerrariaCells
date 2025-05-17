@@ -32,6 +32,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 				IdleAI(npc);
 				return;
 			}
+            if (npc.direction == 0)
+            {
+                npc.direction = 1;
+            }
 
 			switch ((int)npc.ai[1])
 			{
@@ -48,6 +52,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 					StunAI(npc);
 					break;
 			}
+            npc.spriteDirection = npc.direction;
 		}
 
 		private void IdleAI(NPC npc)
@@ -57,6 +62,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			{
 				npc.ai[2] = Main.rand.Next(new int[] { -1, 1 });
 				npc.ai[1] = Orbit;
+                npc.netUpdate = true;
 				return;
 			}
 
@@ -187,5 +193,5 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			}
 			return base.PreDraw(npc, spritebatch, screenPos, lightColor);
 		}
-	}
+    }
 }
