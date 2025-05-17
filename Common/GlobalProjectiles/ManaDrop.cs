@@ -42,22 +42,24 @@ namespace TerrariaCells.Common.GlobalProjectiles
                 }
             }
 
-			if (target.lifeMax <= 5 || target.friendly || !target.CanBeChasedBy() || NPCID.Sets.ProjectileNPC[target.type])
-				return;
+            if (target.life > 0) //This lets projectiles cause enemies to drop mana stars when killed too
+            {                    // I have no idea why this is necessary for it though... :(
+                if (!target.CanBeChasedBy() || NPCID.Sets.ProjectileNPC[target.type])
+                    return;
+            }
 
-			//Fixed an error here that didn't show up for some reason
-			if (projectile.DamageType.CountsAsClass(DamageClass.Magic))
-			{
-				if (Main.netMode != NetmodeID.MultiplayerClient && !SpawnedMana)
-				{
-					SpawnedMana = true;
+            //Fixed an error here that didn't show up for some reason
+            if (projectile.DamageType.CountsAsClass(DamageClass.Magic))
+            {
+                if (Main.netMode != NetmodeID.MultiplayerClient && !SpawnedMana)
+                {
+                    SpawnedMana = true;
                     for (int i = 0; i < starsSpawned; i++)
                     {
-
-					Item.NewItem(projectile.GetSource_OnHit(target), target.Hitbox, new Item(ItemID.Star));
+                        Item.NewItem(projectile.GetSource_OnHit(target), target.Hitbox, new Item(ItemID.Star));
                     }
-				}
-			}
-		}
+                }
+            }
+        }
     }
 }
