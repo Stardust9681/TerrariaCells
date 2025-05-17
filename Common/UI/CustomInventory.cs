@@ -2991,6 +2991,7 @@ public class LimitedStorageUI : UIState
     }
 
     // a customized version of ItemSlot.LeftClick
+    internal static MethodInfo ItemSlot_LeftClick_SellOrTrash = typeof(ItemSlot).GetMethod("LeftClick_SellOrTrash", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.InvokeMethod);
     public static void ItemSlotLeftClick(Item[] inv, int context = 0, int slot = 0)
     {
         if (
@@ -3010,12 +3011,15 @@ public class LimitedStorageUI : UIState
                 return;
 
             inv[slot].newAndShiny = false;
-            if (
-                ItemSlotOverrideLeftClick(inv, context, slot)
-                || player.itemAnimation != 0
-                || player.itemTime != 0
-            )
-                return;
+            if (Main.npcShop > 0)
+            {
+                if (
+                    (bool)ItemSlot_LeftClick_SellOrTrash.Invoke(null, new object?[] { inv, context, slot }) == true
+                    || player.itemAnimation != 0
+                    || player.itemTime != 0
+                )
+                    return;
+            }
         }
 
         int num = ItemSlot.PickItemMovementAction(inv, context, slot, Main.mouseItem);
@@ -3733,38 +3737,34 @@ public class LimitedStorageUI : UIState
 
     private static bool ItemSlotAccessorySwap(Player player, Item item, ref Item result)
     {
+        //-1 => No valid swap
+        // 0 => First slot available
+        // 1 => Swap with air
+        // 2 => Swap with same type
+        int swapType = -1;
+
         //TML: Rewrote ArmorSwap for accessories under the PR #1299 so it was actually readable. No vanilla functionality lost in transition
         var accSlotToSwapTo = -1;
 
         //TML: Check if there is an empty slot available in functional slots, and if not, track the last available slot
         for (int i = 3; i < 5; i++)
         {
-            if (player.IsItemSlotUnlockedAndUsable(i))
+            if (player.IsItemSlotUnlockedAndUsable(i) && ItemLoader.CanEquipAccessory(item, i, false))
             {
-                if (ItemLoader.CanEquipAccessory(item, i, false))
+                int thisSwapType = 0;
+                if (player.armor[i].IsAir)
+                    thisSwapType = 1;
+                else if (player.armor[i].type == item.type)
+                    thisSwapType = 2;
+
+                if (thisSwapType > swapType)
                 {
                     accSlotToSwapTo = i;
-                    break;
+                    swapType = thisSwapType;
+                    if (thisSwapType == 2)
+                        break;
                 }
             }
-        }
-
-        //TML: Check if there is an existing copy of the item in any slot (including vanity)
-        // Will also replace wings with wings
-        for (int j = 3; j < 5; j++)
-        {
-            if (item.type == player.armor[j].type && ItemLoader.CanEquipAccessory(item, j, false))
-                accSlotToSwapTo = j;
-
-            // if (
-            //     j < 10
-            //     && (
-            //         item.wingSlot > 0 && player.armor[j].wingSlot > 0
-            //         || !ItemLoader.CanAccessoryBeEquippedWith(player.armor[j], item)
-            //     )
-            //     && ItemLoader.CanEquipAccessory(item, j, false)
-            // )
-            //     accSlotToSwapTo = j - 3;
         }
 
         // No slot found, and it can't go in slot zero, than return
@@ -3773,22 +3773,25 @@ public class LimitedStorageUI : UIState
 
         // accSlotToSwapTo = Math.Max(accSlotToSwapTo, 0);
 
-        if (ItemSlot.isEquipLocked(player.armor[accSlotToSwapTo].type))
-        {
-            result = item;
-            return false;
-        }
+        //See: https://discord.com/channels/1260223010728706169/1260224973549736006/1373140416605458494
+        //if (ItemSlot.isEquipLocked(player.armor[accSlotToSwapTo].type))
+        //{
+        //    result = item;
+        //    return false;
+        //}
 
-        result = player.armor[accSlotToSwapTo].Clone();
-        player.armor[accSlotToSwapTo] = item.Clone();
+        Utils.Swap(ref player.armor[accSlotToSwapTo], ref result);
+        //result = player.armor[accSlotToSwapTo].Clone();
+        //player.armor[accSlotToSwapTo] = item.Clone();
 
         return true;
     }
 
     private static bool ItemSlotOverrideLeftClick(Item[] inv, int context = 0, int slot = 0)
     {
-        if (Math.Abs(context) == 10 && ItemSlot.isEquipLocked(inv[slot].type))
-            return true;
+        //ItemSlot.isEquipLocked(..) always returns false. This will never run
+        //if (Math.Abs(context) == 10 && ItemSlot.isEquipLocked(inv[slot].type))
+            //return true;
 
         if (
             Main.LocalPlayer.tileEntityAnchor.IsInValidUseTileEntity()
@@ -3808,7 +3811,7 @@ public class LimitedStorageUI : UIState
             return true;
         }
 
-        if (Main.cursorOverride == 2)
+        if (Main.cursorOverride == CursorOverrideID.Magnifiers)
         {
             if (
                 ChatManager.AddChatText(
@@ -3822,7 +3825,7 @@ public class LimitedStorageUI : UIState
             return true;
         }
 
-        if (Main.cursorOverride == 3)
+        if (Main.cursorOverride == CursorOverrideID.FavoriteStar)
         {
             if (
                 !(typeof(ItemSlot).GetField("canFavoriteAt").GetValue(null) as bool[])[
@@ -3836,7 +3839,7 @@ public class LimitedStorageUI : UIState
             return true;
         }
 
-        if (Main.cursorOverride == 7)
+        if (Main.cursorOverride == CursorOverrideID.BackInventory)
         {
             if (context == 29)
             {
@@ -3876,7 +3879,7 @@ public class LimitedStorageUI : UIState
             return true;
         }
 
-        if (Main.cursorOverride == 8)
+        if (Main.cursorOverride == CursorOverrideID.ChestToInventory)
         {
             inv[slot] = Main.player[Main.myPlayer]
                 .GetItem(
@@ -3897,7 +3900,7 @@ public class LimitedStorageUI : UIState
             return true;
         }
 
-        if (Main.cursorOverride == 9)
+        if (Main.cursorOverride == CursorOverrideID.InventoryToChest)
         {
             if (Main.CreativeMenu.IsShowingResearchMenu())
             {

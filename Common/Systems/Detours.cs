@@ -18,6 +18,8 @@ using Terraria.Utilities;
 using Terraria.WorldBuilding;
 using TerrariaCells.Common.Configs;
 using Terraria.GameContent.ObjectInteractions;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 
 namespace TerrariaCells.Common.Systems
 {
@@ -30,17 +32,54 @@ namespace TerrariaCells.Common.Systems
             On_UIWorldSelect.NewWorldClick += On_UIWorldSelect_NewWorldClick;
             On_Player.PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool +=
                 NoAmmoDamage;
+            On_Player.QuickMinecartSnap += On_Player_QuickMinecartSnap;
+            On_Player.QuickMinecart += On_Player_QuickMinecart;
+            Terraria.UI.IL_ItemSlot.OverrideHover_ItemArray_int_int += IL_OverrideHover_ItemArray_int_int;
         }
 
-		public override void Unload()
+        public override void Unload()
 		{
 			On_Main.DoDraw_UpdateCameraPosition -= On_Main_DoDraw_UpdateCameraPosition;
 			On_Player.PickupItem -= On_Player_PickupItem;
 			On_UIWorldSelect.NewWorldClick -= On_UIWorldSelect_NewWorldClick;
 			On_Player.PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool -= NoAmmoDamage;
-		}
+            On_Player.QuickMinecartSnap -= On_Player_QuickMinecartSnap;
+            On_Player.QuickMinecart -= On_Player_QuickMinecart;
+            Terraria.UI.IL_ItemSlot.OverrideHover_ItemArray_int_int -= IL_OverrideHover_ItemArray_int_int;
+        }
 
-		private void NoAmmoDamage(
+
+
+        private void IL_OverrideHover_ItemArray_int_int(MonoMod.Cil.ILContext context)
+        {
+            try
+            {
+                ILCursor cursor = new ILCursor(context);
+
+                while (cursor.TryGotoNext(
+                    i => i.Match(OpCodes.Ldc_I4_6),
+                    i => i.MatchStsfld(typeof(Main), "cursorOverride")))
+                {
+                    cursor.RemoveRange(2);
+                    cursor.Emit(OpCodes.Ret);
+                }
+            }
+            catch (Exception x)
+            {
+                ModContent.GetInstance<TerrariaCells>().Logger.Error(x);
+            }
+        }
+
+        private void On_Player_QuickMinecart(On_Player.orig_QuickMinecart orig, Player self)
+        {
+            return;
+        }
+        private bool On_Player_QuickMinecartSnap(On_Player.orig_QuickMinecartSnap orig, Player self)
+        {
+            return false;
+        }
+
+        private void NoAmmoDamage(
             On_Player.orig_PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool orig,
             Player self,
             Item sItem,
