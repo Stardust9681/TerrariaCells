@@ -81,8 +81,7 @@ namespace TerrariaCells.Common.ModPlayers
         {
             if (necroBreastplate && hit.DamageType != DamageClass.Summon)
             {
-                Player.statLife = Player.statLifeMax2;
-                Projectile.NewProjectile(Player.GetSource_Accessory(Player.armor[1]), Player.Center, Vector2.Zero, ProjectileID.BabySpider, 5, 0);
+                Projectile.NewProjectile(Player.GetSource_Accessory(Player.armor[1]), target.Center, Vector2.Zero, ProjectileID.BabySpider, 5, 0);
             }
 
             if (jungleArmorSet)
