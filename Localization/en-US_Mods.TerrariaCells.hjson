@@ -78,8 +78,8 @@ Configs: {
 		Headers: {
 			BuilderSettings: Builder Settings
 			InventorySettings: Inventory Settings
-			DebugAndPlaytesting: Debug And Playtesting Header
-			GameplaySettings: Gameplay Settings Header
+			DebugAndPlaytesting: Debug And Playtesting
+			GameplaySettings: Gameplay Settings
 		}
 
 		EnableInventoryChanges: {
@@ -129,6 +129,11 @@ Configs: {
 
 		DisableSpawns: {
 			Label: Disable Spawns
+			Tooltip: ""
+		}
+
+		AllowDebugCommands: {
+			Label: Allow Debug Commands
 			Tooltip: ""
 		}
 	}

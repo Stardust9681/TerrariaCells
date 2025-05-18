@@ -83,5 +83,11 @@ namespace TerrariaCells.Common.Configs
         [DefaultValue(true)]
         public bool ListCategorizationTooltip;
 
+        /// <summary>
+        /// Allow the use of testing commands (like <c>/die</c> or <c>/tier {lv}</c>)
+        /// </summary>
+        [DefaultValue(false)]
+        public bool AllowDebugCommands;
+
 	}
 }

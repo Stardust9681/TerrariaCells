@@ -14,7 +14,7 @@ namespace TerrariaCells.Common.GlobalItems
     /// </summary>
     public class TierSystemGlobalItem : GlobalItem
     {
-        public const float damageLevelScaling = 1.10f;
+        public const float damageLevelScaling = 1.3f;
         public const float knockbackLevelScaling = 1.125f;
         public const float attackSpeedLevelScaling = 0.075f;
 
@@ -25,9 +25,8 @@ namespace TerrariaCells.Common.GlobalItems
         // Only apply item levels to weapons
         public override bool AppliesToEntity(Item entity, bool lateInstantiation)
         {
-            return (lateInstantiation && entity.damage > 0
-                || lateInstantiation && entity.shoot != ItemID.None)
-                && InventoryManager.GetItemCategorization(entity.type) == TerraCellsItemCategory.Weapon;
+            return (lateInstantiation && (entity.damage > 0 || entity.shoot != ItemID.None))
+                || InventoryManager.GetItemCategorization(entity.type) == TerraCellsItemCategory.Weapon;
         }
 
         public override void SetDefaults(Item item)
@@ -56,7 +55,7 @@ namespace TerrariaCells.Common.GlobalItems
         {
             // Equation is found using Sorbet's example values.
             // Graph of tiers vs damage values: https://www.desmos.com/calculator/mz89u5adai
-            damage *= MathF.Pow(damageLevelScaling, itemLevel - 2);
+            damage *= MathF.Pow(damageLevelScaling, itemLevel - 1);
         }
 
         public override void ModifyWeaponKnockback(
@@ -68,10 +67,10 @@ namespace TerrariaCells.Common.GlobalItems
             knockback *= 1 + (MathF.Sqrt(itemLevel - 1) * knockbackLevelScaling);
         }
 
-        public override float UseSpeedMultiplier(Item item, Player player)
+        /*public override float UseSpeedMultiplier(Item item, Player player)
         {
             return 1 + (MathF.Sqrt(itemLevel - 1) * attackSpeedLevelScaling);
-        }
+        }*/
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
@@ -95,12 +94,13 @@ namespace TerrariaCells.Common.GlobalItems
                     "IX",
                     "X",
                 ];
+                string numeral = (itemLevel >= 0 && itemLevel < numerals.Length) ? numerals[itemLevel] : itemLevel.ToString();
                 // Alter vanilla tooltips here
                 switch (tooltip.Name)
                 {
                     case "ItemName":
                         // tooltip.Text += " [Tier " + itemLevel.ToString() + "]";
-                        tooltip.Text += " " + numerals[itemLevel] + " ";
+                        tooltip.Text += $" {numeral}";
                         break;
                 }
             }
