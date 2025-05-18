@@ -66,6 +66,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
             if (target == null)
             {
+                ShouldWalk = false;
                 if (ExtraAI[0] <= 0)
                 {
                     BloodCrawlerWalkingAI();
@@ -82,6 +83,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             float xBlockDistance = Math.Abs(npcToTarget.X);
             float yBlockDistance = Math.Abs(npcToTarget.Y);
             float heightDifference = target.position.Y + target.height - npc.position.Y - npc.height;
+
+            ShouldWalk = xBlockDistance < 20;
 
             if (ExtraAI[0] < 0) //wait for delay before next attack
             {

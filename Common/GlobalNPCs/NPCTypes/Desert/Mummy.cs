@@ -70,7 +70,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 			if (target != null)
 			{
 				validTarget = npc.TargetInAggroRange(target, 240);
-				if (MathF.Abs(target.position.X - npc.position.X) < 80)
+				if (MathF.Abs(target.position.X - npc.position.X) > 80)
 					ShouldWalk = false;
 			}
 			else

@@ -64,15 +64,15 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
         public bool CultistArcherAI(NPC npc, Player? target)
         {
 			bool validTarget;
-			const int Range = 448;
+			const int Range = 352;
 			if (target != null)
 				validTarget = npc.TargetInAggroRange(target, Range);
 			else
 				validTarget = npc.TargetInAggroRange(Range);
 
+            ShouldWalk = npc.TargetInAggroRange(Range*1.5f) && !validTarget;
             if (validTarget && npc.collideY)
             {
-                ShouldWalk = false;
                 npc.velocity.X *= 0.9f;
                 npc.ai[3] = 1;
                 npc.ai[2]++;
