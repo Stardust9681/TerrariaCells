@@ -126,6 +126,7 @@ namespace TerrariaCells.Common.GlobalItems
                 case ItemID.Gladius:
                     item.damage = 8;
                     item.value = 1000;
+                    item.knockBack = 2f;
                     break;
                 case ItemID.Katana:
                     item.damage = 8;

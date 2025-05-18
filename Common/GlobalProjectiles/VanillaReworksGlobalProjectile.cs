@@ -204,8 +204,11 @@ namespace TerrariaCells.Common.GlobalProjectiles
                     modifiers.SetCrit();
                     break;
                 case ProjectileID.GladiusStab:
-                    if  (target.HasBuff(BuffID.Poisoned) || target.HasBuff(BuffID.BloodButcherer))
+                    if (target.HasBuff(BuffID.Poisoned) || target.HasBuff(BuffID.Bleeding))
+                    {
                         modifiers.SetCrit();
+                        modifiers.CritDamage += 0.25f;
+                    }
                     break;
             }
 
@@ -265,6 +268,9 @@ namespace TerrariaCells.Common.GlobalProjectiles
 				case ProjectileID.EmeraldBolt:
 					GlobalNPCs.BuffNPC.AddBuff(target, BuffID.Poisoned, 60 * 5, damageDone);
 					break;
+                case ProjectileID.GladiusStab:
+                    target.immune[projectile.owner] = 7;
+                    break;
 
 				case ProjectileID.ToxicCloud:
 				case ProjectileID.ToxicCloud2:
