@@ -33,6 +33,7 @@ namespace TerrariaCells.Common.GlobalProjectiles
         private static float stakeToUndeadDamageModifier = 1.5f;
         public bool ForceCrit = false;
         public override bool InstancePerEntity => true;
+
         public override void SetDefaults(Projectile projectile)
 		{
 			switch (projectile.type)
@@ -49,6 +50,10 @@ namespace TerrariaCells.Common.GlobalProjectiles
 					projectile.penetrate = 1;
 					projectile.extraUpdates = 14;
 					break;
+                case ProjectileID.BabySpider:
+                    projectile.usesIDStaticNPCImmunity = true;
+                    projectile.idStaticNPCHitCooldown = 5;
+                    break;
 			}
 		}
 
