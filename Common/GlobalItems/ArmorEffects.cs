@@ -242,13 +242,15 @@ namespace TerrariaCells.Common.GlobalItems
 
         public override bool OnPickup(Item item, Player player)
         {
-            if (Main.LocalPlayer.GetModPlayer<ArmorPlayer>().jungleShirt && (item.type == ItemID.Star || item.type == ItemID.SoulCake || item.type == ItemID.SugarPlum))
+            if (player.GetModPlayer<ArmorPlayer>().jungleShirt)
             {
-                foreach (KeyValuePair<int, SkillSlotData> slotInfo in SkillModPlayer.SkillSlots)
+                if (item.type is ItemID.Star or ItemID.SoulCake or ItemID.SugarPlum)
                 {
-                    if (slotInfo.Value.cooldownTimer > 0)
+                    Systems.AbilityHandler modPlayer = player.GetModPlayer<Systems.AbilityHandler>();
+                    foreach (Systems.AbilitySlot ability in modPlayer.Abilities)
                     {
-                        slotInfo.Value.cooldownTimer -= 30;
+                        if (ability.IsOnCooldown)
+                            ability.cooldownTimer -= 30;
                     }
                 }
             }
