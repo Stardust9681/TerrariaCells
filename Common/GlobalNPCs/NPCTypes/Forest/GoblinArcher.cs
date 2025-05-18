@@ -247,7 +247,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 
                 float rotation = npc.ai[3];
                 Vector2 vel = Vector2.UnitX.RotatedBy(rotation) * 9f;
-				Projectile proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center, vel, Main.rand.Next(arrowsToFire), npc.damage, 1f, Main.myPlayer);
+				Projectile proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center, vel, Main.rand.Next(arrowsToFire), TCellsUtils.ScaledHostileDamage(npc.damage, 1.5f, 2f), 1f, Main.myPlayer);
 				proj.hostile = true;
 				proj.friendly = false;
 

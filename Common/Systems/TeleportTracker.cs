@@ -156,7 +156,7 @@ public class TeleportTracker : ModSystem
             case "frozencity": //Frozen City
                 hour = 4.5f;
                 rain = 1f;
-                level = 5;
+                level = 3;
                 break;
             //case 10: //Caverns
             //  position = new Vector2(28818.312f, 17606);

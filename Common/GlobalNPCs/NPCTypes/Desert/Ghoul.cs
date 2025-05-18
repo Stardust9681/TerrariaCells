@@ -67,7 +67,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 						npc.spriteDirection = npc.direction = direction;
 						npc.velocity.X = npc.direction * 10f;
 						SoundEngine.PlaySound(SoundID.Item1, npc.Center);
-						Projectile slash = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center, Vector2.Zero, ModContent.ProjectileType<Slash>(), TCellsUtils.ScaledHostileDamage(25), 1, -1, npc.whoAmI, 0, npc.direction);
+						Projectile slash = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center, Vector2.Zero, ModContent.ProjectileType<Slash>(), TCellsUtils.ScaledHostileDamage(npc.damage), 1, -1, npc.whoAmI, 0, npc.direction);
 						if (npc.direction < 0)
 							slash.rotation = MathHelper.Pi;
 					}

@@ -20,7 +20,7 @@ namespace TerrariaCells.Content.NPCs
         public override void SetDefaults()
         {
             NPC.lifeMax = 200;
-            NPC.damage = 30;
+            NPC.damage = 50;
             NPC.knockBackResist = 0.8f;
             NPC.noGravity = true;
             NPC.width = 50;
@@ -170,7 +170,7 @@ namespace TerrariaCells.Content.NPCs
                                 NPC.Center + (velocity * 2),
                                 velocity,
                                 ProjectileID.Bullet,
-                                Common.Utilities.TCellsUtils.ScaledHostileDamage(20),
+                                Common.Utilities.TCellsUtils.ScaledHostileDamage(NPC.damage*2/3),
                                 1f,
                                 Main.myPlayer);
                             proj.hostile = true;

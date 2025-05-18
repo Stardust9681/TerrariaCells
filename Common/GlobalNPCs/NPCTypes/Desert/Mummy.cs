@@ -100,7 +100,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 npc.velocity.X *= 0.9f;
                 if (npc.ai[2] == 70)
                 {
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + new Vector2(40 * npc.direction, 0), Vector2.Zero, ModContent.ProjectileType<MummyShockwave>(), TCellsUtils.ScaledHostileDamage(30), 1, -1, npc.direction);
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + new Vector2(40 * npc.direction, 0), Vector2.Zero, ModContent.ProjectileType<MummyShockwave>(), TCellsUtils.ScaledHostileDamage(npc.damage), 1, -1, npc.direction);
                     SoundEngine.PlaySound(SoundID.Item14, npc.Center);
                 }
             }
