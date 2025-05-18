@@ -33,12 +33,20 @@ namespace TerrariaCells.Content.Tiles
 		public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
 		{
             //DefaultDrawPylonCrystal(spriteBatch, i, j, crystalTexture, crystalHighlightTexture, new Vector2(0f, -12f), Color.YellowGreen * 0.1f, Color.YellowGreen, 4, CrystalVerticalFrameCount);
-            DrawCrystal(i, j, spriteBatch, CrystalVerticalFrameCount, Color.YellowGreen);
+            DrawCrystal(i, j, spriteBatch, CrystalVerticalFrameCount, Color.Goldenrod);
 		}
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
 			ModContent.GetInstance<SimplePylonTileEntity>().Kill(i, j);
 		}
-	}
+
+        public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+        {
+            Vector3 lightColour = Color.Goldenrod.ToVector3() * 0.8f;
+            r = lightColour.X;
+            g = lightColour.Y;
+            b = lightColour.Z;
+        }
+    }
 }

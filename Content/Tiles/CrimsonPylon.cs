@@ -39,5 +39,13 @@ namespace TerrariaCells.Content.Tiles
         {
             ModContent.GetInstance<SimplePylonTileEntity>().Kill(i, j);
         }
+
+        public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+        {
+            Vector3 lightColour = Color.IndianRed.ToVector3() * 0.8f;
+            r = lightColour.X;
+            g = lightColour.Y;
+            b = lightColour.Z;
+        }
     }
 }
