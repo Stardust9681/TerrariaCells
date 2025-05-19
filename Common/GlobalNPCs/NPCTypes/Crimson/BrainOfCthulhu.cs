@@ -85,6 +85,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			}
 		}
 
+        //Timer() => ai[0]
+        //
+
 
 		public override bool AppliesToNPC(int npcType)
 		{
@@ -95,18 +98,20 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 		//Probably don't emulate this
 		public override void Behaviour(NPC npc)
 		{
-			int timer = npc.Timer();
+            int timer = (int)npc.ai[0];
 
 			if (timer == 0)
 			{
-				//Basically combining the X/Y position in such a way that it can be extracted later:
-				//X = (int)(npc.ai[1] / (Main.maxTilesY * 16));
-				//Y = (int)(npc.ai[1] % X)
-				//There are a couple edge cases, where the NPC is spawned at the world borders
+                //Basically combining the X/Y position in such a way that it can be extracted later:
+                //X = (int)(npc.ai[1] / (Main.maxTilesY * 16));
+                //Y = (int)(npc.ai[1] % X)
+                //There are a couple edge cases, where the NPC is spawned at the world borders
 
-				//npc.ai[1] = ((uint)npc.Center.X * worldHeight) + (uint)npc.Center.Y;
-				npc.ai[1] = PositionToFloat(npc.Center);
-				npc.DoTimer();
+                //npc.ai[1] = ((uint)npc.Center.X * worldHeight) + (uint)npc.Center.Y;
+                //npc.ai[1] = PositionToFloat(npc.Center);
+                npc.localAI[1] = npc.Center.X;
+                npc.localAI[2] = npc.Center.Y;// + (3.5f * 16);
+                npc.ai[0]++;
 				npc.EncourageDespawn(0);
 				npc.GetGlobalNPC<CombatNPC>().allowContactDamage = false;
 				npc.Opacity = 0;
@@ -115,10 +120,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 				return;
 			}
 
-			//Vector2 centre = Vector2.Zero;
-			//centre.X = (int)(npc.ai[1] / worldHeight);
-			//centre.Y = (int)(npc.ai[1] - (centre.X * worldHeight));
-			Vector2 centre = FloatToPosition(npc.ai[1]);
+            //Vector2 centre = Vector2.Zero;
+            //centre.X = (int)(npc.ai[1] / worldHeight);
+            //centre.Y = (int)(npc.ai[1] - (centre.X * worldHeight));
+            Vector2 centre = new Vector2(npc.localAI[1], npc.localAI[2]);
 
 			CombatNPC globalNPC = npc.GetGlobalNPC<CombatNPC>();
 
@@ -899,7 +904,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			BloodSpikeWave();
 			Fall();
 
-			npc.DoTimer();
+            npc.ai[0]++;
+			//npc.DoTimer();
 		}
 
 		readonly int[] RightTentacles = new int[] {
