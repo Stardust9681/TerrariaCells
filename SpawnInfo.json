@@ -1632,9 +1632,14 @@
               "OffsetY": "159"
             },
             {
-              "NameOrType": "TargetDummy",
-              "OffsetX": "368",
-              "OffsetY": "7"
+              "NameOrType": "ArmsDealer",
+              "OffsetX": "507",
+              "OffsetY": "181"
+            },
+            {
+              "NameOrType": "Nurse",
+              "OffsetX": "333",
+              "OffsetY": "269"
             },
             {
               "NameOrType": "DesertScorpionWalk",
