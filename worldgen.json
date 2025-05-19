@@ -38,6 +38,70 @@
                     "OffsetY": -80,
                     "SpawnX": 611,
                     "SpawnY": 100
+                },
+                {
+                    "Name": "forest_3",
+                    "Path": "Content/Structures/forest_3.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -50,
+                    "SpawnX": 774,
+                    "SpawnY": 233
+                },
+                {
+                    "Name": "forest_4",
+                    "Path": "Content/Structures/forest_4.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -50,
+                    "SpawnX": 774,
+                    "SpawnY": 233
+                },
+                {
+                    "Name": "forest_5",
+                    "Path": "Content/Structures/forest_5.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -80,
+                    "SpawnX": 611,
+                    "SpawnY": 100
+                },
+                {
+                    "Name": "forest_6",
+                    "Path": "Content/Structures/forest_6.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -80,
+                    "SpawnX": 611,
+                    "SpawnY": 100
+                },
+                {
+                    "Name": "forest_7",
+                    "Path": "Content/Structures/forest_7.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -50,
+                    "SpawnX": 774,
+                    "SpawnY": 233
+                },
+                {
+                    "Name": "forest_8",
+                    "Path": "Content/Structures/forest_8.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -80,
+                    "SpawnX": 611,
+                    "SpawnY": 100
+                },
+                {
+                    "Name": "forest_9",
+                    "Path": "Content/Structures/forest_9.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -50,
+                    "SpawnX": 774,
+                    "SpawnY": 233
+                },
+                {
+                    "Name": "forest_10",
+                    "Path": "Content/Structures/forest_10.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -50,
+                    "SpawnX": 774,
+                    "SpawnY": 233
                 }
             ],
             "Surface": false
