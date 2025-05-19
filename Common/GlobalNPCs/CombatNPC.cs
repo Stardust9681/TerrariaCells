@@ -97,7 +97,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                     npc.knockBackResist = 0f;
                     break;
                 case NPCID.BrainofCthulhu:
-                    npc.lifeMax = 1200;
+                    npc.lifeMax = 2000;
                     npc.knockBackResist = 0f; //Takes 0 knockback
                     break;
                 case NPCID.Creeper:
@@ -123,7 +123,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 				//Yeah they do lmao. Relogic's fuckin hilarious amirite?
                 case NPCID.DesertScorpionWalk:
                 case NPCID.DesertScorpionWall:
-                    npc.lifeMax = 125;
+                    npc.lifeMax = 175;
                     npc.damage = 35;
                     break;
                 case NPCID.DesertDjinn:
