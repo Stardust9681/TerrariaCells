@@ -2913,11 +2913,6 @@
             },
             {
               "NameOrType": "BloodCrawler",
-              "OffsetX": "221",
-              "OffsetY": "153"
-            },
-            {
-              "NameOrType": "BloodCrawler",
               "OffsetX": "313",
               "OffsetY": "152"
             },
@@ -2925,11 +2920,6 @@
               "NameOrType": "BloodCrawler",
               "OffsetX": "349",
               "OffsetY": "157"
-            },
-            {
-              "NameOrType": "BloodCrawler",
-              "OffsetX": "221",
-              "OffsetY": "153"
             },
             {
               "NameOrType": "Drippler",
@@ -3000,11 +2990,6 @@
               "NameOrType": "BloodCrawler",
               "OffsetX": "421",
               "OffsetY": "98"
-            },
-            {
-              "NameOrType": "BloodCrawler",
-              "OffsetX": "221",
-              "OffsetY": "153"
             },
             {
               "NameOrType": "Crimera",
