@@ -21,7 +21,7 @@ namespace TerrariaCells.Common.GlobalBuffs
                     break;
                 case BuffID.MagicPower:
                     player.GetDamage(DamageClass.Magic) -= 0.2f; //0.2 - 0.2 => 0
-                    player.manaCost -= 0.5f;
+                    player.manaCost = 0f;
                     break;
             }
         }
@@ -35,7 +35,7 @@ namespace TerrariaCells.Common.GlobalBuffs
                     tip = "25% increased damage";
                     break;
                 case BuffID.MagicPower:
-                    tip = "50% reduced mana consumption";
+                    tip = "Your spells are free";
                     break;
             }
         }
