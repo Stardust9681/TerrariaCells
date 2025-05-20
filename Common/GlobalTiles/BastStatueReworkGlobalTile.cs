@@ -1,4 +1,5 @@
 ﻿using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -27,6 +28,10 @@ namespace TerrariaCells.Common.GlobalTiles {
             }
             // todo: netcode to tell the server that the statue is deactivated
             Main.LocalPlayer.AddBuff(BuffID.CatBast, 1080000, false);
+            SoundEngine.PlaySound(
+                SoundID.Shatter,
+                Main.LocalPlayer.Center
+            );
         }
 
         public override void NearbyEffects(int i, int j, int type, bool closer) {
