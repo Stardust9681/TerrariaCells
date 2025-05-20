@@ -424,11 +424,11 @@ namespace TerrariaCells.Common.ModPlayers
 		//Make sure player dies when they hit <=0 health
 		private void CheckDead()
 		{
-			if (Player.statLife - DamageLeft <= 0)
+			if (Player.statLife - (DamageLeft+0.5f) <= 0)
 			{
 				deathReason ??= $"{Player.name} was beheaded.";
 
-				Player.KillMe(PlayerDeathReason.ByCustomReason(deathReason), 1, 0);
+				Player.KillMe(PlayerDeathReason.ByCustomReason(deathReason), Player.statLife + 1, 0);
 			}
 		}
 
