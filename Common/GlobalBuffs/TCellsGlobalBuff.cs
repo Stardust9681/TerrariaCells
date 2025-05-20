@@ -25,5 +25,19 @@ namespace TerrariaCells.Common.GlobalBuffs
                     break;
             }
         }
+
+        public override void ModifyBuffText(int type, ref string buffName, ref string tip, ref int rare) {
+            switch (type) {
+                case BuffID.Swiftness:
+                    tip = "30% increased movement speed";
+                    break;
+                case BuffID.Wrath:
+                    tip = "25% increased damage";
+                    break;
+                case BuffID.MagicPower:
+                    tip = "50% reduced mana consumption";
+                    break;
+            }
+        }
     }
 }
