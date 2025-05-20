@@ -43,17 +43,27 @@ namespace TerrariaCells.Common.GlobalNPCs
         };
         private void On_Main_HelpText(On_Main.orig_HelpText orig)
         {
-            if (Main.helpText < 0 || Main.helpText > HelpText.Length - 1) Main.helpText = 0;
-            Main.npcChatText = HelpText[Main.helpText];
-            Main.helpText++;
+            if (Main.LocalPlayer.TalkNPC?.type == NPCID.Guide)
+            {
+                if (Main.helpText < 0 || Main.helpText > HelpText.Length - 1) Main.helpText = 0;
+                Main.npcChatText = HelpText[Main.helpText];
+                Main.helpText++;
+            }
+            else
+            {
+                orig.Invoke();
+            }
         }
         private void On_Main_DrawNPCChatButtons(On_Main.orig_DrawNPCChatButtons orig, int superColor, Color chatColor, int numLines, string focusText, string focusText3)
         {
-            if (Main.LocalPlayer.TalkNPC.type == NPCID.Guide)
+            if (Main.LocalPlayer.TalkNPC?.type == NPCID.Guide)
             {
                 focusText3 = string.Empty;
             }
-            Main.LocalPlayer.currentShoppingSettings.HappinessReport = "";
+            if (Main.LocalPlayer.talkNPC != -1)
+            {
+                Main.LocalPlayer.currentShoppingSettings.HappinessReport = "";
+            }
             orig.Invoke(superColor, chatColor, numLines, focusText, focusText3);
         }
     }
