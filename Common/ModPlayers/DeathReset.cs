@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 using TerrariaCells.Common.Configs;
@@ -10,6 +11,8 @@ namespace TerrariaCells.Common.ModPlayers;
 
 public class DeathReset : ModPlayer, IEntitySource
 {
+    public const int MaxRespawnTime = 300; //5 sec
+
 	public string Context => "TerrariaCells.Common.ModPlayers.DeathReset";
 
 	public override void Kill(
@@ -53,6 +56,8 @@ public class DeathReset : ModPlayer, IEntitySource
 		//Reset mana
 		Player.statMana = Player.statManaMax2;
 
+        Player.respawnTimer = MaxRespawnTime;
+
 		//Reset systems
         // ModContent.GetInstance<TeleportTracker>().Reset();
 		ModContent.GetInstance<ClickedHeartsTracker>().Reset();
@@ -88,6 +93,9 @@ public class DeathReset : ModPlayer, IEntitySource
 
 	public override void OnRespawn()
 	{
+        WorldGen.SaveAndQuit();
+        return;
+
 		foreach (NPC npc in Main.ActiveNPCs)
 			if (!npc.friendly) npc.active = false; //Kill all NPCs so they aren't re-added to respawn buffer
 		foreach (Item item in Main.ActiveItems)
@@ -130,4 +138,62 @@ public class DeathReset : ModPlayer, IEntitySource
 		player.armor[3].TurnToAir();
 		player.ClearBuff(216); //Finch, which is for some reason applied at character creation
 	}
+}
+
+public class DeathBoot : ModSystem
+{
+    public override void Load()
+    {
+        On_Main.DrawStarsInBackground += On_Main_DrawStarsInBackground;
+        On_Main.DrawPrettyStarSparkle += On_Main_DrawPrettyStarSparkle;
+    }
+    public override void Unload()
+    {
+        On_Main.DrawStarsInBackground -= On_Main_DrawStarsInBackground;
+        On_Main.DrawPrettyStarSparkle -= On_Main_DrawPrettyStarSparkle;
+    }
+
+    private void On_Main_DrawPrettyStarSparkle(On_Main.orig_DrawPrettyStarSparkle orig, float opacity, Microsoft.Xna.Framework.Graphics.SpriteEffects dir, Vector2 drawpos, Color drawColor, Color shineColor, float flareCounter, float fadeInStart, float fadeInEnd, float fadeOutStart, float fadeOutEnd, float rotation, Vector2 scale, Vector2 fatness)
+    {
+        if (Main.netMode != NetmodeID.SinglePlayer)
+            return;
+        if (!Main.LocalPlayer.DeadOrGhost)
+        {
+            orig.Invoke(opacity, dir, drawpos, drawColor, shineColor, flareCounter, fadeInStart, fadeInEnd, fadeOutStart, fadeOutEnd, rotation, scale, fatness);
+        }
+    }
+
+    private void On_Main_DrawStarsInBackground(On_Main.orig_DrawStarsInBackground orig, Main self, Main.SceneArea sceneArea, bool artificial)
+    {
+        if (Main.netMode != NetmodeID.SinglePlayer)
+            return;
+        if (!Main.LocalPlayer.DeadOrGhost)
+        {
+            orig.Invoke(self, sceneArea, artificial);
+        }
+    }
+
+    public override void ModifyLightingBrightness(ref float scale)
+    {
+        if (Main.netMode != NetmodeID.SinglePlayer)
+            return;
+        if (Main.LocalPlayer.DeadOrGhost)
+        {
+            scale = ((float)Main.LocalPlayer.respawnTimer / (float)DeathReset.MaxRespawnTime);
+        }
+    }
+    public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
+    {
+        if (Main.netMode != NetmodeID.SinglePlayer)
+            return;
+        if (Main.LocalPlayer.DeadOrGhost)
+        {
+            float scale = ((float)Main.LocalPlayer.respawnTimer / (float)DeathReset.MaxRespawnTime);
+            (byte tileColourA, byte backgroundColourA) = (tileColor.A, backgroundColor.A);
+            tileColor *= scale;
+            backgroundColor *= scale;
+            tileColor.A = tileColourA;
+            backgroundColor.A = backgroundColourA;
+        }
+    }
 }
