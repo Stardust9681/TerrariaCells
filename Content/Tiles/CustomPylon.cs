@@ -73,7 +73,7 @@ namespace TerrariaCells.Content.Tiles
 
             int frameY;
             if (foundPylon) frameY = Main.tileFrameCounter[597] / frameCount;
-            else frameY = (Main.tileFrameCounter[597] + p.X + p.Y) % 64 / 8;
+            else frameY = 0;// (Main.tileFrameCounter[597] + p.X + p.Y) % 64 / 8;
 
             Texture2D crystalTextureValue;
             Texture2D outlineTextureValue;
@@ -121,6 +121,7 @@ namespace TerrariaCells.Content.Tiles
 
             Color color = Lighting.GetColor(p.X, p.Y);
             color = Color.Lerp(color, Color.White, 0.8f);
+            if (!foundPylon) color *= 0.3f;
             spriteBatch.Draw(crystalTextureValue, drawingPosition - Main.screenPosition, crystalFrame, color * 0.7f, 0f, origin, 1f, SpriteEffects.None, 0f);
 
             float scale = (float)Math.Sin(Main.GlobalTimeWrappedHourly * ((float)Math.PI * 2f) / 1f) * 0.2f + 0.8f;

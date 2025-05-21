@@ -180,28 +180,52 @@ namespace TerrariaCells.Common.Systems
 			}
 			return;
 		}
+        //What I should really do is just bunch it all together into one method. Vanilla makes that a little awkward though. May get around to it if need be.
         private void IL_ModifyPylonColour(ILContext context)
         {
             try
             {
-                
+                context.Body.Variables.Add(new VariableDefinition(context.Import(typeof(bool))));
                 ILCursor cursor = new ILCursor(context);
 
                 if (!cursor.TryGotoNext(
-                        MoveType.After,
-                        i => i.Match(OpCodes.Ldc_I4_S),
-                        i => i.Match(OpCodes.Div),
-                        i => i.Match(OpCodes.Stloc_S)))
+                    MoveType.After,
+                    i => i.MatchStloc3()))
                     return;
 
                 cursor.EmitLdloc3();
+                cursor.EmitDelegate((Point tilePos) => {
+                    return WorldPylonSystem.PylonFound(new Point16(tilePos));
+                });
+                cursor.EmitStloc(26);
+
+                if (!cursor.TryGotoNext(
+                    MoveType.After,
+                    i => i.MatchStloc(6)))
+                    return;
+
+                cursor.EmitLdloc(26);
                 cursor.EmitLdloc(6);
-                cursor.EmitDelegate((Point tilePos, int frameNumX) => {
-                    if (WorldPylonSystem.PylonFound(new Point16(tilePos)))
+                cursor.EmitDelegate((bool foundPylon, int frameNumX) => {
+                    if (foundPylon)
                         return frameNumX;
                     return -2;
                 });
                 cursor.EmitStloc(6);
+
+                if (!cursor.TryGotoNext(
+                    MoveType.After,
+                    i => i.MatchStloc(10)))
+                    return;
+
+                cursor.EmitLdloc(26);
+                cursor.EmitLdloc(10);
+                cursor.EmitDelegate((bool foundPylon, int frameY) => {
+                    if (foundPylon)
+                        return frameY;
+                    return 0;
+                });
+                cursor.EmitStloc(10);
 
                 if (!cursor.TryGotoNext(
                     MoveType.After,
@@ -213,10 +237,12 @@ namespace TerrariaCells.Common.Systems
                 {
                     return;
                 }
-                cursor.EmitLdloc3(); //Point p, Pylon position
+
+                cursor.EmitLdloc(26);
+                //cursor.EmitLdloc3(); //Point p, Pylon position
                 cursor.EmitLdloc(17); //Color color, Pylon draw colour
-                cursor.EmitDelegate((Point tilePos, Color colour) => {
-                    if (WorldPylonSystem.PylonFound(new Point16(tilePos)))
+                cursor.EmitDelegate((bool foundPylon, Color colour) => {
+                    if (foundPylon)
                         return colour;
                     return colour * .3f;
                 });
