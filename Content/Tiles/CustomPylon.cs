@@ -16,6 +16,7 @@ using Terraria.ObjectData;
 using Terraria.Localization;
 using Terraria.ModLoader.Default;
 using TerrariaCells.Content.TileEntities;
+using TerrariaCells.Common.Configs;
 
 namespace TerrariaCells.Content.Tiles
 {
@@ -67,17 +68,22 @@ namespace TerrariaCells.Content.Tiles
         {
             Point16 p = new Point16(i, j);
             bool foundPylon = Common.Systems.WorldPylonSystem.PylonFound(p);
+            var config = DevConfig.Instance;
+            if (!foundPylon && config.HideInactivePylonsEntirely) {
+                return;
+            }
 
             Tile tile = Framing.GetTileSafely(i, j);
             TileObjectData tileData = TileObjectData.GetTileData(tile);
 
             int frameY;
-            if (foundPylon) frameY = Main.tileFrameCounter[597] / frameCount;
+            if (config.SpinInactivePylons || foundPylon) frameY = Main.tileFrameCounter[597] / frameCount;
             else frameY = 0;// (Main.tileFrameCounter[597] + p.X + p.Y) % 64 / 8;
 
             Texture2D crystalTextureValue;
             Texture2D outlineTextureValue;
-            if (foundPylon)
+            var usePylonTexture = foundPylon || !config.GreyInactivePylons;
+            if (usePylonTexture)
             {
                 crystalTextureValue = _crystal.Value;
                 outlineTextureValue = _outline.Value;
@@ -89,10 +95,10 @@ namespace TerrariaCells.Content.Tiles
             }
 
             Rectangle crystalFrame;
-            if (!foundPylon || CrystalTexture.Equals(string.Empty)) crystalFrame = crystalTextureValue.Frame(12, 8, 1, frameY);
+            if (!usePylonTexture || CrystalTexture.Equals(string.Empty)) crystalFrame = crystalTextureValue.Frame(12, 8, 1, frameY);
             else crystalFrame = crystalTextureValue.Frame(1, frameCount, 0, frameY);
             Rectangle selectOutlineFrame;
-            if (!foundPylon || OutlineTexture.Equals(string.Empty)) selectOutlineFrame = outlineTextureValue.Frame(12, 8, 2, frameY % 8);
+            if (!usePylonTexture || OutlineTexture.Equals(string.Empty)) selectOutlineFrame = outlineTextureValue.Frame(12, 8, 2, frameY % 8);
             else selectOutlineFrame = outlineTextureValue.Frame(1, frameCount, 0, frameY);
             //Something about frame bleeding
             crystalFrame.Height -= 1;
@@ -104,15 +110,19 @@ namespace TerrariaCells.Content.Tiles
             Vector2 origin = crystalFrame.Size() * 0.5f;
             Vector2 tileOrigin = new Vector2(tileData.CoordinateFullWidth * 0.5f, tileData.CoordinateFullHeight * 0.5f);
             Vector2 crystalPosition = p.ToWorldCoordinates(tileOrigin.X - 2f, tileOrigin.Y) + new Vector2(0, -12);
-            float num5 = MathF.Sin(Main.GlobalTimeWrappedHourly * MathHelper.TwoPi / 5f);
-            Vector2 drawingPosition = crystalPosition + offscreenVector + new Vector2(0f, num5 * 4f);
-
-            if (!Main.gamePaused && Main.instance.IsActive && (!Lighting.UpdateEveryFrame || Main.rand.NextBool(4)) && Main.rand.NextBool(10))
-            {
+            float bobPhase = config.BobbingInactivePylons || foundPylon ? (float) Math.Sin(Main.GlobalTimeWrappedHourly * ((float) Math.PI * 2f) / 5f) : 1;
+            Vector2 drawingPosition = crystalPosition + offscreenVector + new Vector2(0f, bobPhase * 4f);
+            // Lighting.UpdateEveryFrame isn't checked in vanilla...
+            if (
+                !Main.gamePaused 
+                && Main.instance.IsActive
+                && (!Lighting.UpdateEveryFrame || Main.rand.NextBool(4))
+                && Main.rand.NextBool(10)
+                && (config.InactivePylonDust || foundPylon)
+            ) {
                 Rectangle dustBox = Utils.CenteredRectangle(crystalPosition, crystalFrame.Size());
-                if (!foundPylon) TeleportPylonsSystem.SpawnInWorldDust(1, dustBox);
-                else
-                {
+                if (!usePylonTexture) TeleportPylonsSystem.SpawnInWorldDust(-2, dustBox);
+                else {
                     Dust dust = Dust.NewDustDirect(dustBox.TopLeft(), dustBox.Width, dustBox.Height, DustID.TintableDustLighted, 0f, 0f, 254, dustColour with { A = byte.MaxValue }, 0.5f);
                     dust.velocity *= 0.1f;
                     dust.velocity.Y -= 0.2f;
@@ -121,14 +131,20 @@ namespace TerrariaCells.Content.Tiles
 
             Color color = Lighting.GetColor(p.X, p.Y);
             color = Color.Lerp(color, Color.White, 0.8f);
-            if (!foundPylon) color *= 0.3f;
+            if (!foundPylon && config.TranslucentInactivePylons) {
+                if (config.DarkenTranslucentPylons) {
+                    color *= 0.3f;
+                } else {
+                    color.A = (byte) ((float) color.A * 0.3f);
+                }
+            }
             spriteBatch.Draw(crystalTextureValue, drawingPosition - Main.screenPosition, crystalFrame, color * 0.7f, 0f, origin, 1f, SpriteEffects.None, 0f);
-
-            float scale = (float)Math.Sin(Main.GlobalTimeWrappedHourly * ((float)Math.PI * 2f) / 1f) * 0.2f + 0.8f;
-            Color shadowColor = new Color(255, 255, 255, 1) * 0.1f * scale;
-            for (float shadowPos = 0f; shadowPos < 1f; shadowPos += 1f / 6f)
-            {
-                spriteBatch.Draw(crystalTextureValue, drawingPosition - Main.screenPosition + (MathHelper.TwoPi * shadowPos).ToRotationVector2() * (6f + num5 * 2f), crystalFrame, shadowColor, 0f, origin, 1f, SpriteEffects.None, 0f);
+            if (config.GlowInactivePylons) {
+                float pylonGlowPulse = (float) Math.Sin(Main.GlobalTimeWrappedHourly * ((float) Math.PI * 2f) / 1f) * 0.2f + 0.8f;
+                Color color2 = new Color(255, 255, 255, 0) * 0.1f * pylonGlowPulse;
+                for (float pylonGlow = 0f; pylonGlow < 1f; pylonGlow += 1f / 6f) {
+                    spriteBatch.Draw(crystalTextureValue, drawingPosition - Main.screenPosition + ((float) Math.PI * 2f * pylonGlow).ToRotationVector2() * (6f + bobPhase * 2f), crystalFrame, color2, 0f, origin, 1f, SpriteEffects.None, 0f);
+                }
             }
 
             int selectionLevel = 0;

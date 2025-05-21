@@ -17,6 +17,10 @@ using Terraria.GameContent.Tile_Entities;
 using Terraria.ModLoader.Default;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using System.Reflection;
+using Terraria.GameContent.Drawing;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria.Utilities;
 
 namespace TerrariaCells.Common.Systems
 {
@@ -117,14 +121,16 @@ namespace TerrariaCells.Common.Systems
         public override void Load()
         {
 			On_TeleportPylonsSystem.HandleTeleportRequest += HandleTeleportRequest;
-            Terraria.GameContent.Drawing.IL_TileDrawing.DrawTeleportationPylons += IL_ModifyPylonColour;
+            On_TileDrawing.DrawTeleportationPylons += this.CustomDrawTeleportationPylons;
+            //Terraria.GameContent.Drawing.IL_TileDrawing.DrawTeleportationPylons += IL_ModifyPylonColour;
         }
 
         public override void Unload()
         {
             On_TeleportPylonsSystem.HandleTeleportRequest -= HandleTeleportRequest;
-            Terraria.GameContent.Drawing.IL_TileDrawing.DrawTeleportationPylons -= IL_ModifyPylonColour;
-        }
+			On_TileDrawing.DrawTeleportationPylons -= CustomDrawTeleportationPylons;
+            //Terraria.GameContent.Drawing.IL_TileDrawing.DrawTeleportationPylons -= IL_ModifyPylonColour;
+		}
 
 		// Multiplayer only
 		// We have to use a separate handle for multiplayer because our other teleport 
@@ -180,79 +186,83 @@ namespace TerrariaCells.Common.Systems
 			}
 			return;
 		}
-        //What I should really do is just bunch it all together into one method. Vanilla makes that a little awkward though. May get around to it if need be.
-        private void IL_ModifyPylonColour(ILContext context)
-        {
-            try
-            {
-                context.Body.Variables.Add(new VariableDefinition(context.Import(typeof(bool))));
-                ILCursor cursor = new ILCursor(context);
 
-                if (!cursor.TryGotoNext(
-                    MoveType.After,
-                    i => i.MatchStloc3()))
-                    return;
+		// Fields required by DrawTeleportationPylons that aren't accessible. Cached to avoid reflection lookups every tick
+		static FieldInfo TDField(string name) => typeof(TileDrawing).GetField(name, BindingFlags.NonPublic | BindingFlags.Instance);
+        static readonly FieldInfo specialsCount = TDField("_specialsCount");
+        static readonly FieldInfo specialPositions = TDField("_specialPositions");
+        static readonly FieldInfo rand = TDField("_rand");
+        static readonly FieldInfo isActiveAndNotPaused = TDField("_isActiveAndNotPaused");
 
-                cursor.EmitLdloc3();
-                cursor.EmitDelegate((Point tilePos) => {
-                    return WorldPylonSystem.PylonFound(new Point16(tilePos));
-                });
-                cursor.EmitStloc(26);
+        private void CustomDrawTeleportationPylons(On_TileDrawing.orig_DrawTeleportationPylons orig, TileDrawing self) {
+			var config = DevConfig.Instance;
+			var _specialsCount = (int[])specialsCount.GetValue(self);
+			var _specialPositions = (Point[][])specialPositions.GetValue(self);
+			var _rand = (UnifiedRandom)rand.GetValue(self);
+			var _isActiveAndNotPaused = (bool)isActiveAndNotPaused.GetValue(self);
 
-                if (!cursor.TryGotoNext(
-                    MoveType.After,
-                    i => i.MatchStloc(6)))
-                    return;
+			// I've cleaned up the vanilla code *slightly* but it's mostly decomp code
 
-                cursor.EmitLdloc(26);
-                cursor.EmitLdloc(6);
-                cursor.EmitDelegate((bool foundPylon, int frameNumX) => {
-                    if (foundPylon)
-                        return frameNumX;
-                    return -2;
-                });
-                cursor.EmitStloc(6);
-
-                if (!cursor.TryGotoNext(
-                    MoveType.After,
-                    i => i.MatchStloc(10)))
-                    return;
-
-                cursor.EmitLdloc(26);
-                cursor.EmitLdloc(10);
-                cursor.EmitDelegate((bool foundPylon, int frameY) => {
-                    if (foundPylon)
-                        return frameY;
-                    return 0;
-                });
-                cursor.EmitStloc(10);
-
-                if (!cursor.TryGotoNext(
-                    MoveType.After,
-                    i => i.Match(OpCodes.Ldloc_S),
-                    i => i.MatchCall(typeof(Color).GetProperty("White", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static).GetMethod),
-                    i => i.MatchLdcR4(0.8f),
-                    i => i.MatchCall(typeof(Color).GetMethod("Lerp", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)),
-                    i => i.Match(OpCodes.Stloc_S)))
-                {
-                    return;
+            const int PYLONS = 10;
+            for (int pylon = 0; pylon < _specialsCount[PYLONS]; pylon++) {
+                Point pos = _specialPositions[PYLONS][pylon];
+				var foundPylon = WorldPylonSystem.PylonFound(new(pos));
+                Tile tile = Main.tile[pos.X, pos.Y];
+                if (tile == null || !tile.HasTile || (!foundPylon && config.HideInactivePylonsEntirely)) {
+                    continue;
                 }
-
-                cursor.EmitLdloc(26);
-                //cursor.EmitLdloc3(); //Point p, Pylon position
-                cursor.EmitLdloc(17); //Color color, Pylon draw colour
-                cursor.EmitDelegate((bool foundPylon, Color colour) => {
-                    if (foundPylon)
-                        return colour;
-                    return colour * .3f;
-                });
-                cursor.EmitStloc(17);
-            }
-            catch (Exception x)
-            {
-                ModContent.GetInstance<TerrariaCells>().Logger.Error(x);
+                Texture2D bounds = TextureAssets.Extra[181].Value;
+                int pylonKind = config.GreyInactivePylons && !foundPylon ? -2 : tile.TileFrameX / 54;
+                const int NON_PYLONS = 3;
+                const int PYLONS_IN_SHEET = NON_PYLONS + 9;
+                const int verticalFrames = 8;
+                int frameY = config.SpinInactivePylons || foundPylon ? (Main.tileFrameCounter[597] + pos.X + pos.Y) % 64 / 8 : 0;
+                Rectangle rectangle = bounds.Frame(PYLONS_IN_SHEET, verticalFrames, NON_PYLONS + pylonKind, frameY);
+                Rectangle value = bounds.Frame(PYLONS_IN_SHEET, verticalFrames, 2, frameY);
+                bounds.Frame(PYLONS_IN_SHEET, verticalFrames, 0, frameY);
+                Vector2 origin = rectangle.Size() / 2f;
+                Vector2 vector = pos.ToWorldCoordinates(24f, 64f);
+                float bobPhase = config.BobbingInactivePylons || foundPylon ? (float) Math.Sin(Main.GlobalTimeWrappedHourly * ((float) Math.PI * 2f) / 5f) : 1;
+                Vector2 crystalPosition = vector + new Vector2(0f, -40f) + new Vector2(0f, bobPhase * 4f);
+				// why is this not just rand.NextBool(40)? I don't know, but I'm not going to change it
+				// vanilla code in case of a butterfly effect.
+                if (_isActiveAndNotPaused && _rand.NextBool(4) && _rand.NextBool(10) && (config.InactivePylonDust || foundPylon)) {
+                    TeleportPylonsSystem.SpawnInWorldDust(pylonKind, Utils.CenteredRectangle(crystalPosition, rectangle.Size()));
+                }
+                Color color = Lighting.GetColor(pos.X, pos.Y);
+                color = Color.Lerp(color, Color.White, 0.8f);
+				if (!foundPylon && config.TranslucentInactivePylons) {
+					if (config.DarkenTranslucentPylons) {
+						color *= 0.3f;
+					} else {
+						color.A = (byte)((float)color.A * 0.3f);
+					}
+				}
+                Main.spriteBatch.Draw(bounds, crystalPosition - Main.screenPosition, rectangle, color * 0.7f, 0f, origin, 1f, SpriteEffects.None, 0f);
+				if (config.GlowInactivePylons) {
+					float pylonGlowPulse = (float) Math.Sin(Main.GlobalTimeWrappedHourly * ((float) Math.PI * 2f) / 1f) * 0.2f + 0.8f;
+					Color color2 = new Color(255, 255, 255, 0) * 0.1f * pylonGlowPulse;
+					for (float pylonGlow = 0f; pylonGlow < 1f; pylonGlow += 1f / 6f) {
+						Main.spriteBatch.Draw(bounds, crystalPosition - Main.screenPosition + ((float) Math.PI * 2f * pylonGlow).ToRotationVector2() * (6f + bobPhase * 2f), rectangle, color2, 0f, origin, 1f, SpriteEffects.None, 0f);
+					}
+				}
+                int num4 = 0;
+                if (Main.InSmartCursorHighlightArea(pos.X, pos.Y, out var actuallySelected)) {
+                    num4 = 1;
+                    if (actuallySelected) {
+                        num4 = 2;
+                    }
+                }
+                if (num4 != 0) {
+                    int num5 = (color.R + color.G + color.B) / 3;
+                    if (num5 > 10) {
+                        Color selectionGlowColor = Colors.GetSelectionGlowColor(num4 == 2, num5);
+                        Main.spriteBatch.Draw(bounds, crystalPosition - Main.screenPosition, value, selectionGlowColor, 0f, origin, 1f, SpriteEffects.None, 0f);
+                    }
+                }
             }
         }
+
         public override bool? ValidTeleportCheck_PreNPCCount(TeleportPylonInfo pylonInfo, ref int defaultNecessaryNPCCount)
 		{
 			defaultNecessaryNPCCount = 0;

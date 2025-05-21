@@ -80,6 +80,7 @@ Configs: {
 			InventorySettings: Inventory Settings
 			DebugAndPlaytesting: Debug And Playtesting
 			GameplaySettings: Gameplay Settings
+			PylonVisuals: Inactive Pylon Visual Settings
 		}
 
 		EnableInventoryChanges: {
@@ -134,6 +135,46 @@ Configs: {
 
 		AllowDebugCommands: {
 			Label: Allow Debug Commands
+			Tooltip: ""
+		}
+
+		GreyInactivePylons: {
+			Label: Grey Inactive Pylons
+			Tooltip: ""
+		}
+
+		TranslucentInactivePylons: {
+			Label: Translucent Inactive Pylons
+			Tooltip: ""
+		}
+
+		DarkenTranslucentPylons: {
+			Label: Darken Translucent Pylons
+			Tooltip: ""
+		}
+
+		BobbingInactivePylons: {
+			Label: Bobbing Inactive Pylons
+			Tooltip: ""
+		}
+
+		SpinInactivePylons: {
+			Label: Spin Inactive Pylons
+			Tooltip: ""
+		}
+
+		GlowInactivePylons: {
+			Label: Glow Inactive Pylons
+			Tooltip: ""
+		}
+
+		InactivePylonDust: {
+			Label: Inactive Pylon Dust
+			Tooltip: ""
+		}
+
+		HideInactivePylonsEntirely: {
+			Label: Hide Inactive Pylons Entirely
 			Tooltip: ""
 		}
 	}

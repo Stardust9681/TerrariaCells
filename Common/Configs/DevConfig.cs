@@ -89,5 +89,46 @@ namespace TerrariaCells.Common.Configs
         [DefaultValue(false)]
         public bool AllowDebugCommands;
 
-	}
+        [Header("PylonVisuals")]
+        /// <summary>
+        /// Hides inactive Pylons entirely. Overrides every other setting if enabled.
+        /// </summary>
+        [DefaultValue(false)]
+        public bool HideInactivePylonsEntirely;
+        /// <summary>
+        /// Whether inactive Pylons should be greyed out instead of their normal colour
+        /// </summary>
+        [DefaultValue(false)]
+        public bool GreyInactivePylons;
+        /// <summary>
+        /// Whether inactive Pylons should be translucent instead of fully opaque
+        /// </summary>
+        [DefaultValue(true)]
+        public bool TranslucentInactivePylons;
+        /// <summary>
+        /// Whether translucent inactive Pylons should be darkened, as if actuated. Has no effect if Translucent Inactive Pylons is not set
+        /// </summary>
+        [DefaultValue(true)]
+        public bool DarkenTranslucentPylons;
+        /// <summary>
+        /// Whether inactive Pylons should bob up and down
+        /// </summary>
+        [DefaultValue(false)]
+        public bool BobbingInactivePylons;
+        /// <summary>
+        /// Whether inactive Pylons should spin
+        /// </summary>
+        [DefaultValue(false)]
+        public bool SpinInactivePylons;
+        /// <summary>
+        /// Whether inactive Pylons should have their glow
+        /// </summary>
+        [DefaultValue(false)]
+        public bool GlowInactivePylons;
+        /// <summary>
+        /// Whether inactive Pylons should emit dust
+        /// </summary>
+        [DefaultValue(false)]
+        public bool InactivePylonDust;
+    }
 }
