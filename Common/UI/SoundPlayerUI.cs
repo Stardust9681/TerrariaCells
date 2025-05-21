@@ -16,9 +16,11 @@ namespace TerrariaCells.Common.UI {
         UserInterface ui;
 
         public override void PostSetupContent() {
-            ui = new();
-            state = new();
-            state.Activate();
+            if (Main.netMode != NetmodeID.Server) {
+                ui = new();
+                state = new();
+                state.Activate();
+            }
         }
 
         public override void UpdateUI(GameTime gameTime) {
