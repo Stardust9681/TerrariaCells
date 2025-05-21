@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 using Terraria.GameContent.UI.Elements;
-using Terraria.GameContent;
 using Terraria.ModLoader.UI;
 using Terraria.ModLoader;
 using Terraria.UI;
@@ -10,6 +8,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using TerrariaCells.Content.TileEntities;
+using TerrariaCells.Common.Utilities;
 
 namespace TerrariaCells.Common.UI {
     internal class SoundPlayerUI : ModSystem {
@@ -157,7 +156,7 @@ namespace TerrariaCells.Common.UI {
 
             protected override void DrawSelf(SpriteBatch spriteBatch) {
                 base.DrawSelf(spriteBatch);
-                DrawUtils.highlightTileRegion(spriteBatch, tile.Position.ToPoint(), Color.White);
+                Drawing.highlightTileRegion(spriteBatch, tile.Position.ToPoint(), Color.White);
                 spriteBatch.Draw(
                     // should probably cache this, but it will always be loaded and this
                     // isn't a gameplay UI, so it's probably fine
@@ -176,101 +175,8 @@ namespace TerrariaCells.Common.UI {
                     SpriteEffects.None,
                     0
                 );
-                //Utils.highlightTileRegion(spriteBatch, new(tile.x, tile.y), Color.Green);
+                //Drawing.highlightTileRegion(spriteBatch, new(tile.x, tile.y), Color.Green);
             }
-        }
-    }
-
-    public static class DrawUtils {
-        static readonly Vector2 normaliseVector = new(1, 0.001f);
-
-        public static void highlightTileRegion(
-            SpriteBatch spriteBatch,
-            Point start,
-            Point end,
-            Color colour
-        ) {
-            var r = new Rectangle(
-                (int) MathF.Min(start.X, end.X),
-                (int) MathF.Min(start.Y, end.Y),
-                (int) MathF.Abs(start.X - end.X) + 1,
-                (int) MathF.Abs(start.Y - end.Y) + 1
-            );
-            var pos = r.TopLeft() * 16 - Main.screenPosition;
-            var size = r.Size() * 16;
-            spriteBatch.Draw(
-                TextureAssets.MagicPixel.Value,
-                pos,
-                null,
-                colour * 0.6f,
-                0,
-                Vector2.Zero,
-                size * normaliseVector,
-                SpriteEffects.None,
-                0
-            );
-            // Draw borders
-            var vScale = new Vector2(2, size.Y) * normaliseVector;
-            var hScale = new Vector2(size.X, 2) * normaliseVector;
-            spriteBatch.Draw(
-                TextureAssets.MagicPixel.Value,
-                pos - Vector2.UnitX * 2,
-                null,
-                colour,
-                0,
-                Vector2.Zero,
-                vScale,
-                SpriteEffects.None,
-                0
-            );
-            spriteBatch.Draw(
-                TextureAssets.MagicPixel.Value,
-                pos - Vector2.UnitY * 2,
-                null,
-                colour,
-                0,
-                Vector2.Zero,
-                hScale,
-                SpriteEffects.None,
-                0
-            );
-            spriteBatch.Draw(
-                TextureAssets.MagicPixel.Value,
-                pos + Vector2.UnitX * size.X,
-                null,
-                colour,
-                0,
-                Vector2.Zero,
-                vScale,
-                SpriteEffects.None,
-                0
-            );
-            spriteBatch.Draw(
-                TextureAssets.MagicPixel.Value,
-                pos + Vector2.UnitY * size.Y,
-                null,
-                colour,
-                0,
-                Vector2.Zero,
-                hScale,
-                SpriteEffects.None,
-                0
-            );
-        }
-
-        public static void highlightTileRegion(
-            SpriteBatch spriteBatch,
-            Point start,
-            Color colour,
-            int width = 0,
-            int height = 0
-        ) {
-            highlightTileRegion(
-                spriteBatch,
-                start,
-                start + new Point(width, height),
-                colour
-            );
         }
     }
 }
