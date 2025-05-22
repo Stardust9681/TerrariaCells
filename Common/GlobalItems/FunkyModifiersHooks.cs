@@ -34,6 +34,7 @@ public partial class FunkyModifierItemModifier : GlobalItem
     {
         if (!weaponCategorizations.TryGetValue((short)item.netID, out var categorizations))
         {
+            ModContent.GetInstance<TerrariaCells>().Logger.Error($"Could not find modifier categorization for {item.type}");
             return;
         }
 

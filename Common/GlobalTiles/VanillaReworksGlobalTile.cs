@@ -52,17 +52,17 @@ namespace TerrariaCells.Common.GlobalTiles
 
 		public override void KillTile(int i, int j, int typeT, ref bool fail, ref bool effectOnly, ref bool noItem)
 		{
-            if (typeT >= 481 && typeT <= 483)
+            if (TileID.Sets.CrackedBricks[typeT])
             {
                 noItem = true;
                 Tile tile2 = Framing.GetTileSafely(i, j);
                 tile2.ClearTile();
                 int fallType = (int)(typeT - 481 + 736);
-                if (Main.netMode == 0)
+                if (Main.netMode == NetmodeID.SinglePlayer)
                 {
                     Projectile.NewProjectile(null, (float)(i * 16 + 8), (float)(j * 16 + 8), 0f, 0.41f, fallType, 0, 0f, Main.myPlayer, 0f, 0f, 0f);
                 }
-                else if (Main.netMode == 2)
+                else if (Main.netMode == NetmodeID.Server)
                 {
                     int num24 = Projectile.NewProjectile(null, (float)(i * 16 + 8), (float)(j * 16 + 8), 0f, 0.41f, fallType, 0, 0f, Main.myPlayer, 0f, 0f, 0f);
                     Main.projectile[num24].netUpdate = true;
@@ -110,7 +110,7 @@ namespace TerrariaCells.Common.GlobalTiles
                     }
                     Tile tile3 = Framing.GetTileSafely(nearbyCrackedX, nearbyCrackedY);
                     
-                    if (tile3.TileType >= TileID.CrackedBlueDungeonBrick && tile3.TileType <= TileID.CrackedPinkDungeonBrick)
+                    if (TileID.Sets.CrackedBricks[tile3.TileType])
                     {
                         WorldGen.KillTile(nearbyCrackedX, nearbyCrackedY, false, false, true);
                     }
