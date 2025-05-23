@@ -102,6 +102,22 @@
                     "OffsetY": -50,
                     "SpawnX": 774,
                     "SpawnY": 233
+                },
+                {
+                    "Name": "forest_11",
+                    "Path": "Content/Structures/forest_11.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -50,
+                    "SpawnX": 830,
+                    "SpawnY": 96
+                },
+                {
+                    "Name": "forest_12",
+                    "Path": "Content/Structures/forest_12.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -50,
+                    "SpawnX": 830,
+                    "SpawnY": 96
                 }
             ],
             "Surface": false
