@@ -116,7 +116,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 				|| !npc.TargetInAggroRange(target, 480, true))
 			{
 				npc.ai[1] = Idle;
-				return;
+                npc.ai[3] = npc.direction;
+                return;
 			}
 
 			npc.direction = npc.velocity.X < 0 ? -1 : 1;

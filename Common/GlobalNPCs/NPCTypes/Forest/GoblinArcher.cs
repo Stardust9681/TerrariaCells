@@ -147,7 +147,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
                 if (!npc.TargetInAggroRange(target, NumberHelpers.ToTileDist(22), false))
                 {
                     ResetAI(npc);
-                    npc.ai[2] = -npc.direction;
+                    npc.ai[2] = npc.direction;
                     npc.ai[1] = Idle;
                 }
                 else if (npc.LineOfSight(target.position))
@@ -159,7 +159,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
                 else
                 {
                     ResetAI(npc);
-                    npc.ai[1] = Jump;
+                    npc.ai[2] = npc.direction;
+                    npc.ai[1] = Idle;
                 }
                 return;
             }
@@ -254,6 +255,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
                 if (npc.TargetInAggroRange(NumberHelpers.ToTileDist(22), false))
                 {
                     ResetAI(npc);
+                    npc.ai[2] = npc.direction;
                     npc.ai[1] = ApproachTarget;
                     return;
                 }
