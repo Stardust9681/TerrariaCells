@@ -362,7 +362,7 @@ namespace TerrariaCells.Common.ModPlayers
 		/// <param name="amount"></param>
 		internal void RallyHeal(int amount)
 		{
-			if (damageBuffer > 0)
+			if (damageBuffer > 0 && amount/2 > 0)
 			{
 				amount /= 2;
 				Player.HealEffect(amount);
@@ -406,6 +406,7 @@ namespace TerrariaCells.Common.ModPlayers
 		#endregion
 
 		#region Disable Health Regen
+        //Check 'regen' > 0 before setting to 0 to remove nullification of debuff damage
 		public override void NaturalLifeRegen(ref float regen)
 		{
 			regen = 0;
@@ -418,13 +419,12 @@ namespace TerrariaCells.Common.ModPlayers
 		}
 		#endregion
 
-
 		#region Player Death
 		private string? deathReason = null;
 		//Make sure player dies when they hit <=0 health
 		private void CheckDead()
 		{
-			if (Player.statLife - (DamageLeft+0.5f) <= 0)
+			if (Player.statLife - (DamageLeft+0.51f) <= 0)
 			{
 				deathReason ??= $"{Player.name} was beheaded.";
 
