@@ -26,8 +26,8 @@ namespace TerrariaCells.Common.GlobalNPCs
 		private static int[] Armors; //Merchant
 		public override void Load()
 		{
-			const string path = "chest loot tables.json";
-			using (StreamReader stream = new StreamReader(Mod.GetFileStream(path)))
+			const string PATH = "chest loot tables.json";
+			using (StreamReader stream = new StreamReader(Mod.GetFileStream(PATH)))
 			{
 				string json = stream.ReadToEnd();
 				JObject Root = (JObject)JsonConvert.DeserializeObject(json); //Get json contents in whole
@@ -53,72 +53,11 @@ namespace TerrariaCells.Common.GlobalNPCs
 			};
 		}
 
-		private int[] selectedItems;
+        private ItemDef[] new_SelectedItems = Array.Empty<ItemDef>();
+        public bool nurse_HasHealed = false;
 		public override void SetDefaults(NPC npc)
 		{
-			bool playtesting = Configs.DevConfig.Instance.PlaytesterShops;
-
-			if (npc.type == NPCID.ArmsDealer)
-			{
-				if (playtesting)
-				{
-					selectedItems = Weapons;
-					return;
-				}
-				const int MinCount = 3;
-				List<int> items = new List<int>();
-				for(int i = 0; i < Weapons.Length; i++)
-				{
-					if (items.Count > MinCount && !Main.rand.NextBool(items.Count - MinCount)) continue;
-
-					items.Add(Main.rand.Next(Weapons.Where(x => !items.Contains(x)).ToArray()));
-				}
-				selectedItems = items.ToArray();
-			}
-			if (npc.type == NPCID.GoblinTinkerer)
-			{
-				if (playtesting)
-				{
-					selectedItems = Accessories;
-					return;
-				}
-				const int MinCount = 2;
-				List<int> items = new List<int>();
-				for (int i = 0; i < Accessories.Length; i++)
-				{
-					if (items.Count > MinCount && !Main.rand.NextBool(items.Count - MinCount)) continue;
-
-					items.Add(Main.rand.Next(Accessories.Where(x => !items.Contains(x)).ToArray()));
-				}
-				selectedItems = items.ToArray();
-			}
-			if (npc.type == NPCID.Merchant)
-			{
-				int[] SkillsAndArmors = new int[Skills.Length + Armors.Length];
-				for (int i = 0; i < Skills.Length; i++)
-				{
-					SkillsAndArmors[i] = Skills[i];
-				}
-				for (int i = 0; i < Armors.Length; i++)
-				{
-					SkillsAndArmors[Skills.Length + i] = Armors[i];
-				}
-
-                if (playtesting)
-                {
-                    selectedItems = SkillsAndArmors;
-                    return;
-                }
-                const int MinCount = 2;
-                List<int> items = new List<int>();
-				for (int i = 0; i < SkillsAndArmors.Length; i++)
-				{
-					if (items.Count > MinCount && !Main.rand.NextBool(items.Count - MinCount)) continue;
-
-					items.Add(Main.rand.Next(SkillsAndArmors.Where(x => !items.Contains(x)).ToArray()));
-				}
-				selectedItems = items.ToArray();
-			}
+            UpdateTeleport(npc, 1, "Forest");
 		}
 		public override void ModifyActiveShop(NPC npc, string shopName, Item[] items)
 		{
@@ -138,10 +77,19 @@ namespace TerrariaCells.Common.GlobalNPCs
 			{
 				for (int i = 0; i < items.Length; i++)
 				{
-					if (i < selectedItems.Length)
-						items[i] = new Item(selectedItems[i]) { shopCustomPrice = shopCustomPrice };
-					else
-						items[i] = null;
+                    if (i < new_SelectedItems.Length)
+                    {
+                        ItemDef def = new_SelectedItems[i];
+                        items[i] = new Item(def.Type);
+                        if (items[i].TryGetGlobalItem<GlobalItems.TierSystemGlobalItem>(out var tierItem))
+                            tierItem.itemLevel = def.Level;
+                        if (items[i].TryGetGlobalItem<GlobalItems.FunkyModifierItemModifier>(out var modsItem))
+                            modsItem.modifiers = def.Mods;
+                    }
+                    else
+                    {
+                        items[i] = null;
+                    }
 				}
 			}
 		}
@@ -155,6 +103,51 @@ namespace TerrariaCells.Common.GlobalNPCs
                     entry.Disable();
                 }
             }
+        }
+
+        public static void UpdateTeleport(int level, string? levelName = null)
+        {
+            foreach (NPC npc in Main.ActiveNPCs)
+            {
+                npc.GetGlobalNPC<VanillaNPCShop>().UpdateTeleport(npc, level, levelName);
+            }
+        }
+        public void UpdateTeleport(NPC npc, int level, string? levelName = null)
+        {
+            switch (npc.type)
+            {
+                case NPCID.ArmsDealer:
+                    UpdateNPCShop(npc, Weapons, level, 3);
+                    break;
+                case NPCID.Merchant:
+                    UpdateNPCShop(npc, (int[])[.. Weapons, .. Skills], level, 2);
+                    break;
+                case NPCID.GoblinTinkerer:
+                    UpdateNPCShop(npc, Accessories, level, 2);
+                    break;
+
+                case NPCID.Nurse:
+                    nurse_HasHealed = false;
+                    break;
+            }
+        }
+        private void UpdateNPCShop(NPC npc, int[] itemTypes, int itemLevel, int min = 1, int max = 40)
+        {
+            if (Configs.DevConfig.Instance.PlaytesterShops || min > itemTypes.Length)
+            {
+                new_SelectedItems = itemTypes.Select(x => new ItemDef(x, itemLevel)).ToArray();
+                return;
+            }
+            List<int> items = new List<int>();
+            for (int i = 0; i < itemTypes.Length; i++)
+            {
+                if (items.Count > min && !Main.rand.NextBool(items.Count - min)) continue;
+
+                items.Add(Main.rand.Next(itemTypes.Where(x => !items.Contains(x)).ToArray()));
+
+                if (items.Count > max) break;
+            }
+            new_SelectedItems = items.Select(x => new ItemDef(x, itemLevel)).ToArray();
         }
     }
 
@@ -174,6 +167,47 @@ namespace TerrariaCells.Common.GlobalNPCs
             ShoppingSettings shoppingSettings = orig(self, player, npc);
 			shoppingSettings.PriceAdjustment = 1.0;
             return shoppingSettings;
+        }
+    }
+
+    struct ItemDef
+    {
+        public int Type;
+        public int Level;
+        public GlobalItems.FunkyModifier[] Mods;
+
+        public ItemDef(int type, int level, params GlobalItems.FunkyModifier[] mods)
+        {
+            Type = type;
+            Level = level;
+            Mods = mods;
+        }
+        public ItemDef(int type, int level)
+        {
+            Type = type;
+            Level = level;
+
+            Item temp = new Item(Type);
+            //temp.GetGlobalItem<GlobalItems.TierSystemGlobalItem>().itemLevel = Level;
+            //GlobalItems.FunkyModifierItemModifier.Reforge(temp, Level);
+            //Mods = temp.GetGlobalItem<GlobalItems.FunkyModifierItemModifier>().modifiers;
+            Mods = GlobalItems.FunkyModifierItemModifier.PickMods(Type, Level);
+        }
+        public ItemDef(int type)
+        {
+            Type = type;
+            Level = ModContent.GetInstance<Systems.TeleportTracker>().level;
+
+            //temp.GetGlobalItem<GlobalItems.TierSystemGlobalItem>().itemLevel = Level;
+            //GlobalItems.FunkyModifierItemModifier.Reforge(temp, Level);
+            //Mods = temp.GetGlobalItem<GlobalItems.FunkyModifierItemModifier>().modifiers;
+            Mods = GlobalItems.FunkyModifierItemModifier.PickMods(Type, Level);
+        }
+        public ItemDef()
+        {
+            Type = ItemID.None;
+            Level = 0;
+            Mods = Array.Empty<GlobalItems.FunkyModifier>();
         }
     }
 }

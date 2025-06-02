@@ -54,6 +54,7 @@ public class TeleportTracker : ModSystem
         {
             Mod.Logger.Info($"Teleporting to next level: {nextLevel}:");
             GoToNextLevel();
+            GlobalNPCs.VanillaNPCShop.UpdateTeleport(level, nextLevel); //Figure this is whatever for the Inn
             return;
         }
 

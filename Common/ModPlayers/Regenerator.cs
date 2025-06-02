@@ -436,6 +436,29 @@ namespace TerrariaCells.Common.ModPlayers
 		{
 			SetStaggerDamage(0);
 		}
-		#endregion
-	}
+        #endregion
+
+        #region Nurse Modifications
+        public override bool ModifyNurseHeal(NPC nurse, ref int health, ref bool removeDebuffs, ref string chatText)
+        {
+            if (nurse.GetGlobalNPC<GlobalNPCs.VanillaNPCShop>().nurse_HasHealed)
+            {
+                chatText = "I can't do any more for you right now.";
+                return false;
+            }
+            health = Math.Min(health, Player.statLifeMax2 / 2);
+            removeDebuffs = false; //Don't modify charge because player has ineffective venom or whatever
+            return base.ModifyNurseHeal(nurse, ref health, ref removeDebuffs, ref chatText);
+        }
+        public override void ModifyNursePrice(NPC nurse, int health, bool removeDebuffs, ref int price)
+        {
+            int currentLevel = ModContent.GetInstance<Systems.TeleportTracker>().level;
+            price = 2_00_00 * currentLevel;
+        }
+        public override void PostNurseHeal(NPC nurse, int health, bool removeDebuffs, int price)
+        {
+            nurse.GetGlobalNPC<GlobalNPCs.VanillaNPCShop>().nurse_HasHealed = true;
+        }
+        #endregion
+    }
 }
