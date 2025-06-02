@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -58,20 +60,37 @@ namespace TerrariaCells.Common.GlobalItems
             damage *= MathF.Pow(damageLevelScaling, itemLevel - 1);
         }
 
-        public override void ModifyWeaponKnockback(
-            Item item,
-            Player player,
-            ref StatModifier knockback
-        )
-        {
-            knockback *= 1 + (MathF.Sqrt(itemLevel - 1) * knockbackLevelScaling);
-        }
+        //public override void ModifyWeaponKnockback(
+        //    Item item,
+        //    Player player,
+        //    ref StatModifier knockback
+        //)
+        //{
+        //    knockback *= 1 + (MathF.Sqrt(itemLevel - 1) * knockbackLevelScaling);
+        //}
 
         /*public override float UseSpeedMultiplier(Item item, Player player)
         {
             return 1 + (MathF.Sqrt(itemLevel - 1) * attackSpeedLevelScaling);
         }*/
 
+        private static string ToRomanNumber(int number)
+        {
+            StringBuilder result = new StringBuilder();
+            int[] digitsValues = { 1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000 };
+            string[] romanDigits = { "I", "IV", "V", "IX", "X", "XL", "L", "XC", "C", "CD", "D", "CM", "M" };
+            while (number > 0)
+            {
+                for (int i = digitsValues.Length - 1; i >= 0; i--)
+                    if (number / digitsValues[i] >= 1)
+                    {
+                        number -= digitsValues[i];
+                        result.Append(romanDigits[i]);
+                        break;
+                    }
+            }
+            return result.ToString();
+        }
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
             TerraCellsItemCategory id = InventoryManager.GetItemCategorization(item.netID);
@@ -81,20 +100,21 @@ namespace TerrariaCells.Common.GlobalItems
             // Iterate through the list of tooltips so we can change vanilla tooltips
             foreach (TooltipLine tooltip in tooltips)
             {
-                string[] numerals = [
-                    "",
-                    "I",
-                    "II",
-                    "III",
-                    "IV",
-                    "V",
-                    "VI",
-                    "VII",
-                    "VIII",
-                    "IX",
-                    "X",
-                ];
-                string numeral = (itemLevel >= 0 && itemLevel < numerals.Length) ? numerals[itemLevel] : itemLevel.ToString();
+                //string[] numerals = [
+                //    "",
+                //    "I",
+                //    "II",
+                //    "III",
+                //    "IV",
+                //    "V",
+                //    "VI",
+                //    "VII",
+                //    "VIII",
+                //    "IX",
+                //    "X",
+                //];
+                //string numeral = (itemLevel >= 0 && itemLevel < numerals.Length) ? numerals[itemLevel] : itemLevel.ToString();
+                string numeral = ToRomanNumber(itemLevel);
                 // Alter vanilla tooltips here
                 switch (tooltip.Name)
                 {
