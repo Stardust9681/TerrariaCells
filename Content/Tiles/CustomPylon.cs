@@ -173,7 +173,7 @@ namespace TerrariaCells.Content.Tiles
             else frame = new SpriteFrame(9, 1, 3, 0);
             //Using context.Draw instead of DefaultDraw(..) to be able to specify frame
             bool mouseOver = context.Draw(_mapIcon.Value, pylonInfo.PositionInTiles.ToVector2(), drawColor, frame, deselectedScale, selectedScale, Alignment.Center).IsMouseOver;
-            DefaultMapClickHandle(mouseOver, pylonInfo, ModContent.GetInstance<Items.Placeable.HivePylon>().DisplayName.Key, ref mouseOverText);
+            DefaultMapClickHandle(mouseOver, pylonInfo, CreateMapEntryName().Key, ref mouseOverText);
         }
 
         public virtual void SafeMouseOver(int i, int j) { }

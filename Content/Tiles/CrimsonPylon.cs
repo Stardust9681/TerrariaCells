@@ -26,7 +26,7 @@ namespace TerrariaCells.Content.Tiles
         public override string MapIconTexture => $"{Texture}_MapIcon";
         public override void SafeSetStaticDefaults()
         {
-            AddMapEntry(Color.IndianRed, ModContent.GetInstance<Content.Items.Placeable.CrimsonPylon>().DisplayName);
+            AddMapEntry(Color.IndianRed, CreateMapEntryName());
         }
 
         public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
