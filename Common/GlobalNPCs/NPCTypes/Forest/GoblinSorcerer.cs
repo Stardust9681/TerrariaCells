@@ -105,19 +105,44 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 					rays[i] = (Vector2.UnitX * -direction).RotatedBy(MathHelper.ToRadians(rayAngle)) * PxPerTile;
 				}
 
-				for (int i = 0; i < RayCount; i++)
+                /*
+                spot = TCellsUtils.FindGround(new Rectangle((int)spot.X - npc.width / 2, (int)spot.Y - npc.height / 2, npc.width, npc.height));
+
+                bool available = true;
+                if (Collision.SolidCollision(spot - npc.Size/2, npc.width, npc.height))
+                {
+                    available = false;
+                }
+                if (available)
+                {
+
+                    
+                    spots = spots.Append(spot).ToArray();
+                    if (Collision.CanHitLine(npc.Center, 1, 1, centerPos, 1, 1))
+                    {
+                        los = los.Append(spots.Length - 1).ToArray();
+                    }
+                    
+                }
+                 */
+
+                for (int i = 0; i < RayCount; i++)
 				{
 					Vector2 start = target.Center + rays[i] * MinDistance / PxPerTile;
 					for (int j = MinDistance / PxPerTile; j < MaxDistance / PxPerTile; j++)
 					{
-						//Rectangle tpRect = new Rectangle((int)start.X - (npc.width / 2), (int)start.Y - (npc.height / 2), npc.width, npc.height);
-						//if (!Collision.SolidTiles(tpRect.Location.ToVector2(), npc.width, npc.height)
-						//	&& (Utilities.TCellsUtils.FindGround(tpRect).Y < tpRect.Bottom + (npc.height * 2)))
-						//	start -= rays[i];
-						if (Collision.CanHitLine(start, 32, 64, start + rays[i], 32, 64) && Collision.AnyCollision(start+rays[i], Vector2.UnitY, 32, 64).Y == 0)
-							start += rays[i];
-						else
-							break;
+                        //Rectangle tpRect = new Rectangle((int)start.X - (npc.width / 2), (int)start.Y - (npc.height / 2), npc.width, npc.height);
+                        //if (!Collision.SolidTiles(tpRect.Location.ToVector2(), npc.width, npc.height)
+                        //	&& (Utilities.TCellsUtils.FindGround(tpRect).Y < tpRect.Bottom + (npc.height * 2)))
+                        //	start -= rays[i];
+                        Vector2 testLocation = start + rays[i];
+                        if (Collision.SolidCollision(testLocation, npc.width, npc.height))
+                            break;
+                        if (Collision.AnyCollision(testLocation, Vector2.UnitY, npc.width, npc.height, false).Y != 0)
+                            break;
+                        if (!Collision.CanHitLine(testLocation, npc.width, npc.height, target.Center, 32, 64))
+                            break;
+						start += rays[i];
 					}
 					rays[i] = start;
 					//Dust d = Dust.NewDustDirect(start, 1, 1, Terraria.ID.DustID.GemDiamond);
