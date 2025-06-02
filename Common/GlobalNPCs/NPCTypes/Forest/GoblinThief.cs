@@ -22,7 +22,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
         }
         public override bool AppliesToNPC(int npcType)
 		{
-			return npcType is Terraria.ID.NPCID.GoblinThief or Terraria.ID.NPCID.Wolf;
+            return npcType is Terraria.ID.NPCID.GoblinThief;
 		}
 
 		const int Idle = 0;
