@@ -72,13 +72,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 			if (timer % 15 == 0)
 			{
 				NPC ball = NPC.NewNPCDirect(npc.GetSource_FromAI(), npc.Center, Terraria.ID.NPCID.ChaosBall);
-<<<<<<< HEAD:Common/GlobalNPCs/NPCTypes/GoblinSorcerer.cs
 				ball.velocity = npc.DirectionTo(Main.player[npc.target].Center) * 1f;
 				ball.damage = npc.damage / 3;
-=======
-				ball.velocity = npc.DirectionTo(Main.player[npc.target].Center) * 2f;
-                ball.damage = npc.damage;
->>>>>>> 516d6c787d8321bc0d358b587e31e69f9f5443f2:Common/GlobalNPCs/NPCTypes/Forest/GoblinSorcerer.cs
 				ball.netUpdate = true;
 			}
 			if (timer > 45 * 3)
