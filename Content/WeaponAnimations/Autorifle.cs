@@ -31,7 +31,15 @@ namespace TerrariaCells.Content.WeaponAnimations
             ItemID.SniperRifle,
         };
         public override bool InstancePerEntity => true;
+        public override void SetStaticDefaults()
+        {
+            for (int i = 0; i < Autorifles.Length; i++)
+            {
+                ItemID.Sets.ItemsThatAllowRepeatedRightClick[Autorifles[i]] = true;
+            }
 
+            base.SetStaticDefaults();
+        }
         public override bool AppliesToEntity(Item entity, bool lateInstantiation)
         {
             return Autorifles.Contains(entity.type);
@@ -59,9 +67,9 @@ namespace TerrariaCells.Content.WeaponAnimations
             }
             else
             {
-                item.useTime = (int)(OriginalUseTime * ReloadTimeMult);
-                item.useAnimation = (int)(OriginalUseAnimation * ReloadTimeMult);
-                item.reuseDelay = (int)(OriginalReuseDelay * ReloadTimeMult);
+                item.useTime = (int)(OriginalUseTime * ReloadTimeMult * StaticReloadTimeMult);
+                item.useAnimation = (int)(OriginalUseAnimation * ReloadTimeMult * StaticReloadTimeMult);
+                item.reuseDelay = (int)(OriginalReuseDelay * ReloadTimeMult * StaticReloadTimeMult);
             }
             return base.CanUseItem(item, player);
         }
@@ -105,12 +113,12 @@ namespace TerrariaCells.Content.WeaponAnimations
                 {
                     player.itemRotation += MathHelper.Pi;
                 }
-                if (player.itemTime < 5 && player.reuseDelay == item.reuseDelay)
+                if (player.itemTime > player.itemTimeMax - 5 && player.reuseDelay == item.reuseDelay)
                 {
                     player.itemLocation += TCellsUtils.LerpVector2(
                         Vector2.Zero,
                         (player.AngleTo(Main.MouseWorld) + MathHelper.Pi).ToRotationVector2() * 5,
-                        player.itemTime,
+                        player.itemTimeMax - player.itemTime,
                         5,
                         TCellsUtils.LerpEasing.DownParabola
                     );
@@ -153,6 +161,7 @@ namespace TerrariaCells.Content.WeaponAnimations
                     Player.CompositeArmStretchAmount.Full,
                     MathHelper.ToRadians(-80 * mplayer.useDirection)
                 );
+                if (ReloadStep == SkipStep) ReloadStep++;
                 //front hand movement (go to pocket then back up to gun)
                 if (ReloadStep == 0)
                 {
@@ -265,16 +274,7 @@ namespace TerrariaCells.Content.WeaponAnimations
             //only shoot if not reloading
             if (Ammo > 0 && !player.GetModPlayer<WeaponPlayer>().reloading)
             {
-                return base.Shoot(
-                    item,
-                    player,
-                    source,
-                    position,
-                    velocity,
-                    type,
-                    damage,
-                    knockback
-                );
+                return true;
             }
             return false;
         }

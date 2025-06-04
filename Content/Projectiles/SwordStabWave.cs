@@ -17,6 +17,7 @@ namespace TerrariaCells.Content.Projectiles
     {
         public override string Texture =>
             "Terraria/Images/Projectile_" + ProjectileID.RainbowCrystalExplosion;
+		//Extra_89 <3
 
         public override void SetDefaults()
         {
@@ -50,7 +51,12 @@ namespace TerrariaCells.Content.Projectiles
             return false;
         }
 
-        public override void AI()
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+		{
+			modifiers.Knockback *= -(Projectile.position.X < Main.player[Projectile.owner].position.X ? -1 : 1);
+		}
+
+		public override void AI()
         {
             // if (Projectile.timeLeft == 1000)
             // {

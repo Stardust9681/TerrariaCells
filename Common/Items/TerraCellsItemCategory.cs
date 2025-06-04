@@ -29,6 +29,8 @@ public enum TerraCellsItemCategory
 
     /// <summary>
     /// This is treated as an item, but does not go into the inventory when picked up. Example: hearts, mana stars, nebula buffs
+    /// 
+    /// This is also what powerups are categorized as
     /// </summary>
     Pickup = 5,
 }
@@ -48,6 +50,7 @@ public static class Categorization
             "accessory" => TerraCellsItemCategory.Storage,
             "coin" => TerraCellsItemCategory.Storage,
             "pickup" => TerraCellsItemCategory.Pickup,
+            "powerup" => TerraCellsItemCategory.Pickup,
             _ => throw new System.NotImplementedException(value),
         };
     }

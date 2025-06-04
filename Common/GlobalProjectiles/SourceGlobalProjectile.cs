@@ -11,7 +11,6 @@ namespace TerrariaCells.Common.GlobalProjectiles
 
         public Item itemSource = null;
 
-        
         public override void SetDefaults(Projectile projectile)
         {
             // Allowing unlimited minions to be spawned, intended to allow the player to use multiple skill items that summon at once

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrariaCells.Common.ModPlayers;
@@ -80,6 +81,9 @@ public class ClickedHeartsTracker : ModSystem
             tile.IsActuated = true;
             tile = Main.tile[i + 1, j + 1];
             tile.IsActuated = true;
+
+            // SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Item_4"));
+            SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Shatter"));
         }
     }
 

@@ -7,7 +7,10 @@ Configs: {
 			Tooltip: Disables the >175% cap on the game's zoom
 		}
 
-		Headers.SkillUI: Skills UI
+		Headers: {
+			SkillUI: Skills UI
+			Gameplay: Gameplay
+		}
 
 		ShowKeybind: {
 			Label: Show Keybind
@@ -17,6 +20,21 @@ Configs: {
 		ShowCooldown: {
 			Label: Show Cooldown Text
 			Tooltip: Display the cooldown time left in text
+		}
+
+		IndicatorType: {
+			Label: Indicator Type
+			Tooltip: ""
+		}
+
+		EnemyDebuffOpacity: {
+			Label: Enemy Debuff Opacity
+			Tooltip: ""
+		}
+
+		EnemyDebuffOffset: {
+			Label: Enemy Debuff Offset
+			Tooltip: Vertical offset for debuffs to be displayed on enemies (-down, +up)
 		}
 	}
 
@@ -60,6 +78,9 @@ Configs: {
 		Headers: {
 			BuilderSettings: Builder Settings
 			InventorySettings: Inventory Settings
+			DebugAndPlaytesting: Debug And Playtesting
+			GameplaySettings: Gameplay Settings
+			PylonVisuals: Inactive Pylon Visual Settings
 		}
 
 		EnableInventoryChanges: {
@@ -91,6 +112,79 @@ Configs: {
 			Label: Disable Using Mouse Item
 			Tooltip: ""
 		}
+
+		EnableCustomWorldGen: {
+			Label: Enable Custom World Gen
+			Tooltip: ""
+		}
+
+		PlaytesterShops: {
+			Label: Playtester Shops
+			Tooltip: ""
+		}
+
+		ListCategorizationTooltip: {
+			Label: List Categorization Tooltip
+			Tooltip: ""
+		}
+
+		DisableSpawns: {
+			Label: Disable Spawns
+			Tooltip: ""
+		}
+
+		AllowDebugCommands: {
+			Label: Allow Debug Commands
+			Tooltip: ""
+		}
+
+		GreyInactivePylons: {
+			Label: Grey Inactive Pylons
+			Tooltip: ""
+		}
+
+		TranslucentInactivePylons: {
+			Label: Translucent Inactive Pylons
+			Tooltip: ""
+		}
+
+		DarkenTranslucentPylons: {
+			Label: Darken Translucent Pylons
+			Tooltip: ""
+		}
+
+		BobbingInactivePylons: {
+			Label: Bobbing Inactive Pylons
+			Tooltip: ""
+		}
+
+		SpinInactivePylons: {
+			Label: Spin Inactive Pylons
+			Tooltip: ""
+		}
+
+		GlowInactivePylons: {
+			Label: Glow Inactive Pylons
+			Tooltip: ""
+		}
+
+		InactivePylonDust: {
+			Label: Inactive Pylon Dust
+			Tooltip: ""
+		}
+
+		HideInactivePylonsEntirely: {
+			Label: Hide Inactive Pylons Entirely
+			Tooltip: ""
+		}
+	}
+
+	DebuffIndicators: {
+		Tooltip: ""
+		None.Label: None
+		Icon.Label: Icon
+		Particles.Label: Particles
+		IconAndParticles.Label: Icon and Particles
 	}
 }
 
@@ -112,6 +206,77 @@ Items: {
 
 	ClickableCrystalItem: {
 		DisplayName: Clickable Crystal Item
+		Tooltip: ""
+	}
+
+	PhantomPhoenix: {
+		DisplayName: Phantom Phoenix
+		Tooltip: ""
+	}
+
+	CrimsonPylon: {
+		DisplayName: Crimson Pylon
+		Tooltip: ""
+	}
+
+	HivePylon: {
+		DisplayName: Hive Pylon
+		Tooltip: ""
+	}
+
+	SoundPlayer: {
+		DisplayName: Sound Player
+		Tooltip: ""
+	}
+
+	MusicBoxBoss1: {
+		DisplayName: Music Box (Boss 1)
+		Tooltip: ""
+	}
+
+	MusicBoxCaverns: {
+		DisplayName: Music Box (Caverns | Elyse - Tectonic Etude)
+		# TODO: fix tooltips so these can be taken out of the item name
+		Tooltip: Plays Tectonic Etude by Elyse
+	}
+
+	MusicBoxCorruption: {
+		DisplayName: Music Box (Corruption | Elyse - Thistle Thorns)
+		Tooltip: Plays Thisle Thorns by Elise
+	}
+
+	MusicBoxCredits: {
+		DisplayName: Music Box (Credits | Aeolian - Beautiful Isolation)
+		Tooltip: Plays Beautiful Isolation by Aeolian
+	}
+
+	MusicBoxDesert: {
+		DisplayName: Music Box (Desert)
+		Tooltip: ""
+	}
+
+	MusicBoxDesertAmbience: {
+		DisplayName: Music Box (Desert Ambience)
+		Tooltip: ""
+	}
+
+	MusicBoxDungeon: {
+		DisplayName: Music Box (Dungeon | Aeolian - Necrosis)
+		Tooltip: Plays Necrosis by Aeolian
+	}
+
+	MusicBoxFactory: {
+		DisplayName: Music Box (Factory | Aeolian - Apathy)
+		Tooltip: Plays Apathy by Aeolian
+	}
+
+	MusicBoxForest: {
+		DisplayName: Music Box (Forest | NACHOZ)
+		Tooltip: Plays the forest theme by NACHOZ
+	}
+
+	TickTimer: {
+		DisplayName: Tick Timer
 		Tooltip: ""
 	}
 }
@@ -141,6 +306,8 @@ Projectiles: {
 	TelegraphWarning.DisplayName: Telegraph Warning
 	TendrilAttack.DisplayName: Tendril Attack
 	SwordStabWave.DisplayName: Sword Stab Wave
+	BloodThorn.DisplayName: Blood Thorn
+	TrailOfFlames.DisplayName: Trail Of Flames
 }
 
 Tooltips: {
@@ -176,4 +343,21 @@ Buffs: {
 		DisplayName: Frozen Enemy Debuff
 		Description: Mods.TerrariaCells.Buffs.FrozenEnemyDebuff.Description
 	}
+
+	ShadowDodgeBuff: {
+		DisplayName: Shadow Dodge Buff
+		Description: Mods.TerrariaCells.Buffs.ShadowDodgeBuff.Description
+	}
+
+	ReconScope: {
+		DisplayName: Recon Scope
+		Description: +30% increased damage
+	}
 }
+
+Tiles: {
+	CrimsonPylon.MapEntry: Crimson Pylon
+	HivePylon.MapEntry: Hive Pylon
+}
+
+NPCs.SWATHornet.DisplayName: SWAT Hornet

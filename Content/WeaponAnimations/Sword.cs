@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -12,7 +10,6 @@ using Terraria.ModLoader;
 using TerrariaCells.Common.ModPlayers;
 using TerrariaCells.Common.Utilities;
 using TerrariaCells.Content.Projectiles;
-using TerrariaCells.Content.Projectiles.HeldProjectiles;
 
 namespace TerrariaCells.Content.WeaponAnimations
 {
@@ -46,6 +43,34 @@ namespace TerrariaCells.Content.WeaponAnimations
             ItemID.TheHorsemansBlade,
             ItemID.DD2SquireBetsySword,
         };
+
+        public SwingData[] swingStyles = [
+            new SwingData() with { 
+                easingStyle = TCellsUtils.LerpEasing.InOutCubic,
+                startValue = 110,
+                endValue = -140,
+            },
+            new SwingData() with { 
+                easingStyle = TCellsUtils.LerpEasing.InOutCubic,
+                startValue = -140,
+                endValue = 110,
+            },
+            new SwingData() with { 
+                easingStyle = TCellsUtils.LerpEasing.InOutCubic,
+                startValue = 220,
+                endValue = -140,
+                finalSwingReuseTimer = 20,
+            }
+        ];
+
+        internal static Dictionary<short, SwordModifier> overrides = [];
+
+        public override void SetDefaults(Item entity)
+        {
+            if (overrides.TryGetValue((short)entity.type, out var modifier)) {
+                modifier.SetDefaults(this, entity);
+            }
+        }
 
         public static bool IsBroadsword(Item item)
         {
@@ -113,34 +138,18 @@ namespace TerrariaCells.Content.WeaponAnimations
                     mplayer.useRotation = player.Center.AngleTo(Main.MouseWorld);
                 }
                 //get an offset for swinging motion
+                SwingData swingData = swingStyles[mplayer.swingType];
                 float angleOffset = TCellsUtils.LerpFloat(
-                    -140,
-                    110,
+                    swingData.startValue ?? 110,
+                    swingData.endValue ?? -140,
                     player.itemAnimation,
-                    player.itemAnimationMax,
-                    TCellsUtils.LerpEasing.InOutCubic
+                    swingData.animationMax ?? player.itemAnimationMax,
+                    swingData.easingStyle ?? TCellsUtils.LerpEasing.InOutCubic
                 );
-                if (mplayer.swingType == 0)
-                {
-                    angleOffset = TCellsUtils.LerpFloat(
-                        110,
-                        -140,
-                        player.itemAnimation,
-                        player.itemAnimationMax,
-                        TCellsUtils.LerpEasing.InOutCubic
-                    );
-                }
                 if (mplayer.swingType == 2)
                 {
                     if (HeavySwords.Contains(item.type))
                     {
-                        angleOffset = TCellsUtils.LerpFloat(
-                            220,
-                            -140,
-                            player.itemAnimation,
-                            player.itemAnimationMax,
-                            TCellsUtils.LerpEasing.InOutCubic
-                        );
                         item.noMelee = false;
                     }
                     else
@@ -197,10 +206,14 @@ namespace TerrariaCells.Content.WeaponAnimations
                 if (player.itemAnimation == 1)
                 {
                     mplayer.swingType += 1;
-                    if (mplayer.swingType > 2)
+                    if (mplayer.swingType >= swingStyles.Length)
                     {
                         mplayer.swingType = 0;
-                        mplayer.reuseTimer = 20;
+                        mplayer.reuseTimer = swingStyles.Last().finalSwingReuseTimer ?? 20;
+                    }
+                    if (mplayer.swingType > 1 && player.HeldItem.useTime < 15)
+                    {
+                        mplayer.swingType = 0;
                     }
                 }
                 //arm
@@ -249,7 +262,6 @@ namespace TerrariaCells.Content.WeaponAnimations
                     }
                 }
             }
-            base.UseStyle(item, player, heldItemFrame);
         }
 
         public override bool CanUseItem(Item item, Player player)
@@ -322,4 +334,43 @@ namespace TerrariaCells.Content.WeaponAnimations
             return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
         }
     }
+
+    public struct SwingData {
+        public TCellsUtils.LerpEasing? easingStyle;
+        public int? finalSwingReuseTimer;
+        public int? startValue;
+        public int? endValue;
+        public int? animationMax;
+
+        public static void ApplySwingStyleOverrides(Sword sword, SwingData[] swingData) {
+            SwingData[] swingStyles = sword.swingStyles;
+            if (swingData.Length > swingStyles.Length) {
+                SwingData[] newSwingStyles = new SwingData[swingData.Length];
+                for (int i = 0; i < swingStyles.Length; i++) {
+                    newSwingStyles[i] = swingStyles[i];
+                }
+                swingStyles = newSwingStyles;
+            }
+            for (int i = 0; i < swingData.Length; i++) {
+                swingStyles[i].easingStyle = swingData[i].easingStyle ?? swingStyles[i].easingStyle;
+                swingStyles[i].startValue = swingData[i].startValue ?? swingStyles[i].startValue;
+                swingStyles[i].endValue = swingData[i].endValue ?? swingStyles[i].endValue;
+                swingStyles[i].finalSwingReuseTimer = swingData[i].finalSwingReuseTimer ?? swingStyles[i].finalSwingReuseTimer;
+                swingStyles[i].animationMax = swingData[i].animationMax ?? swingStyles[i].animationMax;
+            }
+            
+        }
+    }
+
+    public abstract class SwordModifier : ModSystem
+    {
+        public abstract void SetDefaults(Sword globalItem, Item item);
+        public abstract short Type { get; }
+
+        public override void SetStaticDefaults()
+        {
+            Sword.overrides.Add(Type, this);
+        }
+    }
+
 }

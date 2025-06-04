@@ -10,6 +10,12 @@ using Terraria.ModLoader;
 using Terraria.UI;
 using Terraria.UI.Chat;
 
+///================================================================================
+/// Hi! This SHOULD now be deprecated!
+/// Please <see cref="TerrariaCells.Common.Systems.Ability"/> and associated types
+/// Thank you!
+///================================================================================
+
 namespace TerrariaCells.Common.GlobalItems
 {
     /// <summary>
@@ -27,10 +33,6 @@ namespace TerrariaCells.Common.GlobalItems
         /// Duration before effects of skill are cancelled (ie. summons being unsummoned)
         /// </summary>
         public float skillDuration = -1;
-        /// <summary>
-        /// Replaces the item tooltip with whatever this string is set to
-        /// </summary>
-        public string tooltip;
 
         // Use restrictions
         /// <summary>
@@ -56,13 +58,6 @@ namespace TerrariaCells.Common.GlobalItems
             cooldownTime = cooldown;
             skillDuration = duration;
         }
-
-        public SkillItemData(float cooldown, float duration, string tooltip)
-        {
-            cooldownTime = cooldown;
-            skillDuration = duration;
-            this.tooltip = tooltip;
-        }
     }
 
     /// <summary>
@@ -87,6 +82,7 @@ namespace TerrariaCells.Common.GlobalItems
     /// <summary>
     /// ModPLayer for handling the cooldown logic for each skill slot, as well as non item-specific features
     /// </summary>
+	[Autoload(false)]
     public class SkillModPlayer : ModPlayer
     {
         // Slot index and slot data
@@ -118,7 +114,7 @@ namespace TerrariaCells.Common.GlobalItems
             SkillItems.Add(ItemID.StaffoftheFrostHydra, new SkillItemData(1800, 600));
             SkillItems[ItemID.StaffoftheFrostHydra].useInSolid = false;
 
-            SkillItems.Add(ItemID.DD2ExplosiveTrapT1Popper, new SkillItemData(1200, 1200));
+            SkillItems.Add(ItemID.DD2ExplosiveTrapT1Popper, new SkillItemData(30 * 60, 30 * 60));
             SkillItems[ItemID.DD2ExplosiveTrapT1Popper].useInSolid = false;
             SkillItems[ItemID.DD2ExplosiveTrapT1Popper].lineOfSight = true;
 
@@ -129,7 +125,7 @@ namespace TerrariaCells.Common.GlobalItems
             SkillItems.Add(ItemID.WrathPotion, new SkillItemData(4800, 1200));
             SkillItems.Add(ItemID.MagicPowerPotion, new SkillItemData(4800, 1200));
             SkillItems.Add(ItemID.SnowballLauncher, new SkillItemData(1200, 480));
-
+            SkillItems.Add(ItemID.ManaPotion, new SkillItemData(1800));
         }
 
         public override void Load()
@@ -252,6 +248,18 @@ namespace TerrariaCells.Common.GlobalItems
             {
                 Item item = Main.LocalPlayer.inventory[slotInfo.Key];
 
+				//
+				//
+
+
+				int timer = (int)slotInfo.Value.cooldownTimer;
+				int cooldown = (int)slotInfo.Value.cooldownTotal;
+				//OnModifyCooldown?.Invoke(Player, ref timer, ref cooldown);
+
+				
+				//
+				//
+
                 // Reduce cooldown timer for skill slot, if above 0
                 if (slotInfo.Value.cooldownTimer > 0)
                 {
@@ -261,7 +269,6 @@ namespace TerrariaCells.Common.GlobalItems
                 // If the skill slot has an item in it-
                 if (!item.IsAir)
                 {
-
                     // if there is a tile created by this item, attempt to activate it (for turrets and such)
                     if (item.createTile != -1)
                     {
@@ -295,27 +302,20 @@ namespace TerrariaCells.Common.GlobalItems
                     // Control cooldown variable for each skill
                     if (item.TryGetGlobalItem<SkillSystemGlobalItem>(out SkillSystemGlobalItem skillItem))
                     {
-
                         slotInfo.Value.cooldownTotal = SkillItems[item.type].cooldownTime;
 
-                        if (slotInfo.Value.cooldownTimer > 0)
-                        {
-                            skillItem.onCooldown = true;
+						skillItem.onCooldown = slotInfo.Value.cooldownTimer > 0;
 
-                            // If the skill duration is reached, cancel the skill
-                            if (slotInfo.Value.cooldownTimer == slotInfo.Value.cooldownTotal - SkillItems[item.type].skillDuration)
+						if (slotInfo.Value.cooldownTimer > -1)
+                        {
+							// If the skill duration is reached, cancel the skill
+							//Main.NewText($"{slotInfo.Value.cooldownTimer} == {slotInfo.Value.cooldownTotal} - {SkillItems[item.type].skillDuration}");
+							if (slotInfo.Value.cooldownTimer == slotInfo.Value.cooldownTotal - SkillItems[item.type].skillDuration)
                             {
                                 StopSkill(item);
                             }
-
                         }
-                        else
-                        {
-                            skillItem.onCooldown = false;
-                        }
-                    }
-
-
+					}
                 }
             }
         }
@@ -327,11 +327,10 @@ namespace TerrariaCells.Common.GlobalItems
         /// <param name="item"></param>
         public static void StopSkill(Item item)
         {
-
+			//Main.NewText("Stop Skill");
             // If the item applies a buff and the player currently has that buff
             if (item.buffType != 0 && Main.LocalPlayer.HasBuff(item.buffType))
             {
-
                 // Clear the buff, to ensure it is removed regardless of the status of the following projectile checks - those are mostly for visually disposing of the summoned "minions"
                 Main.LocalPlayer.ClearBuff(item.buffType);
 
@@ -378,7 +377,6 @@ namespace TerrariaCells.Common.GlobalItems
                             projectileTargetIndex = i;
                             break;
                         }
-
                     }
 
                     // Ensure that a valid projectile has been found to explode on
@@ -391,9 +389,9 @@ namespace TerrariaCells.Common.GlobalItems
                         Explosion(new Vector2(projectile.position.X + (projectile.Size.X / 2), projectile.position.Y + (projectile.Size.Y / 2)), 24);
                     }
                 }
-
             }
-            else if (item.createTile != -1) // Destroy any tiles created by the skill item, typically sentry turrets
+			//FYI: SENTRIES ARE NOT TILES. THANK YOU
+            else if (item.createTile != -1) // Destroy any tiles created by the skill item
             {
                 // Get player position, in tiles(16x16)
                 Vector2 playerPos = Main.LocalPlayer.position / 16f;
@@ -424,7 +422,6 @@ namespace TerrariaCells.Common.GlobalItems
             }
             else // checking for sentry == true gets things like the frosty hydra but not the clinger staff, which seems to have no differentiating factors from the toxic flask (and other projectile items)
             {
-
                 // Clean up any remaining projectiles
                 foreach (Projectile projectile in Main.projectile)
                 {
@@ -442,8 +439,11 @@ namespace TerrariaCells.Common.GlobalItems
                             Explosion(new Vector2(projectile.position.X + (projectile.Size.X / 2), projectile.position.Y + (projectile.Size.Y / 2)), 24);
                         }
 
-                        // Projectile is kill
-                        projectile.Kill();
+						// Projectile is kill
+						projectile.timeLeft = 2;
+						projectile.Kill();
+						projectile.active = false;
+						//Main.NewText("Kill sentry");
                     }
                 }
             }
@@ -588,17 +588,16 @@ namespace TerrariaCells.Common.GlobalItems
 
             return null;
         }
-
     }
 
     /// <summary>
     /// GlobalItem applying skill functionality to all items defined as skills (in the SkillModPlayer SkillItems dictionary)
     /// Includes defaults for all skill items, skill item hooks (ie. prevent skill items from being dropped), and general skill functionality
     /// </summary>
+	[Autoload(false)]
     public class SkillSystemGlobalItem : GlobalItem
     {
-
-        public Item instance;
+        //public Item instance;
         public bool onCooldown = false; //// is equivalent to (SkillModPlayer.GetSkillSlotData(item).cooldownTimer > 0)
 
         public override bool AppliesToEntity(Item item, bool lateInstantiation)
@@ -610,7 +609,7 @@ namespace TerrariaCells.Common.GlobalItems
 
         public override void SetDefaults(Item item)
         {
-            instance = item;
+            //instance = item;
 
             // MAKE CHANGES TO SKILL ITEM PROPERTIES HERE
             switch (item.type)
@@ -624,13 +623,13 @@ namespace TerrariaCells.Common.GlobalItems
                     item.damage = 10;
                     break;
                 case ItemID.ToxicFlask:
-                    item.damage = 10;
+                    item.damage = 3;
                     break;
                 case ItemID.StaffoftheFrostHydra:
                     item.knockBack = 0;
                     break;
                 case ItemID.DD2ExplosiveTrapT1Popper:
-                    item.damage = 15;
+                    item.damage = 50;
                     break;
                 case ItemID.MolotovCocktail:
                     item.consumable = false;
@@ -648,16 +647,20 @@ namespace TerrariaCells.Common.GlobalItems
                     item.maxStack = 1;
 
                     break;
+                case ItemID.ManaPotion:
+                    item.consumable = false;
+                    item.healMana = 200;
+                    break;
             }
         }
 
         public override void Load()
         {
-
             // Hook to prevent items from being picked up while the skill slot is on cooldown
             On_ItemSlot.PickItemMovementAction += ItemSlot_PickItemMovementAction;
 
-            // Hook to check for tile placement, which ensures skill items that place tiles (ie. turrets) do not get put on cooldown until the tile is succesfully placed
+            // Hook to check for tile placement, which ensures skill items that place tiles
+			// do not get put on cooldown until the tile is succesfully placed
             On_Player.PlaceThing_Tiles_PlaceIt += On_Player_PlaceThing_Tiles_PlaceIt;
 
             // Hooks to allow DD2 turrets at all times
@@ -669,13 +672,10 @@ namespace TerrariaCells.Common.GlobalItems
 
             // Hooks to prevent non-skill items from being picked up into a skill slot
             On_Player.GetItem_FillEmptyInventorySlot += On_Player_GetItem_FillEmptyInventorySlot;
-
-
         }
 
         private bool On_Player_GetItem_FillEmptyInventorySlot(On_Player.orig_GetItem_FillEmptyInventorySlot orig, Player self, int plr, Item newItem, GetItemSettings settings, Item returnItem, int i)
         {
-
             if (SkillModPlayer.SkillSlots.ContainsKey(i) && !SkillModPlayer.SkillItems.ContainsKey(newItem.type))
             {
                 return false;
@@ -688,28 +688,25 @@ namespace TerrariaCells.Common.GlobalItems
 
         private void On_Player_DropSelectedItem(On_Player.orig_DropSelectedItem orig, Player self)
         {
-
             if (SkillModPlayer.SkillSlots.TryGetValue(Main.LocalPlayer.selectedItem, out SkillSlotData slotData))
             {
                 if (slotData.cooldownTimer > 0)
                 {
                     return;
                 }
-
             }
 
             orig(self);
         }
 
-        private bool On_Player_ItemCheck_CheckCanUse(On_Player.orig_ItemCheck_CheckCanUse orig, Player self, Item sItem)
+        private bool On_Player_ItemCheck_CheckCanUse(On_Player.orig_ItemCheck_CheckCanUse orig, Player self, Item item)
         {
-            if (ProjectileID.Sets.IsADD2Turret[sItem.shoot] && CanUseItem(sItem, Main.LocalPlayer))
+            if (item.shoot > -1 && ProjectileID.Sets.IsADD2Turret[item.shoot] && CombinedHooks.CanUseItem(self, item))
             {
                 return true;
             }
 
-            return orig(self, sItem);
-
+			return orig.Invoke(self, item);
         }
 
         private bool On_Projectile_TurretShouldPersist(On_Projectile.orig_TurretShouldPersist orig, Projectile self)
@@ -719,10 +716,8 @@ namespace TerrariaCells.Common.GlobalItems
 
         private TileObject On_Player_PlaceThing_Tiles_PlaceIt(On_Player.orig_PlaceThing_Tiles_PlaceIt orig, Player self, bool newObjectType, TileObject data, int tileToCreate)
         {
-
             if (SkillModPlayer.SkillItems.ContainsKey(Main.LocalPlayer.HeldItem.type) && Main.LocalPlayer.HeldItem.createTile == tileToCreate)
             {
-
                 SkillSlotData skillData = SkillModPlayer.GetSkillSlotData(Main.LocalPlayer.HeldItem);
                 skillData.cooldownTimer = skillData.cooldownTotal;
             }
@@ -732,7 +727,6 @@ namespace TerrariaCells.Common.GlobalItems
 
         private int ItemSlot_PickItemMovementAction(On_ItemSlot.orig_PickItemMovementAction orig, Item[] inv, int context, int slot, Item item)
         {
-
             if (context == 0)
             {
                 if (SkillModPlayer.SkillSlots.TryGetValue(slot, out SkillSlotData slotData))
@@ -741,7 +735,6 @@ namespace TerrariaCells.Common.GlobalItems
                     {
                         return -1;
                     }
-
                 }
 
                 if (item.type != ItemID.None)
@@ -751,7 +744,7 @@ namespace TerrariaCells.Common.GlobalItems
                         return -1;
                     }
 
-                    //  Prevent two of the same item from being placed in skill slots at the same time
+                    //Prevent two of the same item from being placed in skill slots at the same time
                     foreach (int invSlot in SkillModPlayer.SkillSlots.Keys)
                     {
                         if (!SkillModPlayer.SkillSlots.ContainsKey(slot))
@@ -767,14 +760,13 @@ namespace TerrariaCells.Common.GlobalItems
                 }
             }
 
-
             return orig(inv, context, slot, item);
         }
 
-        // Prevent skills from reducing mana when they are used
+        //Prevent skills from reducing mana when they are used
         public override void ModifyManaCost(Item item, Player player, ref float reduce, ref float mult)
         {
-            reduce -= item.mana;
+			mult = 0;
         }
 
         public override bool CanUseItem(Item item, Player player)
@@ -788,30 +780,27 @@ namespace TerrariaCells.Common.GlobalItems
 
                 Point mouseTile = Main.MouseWorld.ToTileCoordinates();
 
-                /* Prevents the user from attempting to place blocks unless able to- only controls animation playing, blocks will not be placed if usually unable
-                if (item.createTile != -1)
+                //Prevents the user from attempting to place blocks unless able to- only controls animation playing,
+                //blocks will not be placed if usually unable
+                /*if (item.createTile != -1)
                 {
-                    
                     if (!(Main.LocalPlayer.position.X / 16f - (float)Player.tileRangeX - (float)item.tileBoost - (float)Main.LocalPlayer.blockRange <= (float)mouseTile.X) || !((Main.LocalPlayer.position.X + (float)item.width) / 16f + (float)Player.tileRangeX + (float)item.tileBoost - 1f + (float)Main.LocalPlayer.blockRange >= (float)mouseTile.X) || !(Main.LocalPlayer.position.Y / 16f - (float)Player.tileRangeY - (float)item.tileBoost - (float)Main.LocalPlayer.blockRange <= (float)mouseTile.Y) || !((Main.LocalPlayer.position.Y + (float)item.height) / 16f + (float)mouseTile.Y + (float)item.tileBoost - 2f + (float)Main.LocalPlayer.blockRange >= (float)mouseTile.Y))
                     {
                         return false;
-
                     }
                     
                     if (!TileLoader.CanPlace(mouseTile.X, mouseTile.Y, item.createTile))
                     {
                         return false;
                     }
-                }
-                */
-
+                }*/
 
                 if (!SkillModPlayer.SkillItems[item.type].useInSolid && WorldGen.SolidTile(Main.tile[mouseTile]))
                 {
                     return false;
                 }
 
-                if (SkillModPlayer.SkillItems[item.type].lineOfSight && !Collision.CanHitLine(Main.LocalPlayer.position, Main.LocalPlayer.width, Main.LocalPlayer.height, new Vector2(Main.MouseWorld.X, Main.MouseWorld.Y), 1, 1))
+                if (SkillModPlayer.SkillItems[item.type].lineOfSight && !Collision.CanHitLine(player.position, player.width, player.height, Main.MouseWorld, 1, 1))
                 {
                     return false;
                 }
@@ -831,12 +820,15 @@ namespace TerrariaCells.Common.GlobalItems
                     return false;
                 }
 
-                if (!Main.mouseRight && item.createTile == -1) // PSSST - if anyone has a better way to activate the cooldown, that won't trigger when staffs right click and play the swing anim without actually doing their spell... lemme know, so far I have a custom implementation that hooks the tile placement function to ensure that tiles don't start the cooldown until actually placed either. Terraria doesn't actually check succesful placement almost.
+				// PSSST - if anyone has a better way to activate the cooldown, that won't trigger when staffs right click and play the swing
+				// anim without actually doing their spell... lemme know, so far I have a custom implementation that hooks the tile placement
+				// function to ensure that tiles don't start the cooldown until actually placed either. Terraria doesn't actually check succesful
+				// placement almost.
+				if (!Main.mouseRight && item.createTile == -1)
                 {
                     SkillSlotData data = SkillModPlayer.GetSkillSlotData(item);
                     data.cooldownTimer = data.cooldownTotal;
                 }
-
 
                 return null;
             }
@@ -924,87 +916,113 @@ namespace TerrariaCells.Common.GlobalItems
                 return;
             }
 
-            TooltipLine skillTooltip = new TooltipLine(Mod, "SkillTooltip", skillData.tooltip);
+            // overridden since TooltipOrganizer already semi-manages this
 
-            // Iterate through the list of tooltips so we can change vanilla tooltips
-            foreach (TooltipLine tooltip in tooltips)
-            {
-                // Alter vanilla tooltips here
-                switch (tooltip.Name)
-                {
-                    case "ItemName": // Change all skills to have a different name color
-                        tooltip.Text = "[Skill] " + tooltip.Text;
-
-                        Color skillColor = new Color(48, 184, 116);
-                        tooltip.OverrideColor = skillColor;
-                        break;
-                    case "Tooltip0": // If the skill has a custom tooltip description, replace the vanilla tooltip with it
-                        if (!string.IsNullOrEmpty(skillData.tooltip))
-                        {
-                            tooltip.Hide();
-                            tooltips.Add(skillTooltip);
-                        }
-                        break;
-                    case "Tooltip1": // Remove additional tooltips, if a custom one is available
-                        if (!string.IsNullOrEmpty(skillData.tooltip))
-                        {
-                            tooltip.Hide();
-                        }
-                        break;
-                    case "Tooltip2": // Remove additional tooltips, if a custom one is available
-                        if (!string.IsNullOrEmpty(skillData.tooltip))
-                        {
-                            tooltip.Hide();
-                        }
-                        break;
-                    case "Speed":
-                        tooltip.Hide();
-                        break;
-                }
-
-            }
+            // TooltipLine skillTooltip = new TooltipLine(Mod, "SkillTooltip", skillData.tooltip);
+            // // Iterate through the list of tooltips so we can change vanilla tooltips
+            // foreach (TooltipLine tooltip in tooltips)
+            // {
+            //     // Alter vanilla tooltips here
+            //     switch (tooltip.Name)
+            //     {
+            //         case "ItemName": // Change all skills to have a different name color
+            //             // tooltip.Text = "[Skill] " + tooltip.Text;
+			//
+            //             // Color skillColor = new Color(48, 184, 116);
+            //             // tooltip.OverrideColor = skillColor;
+            //             break;
+            //         case "Tooltip0": // If the skill has a custom tooltip description, replace the vanilla tooltip with it
+            //             if (!string.IsNullOrEmpty(skillData.tooltip))
+            //             {
+            //                 tooltip.Hide();
+            //                 tooltips.Add(skillTooltip);
+            //             }
+            //             break;
+            //         case "Tooltip1": // Remove additional tooltips, if a custom one is available
+            //             if (!string.IsNullOrEmpty(skillData.tooltip))
+            //             {
+            //                 tooltip.Hide();
+            //             }
+            //             break;
+            //         case "Tooltip2": // Remove additional tooltips, if a custom one is available
+            //             if (!string.IsNullOrEmpty(skillData.tooltip))
+            //             {
+            //                 tooltip.Hide();
+            //             }
+            //             break;
+            //         case "Speed":
+            //             tooltip.Hide();
+            //             break;
+            //     }
+			//
+            // }
 
             // Only show skill-specific tooltips if [shift] is held down
             if (Main.keyState.PressingShift())
             {
-                TooltipLine skillTitleTooltip = new TooltipLine(Mod, "SkillTitle", Mod.GetLocalization("Tooltips.SkillStats").Value)
+                TooltipLine skillTitleTooltip = new TooltipLine(
+                    Mod,
+                    "SkillTitle",
+                    Mod.GetLocalization("Tooltips.SkillStats").Value
+                )
                 {
-                    OverrideColor = Color.CadetBlue
+                    OverrideColor = Color.CadetBlue,
                 };
 
                 tooltips.Add(skillTitleTooltip);
 
-                TooltipLine cooldownTooltip = new TooltipLine(Mod, "SkillCooldown", Mod.GetLocalization("Tooltips.Cooldown").Format(skillData.cooldownTime / 60))
+                TooltipLine cooldownTooltip = new TooltipLine(
+                    Mod,
+                    "SkillCooldown",
+                    Mod.GetLocalization("Tooltips.Cooldown").Format(skillData.cooldownTime / 60)
+                )
                 {
-                    OverrideColor = Color.LightCyan
+                    OverrideColor = Color.LightCyan,
                 };
                 tooltips.Add(cooldownTooltip);
 
                 if (skillData.skillDuration != -1)
                 {
-                    TooltipLine summonTooltip = new TooltipLine(Mod, "SkillDuration", Mod.GetLocalization("Tooltips.SummonTime").Format(skillData.skillDuration / 60))
+                    TooltipLine summonTooltip = new TooltipLine(
+                        Mod,
+                        "SkillDuration",
+                        Mod.GetLocalization("Tooltips.SummonTime")
+                            .Format(skillData.skillDuration / 60)
+                    )
                     {
-                        OverrideColor = Color.LightCyan
+                        OverrideColor = Color.LightCyan,
                     };
 
                     tooltips.Add(summonTooltip);
                 }
 
-                if (!SkillModPlayer.IsInSlot(instance))
+				//This didn't even work. It's the only thing that used "instance" field
+				//So I'm taking this out for now. If we want to fix this at a later date
+				//That's cool, if we can not use item instance in singleton class that'd
+				//Be super great.
+                /*if (!SkillModPlayer.IsInSlot(instance))
                 {
-                    TooltipLine slotReqTooltip = new TooltipLine(Mod, "SkillSlotReq", "(Item can only be used in a skill slot)")
+                    TooltipLine slotReqTooltip = new TooltipLine(
+                        Mod,
+                        "SkillSlotReq",
+                        "(Item can only be used in a skill slot)"
+                    )
                     {
-                        OverrideColor = Color.PaleVioletRed
+                        OverrideColor = Color.PaleVioletRed,
                     };
 
                     tooltips.Add(slotReqTooltip);
-                }
+                }*/
             }
             else
             {
-                TooltipLine shiftTooltip = new TooltipLine(Mod, "ShiftHint", Mod.GetLocalization("Tooltips.ShiftHint").Value)
+                TooltipLine shiftTooltip = new TooltipLine(
+                    Mod,
+                    "ShiftHint",
+                    Mod.GetLocalization("Tooltips.ShiftHint").Value
+                )
                 {
-                    OverrideColor = Color.CadetBlue
+                    OverrideColor = Color.CadetBlue,
                 };
 
                 tooltips.Add(shiftTooltip);
@@ -1012,5 +1030,31 @@ namespace TerrariaCells.Common.GlobalItems
 
         }
 
+        public IEnumerable<TooltipLine> GetTooltips(Item item)
+        {
+            if (!SkillModPlayer.SkillItems.TryGetValue(item.type, out SkillItemData skillData))
+            {
+                return [];
+            }
+            TooltipLine cooldownTooltip = new TooltipLine(
+                Mod,
+                "SkillCooldown",
+                Mod.GetLocalization("Tooltips.Cooldown").Format(skillData.cooldownTime / 60)
+            )
+            {
+                OverrideColor = Color.LightCyan,
+            };
+            return [cooldownTooltip];
+
+            // if (skillData.skillDuration != -1)
+            // {
+            //     TooltipLine summonTooltip = new TooltipLine(Mod, "SkillDuration", Mod.GetLocalization("Tooltips.SummonTime").Format(skillData.skillDuration / 60))
+            //     {
+            //         OverrideColor = Color.LightCyan
+            //     };
+
+            //     tooltips.Add(summonTooltip);
+            // }
+        }
     }
 }

@@ -12,62 +12,12 @@ namespace TerrariaCells.Common.GlobalTiles
         public override void Load()
         {
             On_Projectile.ExplodeTiles += On_Projectile_ExplodeTiles;
-			On_Player.TileInteractionsUse += On_Player_TileInteractionsUse;
-			On_Player.InInteractionRange += On_Player_InInteractionRange;
+			
         }
 
-		public override void Unload()
+        public override void Unload()
 		{
 			On_Projectile.ExplodeTiles -= On_Projectile_ExplodeTiles;
-			On_Player.TileInteractionsUse -= On_Player_TileInteractionsUse;
-			On_Player.InInteractionRange -= On_Player_InInteractionRange;
-		}
-
-		private bool On_Player_InInteractionRange(On_Player.orig_InInteractionRange orig, Player self, int interactX, int interactY, Terraria.DataStructures.TileReachCheckSettings settings)
-		{
-			if (DevConfig.Instance.BuilderMode)
-			{
-				return orig.Invoke(self, interactX, interactY, settings);
-			}
-
-			Tile tile = Framing.GetTileSafely(interactX, interactY);
-			if (ValidTiles.Contains(tile.TileType))
-			{
-				if (tile.TileType == TileID.TeleportationPylon)
-				{
-					settings.OverrideXReach = Systems.WorldPylonSystem.MAX_PYLON_RANGE;
-					settings.OverrideYReach = Systems.WorldPylonSystem.MAX_PYLON_RANGE;
-				}
-				return orig.Invoke(self, interactX, interactY, settings);
-			}
-			return false;
-		}
-
-		private readonly int[] ValidTiles = new int[] {
-			TileID.TeleportationPylon,
-			TileID.GemLocks,
-			TileID.Containers,
-			TileID.Containers2,
-			TileID.Heart,
-			TileID.ManaCrystal,
-			ModContent.TileType<Content.Tiles.LevelExitPylon.ForestExitPylon>(),
-			ModContent.TileType<Content.Tiles.LevelExitPylon.DesertExitPylon>(),
-			ModContent.TileType<Content.Tiles.LevelExitPylon.HiveExitPylon>(),
-			ModContent.TileType<Content.Tiles.LevelExitPylon.SnowExitPylon>(),
-		};
-		private void On_Player_TileInteractionsUse(On_Player.orig_TileInteractionsUse orig, Player self, int myX, int myY)
-		{
-			if (DevConfig.Instance.BuilderMode)
-			{
-				orig.Invoke(self, myX, myY);
-				return;
-			}
-
-			Tile tile = Framing.GetTileSafely(myX, myY);
-			if (ValidTiles.Contains(tile.TileType))
-			{
-				orig.Invoke(self, myX, myY);
-			}
 		}
 
 		// Prevent explosions from destroying tiles
@@ -99,5 +49,73 @@ namespace TerrariaCells.Common.GlobalTiles
 
 			return false;
 		}
+
+		public override void KillTile(int i, int j, int typeT, ref bool fail, ref bool effectOnly, ref bool noItem)
+		{
+            if (TileID.Sets.CrackedBricks[typeT])
+            {
+                noItem = true;
+                Tile tile2 = Framing.GetTileSafely(i, j);
+                tile2.ClearTile();
+                int fallType = (int)(typeT - 481 + 736);
+                if (Main.netMode == NetmodeID.SinglePlayer)
+                {
+                    Projectile.NewProjectile(null, (float)(i * 16 + 8), (float)(j * 16 + 8), 0f, 0.41f, fallType, 0, 0f, Main.myPlayer, 0f, 0f, 0f);
+                }
+                else if (Main.netMode == NetmodeID.Server)
+                {
+                    int num24 = Projectile.NewProjectile(null, (float)(i * 16 + 8), (float)(j * 16 + 8), 0f, 0.41f, fallType, 0, 0f, Main.myPlayer, 0f, 0f, 0f);
+                    Main.projectile[num24].netUpdate = true;
+                }
+
+                for (int nearbyCracked = 0; nearbyCracked < 8; nearbyCracked++)
+                {
+                    int nearbyCrackedX = i;
+                    int nearbyCrackedY = j;
+                    if (nearbyCracked == 0)
+                    {
+                        nearbyCrackedX--;
+                    }
+                    else if (nearbyCracked == 1)
+                    {
+                        nearbyCrackedX++;
+                    }
+                    else if (nearbyCracked == 2)
+                    {
+                        nearbyCrackedY--;
+                    }
+                    else if (nearbyCracked == 3)
+                    {
+                        nearbyCrackedY++;
+                    }
+                    else if (nearbyCracked == 4)
+                    {
+                        nearbyCrackedX--;
+                        nearbyCrackedY--;
+                    }
+                    else if (nearbyCracked == 5)
+                    {
+                        nearbyCrackedX++;
+                        nearbyCrackedY--;
+                    }
+                    else if (nearbyCracked == 6)
+                    {
+                        nearbyCrackedX--;
+                        nearbyCrackedY++;
+                    }
+                    else if (nearbyCracked == 7)
+                    {
+                        nearbyCrackedX++;
+                        nearbyCrackedY++;
+                    }
+                    Tile tile3 = Framing.GetTileSafely(nearbyCrackedX, nearbyCrackedY);
+                    
+                    if (TileID.Sets.CrackedBricks[tile3.TileType])
+                    {
+                        WorldGen.KillTile(nearbyCrackedX, nearbyCrackedY, false, false, true);
+                    }
+                }
+            }
+        }
 	}
 }

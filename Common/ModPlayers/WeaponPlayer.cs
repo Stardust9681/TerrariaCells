@@ -24,6 +24,7 @@ namespace TerrariaCells.Common.ModPlayers
         public float itemScale = 1;
         public bool reloading = false;
         public int reuseTimer = 0;
+        public int resetSwingTimer = 0;
 
         //multiple
         public float OriginalRotation = 0;
@@ -32,7 +33,7 @@ namespace TerrariaCells.Common.ModPlayers
         {
             base.HideDrawLayers(drawInfo);
             if (
-                (Sword.IsBroadsword(drawInfo.heldItem) || Bow.Bows.Contains(drawInfo.heldItem.type))
+                (Sword.IsBroadsword(drawInfo.heldItem) || Bow.Bows.Contains(drawInfo.heldItem.type) || MagicBook.MagicBooks.Contains(drawInfo.heldItem.type))
                 && drawInfo.drawPlayer.ItemAnimationActive
             )
             {
@@ -47,6 +48,20 @@ namespace TerrariaCells.Common.ModPlayers
                 reloading = false;
             }
             if (reuseTimer > 0) reuseTimer--;
+
+            if (!Player.controlUseItem && !Player.ItemAnimationActive)
+            {
+                resetSwingTimer++;
+            }
+            else
+            {
+                resetSwingTimer = 0;
+            }
+            if (resetSwingTimer > 60)
+            {
+                resetSwingTimer = 0;
+                swingType = 0;
+            }
             base.PostUpdate();
         }
     }
@@ -126,7 +141,7 @@ namespace TerrariaCells.Common.ModPlayers
         {
             return (
                     Sword.IsBroadsword(drawInfo.drawPlayer.HeldItem)
-                    || Bow.Bows.Contains(drawInfo.heldItem.type)
+                    || Bow.Bows.Contains(drawInfo.heldItem.type) || MagicBook.MagicBooks.Contains(drawInfo.heldItem.type)
                 ) && drawInfo.drawPlayer.ItemAnimationActive;
         }
 
@@ -211,6 +226,32 @@ namespace TerrariaCells.Common.ModPlayers
                         drawInfo.drawPlayer.itemRotation,
                         new Vector2(t.Width() / 2, t.Height() / 2),
                         scale * drawInfo.heldItem.scale,
+                        effects,
+                        0
+                    )
+                );
+            }else if (MagicBook.MagicBooks.Contains(drawInfo.heldItem.type))
+            {
+                SpriteEffects effects = SpriteEffects.FlipHorizontally;
+                Vector2 offset = new Vector2(20, -5);
+                float rotation = MathHelper.PiOver2;
+                if (drawInfo.drawPlayer.direction == -1)
+                {
+                    rotation = -MathHelper.PiOver2;
+                    effects = SpriteEffects.None;
+                    offset = new Vector2(-20, -5);
+                }
+                position = drawInfo.drawPlayer.Center + offset;
+                position = new Vector2((int)position.X, (int)position.Y);
+                drawInfo.DrawDataCache.Add(
+                    new DrawData(
+                        t.Value,
+                        position - Main.screenPosition,
+                        null,
+                        Lighting.GetColor(position.ToTileCoordinates()),
+                        rotation,
+                        new Vector2(t.Width() / 2, t.Height() / 2),
+                        drawInfo.heldItem.scale,
                         effects,
                         0
                     )

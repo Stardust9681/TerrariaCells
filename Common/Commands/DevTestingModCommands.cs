@@ -23,6 +23,11 @@ namespace TerrariaCells.Common.Commands
 
         public override void Action(CommandCaller caller, string input, string[] args)
         {
+            if (!Common.Configs.DevConfig.Instance.AllowDebugCommands)
+            {
+                caller.Reply("Debug Commands are disabled");
+                return;
+            }
             if (args.Length < 1)
             {
                 ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("Too few arguments!"), Color.Yellow);
@@ -69,6 +74,11 @@ namespace TerrariaCells.Common.Commands
 
         public override void Action(CommandCaller caller, string input, string[] args)
         {
+            if (!Common.Configs.DevConfig.Instance.AllowDebugCommands)
+            {
+                caller.Reply("Debug Commands are disabled");
+                return;
+            }
             // Checking input Arguments
             if (args.Length == 0)
             {
@@ -219,7 +229,11 @@ namespace TerrariaCells.Common.Commands
 
         public override void Action(CommandCaller caller, string input, string[] args)
         {
-
+            if (!Common.Configs.DevConfig.Instance.AllowDebugCommands)
+            {
+                caller.Reply("Debug Commands are disabled");
+                return;
+            }
             // Checking input Arguments
             if (args.Length == 0)
             {

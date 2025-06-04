@@ -1,0 +1,190 @@
+{
+    "WorldSpawnX": 590,
+    "WorldSpawnY": 240,
+    "MarginsX": 0,
+    "MarginsY": 0,
+    "PlacementStartOffsetX": 240,
+    "PlacementStartOffsetY": 200,
+    "LevelData": [
+        {
+            "Name": "Inn",
+            "Structures": [
+                {
+                    "Name": "innbetween",
+                    "Path": "Content/Structures/innbetween.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": 800,
+                    "SpawnX": 35,
+                    "SpawnY": 31
+                }
+            ],
+            "Surface": false
+        },
+        {
+            "Name": "Forest",
+            "Structures": [
+                {
+                    "Name": "forest_1",
+                    "Path": "Content/Structures/forest_1.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -50,
+                    "SpawnX": 774,
+                    "SpawnY": 233
+                },
+                {
+                    "Name": "forest_2",
+                    "Path": "Content/Structures/forest_2.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -80,
+                    "SpawnX": 611,
+                    "SpawnY": 100
+                },
+                {
+                    "Name": "forest_3",
+                    "Path": "Content/Structures/forest_3.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -50,
+                    "SpawnX": 774,
+                    "SpawnY": 233
+                },
+                {
+                    "Name": "forest_4",
+                    "Path": "Content/Structures/forest_4.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -50,
+                    "SpawnX": 774,
+                    "SpawnY": 233
+                },
+                {
+                    "Name": "forest_5",
+                    "Path": "Content/Structures/forest_5.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -80,
+                    "SpawnX": 611,
+                    "SpawnY": 100
+                },
+                {
+                    "Name": "forest_6",
+                    "Path": "Content/Structures/forest_6.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -80,
+                    "SpawnX": 611,
+                    "SpawnY": 100
+                },
+                {
+                    "Name": "forest_7",
+                    "Path": "Content/Structures/forest_7.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -50,
+                    "SpawnX": 774,
+                    "SpawnY": 233
+                },
+                {
+                    "Name": "forest_8",
+                    "Path": "Content/Structures/forest_8.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -80,
+                    "SpawnX": 611,
+                    "SpawnY": 100
+                },
+                {
+                    "Name": "forest_9",
+                    "Path": "Content/Structures/forest_9.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -50,
+                    "SpawnX": 774,
+                    "SpawnY": 233
+                },
+                {
+                    "Name": "forest_10",
+                    "Path": "Content/Structures/forest_10.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -50,
+                    "SpawnX": 774,
+                    "SpawnY": 233
+                },
+                {
+                    "Name": "forest_11",
+                    "Path": "Content/Structures/forest_11.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -50,
+                    "SpawnX": 830,
+                    "SpawnY": 96
+                },
+                {
+                    "Name": "forest_12",
+                    "Path": "Content/Structures/forest_12.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -50,
+                    "SpawnX": 830,
+                    "SpawnY": 96
+                }
+            ],
+            "Surface": false
+        },
+        {
+            "Name": "Crimson",
+            "Structures": [
+                {
+                    "Name": "crimson_1",
+                    "Path": "Content/Structures/crimson_1.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": 11,
+                    "SpawnX": 169,
+                    "SpawnY": 138
+                },
+                {
+                    "Name": "crimson_2",
+                    "Path": "Content/Structures/crimson_2.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": 11,
+                    "SpawnX": 107,
+                    "SpawnY": 75
+                }
+            ],
+            "Surface": false
+        },
+        {
+            "Name": "FrozenCity",
+            "Structures": [
+                {
+                    "Name": "frozencity_1",
+                    "Path": "Content/Structures/frozencity_1.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": 0,
+                    "SpawnX": 70,
+                    "SpawnY": 190
+                }
+            ],
+            "Surface": false
+        },
+        {
+            "Name": "Hive",
+            "Structures": [
+                {
+                    "Name": "hive_1",
+                    "Path": "Content/Structures/hive_1.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": 25,
+                    "SpawnX": 93,
+                    "SpawnY": 84
+                }
+            ],
+            "Surface": false
+        },
+        {
+            "Name": "Desert",
+            "Structures": [
+                {
+                    "Name": "desert_1",
+                    "Path": "Content/Structures/desert_1.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": 150,
+                    "SpawnX": 55,
+                    "SpawnY": 38
+                }
+            ],
+            "Surface": false
+        }
+    ]
+}

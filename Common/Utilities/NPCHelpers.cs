@@ -10,6 +10,7 @@ namespace TerrariaCells.Common.Utilities
 {
 	public static class NPCHelpers
 	{
+		//Need to change these, @ me later, I don't feel like trying to compress this rn, why couldn't they just be ints dude
 		#region Timer and Phase
 		//Packing Timer and Phase data into one variable
 		//Timer goes up to 18 minutes (ushort.MaxValue ticks), surely we don't need more than that
@@ -48,17 +49,23 @@ namespace TerrariaCells.Common.Utilities
 
 		///<returns>True if NPC "can see" a given position. False otherwise.</returns>
 		public static bool LineOfSight(this NPC npc, Vector2 toPosition)
-			=> Collision.CanHitLine(npc.position + new Vector2(npc.width * 0.5f, npc.height * 0.25f), 4, 4, toPosition, 4, 4);
+			=> Collision.CanHitLine(npc.position + new Vector2(npc.width * 0.5f - 8, npc.height * 0.25f - 8), 16, 16, toPosition, 16, 16);
 
 		///<returns>True if NPC is determined to be on ground. False otherwise.</returns>
 		public static bool Grounded(this NPC npc)
-			=> npc.collideY && npc.oldVelocity.Y > npc.velocity.Y && npc.oldVelocity.Y > 0;
+			=> npc.oldVelocity.Y >= npc.velocity.Y && MathF.Abs(npc.velocity.Y) < 0.1f;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="npc"></param>
+		/// <param name="target">Will be null if none found</param>
+		/// <returns>True if valid target exists</returns>
 		public static bool TryGetTarget(this NPC npc, out Entity target)
 		{
 			target = null;
 			if (npc.SupportsNPCTargets && npc.HasNPCTarget) return (target = Main.npc[npc.TranslatedTargetIndex]).active;
-			else if (npc.HasPlayerTarget) return (target = Main.player[npc.target]).active;
+			else if (npc.HasPlayerTarget) return (target = Main.player[npc.target]).active && !Main.player[npc.target].dead && !Main.player[npc.target].ghost;
 			return npc.HasValidTarget;
 		}
 
@@ -73,26 +80,37 @@ namespace TerrariaCells.Common.Utilities
 		public static bool IsFacingTarget(this NPC npc, Entity target)
 			=> npc.direction == MathF.Sign(target.position.X - npc.position.X);
 
-		public static Vector2 FindGroundInFront(this NPC npc)
+		public static Vector2 FindGroundInFront(this NPC npc, int tilesToCheck = 6)
 		{
-			Rectangle rect = npc.getRect();
-			rect.X += (npc.direction * npc.width);
-			return TCellsUtils.FindGround(rect);
+			Vector2 testPos = npc.position;
+			testPos.X += npc.direction * npc.width;
+			//Might be able to improve this by doing less checks, depending on how tall the NPC is
+			for (int i = 0; i < tilesToCheck; i++)
+			{
+				Vector2 collision = Collision.TileCollision(testPos, Vector2.UnitY * 16, npc.width, npc.height);
+				if (collision.Y != 16)
+					return testPos  + collision;
+			}
+			return testPos + new Vector2(0, tilesToCheck * 16);
 		}
 
-		public static bool TargetInAggroRange(this NPC npc, float range = 240, bool lineOfSight = true)
+		public static bool TargetInAggroRange(this NPC npc, float range = 240, bool lineOfSight = true, bool allowDamageTrigger = true)
 		{
 			if (!npc.TryGetTarget(out Entity target))
 				return false;
 			if (lineOfSight && !npc.LineOfSight(target.position))
 				return false;
+			if (allowDamageTrigger && npc.life < npc.lifeMax)
+				return true;
 			return npc.DistanceSQ(target.position) < MathF.Pow(range, 2);
 		}
 
-		public static bool TargetInAggroRange(this NPC npc, Entity target, float range = 240, bool lineOfSight = true)
+		public static bool TargetInAggroRange(this NPC npc, Entity target, float range = 240, bool lineOfSight = true, bool allowDamageTrigger = true)
 		{
 			if (lineOfSight && !npc.LineOfSight(target.position))
 				return false;
+			if (allowDamageTrigger && npc.life < npc.lifeMax)
+				return true;
 			return npc.DistanceSQ(target.position) < MathF.Pow(range, 2);
 		}
 	}

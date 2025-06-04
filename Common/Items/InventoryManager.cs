@@ -107,11 +107,11 @@ public class InventoryManager : ModSystem, IEntitySource
     /// DOES NOT CONTAIN MODDED ITEMS. It only contains categorizations for items with a vanilla ItemID.
     /// Categorization for modded items are contained within their own classes, using ITerraCellsCategorization
     /// <summary>
-    private static Dictionary<short, TerraCellsItemCategory> VanillaItemCategorizations;
+    private static Dictionary<short, TerraCellsItemCategory> VanillaItemCategorizations = [];
 
-    private static Dictionary<short, StorageItemSubcategorization> StorageSubcategorizations;
+    private static Dictionary<short, StorageItemSubcategorization> StorageSubcategorizations = [];
 
-    public override void SetStaticDefaults()
+    public override void Load()
     {
         Dictionary<string, string> deserialized;
 
@@ -437,24 +437,28 @@ public class InventoryManager : ModSystem, IEntitySource
         };
     }
 
+    private static bool SlotFull(Item item) =>
+        !item.IsAir && item.stack == item.maxStack;
+
     /// <summary>
     /// Checks the two inventory slots that are used for weapons, and returns true if both are occupied.
     /// </summary>
-    public static bool WeaponsSlotsFull(Terraria.Player player) =>
-        !player.inventory[WEAPON_SLOT_1].IsAir && !player.inventory[WEAPON_SLOT_2].IsAir;
+    public static bool WeaponsSlotsFull(Player player) =>
+        SlotFull(player.inventory[WEAPON_SLOT_1]) && SlotFull(player.inventory[WEAPON_SLOT_2]);
 
-    public static bool SkillsSlotsFull(Terraria.Player player) =>
-        !player.inventory[SKILL_SLOT_1].IsAir && !player.inventory[SKILL_SLOT_2].IsAir;
+    public static bool SkillsSlotsFull(Player player) =>
+        SlotFull(player.inventory[SKILL_SLOT_1]) && SlotFull(player.inventory[SKILL_SLOT_2]);
 
-    public static bool PotionSlotFull(Terraria.Player player) =>
-        !player.inventory[POTION_SLOT].IsAir;
+    public static bool PotionSlotFull(Player player) =>
+        SlotFull(player.inventory[POTION_SLOT]);
 
-    public static bool StorageSlotsFull(Terraria.Player player) =>
-        !player.inventory[STORAGE_SLOT_1].IsAir
-        && !player.inventory[STORAGE_SLOT_2].IsAir
-        && !player.inventory[STORAGE_SLOT_3].IsAir
-        && !player.inventory[STORAGE_SLOT_4].IsAir;
+    public static bool StorageSlotsFull(Player player) =>
+        SlotFull(player.inventory[STORAGE_SLOT_1])
+        && SlotFull(player.inventory[STORAGE_SLOT_2])
+        && SlotFull(player.inventory[STORAGE_SLOT_3])
+        && SlotFull(player.inventory[STORAGE_SLOT_4]);
 
-    public static bool AccessorySlotsFull(Terraria.Player player) =>
-        !player.armor[3].IsAir && !player.armor[4].IsAir;
+    public static bool AccessorySlotsFull(Player player) =>
+        SlotFull(player.armor[3]) && SlotFull(player.armor[4]);
+
 }

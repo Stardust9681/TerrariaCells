@@ -85,13 +85,16 @@ namespace TerrariaCells.Common.GlobalNPCs
         public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
         {
             npcLoot.RemoveWhere(x => true);
-            IItemDropRule commonLesserHealthPotion = ItemDropRule.NotScalingWithLuck(LesserHealingPotion, 1, 2, 3);
+            IItemDropRule commonLesserHealthPotion = ItemDropRule.NotScalingWithLuck(LesserHealingPotion, 1, 2, 2);
             IItemDropRule commonHealthPotion = ItemDropRule.NotScalingWithLuck(HealingPotion, 1, 2, 3);
             IItemDropRule commonGreaterHealthPotion = ItemDropRule.NotScalingWithLuck(GreaterHealingPotion, 1, 2, 3);
             switch (npc.type)
             {
-                case NPCID.EyeofCthulhu:
                 case NPCID.BrainofCthulhu:
+                    npcLoot.Add(commonLesserHealthPotion);
+                    npcLoot.Add(new CommonDrop(ItemID.CloudinaBottle, 1));
+                    break;
+                case NPCID.EyeofCthulhu:
                 case NPCID.KingSlime:
                     npcLoot.Add(commonLesserHealthPotion);
                     break;
@@ -135,11 +138,11 @@ namespace TerrariaCells.Common.GlobalNPCs
             Spaghetti, Steak, ChristmasPudding, GingerbreadCookie, SugarCookie
         };
 
-        private const float DROPRATE = 0.05f; //Base droprate for this rule
-        private const float INV_DROPRATE = 1f / DROPRATE; //Used for logic, not necessary but I want to cache this
-        private const float TIER_ONE_RATE = 0.8f; //Percent of drops to be Tier 1 foods
-        private const float TIER_TWO_RATE = 0.195f; //Percent of drops to be Tier 2 foods
-        private const float TIER_THREE_RATE = 0.005f; //Percent of drops to be Tier 3 foods
+        public const float DROPRATE = 0.05f; //Base droprate for this rule
+        public const float INV_DROPRATE = 1f / DROPRATE; //Used for logic, not necessary but I want to cache this
+        public const float TIER_ONE_RATE = 0.8f; //Percent of drops to be Tier 1 foods
+        public const float TIER_TWO_RATE = 0.195f; //Percent of drops to be Tier 2 foods
+        public const float TIER_THREE_RATE = 0.005f; //Percent of drops to be Tier 3 foods
 
         /// <summary> </summary>
         /// <param name="self">NPC to drop from.</param>
@@ -147,37 +150,37 @@ namespace TerrariaCells.Common.GlobalNPCs
         /// <returns>True on success. False on fail.</returns>
         public static bool TryDroppingHeal(NPC self, Player interactionPlayer)
         {
-            float roll = Main.rand.NextFloat(); //Chose not to use Player.RollLuck(..) here
-            if (roll > DROPRATE)
-            {
-                //Just.. give players another chance at success if they're low on health
-                if (interactionPlayer.statLife < 15)
-                {
-                    roll = Main.rand.NextFloat();
-                }
-            }
-            if (roll < DROPRATE)
-            {
-                roll *= INV_DROPRATE; //Expand this out to 0-1 (since we reduced range from 0-0.01)
-                int itemToDrop;
-                switch (roll) //Attempt to guarantee that food item is always dropped on success
-                {
-                    case < TIER_THREE_RATE:
-                        itemToDrop = Main.rand.Next(TIER_THREE_FOOD);
-                        break;
-                    case < TIER_TWO_RATE + TIER_THREE_RATE:
-                        itemToDrop = Main.rand.Next(TIER_TWO_FOOD);
-                        break;
-                    case < TIER_ONE_RATE + TIER_TWO_RATE + TIER_THREE_RATE:
-                        itemToDrop = Main.rand.Next(TIER_ONE_FOOD);
-                        break;
-                    default:
-                        return false; //Something went wrong
-                }
-                CommonCode.DropItem(self.Center, self.GetSource_Loot(), itemToDrop, 1); //Drop item
-                return true; //Succeeded
-            }
-            return false; //Failed RNG
+			bool attem = TryDropItem(self.GetSource_Death(), self.Center);
+			if (!attem && interactionPlayer.statLife < interactionPlayer.statLifeMax2 * 0.05f)
+				attem = TryDropItem(self.GetSource_Death(), self.Center);
+			return attem;
         }
+
+		public static bool TryDropItem(Terraria.DataStructures.IEntitySource source, Vector2 position)
+		{
+			float roll = Main.rand.NextFloat(); //Chose not to use Player.RollLuck(..) here
+			if (roll < DROPRATE)
+			{
+				int itemToDrop = PickFoodItem();
+				CommonCode.DropItem(position, source, itemToDrop, 1); //Drop item
+				return true; //Succeeded
+			}
+			return false; //Failed RNG
+		}
+
+		public static int PickFoodItem()
+		{
+			switch (Main.rand.NextFloat())
+			{
+				case < TIER_THREE_RATE:
+					return Main.rand.Next(TIER_THREE_FOOD);
+				case < TIER_TWO_RATE + TIER_THREE_RATE:
+					return Main.rand.Next(TIER_TWO_FOOD);
+				case < TIER_ONE_RATE + TIER_TWO_RATE + TIER_THREE_RATE:
+					return Main.rand.Next(TIER_ONE_FOOD);
+				default:
+					return -1; //Something went wrong
+			}
+		}
     }
 }

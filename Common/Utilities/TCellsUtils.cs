@@ -35,14 +35,12 @@ namespace TerrariaCells.Common.Utilities
         
         public static Vector2 FindGround(Rectangle rectangle, int attempts = 200)
         {
-            
-            Vector2 tilecords = new Vector2(rectangle.X, rectangle.Y).ToTileCoordinates().ToVector2();
+            //Vector2 tilecords = new Vector2(rectangle.X, rectangle.Y).ToTileCoordinates().ToVector2();
             //Dust.NewDustDirect(rectangle.Center.ToVector2(), 1, 1, DustID.TerraBlade);
             while (!Collision.SolidCollision(rectangle.BottomLeft(), rectangle.Width, 2, true) && attempts > 0)
             {
                 attempts--;
                 rectangle.Y += 16;
-               
             }
             
             while (Collision.SolidCollision(rectangle.BottomLeft(), rectangle.Width, -2, true) && attempts > 0)

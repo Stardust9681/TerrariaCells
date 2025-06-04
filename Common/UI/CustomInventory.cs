@@ -22,6 +22,7 @@ using Terraria.UI.Gamepad;
 using TerrariaCells.Common.Configs;
 using TerrariaCells.Common.GlobalItems;
 using TerrariaCells.Common.Items;
+using TerrariaCells.Common.Systems;
 
 namespace TerrariaCells.Common.UI;
 
@@ -54,18 +55,24 @@ public class LimitedStorageUI : UIState
         (new Vector2(56f * 3, 60f), 13, TerraCellsItemCategory.Storage),
     ];
 
+    public static readonly Color defaultSlotColor = new(12, 245, 103);
+    public static readonly Color weaponSlotColor = new(150, 245, 150);
+    public static readonly Color skillSlotColor = new(205, 150, 150);
+    public static readonly Color potionSlotColor = new(215, 150, 243);
+    public static readonly Color storageSlotColor = new(254, 255, 255);
+
     public static void CustomGUIHotbarDrawInner()
     {
         if (Main.playerInventory || Main.LocalPlayer.ghost)
             return;
 
-        string text = Lang.inter[37].Value + " (:3)";
+        string text = Lang.inter[37].Value;
         if (
             Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem].Name != null
             && Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem].Name != ""
         )
             text =
-                Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem].AffixName() + " (yum :3)";
+                Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem].AffixName() ;
 
         DynamicSpriteFontExtensionMethods.DrawString(
             position: new Vector2(
@@ -91,26 +98,27 @@ public class LimitedStorageUI : UIState
         int positionX = 20;
         for (int i = 0; i < 5; i++)
         {
+			bool isSelectedItem = Main.LocalPlayer.selectedItem == i;
             switch (inventorySlots[i].Item3)
             {
                 case TerraCellsItemCategory.Default:
-                    Main.inventoryBack = new Color(12, 245, 103);
+                    Main.inventoryBack = defaultSlotColor;
                     break;
                 case TerraCellsItemCategory.Weapon:
-                    Main.inventoryBack = new Color(150, 245, 150);
+                    Main.inventoryBack = weaponSlotColor;
                     break;
                 case TerraCellsItemCategory.Skill:
-                    Main.inventoryBack = new Color(205, 150, 150);
+                    Main.inventoryBack = skillSlotColor;
                     break;
                 case TerraCellsItemCategory.Potion:
-                    Main.inventoryBack = new Color(215, 150, 243);
+                    Main.inventoryBack = potionSlotColor;
                     break;
                 case TerraCellsItemCategory.Storage:
-                    Main.inventoryBack = new Color(254, 255, 255);
+                    Main.inventoryBack = storageSlotColor;
                     break;
             }
 
-            if (i == Main.LocalPlayer.selectedItem)
+            if (isSelectedItem)
             {
                 if (Main.hotbarScale[i] < 1f)
                     Main.hotbarScale[i] += 0.05f;
@@ -159,53 +167,56 @@ public class LimitedStorageUI : UIState
                 lightColor
             );
 
-            // Show cooldown ui on hotbar
-            SkillSlotData skillSlotData = SkillModPlayer.GetSkillSlotData(i);
+			// Show cooldown ui on hotbar
+			if (Ability.AbilityList.TryGetValue(Main.LocalPlayer.inventory[i].type, out Ability ability))
+			{
+				AbilityHandler modPlayer = Main.LocalPlayer.GetModPlayer<AbilityHandler>();
+				AbilitySlot? abilitySlot = modPlayer.Abilities.FirstOrDefault(x => x.Slot == i);
 
-            if (skillSlotData != null && skillSlotData.cooldownTimer > 0)
-            {
-                // Cooldown item slot indicator
-                Main.spriteBatch.Draw(
-                    TextureAssets.InventoryBack.Value,
-                    position: new Vector2(positionX, num3) + (Vector2.One * 20),
-                    sourceRectangle: new Rectangle(
-                        0,
-                        0,
-                        52,
-                        (int)(
-                            52 * ((float)skillSlotData.cooldownTimer / skillSlotData.cooldownTotal)
-                        )
-                    ),
-                    color: new Color(15, 15, 15, 128),
-                    rotation: 3.14159f,
-                    origin: new Vector2(26, 26),
-                    scale: new Vector2(Main.inventoryScale),
-                    SpriteEffects.None,
-                    layerDepth: 0f
-                );
+				if (abilitySlot != null && abilitySlot.cooldownTimer > 0)
+				{
+					Main.spriteBatch.Draw(
+						TextureAssets.InventoryBack.Value,
+						//I DON'T KNOW WHY THERE NEEDS TO BE AN EXTRA +6 TO THE MULTIPLIER HERE
+						//WHY ISN'T IT ALREADY HANDLED I DON'T UNDERSTANDDDDDDD
+						position: new Vector2(positionX, num3) + (Vector2.One * (isSelectedItem ? 26 : 20)),
+						sourceRectangle: new Rectangle(
+							0,
+							0,
+							52,
+							(int)(52 * ((float)abilitySlot.cooldownTimer / ability.Cooldown))
+						),
+						color: new Color(15, 15, 15, 128),
+						rotation: MathHelper.Pi,
+						origin: new Vector2(26, 26),
+						scale: new Vector2(Main.inventoryScale),
+						SpriteEffects.None,
+						layerDepth: 0f
+					);
 
-                // Cooldown countdown text display
-                string currentCooldown = MathF.Ceiling(skillSlotData.cooldownTimer / 60).ToString();
+					// Cooldown countdown text display
+					string currentCooldown = MathF.Ceiling(abilitySlot.cooldownTimer / 60).ToString();
 
-                float width = FontAssets.DeathText.Value.MeasureString(currentCooldown).X;
-                float textScale = Main.inventoryScale * 0.50f;
+					float width = FontAssets.DeathText.Value.MeasureString(currentCooldown).X;
+					float textScale = Main.inventoryScale * 0.50f;
 
-                if (TerrariaCellsConfig.Instance.ShowCooldown)
-                {
-                    ChatManager.DrawColorCodedStringWithShadow(
-                        Main.spriteBatch,
-                        FontAssets.DeathText.Value,
-                        currentCooldown,
-                        new Vector2(positionX, num3)
-                            + (new Vector2(0f - width / 2f, 0f) * textScale)
-                            + (Vector2.One * 20),
-                        Color.White,
-                        0,
-                        Vector2.Zero,
-                        new Vector2(textScale, textScale)
-                    );
-                }
-            }
+					if (TerrariaCellsConfig.Instance.ShowCooldown)
+					{
+						ChatManager.DrawColorCodedStringWithShadow(
+							Main.spriteBatch,
+							FontAssets.DeathText.Value,
+							currentCooldown,
+							new Vector2(positionX, num3)
+								+ (new Vector2(0f - width / 2f, 0f) * textScale)
+								+ (Vector2.One * 20),
+							Color.White,
+							0,
+							Vector2.Zero,
+							new Vector2(textScale, textScale)
+						);
+					}
+				}
+			}
 
             Main.inventoryScale = previousInventoryScale;
             positionX += (int)(TextureAssets.InventoryBack.Width() * Main.hotbarScale[i]) + 4;
@@ -285,7 +296,7 @@ public class LimitedStorageUI : UIState
         Vector2 vector = new Vector2(num, num2);
         Main.spriteBatch.DrawString(
             FontAssets.MouseText.Value,
-            Lang.inter[4].Value + " (hehe)",
+            Lang.inter[4].Value,
             new Vector2(40f, 0f) + vector,
             new Color(
                 Main.mouseTextColor,
@@ -1117,6 +1128,309 @@ public class LimitedStorageUI : UIState
             (byte)(Main.mouseTextColor * Main.craftingAlpha)
         );
         Main.craftingHide = false;
+
+        if (Main.InReforgeMenu)
+        {
+            // if (Main.mouseReforge)
+            // {
+            //     if (Main.reforgeScale < 1f)
+            //         Main.reforgeScale += 0.02f;
+            // }
+            // else if (Main.reforgeScale > 1f)
+            // {
+            //     Main.reforgeScale -= 0.02f;
+            // }
+
+            if (
+                Main.LocalPlayer.chest != -1
+                || Main.npcShop != 0
+                || Main.LocalPlayer.talkNPC == -1
+                || Main.InGuideCraftMenu
+            )
+            {
+                Main.InReforgeMenu = false;
+                Main.LocalPlayer.dropItemCheck();
+                Recipe.FindRecipes();
+            }
+            else
+            {
+                int slotX = 50;
+                int slotY = 270;
+                string text = Lang.inter[46].Value + ": ";
+                if (Main.reforgeItem.type > ItemID.None)
+                {
+                    int reforgeCost = Main.reforgeItem.value;
+                    reforgeCost *= Main.reforgeItem.stack; // #StackablePrefixWeapons: scale with current stack size
+
+                    bool canApplyDiscount = true;
+                    if (!ItemLoader.ReforgePrice(Main.reforgeItem, ref reforgeCost, ref canApplyDiscount))
+                        goto skipVanillaPricing;
+
+                    /*
+                    if (Main.LocalPlayer.discountAvailable)
+                    */
+                    if (canApplyDiscount && Main.LocalPlayer.discountAvailable)
+                        reforgeCost = (int)((double)reforgeCost * 0.8);
+
+                    reforgeCost = (int)(
+                        (double)reforgeCost * Main.LocalPlayer.currentShoppingSettings.PriceAdjustment
+                    );
+                    reforgeCost /= 3;
+                    skipVanillaPricing:
+
+                    string costText = "";
+                    int platinumCost = 0;
+                    int goldCost = 0;
+                    int silverCost = 0;
+                    int copperCost = 0;
+                    int finalCost = reforgeCost;
+                    if (finalCost < 1)
+                        finalCost = 1;
+
+                    if (finalCost >= 1000000)
+                    {
+                        platinumCost = finalCost / 1000000;
+                        finalCost -= platinumCost * 1000000;
+                    }
+
+                    if (finalCost >= 10000)
+                    {
+                        goldCost = finalCost / 10000;
+                        finalCost -= goldCost * 10000;
+                    }
+
+                    if (finalCost >= 100)
+                    {
+                        silverCost = finalCost / 100;
+                        finalCost -= silverCost * 100;
+                    }
+
+                    if (finalCost >= 1)
+                        copperCost = finalCost;
+
+                    if (platinumCost > 0)
+                        costText =
+                            costText
+                            + "[c/"
+                            + Colors.AlphaDarken(Colors.CoinPlatinum).Hex3()
+                            + ":"
+                            + platinumCost
+                            + " "
+                            + Lang.inter[15].Value
+                            + "] ";
+
+                    if (goldCost > 0)
+                        costText =
+                            costText
+                            + "[c/"
+                            + Colors.AlphaDarken(Colors.CoinGold).Hex3()
+                            + ":"
+                            + goldCost
+                            + " "
+                            + Lang.inter[16].Value
+                            + "] ";
+
+                    if (silverCost > 0)
+                        costText =
+                            costText
+                            + "[c/"
+                            + Colors.AlphaDarken(Colors.CoinSilver).Hex3()
+                            + ":"
+                            + silverCost
+                            + " "
+                            + Lang.inter[17].Value
+                            + "] ";
+
+                    if (copperCost > 0)
+                        costText =
+                            costText
+                            + "[c/"
+                            + Colors.AlphaDarken(Colors.CoinCopper).Hex3()
+                            + ":"
+                            + copperCost
+                            + " "
+                            + Lang.inter[18].Value
+                            + "] ";
+
+                    // ItemSlot.DrawSavings(
+                    //     Main.spriteBatch,
+                    //     num56 + 130,
+                    //     Main.instance.invBottom,
+                    //     horizontal: true
+                    // );
+                    ChatManager.DrawColorCodedStringWithShadow(
+                        Main.spriteBatch,
+                        FontAssets.MouseText.Value,
+                        costText,
+                        new Vector2(
+                            (float)(slotX + 50 + 25) + FontAssets.MouseText.Value.MeasureString(text).X,
+                            slotY
+                        ),
+                        Microsoft.Xna.Framework.Color.White,
+                        0f,
+                        Vector2.Zero,
+                        Vector2.One
+                    );
+                    int reforgeButtonX = slotX + 70 + 25; // moving elements over by 25px to fix overlap
+                    int reforgeButtonY = slotY + 40;
+                    bool hoveringOverReforgeButton =
+                        Main.mouseX > reforgeButtonX - 15 
+                        && Main.mouseX < reforgeButtonX + 15
+                        && Main.mouseY > reforgeButtonY - 15
+                        && Main.mouseY < reforgeButtonY + 15
+                        && !PlayerInput.IgnoreMouseInterface;
+                    Texture2D hoverTexture = TextureAssets.Reforge[0].Value;
+                    if (hoveringOverReforgeButton)
+                        hoverTexture = TextureAssets.Reforge[1].Value;
+
+                    Main.spriteBatch.Draw(
+                        hoverTexture,
+                        new Vector2(reforgeButtonX, reforgeButtonY),
+                        null,
+                        Microsoft.Xna.Framework.Color.White,
+                        0f,
+                        hoverTexture.Size() / 2f,
+                        Main.reforgeScale,
+                        SpriteEffects.None,
+                        0f
+                    );
+                    UILinkPointNavigator.SetPosition(
+                        304,
+                        new Vector2(reforgeButtonX, reforgeButtonY) + hoverTexture.Size() / 4f
+                    );
+                    if (hoveringOverReforgeButton)
+                    {
+                        Main.hoverItemName = Lang.inter[19].Value;
+                        if (!Main.mouseReforge)
+                            SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Menu_Tick"));
+
+                        Main.mouseReforge = true;
+                        Main.LocalPlayer.mouseInterface = true;
+
+                        /*
+                        if (mouseLeftRelease && mouseLeft && Main.LocalPlayer.BuyItem(num58)) {
+                        */
+                        if (
+                            Main.mouseLeftRelease
+                            && Main.mouseLeft
+                            && Main.LocalPlayer.CanAfford(reforgeCost)
+                            && ItemLoader.CanReforge(Main.reforgeItem)
+                        )
+                        {
+                            if (InventoryManager.GetItemCategorization(Main.reforgeItem.type) == TerraCellsItemCategory.Weapon
+                                && Main.reforgeItem.TryGetGlobalItem(out FunkyModifierItemModifier modifier)) 
+                            {
+
+                                Main.LocalPlayer.BuyItem(reforgeCost);
+                                // Disabled reforge system, using FunkyModifier system now >:3
+                                // ItemLoader.PreReforge(Main.reforgeItem); // After BuyItem just in case
+
+                                FunkyModifierItemModifier.Reforge(Main.reforgeItem);
+                                // Main.reforgeItem.ResetPrefix();
+                                // Main.reforgeItem.Prefix(-2);
+                                Main.reforgeItem.position.X =
+                                    Main.LocalPlayer.position.X
+                                    + (float)(Main.LocalPlayer.width / 2)
+                                    - (float)(Main.reforgeItem.width / 2);
+                                Main.reforgeItem.position.Y =
+                                    Main.LocalPlayer.position.Y
+                                    + (float)(Main.LocalPlayer.height / 2)
+                                    - (float)(Main.reforgeItem.height / 2);
+
+                                // ItemLoader.PostReforge(Main.reforgeItem);
+
+                                for (int i = 0; i < modifier.modifiers.Length; i++)
+                                {
+                                    FunkyModifier mod = modifier.modifiers[i];
+                                    var item = Main.reforgeItem.Clone();
+                                    item.SetNameOverride(mod.ToString());
+                                    item.rare = i; 
+                                    PopupText.NewText(
+                                        PopupTextContext.ItemReforge,
+                                        item,
+                                        Main.reforgeItem.stack,
+                                        noStack: true,
+                                        longText: true
+                                    );
+                                }
+
+                                if (modifier.modifiers.Length == 0) {
+                                    var item = Main.reforgeItem.Clone();
+                                    item.SetNameOverride("Nothing...");
+                                    item.rare = ItemRarityID.Gray; 
+                                    PopupText.NewText(
+                                        PopupTextContext.ItemReforge,
+                                        item,
+                                        Main.reforgeItem.stack,
+                                        noStack: true,
+                                        longText: true
+                                    );
+                                }
+                                SoundEngine.PlaySound(SoundID.Item37);
+                            } else {
+                                var item = Main.reforgeItem.Clone();
+                                item.SetNameOverride("Could not reforge!");
+                                PopupText.NewText(
+                                    PopupTextContext.ItemReforge,
+                                    item,
+                                    Main.reforgeItem.stack,
+                                    noStack: true,
+                                    longText: true
+                                );
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Main.mouseReforge = false;
+                    }
+                }
+                else
+                {
+                    text = Lang.inter[20].Value;
+                }
+
+                ChatManager.DrawColorCodedStringWithShadow(
+                    Main.spriteBatch,
+                    FontAssets.MouseText.Value,
+                    text,
+                    new Vector2(slotX + 50 + 25, slotY),
+                    new Microsoft.Xna.Framework.Color(
+                        Main.mouseTextColor,
+                        Main.mouseTextColor,
+                        Main.mouseTextColor,
+                        Main.mouseTextColor
+                    ),
+                    0f,
+                    Vector2.Zero,
+                    Vector2.One
+                );
+                if (
+                    Main.mouseX >= slotX
+                    && (float)Main.mouseX
+                        <= (float)slotX
+                            + (float)TextureAssets.InventoryBack.Width() * Main.inventoryScale
+                    && Main.mouseY >= slotY
+                    && (float)Main.mouseY
+                        <= (float)slotY
+                            + (float)TextureAssets.InventoryBack.Height() * Main.inventoryScale
+                    && !PlayerInput.IgnoreMouseInterface
+                )
+                {
+                    Main.LocalPlayer.mouseInterface = true;
+                    Main.craftingHide = true;
+                    ItemSlot.LeftClick(ref Main.reforgeItem, 5);
+                    if (Main.mouseLeftRelease && Main.mouseLeft)
+                        Recipe.FindRecipes();
+
+                    ItemSlot.RightClick(ref Main.reforgeItem, 5);
+                    ItemSlot.MouseHover(ref Main.reforgeItem, 5);
+                }
+
+                ItemSlot.Draw(Main.spriteBatch, ref Main.reforgeItem, 5, new Vector2(slotX, slotY));
+            }
+        }
+        // else if (InGuideCraftMenu) {
 
         Main.CreativeMenu.Draw(Main.spriteBatch);
         bool flag10 = Main.CreativeMenu.Enabled && !Main.CreativeMenu.Blocked;
@@ -2677,6 +2991,7 @@ public class LimitedStorageUI : UIState
     }
 
     // a customized version of ItemSlot.LeftClick
+    internal static MethodInfo ItemSlot_LeftClick_SellOrTrash = typeof(ItemSlot).GetMethod("LeftClick_SellOrTrash", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.InvokeMethod);
     public static void ItemSlotLeftClick(Item[] inv, int context = 0, int slot = 0)
     {
         if (
@@ -2696,12 +3011,15 @@ public class LimitedStorageUI : UIState
                 return;
 
             inv[slot].newAndShiny = false;
-            if (
-                ItemSlotOverrideLeftClick(inv, context, slot)
-                || player.itemAnimation != 0
-                || player.itemTime != 0
-            )
-                return;
+            if (Main.npcShop > 0)
+            {
+                if (
+                    (bool)ItemSlot_LeftClick_SellOrTrash.Invoke(null, new object?[] { inv, context, slot }) == true
+                    || player.itemAnimation != 0
+                    || player.itemTime != 0
+                )
+                    return;
+            }
         }
 
         int num = ItemSlot.PickItemMovementAction(inv, context, slot, Main.mouseItem);
@@ -3359,7 +3677,6 @@ public class LimitedStorageUI : UIState
         }
         else
         {
-            // throw new Exception("test hehe :3");
             Item item = inv[slot];
             inv[slot] = ItemSlotArmorSwap(inv[slot], out success);
             if (success)
@@ -3420,38 +3737,34 @@ public class LimitedStorageUI : UIState
 
     private static bool ItemSlotAccessorySwap(Player player, Item item, ref Item result)
     {
+        //-1 => No valid swap
+        // 0 => First slot available
+        // 1 => Swap with air
+        // 2 => Swap with same type
+        int swapType = -1;
+
         //TML: Rewrote ArmorSwap for accessories under the PR #1299 so it was actually readable. No vanilla functionality lost in transition
         var accSlotToSwapTo = -1;
 
         //TML: Check if there is an empty slot available in functional slots, and if not, track the last available slot
         for (int i = 3; i < 5; i++)
         {
-            if (player.IsItemSlotUnlockedAndUsable(i))
+            if (player.IsItemSlotUnlockedAndUsable(i) && ItemLoader.CanEquipAccessory(item, i, false))
             {
-                if (ItemLoader.CanEquipAccessory(item, i, false))
+                int thisSwapType = 0;
+                if (player.armor[i].IsAir)
+                    thisSwapType = 1;
+                else if (player.armor[i].type == item.type)
+                    thisSwapType = 2;
+
+                if (thisSwapType > swapType)
                 {
                     accSlotToSwapTo = i;
-                    break;
+                    swapType = thisSwapType;
+                    if (thisSwapType == 2)
+                        break;
                 }
             }
-        }
-
-        //TML: Check if there is an existing copy of the item in any slot (including vanity)
-        // Will also replace wings with wings
-        for (int j = 3; j < 5; j++)
-        {
-            if (item.type == player.armor[j].type && ItemLoader.CanEquipAccessory(item, j, false))
-                accSlotToSwapTo = j;
-
-            // if (
-            //     j < 10
-            //     && (
-            //         item.wingSlot > 0 && player.armor[j].wingSlot > 0
-            //         || !ItemLoader.CanAccessoryBeEquippedWith(player.armor[j], item)
-            //     )
-            //     && ItemLoader.CanEquipAccessory(item, j, false)
-            // )
-            //     accSlotToSwapTo = j - 3;
         }
 
         // No slot found, and it can't go in slot zero, than return
@@ -3460,22 +3773,25 @@ public class LimitedStorageUI : UIState
 
         // accSlotToSwapTo = Math.Max(accSlotToSwapTo, 0);
 
-        if (ItemSlot.isEquipLocked(player.armor[accSlotToSwapTo].type))
-        {
-            result = item;
-            return false;
-        }
+        //See: https://discord.com/channels/1260223010728706169/1260224973549736006/1373140416605458494
+        //if (ItemSlot.isEquipLocked(player.armor[accSlotToSwapTo].type))
+        //{
+        //    result = item;
+        //    return false;
+        //}
 
-        result = player.armor[accSlotToSwapTo].Clone();
-        player.armor[accSlotToSwapTo] = item.Clone();
+        Utils.Swap(ref player.armor[accSlotToSwapTo], ref result);
+        //result = player.armor[accSlotToSwapTo].Clone();
+        //player.armor[accSlotToSwapTo] = item.Clone();
 
         return true;
     }
 
     private static bool ItemSlotOverrideLeftClick(Item[] inv, int context = 0, int slot = 0)
     {
-        if (Math.Abs(context) == 10 && ItemSlot.isEquipLocked(inv[slot].type))
-            return true;
+        //ItemSlot.isEquipLocked(..) always returns false. This will never run
+        //if (Math.Abs(context) == 10 && ItemSlot.isEquipLocked(inv[slot].type))
+            //return true;
 
         if (
             Main.LocalPlayer.tileEntityAnchor.IsInValidUseTileEntity()
@@ -3495,7 +3811,7 @@ public class LimitedStorageUI : UIState
             return true;
         }
 
-        if (Main.cursorOverride == 2)
+        if (Main.cursorOverride == CursorOverrideID.Magnifiers)
         {
             if (
                 ChatManager.AddChatText(
@@ -3509,7 +3825,7 @@ public class LimitedStorageUI : UIState
             return true;
         }
 
-        if (Main.cursorOverride == 3)
+        if (Main.cursorOverride == CursorOverrideID.FavoriteStar)
         {
             if (
                 !(typeof(ItemSlot).GetField("canFavoriteAt").GetValue(null) as bool[])[
@@ -3523,7 +3839,7 @@ public class LimitedStorageUI : UIState
             return true;
         }
 
-        if (Main.cursorOverride == 7)
+        if (Main.cursorOverride == CursorOverrideID.BackInventory)
         {
             if (context == 29)
             {
@@ -3563,7 +3879,7 @@ public class LimitedStorageUI : UIState
             return true;
         }
 
-        if (Main.cursorOverride == 8)
+        if (Main.cursorOverride == CursorOverrideID.ChestToInventory)
         {
             inv[slot] = Main.player[Main.myPlayer]
                 .GetItem(
@@ -3584,7 +3900,7 @@ public class LimitedStorageUI : UIState
             return true;
         }
 
-        if (Main.cursorOverride == 9)
+        if (Main.cursorOverride == CursorOverrideID.InventoryToChest)
         {
             if (Main.CreativeMenu.IsShowingResearchMenu())
             {

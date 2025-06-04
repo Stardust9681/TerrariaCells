@@ -50,11 +50,14 @@ namespace TerrariaCells.Common.Systems
             orig.Invoke(self);
             if (self.life > 1 && !NPCID.Sets.ProjectileNPC[self.type] && wasActive && !self.active)
             {
-                RespawnMarkers.Add(
-                    new NPCRespawnMarker(
+                NPCRespawnMarker marker = new NPCRespawnMarker(
                         self.type,
-                        Utilities.TCellsUtils.FindGround(self.getRect(), 20) - new Vector2(self.width * 0.5f, self.height * 0.5f),
-                        self.life));
+                         self.position, //Utilities.TCellsUtils.FindGround(self.getRect(), 20) - new Vector2(self.width * 0.5f, self.height * 0.5f),
+                        self.life);
+                if (NPCID.Sets.SpecialSpawningRules.TryGetValue(self.type, out int value) && value == 0)
+                    marker.RespawnTile = new Point16((short)self.ai[0], (short)self.ai[1]);
+                HandleSpecialDespawn(self, ref marker);
+                RespawnMarkers.Add(marker);
             }
         }
 
@@ -72,6 +75,10 @@ namespace TerrariaCells.Common.Systems
 
             if (RespawnMarkers.Count == 0)
                 return;
+
+			//Disable spawns if disabled
+			if (Configs.DevConfig.Instance.DisableSpawns)
+				return;
 
             List<Rectangle> respawnRects = new List<Rectangle>();
             Vector2 rectSize = new Vector2(2608f*0.67f, 1840f*0.67f);
@@ -126,6 +133,7 @@ namespace TerrariaCells.Common.Systems
                     newNPC.ai[1] = marker.RespawnTile.Y;
                     newNPC.netUpdate = true;
                 }
+                HandleSpecialSpawn(newNPC, marker.RespawnTile.X, marker.RespawnTile.Y);
                 newNPC.timeLeft = 3600; //1 min
             }
         }
@@ -135,7 +143,18 @@ namespace TerrariaCells.Common.Systems
             return;
         }
 
-
+        internal static void HandleSpecialDespawn(NPC npc, ref NPCRespawnMarker marker)
+        {
+            switch (npc.type)
+            {
+                case NPCID.SpikeBall:
+                    marker.RespawnTile = (new Vector2(npc.ai[1], npc.ai[2]) - (npc.Size * 0.5f)).ToTileCoordinates16();
+                    break;
+            }
+        }
+        internal static void HandleSpecialSpawn(NPC npc, int i, int j)
+        {
+        }
 
 
 

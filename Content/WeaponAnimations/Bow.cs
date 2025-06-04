@@ -9,8 +9,11 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrariaCells.Common.GlobalItems;
+using TerrariaCells.Common.GlobalProjectiles;
 using TerrariaCells.Common.ModPlayers;
 using TerrariaCells.Common.Utilities;
+using TerrariaCells.Content.Items;
 using TerrariaCells.Content.Projectiles.HeldProjectiles;
 
 namespace TerrariaCells.Content.WeaponAnimations
@@ -20,10 +23,61 @@ namespace TerrariaCells.Content.WeaponAnimations
         //sniper is here because i was gonna give it the same animation anyways
         public static int[] Bows = { ItemID.WoodenBow, ItemID.AshWoodBow, ItemID.BorealWoodBow, ItemID.PalmWoodBow, ItemID.ShadewoodBow, ItemID.EbonwoodBow, ItemID.PearlwoodBow, ItemID.RichMahoganyBow,
             ItemID.CopperBow, ItemID.TinBow, ItemID.LeadBow, ItemID.IronBow, ItemID.SilverBow, ItemID.TungstenBow, ItemID.GoldBow, ItemID.PlatinumBow,
-            ItemID.DemonBow, ItemID.TendonBow, ItemID.MoltenFury, ItemID.BeesKnees, ItemID.HellwingBow, ItemID.BloodRainBow,
-            ItemID.DD2BetsyBow, ItemID.DaedalusStormbow, ItemID.IceBow, ItemID.Marrow, ItemID.Phantasm, ItemID.PulseBow, ItemID.ShadowFlameBow, ItemID.Tsunami};
+            ItemID.DemonBow, ItemID.TendonBow, ItemID.MoltenFury, ItemID.BeesKnees, ItemID.HellwingBow, ItemID.BloodRainBow, 
+            ItemID.DD2BetsyBow, ItemID.DaedalusStormbow, ItemID.IceBow, ItemID.Marrow, ItemID.Phantasm, ItemID.PulseBow, ItemID.ShadowFlameBow, ItemID.Tsunami, ModContent.ItemType<PhantomPhoenix>()};
+        public static float StaticChargeTimeMult = 1f;
         public int Charge = 0;
+        public SoundStyle? StoredSound;
+        public int ForcedProjectile = ProjectileID.WoodenArrowFriendly;
+        public int ChargedProjectile = ProjectileID.WoodenArrowFriendly;
+        public int TimeToCharge = 60;
         public override bool InstancePerEntity => true;
+        public override void SetStaticDefaults()
+        {
+            for (int i = 0; i < Bows.Length; i++) {
+                ItemID.Sets.ItemsThatAllowRepeatedRightClick[Bows[i]] = true;
+            }
+            
+            base.SetStaticDefaults();
+        }
+        public override void SetDefaults(Item item)
+        {
+            item.autoReuse = true;
+            StoredSound = item.UseSound;
+            item.UseSound = null;
+            if (item.type == ItemID.PulseBow)
+            {
+                ChargedProjectile = ProjectileID.PulseBolt;
+            }
+            if (item.type == ItemID.IceBow)
+            {
+                ChargedProjectile = ProjectileID.FrostArrow;
+            }
+            if (item.type == ItemID.MoltenFury)
+            {
+                ForcedProjectile = ProjectileID.FireArrow;
+                ChargedProjectile = ProjectileID.HellfireArrow;
+            }
+            if (item.type == ItemID.Marrow)
+            {
+                ForcedProjectile = ProjectileID.BoneArrow;
+            }
+            if (item.type == ModContent.ItemType<PhantomPhoenix>())
+            {
+                ForcedProjectile = ProjectileID.FireArrow;
+                ChargedProjectile = ProjectileID.DD2PhoenixBowShot;
+            }
+            if (item.type == ItemID.BeesKnees)
+            {
+                ChargedProjectile = ProjectileID.BeeArrow;
+            }
+            if (item.type == ItemID.HellwingBow)
+            {
+                ForcedProjectile = ProjectileID.Hellwing;
+                ChargedProjectile = ProjectileID.Hellwing;
+            }
+            base.SetDefaults(item);
+        }
         public override bool AppliesToEntity(Item entity, bool lateInstantiation)
         {
             return Bows.Contains(entity.type);
@@ -31,11 +85,9 @@ namespace TerrariaCells.Content.WeaponAnimations
         public override bool AltFunctionUse(Item item, Player player)
         {
             return true;
-            return base.AltFunctionUse(item, player);
         }
         public override bool CanUseItem(Item item, Player player)
         {
-            
             return base.CanUseItem(item, player);
         }
         public override void UpdateInventory(Item item, Player player)
@@ -69,9 +121,9 @@ namespace TerrariaCells.Content.WeaponAnimations
                     player.direction = -1;
                     player.itemRotation += MathHelper.Pi;
                 }
-                if (Charge < item.useTime * 2)
+                if (Charge < TimeToCharge * StaticChargeTimeMult)
                 {
-                    if (Charge == item.useTime * 2 - 1)
+                    if (Charge == TimeToCharge * StaticChargeTimeMult - 1)
                     {
                         SoundEngine.PlaySound(SoundID.MaxMana, player.Center);
                         for (int i = 0; i < 10; i++)
@@ -91,20 +143,28 @@ namespace TerrariaCells.Content.WeaponAnimations
                 if (!player.controlUseTile)
                 {
                     player.altFunctionUse = 0;
-                    int originalDamage = item.damage;
-                    float originalShootSpeed = item.shootSpeed;
-                    item.damage *= (int)(1+(Charge / (item.useTime * 2f)));
-                    if (Charge >= item.useTime * 2)
-                        item.shootSpeed *= 1.5f;
                     SoundEngine.PlaySound(item.UseSound, player.Center);
                     MethodInfo PlayerItemCheck_Shoot = typeof(Player).GetMethod("ItemCheck_Shoot", BindingFlags.NonPublic | BindingFlags.Instance);
                     PlayerItemCheck_Shoot.Invoke(player, [player.whoAmI, item, item.damage]);
-                    item.damage = originalDamage;
-                    item.shootSpeed = originalShootSpeed;
                 }
+            }else if (player.itemTime == player.itemTimeMax - 1 && StoredSound != null)
+            {
+                SoundEngine.PlaySound(StoredSound, player.Center);
             }
             player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, player.itemRotation + (player.direction == -1 ? MathHelper.Pi/2 : -MathHelper.Pi/2));
             
+        }
+        public override void ModifyShootStats(Item item, Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+        {
+            
+            type = ForcedProjectile;
+            damage = (int)TCellsUtils.LerpFloat(damage * 1, damage * 1.4f, Charge, (float)TimeToCharge * StaticChargeTimeMult, TCellsUtils.LerpEasing.InCubic);
+            if (Charge >= TimeToCharge * StaticChargeTimeMult)
+            {
+                type = ChargedProjectile;
+                velocity *= 1.5f;
+            }
+            base.ModifyShootStats(item, player, ref position, ref velocity, ref type, ref damage, ref knockback);
         }
         public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
@@ -112,9 +172,12 @@ namespace TerrariaCells.Content.WeaponAnimations
             {
                 return false;
             }
-            
-            
-            return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
+            Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
+            if (Charge >= TimeToCharge * StaticChargeTimeMult)
+            {
+                proj.GetGlobalProjectile<VanillaReworksGlobalProjectile>().ForceCrit = true;
+            }
+            return false;
         }
     }
 }

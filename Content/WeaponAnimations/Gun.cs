@@ -13,6 +13,8 @@ namespace TerrariaCells.Content.WeaponAnimations
 {
     public abstract class Gun : GlobalItem
     {
+        public static float StaticReloadTimeMult = 1f;
+
         public override bool InstancePerEntity => true;
         public int MaxAmmo = 4;
         public int Ammo = 0;
@@ -20,14 +22,15 @@ namespace TerrariaCells.Content.WeaponAnimations
         public int ReloadStep = 0;
         public bool FullyReloads = true;
         public SoundStyle? StoredSound = null;
+        public int SkipStep = -1;
 
         public int OriginalUseTime;
         public int OriginalUseAnimation;
         public int OriginalReuseDelay;
-        //dont know what this method is really for but it is necessary
+        
+
         public override void SetDefaults(Item item)
         {
-            
             StoredSound = item.UseSound;
             item.UseSound = null;
 
@@ -37,7 +40,6 @@ namespace TerrariaCells.Content.WeaponAnimations
 
             switch (item.type)
             {
-
                 case ItemID.SniperRifle:
                 case ItemID.StarCannon:
                 case ItemID.RocketLauncher:
@@ -88,8 +90,7 @@ namespace TerrariaCells.Content.WeaponAnimations
             }
             switch (item.type)
             {
-
-                 case ItemID.FlareGun: 
+                case ItemID.FlareGun: 
                 case ItemID.Revolver:
                 case ItemID.TheUndertaker:
                 case ItemID.FlintlockPistol:
@@ -124,35 +125,49 @@ namespace TerrariaCells.Content.WeaponAnimations
                     break;
                  
                 case ItemID.GrenadeLauncher:
-                    ReloadTimeMult = 1.5f;
+                    ReloadTimeMult = 0.6f;
                     break;
                 case ItemID.StarCannon:
                 case ItemID.RocketLauncher:
-                    ReloadTimeMult = 3;
+                    ReloadTimeMult = 2f;
                     break;
                 case ItemID.SniperRifle:
-                    ReloadTimeMult = 3;
+                    ReloadTimeMult = 1.2f;
+                    SkipStep = 1;
                     break;
                  
-                    
-                
             }
 
             Ammo = MaxAmmo;
-            base.SetDefaults(item);
         }
         public override GlobalItem Clone(Item from, Item to)
         {
-            to.GetGlobalItem(this).Ammo = from.GetGlobalItem(this).Ammo;
-            to.GetGlobalItem(this).MaxAmmo = from.GetGlobalItem(this).MaxAmmo;
-            to.GetGlobalItem(this).ReloadTimeMult = from.GetGlobalItem(this).ReloadTimeMult;
-            to.GetGlobalItem(this).FullyReloads = from.GetGlobalItem(this).FullyReloads;
-            to.GetGlobalItem(this).ReloadStep = from.GetGlobalItem(this).ReloadStep;
-            to.GetGlobalItem(this).StoredSound = from.GetGlobalItem(this).StoredSound;
-            to.GetGlobalItem(this).OriginalUseTime = from.GetGlobalItem(this).OriginalUseTime;
-            to.GetGlobalItem(this).OriginalUseAnimation = from.GetGlobalItem(this).OriginalUseAnimation;
-            to.GetGlobalItem(this).OriginalReuseDelay = from.GetGlobalItem(this).OriginalReuseDelay;
-            return to.GetGlobalItem(this);
+			Gun gunTo = to.GetGlobalItem(this);
+			Gun gunFrom = from.GetGlobalItem(this);
+			gunTo.Ammo = gunFrom.Ammo;
+            gunTo.MaxAmmo = gunFrom.MaxAmmo;
+            gunTo.ReloadTimeMult = gunFrom.ReloadTimeMult;
+            gunTo.FullyReloads = gunFrom.FullyReloads;
+            gunTo.ReloadStep = gunFrom.ReloadStep;
+            gunTo.StoredSound = gunFrom.StoredSound;
+            gunTo.OriginalUseTime = gunFrom.OriginalUseTime;
+            gunTo.OriginalUseAnimation = gunFrom.OriginalUseAnimation;
+            gunTo.OriginalReuseDelay = gunFrom.OriginalReuseDelay;
+            return gunTo;
         }
+
+		public static bool TryGetGlobalItem(Item item, out Gun gun)
+		{
+			gun = null;
+			if (Handgun.Handguns.Contains(item.type))
+				gun = item.GetGlobalItem<Handgun>();
+			if(Autorifle.Autorifles.Contains(item.type))
+				gun = item.GetGlobalItem<Autorifle>();
+			if(Shotgun.Shotguns.Contains(item.type))
+				gun = item.GetGlobalItem<Shotgun>();
+			if(Launcher.Launchers.Contains(item.type))
+				gun = item.GetGlobalItem<Launcher>();
+			return gun != null;
+		}
     }
 }

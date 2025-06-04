@@ -1,29 +1,46 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 using TerrariaCells.Common.Configs;
+using TerrariaCells.Common.GlobalItems;
 
 namespace TerrariaCells.Common.Systems;
 
 public class ChestLootSpawner : ModSystem, IEntitySource
 {
-    Dictionary<string, int[]> ChestLootTables;
+    public Dictionary<string, int[]> ChestLootTables;
 
     public List<int> lootedChests = [];
 
     public string Context => "TerrariaCells.ChestLootSpawner.OnChestOpen";
+
+    public override void Load()
+    {
+        using Stream stream = Mod.GetFileStream("chest loot tables.json");
+        var buf = new byte[stream.Length];
+        stream.Read(buf);
+        ChestLootTables = JsonSerializer.Deserialize<Dictionary<string, int[]>>(buf);
+    }
 
     public override void SetStaticDefaults()
     {
         On_Player.OpenChest += OnChestOpen;
     }
 
+    public override void Unload()
+    {
+        On_Player.OpenChest -= OnChestOpen;
+    }
+
     public override void OnWorldLoad()
     {
-        Reset();
+        lootedChests.Clear();
     }
 
     public void Reset()
@@ -38,9 +55,10 @@ public class ChestLootSpawner : ModSystem, IEntitySource
         }
         lootedChests.Clear();
     }
-
+    // This is executed on the server or singleplayer
     public override void PostUpdateWorld()
     {
+        if (Main.netMode != NetmodeID.SinglePlayer) return;
         foreach (int chest in lootedChests)
         {
             if (Main.chest[chest] == null)
@@ -51,15 +69,72 @@ public class ChestLootSpawner : ModSystem, IEntitySource
             Main.chest[chest].frameCounter = 10;
         }
     }
+    // MULTIPLAYER ONLY
+    public void OpenChest(int x, int y, int newChest)
+    {
+        bool isNewChest = !lootedChests.Contains(newChest);
 
+        Tile tile = Main.tile[x, y];
+
+        string tileFrameX = (tile.TileFrameX / 36).ToString();
+        string tileFrameY = tile.TileFrameY.ToString();
+        if (tileFrameY == "0")
+        {
+            tileFrameY = "";
+        }
+        else
+        {
+            tileFrameY = "/" + tileFrameY;
+        }
+        string tileFrame = tileFrameX + tileFrameY;
+
+        Mod.Logger.Info("Chest opened: " + tileFrame);
+
+        if (DevConfig.Instance.EnableChestChanges)
+        {
+            if (isNewChest)
+            {
+                if (ChestLootTables.TryGetValue(tileFrame, out int[] loot_ids)) 
+                {
+                    if (loot_ids.Length > 0)
+                    {
+                        int i = Item.NewItem(
+                            this,
+                            new Point16(x, y).ToWorldCoordinates(),
+                            0,
+                            0,
+                            loot_ids[Main.rand.Next(loot_ids.Length)]
+                        );
+                        Item item = Main.item[i];
+
+                        if (item.TryGetGlobalItem<TierSystemGlobalItem>(out var tierSystem))
+                        {
+                            int level = Mod.GetContent<TeleportTracker>().First().level;
+                            tierSystem.SetLevel(item, level);
+                        }
+
+                        FunkyModifierItemModifier.Reforge(item);
+                    } else {
+                        NPC.NewNPC(this, x * 16, y * 16, NPCID.Firefly);
+                    }
+                }
+            }
+        }
+
+        if (isNewChest)
+        {
+            lootedChests.Add(newChest);
+        }
+    }
+    // SINGLEPLAYER ONLY
     public void OnChestOpen(On_Player.orig_OpenChest orig, Player self, int x, int y, int newChest)
     {
-        using (Stream stream = Mod.GetFileStream("chest loot tables.json"))
-        {
-            var buf = new byte[stream.Length];
-            stream.Read(buf);
-            ChestLootTables = JsonSerializer.Deserialize<Dictionary<string, int[]>>(buf);
-        }
+        // using (Stream stream = Mod.GetFileStream("chest loot tables.json"))
+        // {
+        //     var buf = new byte[stream.Length];
+        //     stream.Read(buf);
+        //     ChestLootTables = JsonSerializer.Deserialize<Dictionary<string, int[]>>(buf);
+        // }
 
         bool isNewChest = !lootedChests.Contains(newChest);
 
@@ -85,16 +160,30 @@ public class ChestLootSpawner : ModSystem, IEntitySource
 
             if (isNewChest)
             {
-                int length = ChestLootTables[tileFrame].Length;
-                if (length > 0)
+                if (ChestLootTables.TryGetValue(tileFrame, out int[] loot_ids)) 
                 {
-                    Item.NewItem(
-                        this,
-                        new Point16(x, y).ToWorldCoordinates(),
-                        0,
-                        0,
-                        ChestLootTables[tileFrame][Main.rand.Next(length)]
-                    );
+                    if (loot_ids.Length > 0)
+                    {
+                        Item item = Main.item[
+                            Item.NewItem(
+                            this,
+                            new Point16(x, y).ToWorldCoordinates(),
+                            0,
+                            0,
+                            loot_ids[Main.rand.Next(loot_ids.Length)]
+                            )
+                        ];
+
+                        if (item.TryGetGlobalItem<TierSystemGlobalItem>(out var tierSystem))
+                        {
+                            int level = Mod.GetContent<TeleportTracker>().First().level;
+                            tierSystem.SetLevel(item, level);
+                        }
+
+                        FunkyModifierItemModifier.Reforge(item);
+                    }
+                } else {
+                    NPC.NewNPC(this, (x + 1) * 16, y * 16, NPCID.Firefly);
                 }
             }
         }
