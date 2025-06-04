@@ -71,7 +71,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes
 			if (timer % 15 == 0)
 			{
 				NPC ball = NPC.NewNPCDirect(npc.GetSource_FromAI(), npc.Center, Terraria.ID.NPCID.ChaosBall);
-				ball.velocity = npc.DirectionTo(Main.player[npc.target].Center) * 3f;
+				ball.velocity = npc.DirectionTo(Main.player[npc.target].Center) * 1f;
 				ball.damage = npc.damage / 3;
 				ball.netUpdate = true;
 			}
