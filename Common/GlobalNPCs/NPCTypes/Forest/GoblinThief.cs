@@ -98,10 +98,19 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 				Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
 				if (npc.position.Equals(oldPos))
 				{
-					npc.position -= npc.oldVelocity * 2;
-					npc.ai[3] = -npc.direction;
-					npc.ai[1] = Idle;
-					return;
+                    if (Collision.SolidCollision(npc.position - new Vector2(0, npc.height), npc.width, npc.height))
+                    {
+                        npc.position -= npc.oldVelocity * 2;
+                        npc.ai[3] = -npc.direction;
+                        npc.ai[1] = Idle;
+                    }
+                    else
+                    {
+                        npc.ai[0] = 0;
+                        npc.ai[1] = Jump;
+                        npc.ai[3] = npc.direction;
+                    }
+                    return;
 				}
 				else
 				{
@@ -151,10 +160,17 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 			Vector2 distance = new Vector2(MathF.Abs(target.position.X - npc.position.X), MathF.Abs(target.position.Y - npc.position.Y));
 			if (
 				npc.IsFacingTarget(target)
-				&& (distance.X < Utilities.NumberHelpers.ToTileDist(8) && distance.Y < 32))
+				&& distance.X < Utilities.NumberHelpers.ToTileDist(12))
 			{
                 ResetAI(npc);
-				npc.ai[1] = Stab;
+                if (distance.Y < 32)
+                {
+                    npc.ai[1] = Stab;
+                }
+                else
+                {
+                    npc.ai[1] = Jump;
+                }
                 npc.ai[3] = (target.position.X < npc.position.X) ? -1 : 1;
                 return;
 			}
@@ -231,13 +247,20 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             {
                 npc.velocity.X *= 0.9f;
             }
-            else
+            else if (npc.ai[0] == Stab_Windup)
             {
                 CombatNPC.ToggleContactDamage(npc, true);
-                npc.velocity.X = (Stab_DashLen - (npc.ai[0]- Stab_Windup)) * 0.265f * npc.ai[3];
+                npc.velocity.X = 9f * npc.ai[3];
+            }
+            else
+            {
+                if (MathF.Abs(npc.velocity.X) > 1)
+                    npc.velocity.X -= MathF.Sign(npc.velocity.X) * 0.15f;
+                else
+                    npc.velocity.X *= 0.975f;
                 Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
-                Collision.StepDown(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
-                if (npc.ai[0] > Stab_DashLen + Stab_Windup || npc.collideX)
+                //Collision.StepDown(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
+                if (npc.ai[0] > Stab_DashLen + Stab_Windup || (npc.collideX && (MathF.Abs(npc.oldVelocity.X) - MathF.Abs(npc.velocity.X) > 2.5f)))
                 {
                     ResetAI(npc);
                     npc.ai[1] = Stun;
