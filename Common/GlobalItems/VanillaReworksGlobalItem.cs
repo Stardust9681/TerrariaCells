@@ -46,6 +46,9 @@ namespace TerrariaCells.Common.GlobalItems
                     item.value = 1000;
                     break;
                 // Bows
+                case ItemID.WoodenBow:
+                    item.damage = 6;
+                    break;
                 case ItemID.PulseBow:
                     item.damage = 15;
                     item.useTime = 23;
