@@ -173,7 +173,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
         {
             if (!AIOverwriteSystem.AITypeExists(npc.type))
                 return base.CanFallThroughPlatforms(npc);
-            return npc.velocity.Y > npc.maxFallSpeed;
+            return npc.stairFall;
         }
     }
 }

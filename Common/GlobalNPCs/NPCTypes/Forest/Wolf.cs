@@ -54,21 +54,21 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
                 npc.ai[1] = IdleTarget;
                 return;
             }
-            if (npc.direction == 0)
+            if (Math.Abs(npc.direction) != 0)
                 npc.direction = 1;
 
             float newVelX = npc.velocity.X + (0.07f * npc.direction);
-            if (newVelX * npc.direction < 2.6f)
+            if (newVelX * npc.direction < 2.4f)
                 npc.velocity.X = newVelX;
 
             Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
             Collision.StepDown(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
 
-            if (npc.FindGroundInFront().Y - npc.Bottom.Y > Utilities.NumberHelpers.ToTileDist(1) + 4
+            if (npc.FindGroundInFront().Y - npc.Bottom.Y > Utilities.NumberHelpers.ToTileDist(3)
                 || npc.ai[0] > Utilities.NumberHelpers.SecToFrames(3))
             {
                 npc.velocity.X *= 0.67f;
-                npc.direction *= -1;
+                npc.direction = -Math.Sign(npc.direction);
                 ResetAI(npc);
                 return;
             }
@@ -96,8 +96,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             int direction = target.position.X < npc.position.X ? -1 : 1;
 
             float newVelX = npc.velocity.X + (0.07f * direction);
-            if (newVelX * direction < 1
-                && npc.FindGroundInFront().Y - npc.Bottom.Y < Utilities.NumberHelpers.ToTileDist(1))
+            if (newVelX * direction < 1.5f
+                && npc.FindGroundInFront().Y - npc.Bottom.Y < Utilities.NumberHelpers.ToTileDist(3))
                 npc.velocity.X = newVelX;
 
             npc.direction = MathF.Sign(npc.velocity.X);
@@ -124,19 +124,33 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
                 npc.ai[1] = IdleTarget;
                 return;
             }
-            else if (npc.velocity.X * direction > 2 && Utilities.NumberHelpers.ToTileDist(6) < distX && distX < Utilities.NumberHelpers.ToTileDist(16))
+            else if (
+                Utilities.NumberHelpers.ToTileDist(8) < distX && distX < Utilities.NumberHelpers.ToTileDist(12)
+                || npc.collideX
+                )
             {
-                ResetAI(npc);
-                npc.ai[1] = Lunge;
-                return;
+                if (!npc.collideX)
+                    npc.ai[0]++;
+                else
+                    npc.ai[0] += 0.2f;
+                if (npc.ai[0] > 15)
+                {
+                    ResetAI(npc);
+                    npc.ai[1] = Lunge;
+                    return;
+                }
             }
+
+            if (MathF.Abs(npc.velocity.X) > 1)
+                npc.direction = MathF.Sign(npc.velocity.X);
+            else
+                npc.direction = direction;
 
             direction = (target.Center.X - (Utilities.NumberHelpers.ToTileDist(10) * direction)) < npc.Center.X ? -1 : 1;
 
             float newVelX = npc.velocity.X + (0.14f * direction);
-            if (newVelX * direction < 3.6f)
+            if (newVelX * direction < (MathF.Abs(target.velocity.X)*0.33f) + 3.5f)
                 npc.velocity.X = newVelX;
-            npc.direction = MathF.Sign(npc.velocity.X);
 
             Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
             Collision.StepDown(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
@@ -149,27 +163,31 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             {
                 ResetAI(npc);
                 npc.ai[1] = IdleNoTarget;
+                npc.stairFall = false;
                 return;
             }
+            npc.stairFall = npc.Bottom.Y < target.position.Y;
 
-            
             //Grounded...
             if (npc.Grounded())
             {
                 CombatNPC.ToggleContactDamage(npc, false);
-                if (npc.ai[0] < 15)
+                if (npc.ai[0] < 20)
                 {
-                    npc.velocity.X *= 0.95f;
+                    npc.velocity.X *= 0.967f;
                     npc.direction = target.position.X < npc.position.X ? -1 : 1;
-                    npc.ai[2] = MathF.Abs(target.position.X - npc.position.X) * 0.0625f * .57f; //N * 1/16 * 0.57
+                    npc.ai[2] = (MathF.Abs(target.position.X - npc.position.X) + (MathF.Abs(target.velocity.X) * 1.2f)) * 0.0625f * .425f;
+                    if (npc.ai[2] < 5.2f)
+                        npc.ai[2] = 5.2f;
                 }
-                else if (npc.ai[0] == 15)
+                else if (npc.ai[0] == 20)
                 {
                     npc.velocity.X = npc.direction * npc.ai[2];
-                    npc.velocity.Y = -6f;
+                    npc.velocity.Y = -5.5f;
+                    npc.position.Y += npc.velocity.Y;
                     npc.ai[0]++;
                 }
-                else if (npc.ai[0] < 30)
+                else if (npc.ai[0] < 42)
                 {
                     npc.velocity.X *= 0.9f;
                 }
@@ -186,6 +204,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             //Not grounded...
             else
             {
+                Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
                 CombatNPC.ToggleContactDamage(npc, true);
                 if (npc.ai[0] > 15 && MathF.Abs(npc.velocity.X) < 1)
                 {
@@ -193,7 +212,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
                     npc.velocity.Y -= 0.01f;
                 }
             }
-            npc.velocity.Y += 0.024f;
+            npc.velocity.Y -= 0.0167f;
         }
 
         public override bool FindFrame(NPC npc, int frameHeight)
@@ -202,13 +221,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             switch ((int)npc.ai[1])
             {
                 case IdleNoTarget:
-                    frameRate = 4;
+                    frameRate = 5;
                     break;
                 case IdleTarget:
-                    frameRate = 4;
+                    frameRate = 5;
                     break;
                 case Approach:
-                    frameRate = 8;
+                    frameRate = 10;
                     break;
                 case Lunge:
                     if (npc.GetGlobalNPC<CombatNPC>().allowContactDamage)
@@ -246,19 +265,22 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             }
             else
             {
-                npc.frameCounter += (int)(npc.velocity.X);
-                npc.frame.Height = frameHeight;
-                if (Math.Abs(npc.frameCounter) > 4)
+                if (MathF.Abs(npc.velocity.X) > 2)
+                    npc.frameCounter += npc.velocity.X;
+                else
+                    npc.frameCounter += MathF.Sign(npc.velocity.X) * 0.5f;
+                    npc.frame.Height = frameHeight;
+                if (Math.Abs(npc.frameCounter) > frameRate)
                 {
                     int newFrame = npc.frame.Y / frameHeight;
                     newFrame += Math.Sign(npc.frameCounter * npc.spriteDirection);
-                    if (newFrame > Main.npcFrameCount[npc.type] - 3)
+                    if (newFrame > Main.npcFrameCount[npc.type] - 4)
                     {
                         newFrame = 3;
                     }
                     else if (newFrame < 3)
                     {
-                        newFrame = Main.npcFrameCount[npc.type] - 3;
+                        newFrame = Main.npcFrameCount[npc.type] - 4;
                     }
                     npc.frame.Y = newFrame * frameHeight;
                     npc.frameCounter = 0;
