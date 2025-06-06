@@ -7,7 +7,7 @@ using Terraria.ID;
 
 namespace TerrariaCells.Common.GlobalNPCs
 {
-    public class GuideDialogue : GlobalNPC
+    public class DialogueNPC : GlobalNPC
     {
         public override void Load()
         {
@@ -18,10 +18,6 @@ namespace TerrariaCells.Common.GlobalNPCs
         {
             On_Main.HelpText -= On_Main_HelpText;
             On_Main.DrawNPCChatButtons -= On_Main_DrawNPCChatButtons;
-        }
-        public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
-        {
-            return entity.type == NPCID.Guide;
         }
 
         private static readonly string[] HelpText = new string[] {
@@ -65,6 +61,15 @@ namespace TerrariaCells.Common.GlobalNPCs
                 Main.LocalPlayer.currentShoppingSettings.HappinessReport = "";
             }
             orig.Invoke(superColor, chatColor, numLines, focusText, focusText3);
+        }
+
+        public override bool? CanChat(NPC npc)
+        {
+            if (npc.type == NPCID.BoundGoblin)
+            {
+                Main.LocalPlayer.GetModPlayer<Common.ModPlayers.MetaPlayer>().Goblin = true;
+            }
+            return base.CanChat(npc);
         }
     }
 }

@@ -54,7 +54,6 @@ public class TeleportTracker : ModSystem
         {
             Mod.Logger.Info($"Teleporting to next level: {nextLevel}:");
             GoToNextLevel();
-            GlobalNPCs.VanillaNPCShop.UpdateTeleport(level, nextLevel); //Figure this is whatever for the Inn
             return;
         }
 
@@ -90,6 +89,7 @@ public class TeleportTracker : ModSystem
         Vector2 position = (
             roomPos + new Point16(levelStructure.SpawnX, levelStructure.SpawnY)
         ).ToWorldCoordinates();
+        DoTeleportNPCCheck("inn", position);
 
         if (Main.netMode == NetmodeID.SinglePlayer)
         {
@@ -106,6 +106,22 @@ public class TeleportTracker : ModSystem
             (int)position.X,
             (int)position.Y
         );
+    }
+    private void DoTeleportNPCCheck(string actualDestination, Vector2 position)
+    {
+        for (int i = 0; i < Main.maxNPCs; i++)
+        {
+            NPC npc = Main.npc[i];
+            npc.SetDefaults(NPCID.None);
+            npc.active = false;
+        }
+        if (actualDestination.Equals("inn") && Main.LocalPlayer.GetModPlayer<Common.ModPlayers.MetaPlayer>().Goblin)
+        {
+            //TO DO: Multiplayer
+            NPC.NewNPC(NPC.GetSource_NaturalSpawn(), (int)position.X, (int)position.Y, NPCID.GoblinTinkerer);
+        }
+
+        GlobalNPCs.VanillaNPCShop.UpdateTeleport(level, nextLevel);
     }
 
     private void GoToNextLevel()
@@ -131,6 +147,7 @@ public class TeleportTracker : ModSystem
         Vector2 position = (
             roomPos + new Point16(levelStructure.SpawnX, levelStructure.SpawnY)
         ).ToWorldCoordinates();
+        DoTeleportNPCCheck(nextLevel, position);
 
         Mod.Logger.Info($"	Found structure. Teleporting to position {position}.");
 

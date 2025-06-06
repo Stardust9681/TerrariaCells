@@ -92,7 +92,8 @@ namespace TerrariaCells.Common.GlobalNPCs
             {
                 case NPCID.BrainofCthulhu:
                     npcLoot.Add(commonLesserHealthPotion);
-                    npcLoot.Add(new CommonDrop(ItemID.CloudinaBottle, 1));
+                    //npcLoot.Add(new CommonDrop(ItemID.CloudinaBottle, 1));
+                    npcLoot.Add(new ItemDropWithConditionRule(ItemID.CloudinaBottle, 1, 1, 1, new PowerDropRuleCondition(static mplayer => !mplayer.CloudJump)));
                     break;
                 case NPCID.EyeofCthulhu:
                 case NPCID.KingSlime:
@@ -182,5 +183,27 @@ namespace TerrariaCells.Common.GlobalNPCs
 					return -1; //Something went wrong
 			}
 		}
+    }
+
+    internal class PowerDropRuleCondition : IItemDropRuleCondition
+    {
+        private Func<Common.ModPlayers.MetaPlayer, bool> _check;
+        public PowerDropRuleCondition(Func<ModPlayers.MetaPlayer, bool> condition)
+        {
+            _check = condition;
+        }
+        public bool CanDrop(DropAttemptInfo info)
+        {
+            return _check.Invoke(info.player.GetModPlayer<ModPlayers.MetaPlayer>());
+        }
+
+        public bool CanShowItemDropInUI()
+        {
+            return false;
+        }
+        public string GetConditionDescription()
+        { //Will never be seen by players anyway. I hope
+            return string.Empty;
+        }
     }
 }

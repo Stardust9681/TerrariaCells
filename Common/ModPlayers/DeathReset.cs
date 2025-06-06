@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using TerrariaCells.Common.Configs;
 using TerrariaCells.Common.Items;
 using TerrariaCells.Common.Systems;
+using Terraria.ModLoader.IO;
 
 namespace TerrariaCells.Common.ModPlayers;
 
@@ -15,13 +16,14 @@ public class DeathReset : ModPlayer, IEntitySource
 
 	public string Context => "TerrariaCells.Common.ModPlayers.DeathReset";
 
-	public override void Kill(
+    public override void Kill(
 		double damage,
 		int hitDirection,
 		bool pvp,
 		PlayerDeathReason damageSource
 	)
 	{
+        Player.RemoveSpawn();
 		if (DevConfig.Instance.DropItems)
 		{
 			// Player.DropItems(); // let me keep my vanity pleas ;-;
@@ -67,6 +69,16 @@ public class DeathReset : ModPlayer, IEntitySource
 
 	public override void OnEnterWorld()
 	{
+        //If the last world the player was in is the world they've just entered
+        //Don't do anything
+        if(Player.spN[0] is not null
+            && Main.worldName.Equals(Player.spN[0])
+            && Main.worldID == Player.spI[0])
+            return;
+        //Don't replace inventories when this is disabled. Whoopsies
+        if (!DevConfig.Instance.DropItems)
+            return;
+        //Set starting inventory
 		foreach ((int itemslot, TerraCellsItemCategory _) in InventoryManager.slotCategorizations)
 		{
 			Entity.inventory[itemslot].TurnToAir();
@@ -123,8 +135,23 @@ public class DeathReset : ModPlayer, IEntitySource
 	public override void Load()
 	{
 		Terraria.GameContent.UI.States.On_UICharacterCreation.SetupPlayerStatsAndInventoryBasedOnDifficulty += SetupPlayerInfo;
+        On_Player.SavePlayerFile_Vanilla += On_Player_SavePlayerFile_Vanilla;
+        On_Player.CheckSpawn += On_Player_CheckSpawn;
 	}
-	public override void Unload()
+
+    private bool On_Player_CheckSpawn(On_Player.orig_CheckSpawn orig, int x, int y)
+    {
+        return true;
+    }
+
+    //Changing this in PreSave() hook didn't work :/
+    private byte[] On_Player_SavePlayerFile_Vanilla(On_Player.orig_SavePlayerFile_Vanilla orig, Terraria.IO.PlayerFileData playerFile)
+    {
+        playerFile.Player.ChangeSpawn((int)(playerFile.Player.position.X / 16), (int)(playerFile.Player.Bottom.Y / 16));
+        return orig.Invoke(playerFile);
+    }
+
+    public override void Unload()
 	{
 		Terraria.GameContent.UI.States.On_UICharacterCreation.SetupPlayerStatsAndInventoryBasedOnDifficulty -= SetupPlayerInfo;
 	}
