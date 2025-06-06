@@ -120,7 +120,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                     UpdateNPCShop(npc, Weapons, level, 3);
                     break;
                 case NPCID.Merchant:
-                    UpdateNPCShop(npc, (int[])[.. Weapons, .. Skills], level, 2);
+                    UpdateNPCShop(npc, (int[])[.. Armors, .. Skills], level, 2);
                     break;
                 case NPCID.GoblinTinkerer:
                     UpdateNPCShop(npc, Accessories, level, 2);
