@@ -71,6 +71,7 @@ namespace TerrariaCells.Common.GlobalItems
                 case ItemID.IceBow:
                     item.damage = 13;
                     item.useTime = 16;
+                    //item.shootSpeed -= 2f;
                     item.value = 1000;
                     break;
                 case ItemID.PlatinumBow:

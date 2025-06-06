@@ -302,12 +302,14 @@ Projectiles: {
 	IceShard.DisplayName: Ice Shard
 	IceBall.DisplayName: Ice Ball
 	IceArrow.DisplayName: Ice Arrow
-	IllusionBrainHitbox.DisplayName: Illusion Brain Hitbox
+	IllusionBrainHitbox.DisplayName: Illusory Brain
 	TelegraphWarning.DisplayName: Telegraph Warning
-	TendrilAttack.DisplayName: Tendril Attack
+	TendrilAttack.DisplayName: Crimson Tendril
 	SwordStabWave.DisplayName: Sword Stab Wave
 	BloodThorn.DisplayName: Blood Thorn
-	TrailOfFlames.DisplayName: Trail Of Flames
+	TrailOfFlames.DisplayName: Fire Trail
+	IceArrowFriendly.DisplayName: Ice Arrow
+	IceSpikeFriendly.DisplayName: Ice Spike
 }
 
 Tooltips: {
