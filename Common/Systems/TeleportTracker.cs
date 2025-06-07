@@ -50,8 +50,6 @@ public class TeleportTracker : ModSystem
 
     public void Teleport(string destination)
     {
-        Main.NewText(Main.ActivePlayerFileData.Player.GetModPlayer<ModPlayers.TimerPlayer>().LevelTime);
-
         //Goes to next level
         if (destination.Equals("inn", StringComparison.CurrentCultureIgnoreCase))
         {
