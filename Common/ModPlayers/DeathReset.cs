@@ -65,6 +65,7 @@ public class DeathReset : ModPlayer, IEntitySource
 		ModContent.GetInstance<ClickedHeartsTracker>().Reset();
 		ModContent.GetInstance<ChestLootSpawner>().Reset();
 		WorldPylonSystem.ResetPylons();
+        Player.GetModPlayer<TimerPlayer>().UpdateTimer(TimerPlayer.TimerAction.Stop);
 	}
 
 	public override void OnEnterWorld()

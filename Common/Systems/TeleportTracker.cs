@@ -50,15 +50,21 @@ public class TeleportTracker : ModSystem
 
     public void Teleport(string destination)
     {
+        Main.NewText(Main.ActivePlayerFileData.Player.GetModPlayer<ModPlayers.TimerPlayer>().LevelTime);
+
+        //Goes to next level
         if (destination.Equals("inn", StringComparison.CurrentCultureIgnoreCase))
         {
             Mod.Logger.Info($"Teleporting to next level: {nextLevel}:");
             GoToNextLevel();
+            Main.LocalPlayer.GetModPlayer<ModPlayers.TimerPlayer>().UpdateTimer(ModPlayers.TimerPlayer.TimerAction.Restart);
             return;
         }
 
+        //Goes to inn
         Mod.Logger.Info($"Detouring to inn.");
         DetourToInn(destination);
+        Main.LocalPlayer.GetModPlayer<ModPlayers.TimerPlayer>().UpdateTimer(ModPlayers.TimerPlayer.TimerAction.Pause);
     }
 
     private void DetourToInn(string destination)
