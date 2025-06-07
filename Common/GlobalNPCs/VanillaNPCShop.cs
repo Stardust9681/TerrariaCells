@@ -191,7 +191,10 @@ namespace TerrariaCells.Common.GlobalNPCs
             //temp.GetGlobalItem<GlobalItems.TierSystemGlobalItem>().itemLevel = Level;
             //GlobalItems.FunkyModifierItemModifier.Reforge(temp, Level);
             //Mods = temp.GetGlobalItem<GlobalItems.FunkyModifierItemModifier>().modifiers;
-            Mods = GlobalItems.FunkyModifierItemModifier.PickMods(Type, Level);
+            if (GlobalItems.FunkyModifierItemModifier.CanReceiveMods(Type))
+                Mods = GlobalItems.FunkyModifierItemModifier.PickMods(Type, Level);
+            else
+                Mods = Array.Empty<GlobalItems.FunkyModifier>();
         }
         public ItemDef(int type)
         {
@@ -201,7 +204,10 @@ namespace TerrariaCells.Common.GlobalNPCs
             //temp.GetGlobalItem<GlobalItems.TierSystemGlobalItem>().itemLevel = Level;
             //GlobalItems.FunkyModifierItemModifier.Reforge(temp, Level);
             //Mods = temp.GetGlobalItem<GlobalItems.FunkyModifierItemModifier>().modifiers;
-            Mods = GlobalItems.FunkyModifierItemModifier.PickMods(Type, Level);
+            if (GlobalItems.FunkyModifierItemModifier.CanReceiveMods(Type))
+                Mods = GlobalItems.FunkyModifierItemModifier.PickMods(Type, Level);
+            else
+                Mods = Array.Empty<GlobalItems.FunkyModifier>();
         }
         public ItemDef()
         {

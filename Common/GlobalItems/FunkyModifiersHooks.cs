@@ -31,6 +31,11 @@ public partial class FunkyModifierItemModifier : GlobalItem
         (3, 3),
     ];
 
+    public static bool CanReceiveMods(int itemType)
+    {
+        //!weaponCategorizations.TryGetValue((short)itemType, out var categorizations)
+        return weaponCategorizations.ContainsKey((short)itemType);
+    }
     internal static FunkyModifier[] GetModPool(int itemType)
     {
         if (!weaponCategorizations.TryGetValue((short)itemType, out var categorizations))
@@ -90,7 +95,8 @@ public partial class FunkyModifierItemModifier : GlobalItem
 
     public override void SetDefaults(Item item)
     {
-        Reforge(item);
+        if(CanReceiveMods(item.type))
+            Reforge(item);
     }
 
     public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
