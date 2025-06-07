@@ -3501,11 +3501,6 @@
         {
           "Name": "innbetween",
           "SpawnInfo": [
-            {
-              "NameOrType": "GoblinTinkerer",
-              "OffsetX": "36",
-              "OffsetY": "49"
-            }
           ]
         }
       ]
