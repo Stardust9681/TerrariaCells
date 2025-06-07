@@ -57,7 +57,8 @@ namespace TerrariaCells.Common.GlobalNPCs
         public bool nurse_HasHealed = false;
 		public override void SetDefaults(NPC npc)
 		{
-            UpdateTeleport(npc, 1, "Forest");
+            Systems.TeleportTracker system = ModContent.GetInstance<Systems.TeleportTracker>();
+            UpdateTeleport(npc, system.level, system.NextLevel);
 		}
 		public override void ModifyActiveShop(NPC npc, string shopName, Item[] items)
 		{
@@ -82,7 +83,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                         ItemDef def = new_SelectedItems[i];
                         items[i] = new Item(def.Type);
                         if (items[i].TryGetGlobalItem<GlobalItems.TierSystemGlobalItem>(out var tierItem))
-                            tierItem.itemLevel = def.Level;
+                            tierItem.SetLevel(items[i], def.Level);
                         if (items[i].TryGetGlobalItem<GlobalItems.FunkyModifierItemModifier>(out var modsItem))
                             modsItem.modifiers = def.Mods;
                     }
