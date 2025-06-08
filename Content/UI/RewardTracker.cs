@@ -78,13 +78,33 @@ namespace TerrariaCells.Content.UI
             drawString = $".{(currentTime.Milliseconds / 10):00}";
             spriteBatch.DrawString(Terraria.GameContent.FontAssets.MouseText.Value, drawString, drawPos, Color.SlateGray, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
 
-            var watchSprite = Terraria.GameContent.TextureAssets.Item[Terraria.ID.ItemID.GoldWatch];
+            TimeSpan targetTime = Main.LocalPlayer.GetModPlayer<Common.ModPlayers.RewardPlayer>().targetTime;
+            int watchType = (currentTime.TotalSeconds / (float)targetTime.TotalSeconds) switch
+            {
+                > 1 => Terraria.ID.ItemID.CopperWatch,
+                > 0.6 => Terraria.ID.ItemID.SilverWatch,
+                > 0.3 => Terraria.ID.ItemID.GoldWatch,
+                _ => Terraria.ID.ItemID.PlatinumWatch,
+            };
+            var watchSprite = Terraria.GameContent.TextureAssets.Item[watchType];
             drawPos = panelPos;
             spriteBatch.Draw(watchSprite.Value, new Rectangle((int)drawPos.X, (int)drawPos.Y, (int)panelSize.Y, (int)panelSize.Y), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
         }
     }
     public class DeathsPanel : UIElement
     {
+        public DeathsPanel()
+        {
+            JourneyBunny = Main.Assets.Request<Texture2D>("Images/UI/WorldCreation/PreviewDifficultyCreative");
+            ClassicBunny = Main.Assets.Request<Texture2D>("Images/UI/WorldCreation/PreviewDifficultyNormal");
+            ExpertBunny = Main.Assets.Request<Texture2D>("Images/UI/WorldCreation/PreviewDifficultyExpert");
+            MasterBunny = Main.Assets.Request<Texture2D>("Images/UI/WorldCreation/PreviewDifficultyMaster");
+        }
+        internal ReLogic.Content.Asset<Texture2D> JourneyBunny;
+        internal ReLogic.Content.Asset<Texture2D> ClassicBunny;
+        internal ReLogic.Content.Asset<Texture2D> ExpertBunny;
+        internal ReLogic.Content.Asset<Texture2D> MasterBunny;
+
         internal const int Padding = (int)(RewardTracker.Padding * Scaling);
         internal const float Scaling = 0.85f;
         protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -97,7 +117,7 @@ namespace TerrariaCells.Content.UI
 
             byte killCount = Main.LocalPlayer.GetModPlayer<Common.ModPlayers.RewardPlayer>().KillCount;
             string drawString = $"{killCount:D3}";
-            int zeros = drawString.Count(x => x.Equals('0'));
+            int zeros = drawString.TakeWhile(c => c.Equals('0')).Count();
             Vector2 size = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString("000") * Scaling;
             Vector2 drawPos = new Vector2(panelPos.X + panelSize.X - Padding - size.X, panelPos.Y + Padding);
             if (zeros > 0)
@@ -107,10 +127,21 @@ namespace TerrariaCells.Content.UI
             }
             spriteBatch.DrawString(Terraria.GameContent.FontAssets.MouseText.Value, drawString[zeros..], drawPos, Color.White, 0f, Vector2.Zero, Scaling, SpriteEffects.None, 0);
 
-            var skullSprite = Terraria.GameContent.TextureAssets.Extra[Terraria.ID.ExtrasID.UnsafeIndicator];
+            byte targetKillCount = Main.LocalPlayer.GetModPlayer<Common.ModPlayers.RewardPlayer>().targetKillCount;
+            if (targetKillCount == 0)
+                targetKillCount = 1;
+            float allKills = (float)killCount / (float)targetKillCount;
+            ReLogic.Content.Asset<Texture2D> drawSprite = allKills switch
+            {
+                < 0.3f => JourneyBunny,
+                < 0.6f => ClassicBunny,
+                < .9f => ExpertBunny,
+                _ => MasterBunny
+            };
             drawPos = panelPos + new Vector2(Padding);
             size = new Vector2(panelSize.Y - (2 * Padding));
-            spriteBatch.Draw(skullSprite.Value, new Rectangle((int)drawPos.X, (int)drawPos.Y, (int)size.X, (int)size.Y), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
+            drawPos.X += size.X * 0.125f;
+            spriteBatch.Draw(drawSprite.Value, new Rectangle((int)drawPos.X, (int)drawPos.Y, (int)(size.X * 0.75f), (int)size.Y), new Rectangle(7, 4, 18, 24), Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
         }
     }
 }

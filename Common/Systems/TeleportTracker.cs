@@ -56,6 +56,7 @@ public class TeleportTracker : ModSystem
             Mod.Logger.Info($"Teleporting to next level: {nextLevel}:");
             GoToNextLevel();
             Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().UpdateTracker(ModPlayers.RewardPlayer.TrackerAction.Restart);
+            Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().targetTime = TimeSpan.FromMinutes(3);
             return;
         }
 
@@ -119,10 +120,22 @@ public class TeleportTracker : ModSystem
             npc.SetDefaults(NPCID.None);
             npc.active = false;
         }
+
         if (actualDestination.Equals("inn") && Main.LocalPlayer.GetModPlayer<Common.ModPlayers.MetaPlayer>().Goblin)
         {
             //TO DO: Multiplayer
             NPC.NewNPC(NPC.GetSource_NaturalSpawn(), (int)position.X, (int)position.Y, NPCID.GoblinTinkerer);
+        }
+        else
+        {
+            LevelStructure levelStructure = BasicWorldGeneration
+            .StaticLevelData.Find(x =>
+                x.Name.Equals(nextLevel, StringComparison.CurrentCultureIgnoreCase)
+            )
+            .Structures[nextLevelVariation];
+            //string name = RoomMarker.GetInternalRoomName(levelName, roomName);
+            string roomMarkerName = RoomMarker.GetInternalRoomName(actualDestination, levelStructure.Name);
+            Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().targetKillCount = (byte)NPCRoomSpawner.RoomInfo[roomMarkerName].NPCs.Length;
         }
 
         GlobalNPCs.VanillaNPCShop.UpdateTeleport(level, nextLevel);

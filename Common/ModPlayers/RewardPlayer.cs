@@ -31,6 +31,8 @@ namespace TerrariaCells.Common.ModPlayers
         public void UpdateTracker_EnterNewWorld()
         {
             UpdateTracker(TrackerAction.Restart);
+            targetTime = TimeSpan.FromMinutes(3);
+            targetKillCount = 50;
         }
         public void UpdateTracker(TrackerAction action)
         {
@@ -46,10 +48,14 @@ namespace TerrariaCells.Common.ModPlayers
                         break;
                     case TrackerAction.Reset:
                         levelTimer = 0;
+                        killCount = 0;
                         break;
                 }
             }
         }
+        public TimeSpan targetTime;
+        public byte targetKillCount;
+
         private bool trackerEnabled = false;
         private uint levelTimer = 0;
         private byte killCount = 0;
