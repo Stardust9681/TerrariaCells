@@ -58,7 +58,7 @@ namespace TerrariaCells.Common.UI
             //Opted to do manual loading instead of automatic
             Add<LimitedStorageUI>();
             ToggleActive<LimitedStorageUI>(true);
-            Add<Content.UI.LevelTimer>();
+            Add<Content.UI.RewardTracker>();
         }
         public override void Unload()
         {
@@ -78,14 +78,13 @@ namespace TerrariaCells.Common.UI
             }
         }
 
-        private static readonly HashSet<string> RemoveLayers =
-        [
+        private static readonly HashSet<string> RemoveLayers = new HashSet<string>() {
             "Vanilla: Laser Ruler",
-        "Vanilla: Ruler",
-        "Vanilla: Inventory",
-        "Vanilla: Info Accessories Bar",
-        "Vanilla: Hotbar",
-    ];
+            "Vanilla: Ruler",
+            "Vanilla: Inventory",
+            "Vanilla: Info Accessories Bar",
+            "Vanilla: Hotbar",
+        };
         private static void HideVanillaInventoryLayers(List<GameInterfaceLayer> layers)
         {
             if (!DevConfig.Instance.HideVanillaInventory)

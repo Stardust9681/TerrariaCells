@@ -55,14 +55,14 @@ public class TeleportTracker : ModSystem
         {
             Mod.Logger.Info($"Teleporting to next level: {nextLevel}:");
             GoToNextLevel();
-            Main.LocalPlayer.GetModPlayer<ModPlayers.TimerPlayer>().UpdateTimer(ModPlayers.TimerPlayer.TimerAction.Restart);
+            Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().UpdateTracker(ModPlayers.RewardPlayer.TrackerAction.Restart);
             return;
         }
 
         //Goes to inn
         Mod.Logger.Info($"Detouring to inn.");
         DetourToInn(destination);
-        Main.LocalPlayer.GetModPlayer<ModPlayers.TimerPlayer>().UpdateTimer(ModPlayers.TimerPlayer.TimerAction.Pause);
+        Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().UpdateTracker(ModPlayers.RewardPlayer.TrackerAction.Pause);
     }
 
     private void DetourToInn(string destination)

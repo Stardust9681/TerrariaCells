@@ -7,7 +7,7 @@ using TerrariaCells.Common.Configs;
 using TerrariaCells.Common.Items;
 using TerrariaCells.Common.Systems;
 using Terraria.ModLoader.IO;
-using static TerrariaCells.Common.ModPlayers.TimerPlayer;
+using static TerrariaCells.Common.ModPlayers.RewardPlayer;
 
 namespace TerrariaCells.Common.ModPlayers;
 
@@ -66,7 +66,7 @@ public class DeathReset : ModPlayer, IEntitySource
 		ModContent.GetInstance<ClickedHeartsTracker>().Reset();
 		ModContent.GetInstance<ChestLootSpawner>().Reset();
 		WorldPylonSystem.ResetPylons();
-        Player.GetModPlayer<TimerPlayer>().UpdateTimer(TimerPlayer.TimerAction.Stop);
+        Player.GetModPlayer<RewardPlayer>().UpdateTracker(RewardPlayer.TrackerAction.Stop);
 	}
 
 	public override void OnEnterWorld()
@@ -79,7 +79,7 @@ public class DeathReset : ModPlayer, IEntitySource
         {
             return;
         }
-        Player.GetModPlayer<TimerPlayer>().UpdateTimer_EnterNewWorld();
+        Player.GetModPlayer<RewardPlayer>().UpdateTracker_EnterNewWorld();
         //Don't replace inventories when this is disabled. Whoopsies
         if (!DevConfig.Instance.DropItems)
             return;

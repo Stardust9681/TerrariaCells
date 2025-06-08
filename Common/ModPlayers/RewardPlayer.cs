@@ -14,10 +14,10 @@ using Terraria.ModLoader.IO;
 
 namespace TerrariaCells.Common.ModPlayers
 {
-    public class TimerPlayer : ModPlayer, IComparable<int>, IComparable<uint>, IComparable<TimeSpan>
+    public class RewardPlayer : ModPlayer, IComparable<int>, IComparable<uint>, IComparable<TimeSpan>
     {
         [FlagsAttribute]
-        public enum TimerAction : byte
+        public enum TrackerAction : byte
         {
             None = 0,
 
@@ -28,30 +28,31 @@ namespace TerrariaCells.Common.ModPlayers
             Stop = Pause | Reset,
             Restart = Start | Reset,
         }
-        public void UpdateTimer_EnterNewWorld()
+        public void UpdateTracker_EnterNewWorld()
         {
-            UpdateTimer(TimerAction.Restart);
+            UpdateTracker(TrackerAction.Restart);
         }
-        public void UpdateTimer(TimerAction action)
+        public void UpdateTracker(TrackerAction action)
         {
             for (byte i = 0; i < 8; i++)
             {
-                switch (action & (TimerAction)(1 << i))
+                switch (action & (TrackerAction)(1 << i))
                 {
-                    case TimerAction.Start:
-                        timerEnabled = true;
+                    case TrackerAction.Start:
+                        trackerEnabled = true;
                         break;
-                    case TimerAction.Pause:
-                        timerEnabled = false;
+                    case TrackerAction.Pause:
+                        trackerEnabled = false;
                         break;
-                    case TimerAction.Reset:
+                    case TrackerAction.Reset:
                         levelTimer = 0;
                         break;
                 }
             }
         }
-        private bool timerEnabled = false;
+        private bool trackerEnabled = false;
         private uint levelTimer = 0;
+        private byte killCount = 0;
         public override void PostUpdate()
         {
             if (Main.gameMenu)
@@ -61,27 +62,37 @@ namespace TerrariaCells.Common.ModPlayers
             if (Player.DeadOrGhost)
                 return;
 
-            if (timerEnabled)
+            if (trackerEnabled)
             {
                 levelTimer++;
             }
         }
+        public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+        {
+            if (target.life < 1 && target.lifeMax > 5 && !target.friendly && !NPCID.Sets.ProjectileNPC[target.type])
+            {
+                killCount++;
+            }
+        }
         public override void OnEnterWorld()
         {
-            UI.DeadCellsUISystem.ToggleActive<Content.UI.LevelTimer>(true);
+            UI.DeadCellsUISystem.ToggleActive<Content.UI.RewardTracker>(true);
         }
 
         public override void SaveData(TagCompound tag)
         {
-            if(timerEnabled)
-                tag.Add(nameof(timerEnabled), timerEnabled);
+            if(trackerEnabled)
+                tag.Add(nameof(trackerEnabled), trackerEnabled);
             if(levelTimer > 0)
                 tag.Add(nameof(levelTimer), levelTimer);
+            if (killCount > 0)
+                tag.Add(nameof(killCount), killCount);
         }
         public override void LoadData(TagCompound tag)
         {
-            timerEnabled = tag.Get<bool>(nameof(timerEnabled));
+            trackerEnabled = tag.Get<bool>(nameof(trackerEnabled));
             levelTimer = tag.Get<uint>(nameof(levelTimer));
+            killCount = tag.Get<byte>(nameof(killCount));
         }
 
         int IComparable<int>.CompareTo(int frames) => levelTimer.CompareTo(frames);
@@ -90,5 +101,7 @@ namespace TerrariaCells.Common.ModPlayers
 
         public uint _LevelTime => levelTimer;
         public TimeSpan LevelTime => TimeSpan.FromSeconds(levelTimer / 60.0);
+
+        public byte KillCount => killCount;
     }
 }
