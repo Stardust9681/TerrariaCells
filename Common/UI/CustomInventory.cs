@@ -79,6 +79,22 @@ public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
     public static readonly Color skillSlotColor = new(205, 150, 150);
     public static readonly Color potionSlotColor = new(215, 150, 243);
     public static readonly Color storageSlotColor = new(254, 255, 255);
+    public static Color? GetColourBySlot(int slot)
+    {
+        switch (slot)
+        {
+            case 0:
+            case 1:
+                return weaponSlotColor.MultiplyRGB(new Color(new Vector3(.5f)));
+            case 2:
+            case 3:
+                return skillSlotColor.MultiplyRGB(new Color(new Vector3(.5f)));
+            case 4:
+                return potionSlotColor.MultiplyRGB(new Color(new Vector3(.5f)));
+            default:
+                return null;
+        }
+    }
 
     public static void CustomGUIHotbarDrawInner()
     {
@@ -177,13 +193,14 @@ public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
 
             float previousInventoryScale = Main.inventoryScale;
             Main.inventoryScale = tempInventoryScale;
-            ItemSlot.Draw(
+
+            ItemSlotDraw(
                 Main.spriteBatch,
                 Main.LocalPlayer.inventory,
                 13,
                 i,
                 new Vector2(positionX, num3),
-                lightColor
+                default
             );
 
 			// Show cooldown ui on hotbar
@@ -356,19 +373,19 @@ public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
             switch (currentSlotCategory)
             {
                 case TerraCellsItemCategory.Default:
-                    Main.inventoryBack = new Color(12, 245, 103);
+                    Main.inventoryBack = defaultSlotColor;
                     break;
                 case TerraCellsItemCategory.Weapon:
-                    Main.inventoryBack = new Color(150, 245, 150);
+                    Main.inventoryBack = weaponSlotColor;
                     break;
                 case TerraCellsItemCategory.Skill:
-                    Main.inventoryBack = new Color(205, 150, 150);
+                    Main.inventoryBack = skillSlotColor;
                     break;
                 case TerraCellsItemCategory.Potion:
-                    Main.inventoryBack = new Color(215, 150, 243);
+                    Main.inventoryBack = potionSlotColor;
                     break;
                 case TerraCellsItemCategory.Storage:
-                    Main.inventoryBack = new Color(254, 255, 255);
+                    Main.inventoryBack = storageSlotColor;
                     break;
             }
             if (
@@ -412,6 +429,57 @@ public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
                 slotNumber,
                 new Vector2(xPos, yPos)
             );
+
+            // Show cooldown ui on hotbar
+            if (Ability.AbilityList.TryGetValue(Main.LocalPlayer.inventory[slotNumber].type, out Ability ability))
+            {
+                AbilityHandler modPlayer = Main.LocalPlayer.GetModPlayer<AbilityHandler>();
+                AbilitySlot? abilitySlot = modPlayer.Abilities.FirstOrDefault(x => x.Slot == slotNumber);
+
+                if (abilitySlot != null && abilitySlot.cooldownTimer > 0)
+                {
+                    Main.spriteBatch.Draw(
+                        TextureAssets.InventoryBack.Value,
+                        //I DON'T KNOW WHY THERE NEEDS TO BE AN EXTRA +6 TO THE MULTIPLIER HERE
+                        //WHY ISN'T IT ALREADY HANDLED I DON'T UNDERSTANDDDDDDD
+                        position: new Vector2(xPos, yPos) + (new Vector2(26) * Main.inventoryScale),
+                        sourceRectangle: new Rectangle(
+                            0,
+                            0,
+                            52,
+                            (int)(52 * ((float)abilitySlot.cooldownTimer / ability.Cooldown))
+                        ),
+                        color: new Color(15, 15, 15, 128),
+                        rotation: MathHelper.Pi,
+                        origin: new Vector2(26, 26),
+                        scale: new Vector2(Main.inventoryScale),
+                        SpriteEffects.None,
+                        layerDepth: 0f
+                    );
+
+                    // Cooldown countdown text display
+                    string currentCooldown = MathF.Ceiling(abilitySlot.cooldownTimer / 60).ToString();
+
+                    float width = FontAssets.DeathText.Value.MeasureString(currentCooldown).X;
+                    float textScale = Main.inventoryScale * 0.5f;
+
+                    if (TerrariaCellsConfig.Instance.ShowCooldown)
+                    {
+                        ChatManager.DrawColorCodedStringWithShadow(
+                            Main.spriteBatch,
+                            FontAssets.DeathText.Value,
+                            currentCooldown,
+                            new Vector2(xPos, yPos)
+                                + (new Vector2(-width / 2f, 0f) * textScale)
+                                + (Vector2.One * 26),
+                            Color.White,
+                            0,
+                            Vector2.Zero,
+                            new Vector2(textScale, textScale)
+                        );
+                    }
+                }
+            }
         }
         // }
 
@@ -2542,6 +2610,35 @@ public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
             }
         }
 
+        if ((context == 13 && slot != Main.LocalPlayer.selectedItem) || context == 0)
+        {
+            Color oldCol2 = color2;
+            color2 = Color.White;
+            switch (slot)
+            {
+                case 0:
+                case 1:
+                    value = TextureAssets.InventoryBack3.Value;
+                    break;
+                case 2:
+                case 3:
+                    value = TextureAssets.InventoryBack11.Value;
+                    break;
+                case 4:
+                    value = TextureAssets.InventoryBack12.Value;
+                    break;
+                case 10:
+                case 11:
+                case 12:
+                case 13:
+                    //value = TextureAssets.InventoryBack7.Value;
+                    break;
+                default:
+                    color2 = oldCol2;
+                    break;
+            }
+        }
+
         int[] inventoryGlowTime =
             itemSlotReflection
                 .GetField("inventoryGlowTime", BindingFlags.NonPublic | BindingFlags.Static)
@@ -2613,6 +2710,7 @@ public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
         }
 
         if (!flag2)
+        {
             spriteBatch.Draw(
                 value,
                 position,
@@ -2624,6 +2722,7 @@ public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
                 SpriteEffects.None,
                 0f
             );
+        }
 
         int num9 = -1;
         switch (context)
