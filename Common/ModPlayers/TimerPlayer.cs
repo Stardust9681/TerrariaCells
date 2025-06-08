@@ -58,11 +58,17 @@ namespace TerrariaCells.Common.ModPlayers
                 return;
             if (Main.gamePaused)
                 return;
+            if (Player.DeadOrGhost)
+                return;
 
             if (timerEnabled)
             {
                 levelTimer++;
             }
+        }
+        public override void OnEnterWorld()
+        {
+            UI.DeadCellsUISystem.ToggleActive<Content.UI.LevelTimer>(true);
         }
 
         public override void SaveData(TagCompound tag)
