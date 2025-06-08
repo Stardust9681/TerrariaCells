@@ -31,8 +31,6 @@ namespace TerrariaCells.Common.Systems
             On_Main.DoDraw_UpdateCameraPosition += On_Main_DoDraw_UpdateCameraPosition;
             On_Player.PickupItem += On_Player_PickupItem;
             On_UIWorldSelect.NewWorldClick += On_UIWorldSelect_NewWorldClick;
-            //Input "enter new world" logics here
-            On_WorldGen.FinishPlayWorld += On_PlayNewWorld;
             On_Player.PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool +=
                 NoAmmoDamage;
             On_Player.QuickMinecartSnap += On_Player_QuickMinecartSnap;
@@ -45,7 +43,6 @@ namespace TerrariaCells.Common.Systems
 			On_Main.DoDraw_UpdateCameraPosition -= On_Main_DoDraw_UpdateCameraPosition;
 			On_Player.PickupItem -= On_Player_PickupItem;
 			On_UIWorldSelect.NewWorldClick -= On_UIWorldSelect_NewWorldClick;
-            On_WorldGen.FinishPlayWorld -= On_PlayNewWorld;
             On_Player.PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool -= NoAmmoDamage;
             On_Player.QuickMinecartSnap -= On_Player_QuickMinecartSnap;
             On_Player.QuickMinecart -= On_Player_QuickMinecart;
@@ -198,7 +195,7 @@ namespace TerrariaCells.Common.Systems
 
                 return;
             }
-            
+
             SoundEngine.PlaySound(SoundID.MenuOpen);
             Debug.Write(Main.WorldPath);
             byte[] bytes = ModContent
@@ -215,15 +212,7 @@ namespace TerrariaCells.Common.Systems
                 false
             );
             Main.worldName = "terracellsv0.3";
-            isNewWorld = true;
             WorldGen.playWorld();
-        }
-
-        //Input "enter new world" logics here
-        private void On_PlayNewWorld(On_WorldGen.orig_FinishPlayWorld orig)
-        {
-            orig.Invoke();
-            Main.LocalPlayer.GetModPlayer<ModPlayers.TimerPlayer>().UpdateTimer_EnterNewWorld();
         }
 
         //reduce amount of mana the little star pickups give

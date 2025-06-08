@@ -7,6 +7,7 @@ using TerrariaCells.Common.Configs;
 using TerrariaCells.Common.Items;
 using TerrariaCells.Common.Systems;
 using Terraria.ModLoader.IO;
+using static TerrariaCells.Common.ModPlayers.TimerPlayer;
 
 namespace TerrariaCells.Common.ModPlayers;
 
@@ -72,10 +73,13 @@ public class DeathReset : ModPlayer, IEntitySource
 	{
         //If the last world the player was in is the world they've just entered
         //Don't do anything
-        if(Player.spN[0] is not null
+        if (Player.spN[0] is not null
             && Main.worldName.Equals(Player.spN[0])
             && Main.worldID == Player.spI[0])
+        {
             return;
+        }
+        Player.GetModPlayer<TimerPlayer>().UpdateTimer_EnterNewWorld();
         //Don't replace inventories when this is disabled. Whoopsies
         if (!DevConfig.Instance.DropItems)
             return;

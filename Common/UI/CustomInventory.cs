@@ -38,9 +38,28 @@ public class CustomAccessorySlot2 : ModAccessorySlot
     public override bool DrawVanitySlot => false;
 }
 
-public class LimitedStorageUI : UIState
+public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
 {
+    internal override string Name => "TerraCells: InventoryUI";
     static TerraCellsItemCategory currentSlotCategory = TerraCellsItemCategory.Default;
+
+    protected override bool PreDraw(SpriteBatch spriteBatch)
+    {
+        if (DevConfig.Instance.EnableInventoryChanges)
+        {
+            LimitedStorageUI.CustomGUIHotbarDrawInner(); // draws hotbar, aka inventory closed
+            LimitedStorageUI.CustomDrawInterface_27_Inventory(); // draws inventory, aka inventory open
+        }
+        return false;
+    }
+    protected override bool PreUpdate(GameTime time)
+    {
+        if (!DevConfig.Instance.EnableInventoryChanges)
+        {
+            return false;
+        }
+        return base.PreUpdate(time);
+    }
 
     static readonly (Vector2, int, TerraCellsItemCategory)[] inventorySlots =
     [
