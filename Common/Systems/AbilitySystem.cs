@@ -504,7 +504,7 @@ namespace TerrariaCells.Common.Systems
 
 		public override void Load()
 		{
-			IL_ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color += IL_ItemSlot_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color;
+			//IL_ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color += IL_ItemSlot_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color;
 
 			// Hook to prevent items from being picked up while the skill slot is on cooldown
 			On_ItemSlot.PickItemMovementAction += ItemSlot_PickItemMovementAction;
@@ -522,7 +522,7 @@ namespace TerrariaCells.Common.Systems
 
 		public override void Unload()
 		{
-			IL_ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color -= IL_ItemSlot_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color;
+			//IL_ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color -= IL_ItemSlot_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color;
 
 			// Hook to prevent items from being picked up while the skill slot is on cooldown
 			On_ItemSlot.PickItemMovementAction -= ItemSlot_PickItemMovementAction;
