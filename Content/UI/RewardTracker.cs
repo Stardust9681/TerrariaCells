@@ -74,9 +74,15 @@ namespace TerrariaCells.Content.UI
             Vector2 size = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(drawString);
             Vector2 drawPos = new Vector2(panelPos.X + panelSize.Y + Padding, panelPos.Y + Padding);
             spriteBatch.DrawString(Terraria.GameContent.FontAssets.MouseText.Value, drawString, drawPos, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
+            /*Terraria.UI.Chat.ChatManager.DrawColorCodedStringWithShadow(
+                spriteBatch, Terraria.GameContent.FontAssets.MouseText.Value, drawString, drawPos, Color.White, 0f, Vector2.Zero, Vector2.One
+            );*/
             drawPos += new Vector2(size.X, 0);
             drawString = $".{(currentTime.Milliseconds / 10):00}";
             spriteBatch.DrawString(Terraria.GameContent.FontAssets.MouseText.Value, drawString, drawPos, Color.SlateGray, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
+            /*Terraria.UI.Chat.ChatManager.DrawColorCodedStringWithShadow(
+                spriteBatch, Terraria.GameContent.FontAssets.MouseText.Value, drawString, drawPos, Color.SlateGray, 0f, Vector2.Zero, Vector2.One
+            );*/
 
             TimeSpan targetTime = Main.LocalPlayer.GetModPlayer<Common.ModPlayers.RewardPlayer>().targetTime;
             int watchType = (currentTime.TotalSeconds / (float)targetTime.TotalSeconds) switch
@@ -116,6 +122,8 @@ namespace TerrariaCells.Content.UI
             UIHelper.PANEL.Draw(spriteBatch, bounds, UIHelper.InventoryColour);
 
             byte killCount = Main.LocalPlayer.GetModPlayer<Common.ModPlayers.RewardPlayer>().KillCount;
+            //Draw leading zeroes:
+            /*
             string drawString = $"{killCount:D3}";
             int zeros = drawString.TakeWhile(c => c.Equals('0')).Count();
             Vector2 size = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString("000") * Scaling;
@@ -126,6 +134,26 @@ namespace TerrariaCells.Content.UI
                 drawPos.X += Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(drawString[..zeros]).X * Scaling;
             }
             spriteBatch.DrawString(Terraria.GameContent.FontAssets.MouseText.Value, drawString[zeros..], drawPos, Color.White, 0f, Vector2.Zero, Scaling, SpriteEffects.None, 0);
+            */
+
+            //Don't draw leading zeroes:
+            string drawString = killCount.ToString();
+            Vector2 size = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(drawString) * Scaling;
+            Vector2 drawPos = new Vector2(panelPos.X + panelSize.X - Padding - size.X, panelPos.Y + Padding);
+            if (killCount > 0)
+            {
+                spriteBatch.DrawString(Terraria.GameContent.FontAssets.MouseText.Value, drawString, drawPos, Color.White, 0f, Vector2.Zero, Scaling, SpriteEffects.None, 0);
+                /*Terraria.UI.Chat.ChatManager.DrawColorCodedStringWithShadow(
+                    spriteBatch, Terraria.GameContent.FontAssets.MouseText.Value, drawString, drawPos, Color.White, 0f, Vector2.Zero, Vector2.One * Scaling
+                );*/
+            }
+            else
+            {
+                spriteBatch.DrawString(Terraria.GameContent.FontAssets.MouseText.Value, drawString, drawPos, Color.SlateGray, 0f, Vector2.Zero, Scaling, SpriteEffects.None, 0);
+                /*Terraria.UI.Chat.ChatManager.DrawColorCodedStringWithShadow(
+                    spriteBatch, Terraria.GameContent.FontAssets.MouseText.Value, drawString, drawPos, Color.SlateGray, 0f, Vector2.Zero, Vector2.One * Scaling
+                );*/
+            }
 
             byte targetKillCount = Main.LocalPlayer.GetModPlayer<Common.ModPlayers.RewardPlayer>().targetKillCount;
             if (targetKillCount == 0)
