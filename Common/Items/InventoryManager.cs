@@ -269,7 +269,7 @@ public class InventoryManager : ModSystem, IEntitySource
                 return false;
 
             case TerraCellsItemCategory.Weapon:
-                if (WeaponsSlotsFull(player))
+                if (WeaponsSlotsFull(player, item))
                 {
                     for (int i = 10; true; i++)
                     {
@@ -296,7 +296,7 @@ public class InventoryManager : ModSystem, IEntitySource
                 player.inventory[previousInventorySlot].TurnToAir();
                 return true;
             case TerraCellsItemCategory.Skill:
-                if (SkillsSlotsFull(player))
+                if (SkillsSlotsFull(player, item))
                 {
                     for (int i = 10; true; i++)
                     {
@@ -323,7 +323,7 @@ public class InventoryManager : ModSystem, IEntitySource
                 player.inventory[previousInventorySlot].TurnToAir();
                 return true;
             case TerraCellsItemCategory.Potion:
-                if (PotionSlotFull(player))
+                if (PotionSlotFull(player, item))
                 {
                     for (int i = 10; true; i++)
                     {
@@ -395,10 +395,10 @@ public class InventoryManager : ModSystem, IEntitySource
         {
             TerraCellsItemCategory.Default => true,
             TerraCellsItemCategory.Pickup => true,
-            TerraCellsItemCategory.Weapon => !WeaponsSlotsFull(player) | !StorageSlotsFull(player),
-            TerraCellsItemCategory.Skill => !SkillsSlotsFull(player) | !StorageSlotsFull(player),
-            TerraCellsItemCategory.Potion => !PotionSlotFull(player) | !StorageSlotsFull(player),
-            TerraCellsItemCategory.Storage => !StorageSlotsFull(player)
+            TerraCellsItemCategory.Weapon => !WeaponsSlotsFull(player, item) | !StorageSlotsFull(player, item),
+            TerraCellsItemCategory.Skill => !SkillsSlotsFull(player, item) | !StorageSlotsFull(player, item),
+            TerraCellsItemCategory.Potion => !PotionSlotFull(player, item) | !StorageSlotsFull(player, item),
+            TerraCellsItemCategory.Storage => !StorageSlotsFull(player, item)
                 | !DoesStorageItemGoIntoRegularInventory(GetStorageItemSubcategorization(item)),
             _ => throw new System.Exception(
                 "Missing Item category check (I hate runtime exceptions but i cant think of a better solution atm)"
@@ -437,28 +437,37 @@ public class InventoryManager : ModSystem, IEntitySource
         };
     }
 
-    private static bool SlotFull(Item item) =>
-        !item.IsAir && item.stack == item.maxStack;
+    private static bool CanAcceptNewItem(Player player, int slot, Item newItem)
+    {
+        Item slotItem = player.inventory[slot];
+        return CanAcceptNewItem(slotItem, newItem);
+    }
+    private static bool CanAcceptNewItem(Item slot, Item newItem)
+    {
+        if (slot.IsAir) return true;
+        if (slot.type == newItem.type) return slot.stack < slot.maxStack;
+        return false;
+    }
 
     /// <summary>
     /// Checks the two inventory slots that are used for weapons, and returns true if both are occupied.
     /// </summary>
-    public static bool WeaponsSlotsFull(Player player) =>
-        SlotFull(player.inventory[WEAPON_SLOT_1]) && SlotFull(player.inventory[WEAPON_SLOT_2]);
+    public static bool WeaponsSlotsFull(Player player, Item pickup) =>
+        !CanAcceptNewItem(player, WEAPON_SLOT_1, pickup) && !CanAcceptNewItem(player, WEAPON_SLOT_2, pickup);
 
-    public static bool SkillsSlotsFull(Player player) =>
-        SlotFull(player.inventory[SKILL_SLOT_1]) && SlotFull(player.inventory[SKILL_SLOT_2]);
+    public static bool SkillsSlotsFull(Player player, Item pickup) =>
+        !CanAcceptNewItem(player, SKILL_SLOT_1, pickup) && !CanAcceptNewItem(player, SKILL_SLOT_2, pickup);
 
-    public static bool PotionSlotFull(Player player) =>
-        SlotFull(player.inventory[POTION_SLOT]);
+    public static bool PotionSlotFull(Player player, Item pickup) =>
+        !CanAcceptNewItem(player, POTION_SLOT, pickup);
 
-    public static bool StorageSlotsFull(Player player) =>
-        SlotFull(player.inventory[STORAGE_SLOT_1])
-        && SlotFull(player.inventory[STORAGE_SLOT_2])
-        && SlotFull(player.inventory[STORAGE_SLOT_3])
-        && SlotFull(player.inventory[STORAGE_SLOT_4]);
+    public static bool StorageSlotsFull(Player player, Item pickup) =>
+        !CanAcceptNewItem(player, STORAGE_SLOT_1, pickup)
+        && !CanAcceptNewItem(player, STORAGE_SLOT_2, pickup)
+        && !CanAcceptNewItem(player, STORAGE_SLOT_3, pickup)
+        && !CanAcceptNewItem(player, STORAGE_SLOT_4, pickup);
 
-    public static bool AccessorySlotsFull(Player player) =>
-        SlotFull(player.armor[3]) && SlotFull(player.armor[4]);
+    public static bool AccessorySlotsFull(Player player, Item pickup) =>
+        CanAcceptNewItem(player.armor[3], pickup) && CanAcceptNewItem(player.armor[4], pickup);
 
 }
