@@ -95,10 +95,10 @@ namespace TerrariaCells.Content.UI
     {
         public DeathsPanel()
         {
-            JourneyBunny = Main.Assets.Request<Texture2D>("Images/UI/WorldCreation/PreviewDifficultyCreative");
-            ClassicBunny = Main.Assets.Request<Texture2D>("Images/UI/WorldCreation/PreviewDifficultyNormal");
-            ExpertBunny = Main.Assets.Request<Texture2D>("Images/UI/WorldCreation/PreviewDifficultyExpert");
-            MasterBunny = Main.Assets.Request<Texture2D>("Images/UI/WorldCreation/PreviewDifficultyMaster");
+            JourneyBunny = Main.Assets.Request<Texture2D>("Images/UI/WorldCreation/IconDifficultyCreative");
+            ClassicBunny = Main.Assets.Request<Texture2D>("Images/UI/WorldCreation/IconDifficultyNormal");
+            ExpertBunny = Main.Assets.Request<Texture2D>("Images/UI/WorldCreation/IconDifficultyExpert");
+            MasterBunny = Main.Assets.Request<Texture2D>("Images/UI/WorldCreation/IconDifficultyMaster");
         }
         internal ReLogic.Content.Asset<Texture2D> JourneyBunny;
         internal ReLogic.Content.Asset<Texture2D> ClassicBunny;
