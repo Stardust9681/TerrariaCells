@@ -81,6 +81,7 @@ Configs: {
 			DebugAndPlaytesting: Debug And Playtesting
 			GameplaySettings: Gameplay Settings
 			PylonVisuals: Inactive Pylon Visual Settings
+			AmmoUIPlacement: Ammo U I Placement Header
 		}
 
 		EnableInventoryChanges: {
@@ -177,6 +178,16 @@ Configs: {
 			Label: Hide Inactive Pylons Entirely
 			Tooltip: ""
 		}
+
+		AmmoIndicatorType: {
+			Label: Ammo Indicator Type
+			Tooltip: ""
+		}
+
+		AmmoIndicatorOffset: {
+			Label: Ammo Indicator Offset
+			Tooltip: ""
+		}
 	}
 
 	DebuffIndicators: {
@@ -185,6 +196,15 @@ Configs: {
 		Icon.Label: Icon
 		Particles.Label: Particles
 		IconAndParticles.Label: Icon and Particles
+	}
+
+	AmmoPositionMode: {
+		Tooltip: ""
+		Cursor.Label: Cursor
+		Tween.Label: Tween
+		TweenSag.Label: Tween Sag
+		Player.Label: Player
+		Resource.Label: Resource
 	}
 }
 

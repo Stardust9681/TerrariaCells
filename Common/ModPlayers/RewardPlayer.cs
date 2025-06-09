@@ -82,7 +82,7 @@ namespace TerrariaCells.Common.ModPlayers
         }
         public override void OnEnterWorld()
         {
-            UI.DeadCellsUISystem.ToggleActive<Content.UI.RewardTracker>(true);
+            Systems.DeadCellsUISystem.ToggleActive<Content.UI.RewardTracker>(true);
         }
 
         public override void SaveData(TagCompound tag)

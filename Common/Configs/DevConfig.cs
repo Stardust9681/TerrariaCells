@@ -67,13 +67,13 @@ namespace TerrariaCells.Common.Configs
         [DefaultValue(true)]
         public bool HideVanillaInventory;
 
-		[Header("DebugAndPlaytesting")]
-		
-		/// <summary>
-		/// If enabled, makes it so that NPC shops sell all available items for their category instead of just a small selection.
-		/// Only for testing purposes.
-		/// <summary>
-		[DefaultValue(false)]
+        [Header("DebugAndPlaytesting")]
+
+        /// <summary>
+        /// If enabled, makes it so that NPC shops sell all available items for their category instead of just a small selection.
+        /// Only for testing purposes.
+        /// <summary>
+        [DefaultValue(false)]
 		public bool PlaytesterShops;
 
         /// <summary>
@@ -130,5 +130,10 @@ namespace TerrariaCells.Common.Configs
         /// </summary>
         [DefaultValue(false)]
         public bool InactivePylonDust;
+
+        [Header("AmmoUIPlacement")]
+        [DefaultValue(Content.UI.Reload.AmmoPositionMode.TweenSag)]
+        [DrawTicks]
+        public Content.UI.Reload.AmmoPositionMode AmmoIndicatorType;
     }
 }

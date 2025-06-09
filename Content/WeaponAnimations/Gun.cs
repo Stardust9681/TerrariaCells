@@ -140,6 +140,15 @@ namespace TerrariaCells.Content.WeaponAnimations
 
             Ammo = MaxAmmo;
         }
+
+        public override void HoldItem(Item item, Player player)
+        {
+            if (player.whoAmI == Main.myPlayer)
+            {
+                Common.Systems.DeadCellsUISystem.ToggleActive<Content.UI.Reload>(true);
+            }
+        }
+
         public override GlobalItem Clone(Item from, Item to)
         {
 			Gun gunTo = to.GetGlobalItem(this);
@@ -161,11 +170,11 @@ namespace TerrariaCells.Content.WeaponAnimations
 			gun = null;
 			if (Handgun.Handguns.Contains(item.type))
 				gun = item.GetGlobalItem<Handgun>();
-			if(Autorifle.Autorifles.Contains(item.type))
+			else if(Autorifle.Autorifles.Contains(item.type))
 				gun = item.GetGlobalItem<Autorifle>();
-			if(Shotgun.Shotguns.Contains(item.type))
+			else if(Shotgun.Shotguns.Contains(item.type))
 				gun = item.GetGlobalItem<Shotgun>();
-			if(Launcher.Launchers.Contains(item.type))
+			else if(Launcher.Launchers.Contains(item.type))
 				gun = item.GetGlobalItem<Launcher>();
 			return gun != null;
 		}
