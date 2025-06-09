@@ -70,6 +70,15 @@ namespace TerrariaCells.Common.Systems
             Windows = null;
         }
 
+        public override void PostUpdatePlayers()
+        {
+            if (!Main.dedServ)
+            {
+                if (Main.mapStyle != 0)
+                    Main.mapStyle = 0;
+            }
+        }
+
         public override void UpdateUI(GameTime gameTime)
         {
             if (Main.ingameOptionsWindow || Main.InGameUI.IsVisible) return;
