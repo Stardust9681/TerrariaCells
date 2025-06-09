@@ -43,6 +43,13 @@ namespace TerrariaCells.Content.UI
             //Expand to fill each child
             WindowSize = new Vector2(timerSize.X, timerSize.Y + deathsSize.Y);
             this.WindowPosition = new Vector2((Main.screenWidth - WindowSize.X) * 0.5f, NoDragZone);
+            UpdateChildPositions(WindowPosition);
+        }
+
+        protected override void OnOpened()
+        {
+            this.WindowPosition = new Vector2((Main.screenWidth - WindowSize.X) * 0.5f, NoDragZone);
+            UpdateChildPositions(WindowPosition);
         }
 
         protected override void UpdateChildPositions(Vector2 newPosition)
