@@ -18,19 +18,27 @@ namespace TerrariaCells.Common.ModPlayers
 	//ModPlayer handling health and regeneration aspects
 	public class Regenerator : ModPlayer
 	{
-		public override void Load()
-		{
-			//TODO: Change this to IL Edit
-			// Better for crossmod compatability
-			// Less redundant coding
-			// This is technically improper use of detouring
-			On_ResourceDrawSettings.Draw += DrawRallyHealthBar;
+        MethodInfo PlayerResourceSetsManager_SetActive_string = typeof(PlayerResourceSetsManager).GetMethod("SetActive", BindingFlags.NonPublic | BindingFlags.Instance, [typeof(string)]);
+        public override void Load()
+        {
+            //TODO: Change this to IL Edit
+            // Better for crossmod compatability
+            // Less redundant coding
+            // This is technically improper use of detouring
+            On_ResourceDrawSettings.Draw += DrawRallyHealthBar;
 
-			IL_HorizontalBarsPlayerResourcesDisplaySet.Draw += IL_HorizontalBarsPlayerResourcesDisplaySet_Draw;
-			IL_HorizontalBarsPlayerResourcesDisplaySet.LifeFillingDrawer += IL_HealthbarTextureSelect;
-		}
+            On_PlayerResourceSetsManager.CycleResourceSet += DisableHealthbarStyleChange;
 
-		public override void Unload()
+            IL_HorizontalBarsPlayerResourcesDisplaySet.Draw += IL_HorizontalBarsPlayerResourcesDisplaySet_Draw;
+            IL_HorizontalBarsPlayerResourcesDisplaySet.LifeFillingDrawer += IL_HealthbarTextureSelect;
+
+            if (!Main.dedServ)
+            {
+                PlayerResourceSetsManager_SetActive_string.Invoke(Main.ResourceSetsManager, ["HorizontalBars"]);
+            }
+        }
+
+        public override void Unload()
 		{
 			On_ResourceDrawSettings.Draw -= DrawRallyHealthBar;
 
@@ -221,10 +229,15 @@ namespace TerrariaCells.Common.ModPlayers
 				value += self.OffsetPerDraw + (rectangle2.Size() * self.OffsetPerDrawByTexturePercentile);
 			}
 		}
-		#endregion
 
-		#region Rally Heal Mechanic
-		public const float STAGGER_POTENCY = 3f;
+        private void DisableHealthbarStyleChange(On_PlayerResourceSetsManager.orig_CycleResourceSet orig, PlayerResourceSetsManager self)
+        {
+            return;
+        }
+        #endregion
+
+        #region Rally Heal Mechanic
+        public const float STAGGER_POTENCY = 3f;
 		public const float INV_STAGGER_POTENCY = 1f / STAGGER_POTENCY;
 
 		private float damageBuffer;
