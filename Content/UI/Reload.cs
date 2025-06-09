@@ -44,7 +44,7 @@ namespace TerrariaCells.Content.UI
                 Common.Systems.DeadCellsUISystem.ToggleActive<Reload>(false);
                 return;
             }
-            ammoDrawer = new GunAmmoIndicator(gun);
+            ammoDrawer = new GunAmmoIndicator(Main.LocalPlayer.HeldItem, gun);
             AddElement(ammoDrawer, Padding, Padding, 8, 8);
         }
         protected override void OnClosed()
@@ -143,18 +143,21 @@ namespace TerrariaCells.Content.UI
 
         public class GunAmmoIndicator : UIElement
         {
+            internal readonly Item GunItem;
             internal readonly WeaponAnimations.Gun GunAmmo;
             //Ammo gets subtracted at the END of the use animation?
             //Flagged as important in comments, so I didn't touch it...
             //But the resulting check for how much ammo the player actually has is gross
-            internal int CurrentAmmo => GunAmmo.GetActualAmmo(Main.LocalPlayer);
+            internal int CurrentAmmo => GunAmmo.GetActualAmmo(Main.LocalPlayer, GunItem);
             internal int MaxAmmo => Math.Max(GunAmmo.MaxAmmo, 1);
             public GunAmmoIndicator() : base()
             {
+                GunItem = null;
                 GunAmmo = null;
             }
-            public GunAmmoIndicator(WeaponAnimations.Gun gun) : base()
+            public GunAmmoIndicator(Item item, WeaponAnimations.Gun gun) : base()
             {
+                GunItem = item;
                 GunAmmo = gun;
             }
             public override void Recalculate()

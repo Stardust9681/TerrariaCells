@@ -2932,7 +2932,7 @@ public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
                     //int useAmmo = item.useAmmo;
                     if (Content.WeaponAnimations.Gun.TryGetGlobalItem(item, out var gun))
                     {
-                        num10 = gun.GetActualAmmo(player);
+                        num10 = gun.GetActualAmmo(player, item);
                     }
                 }
 

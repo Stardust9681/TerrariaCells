@@ -18,7 +18,7 @@ namespace TerrariaCells.Content.WeaponAnimations
         public override bool InstancePerEntity => true;
         public int MaxAmmo = 4;
         public int Ammo = 0;
-        public int GetActualAmmo(Player player) => Math.Max(Ammo - (!player.GetModPlayer<Common.ModPlayers.WeaponPlayer>().reloading && !player.ItemAnimationEndingOrEnded ? 1 : 0), 0);
+        public int GetActualAmmo(Player player, Item item) => Math.Max(Ammo - (!player.GetModPlayer<Common.ModPlayers.WeaponPlayer>().reloading && !player.ItemAnimationEndingOrEnded && player.inventory[player.selectedItem].Equals(item) ? 1 : 0), 0);
         public float ReloadTimeMult = 1;
         public int ReloadStep = 0;
         public bool FullyReloads = true;
