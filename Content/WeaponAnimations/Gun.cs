@@ -144,7 +144,7 @@ namespace TerrariaCells.Content.WeaponAnimations
 
         public override void HoldItem(Item item, Player player)
         {
-            if (player.whoAmI == Main.myPlayer)
+            if (player.whoAmI == Main.myPlayer && !Main.playerInventory)
             {
                 Common.Systems.DeadCellsUISystem.ToggleActive<Content.UI.Reload>(true);
             }
