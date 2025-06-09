@@ -11,7 +11,7 @@ using TerrariaCells.Common.UI;
 using TerrariaCells.Common.UI.Components;
 using TerrariaCells.Common.UI.Components.Windows;
 
-namespace TerrariaCells.Common.UI
+namespace TerrariaCells.Common.Systems
 {
     //Imported from one of my mods
     //Inspired in large by DragonLens' UI
@@ -59,6 +59,8 @@ namespace TerrariaCells.Common.UI
             Add<LimitedStorageUI>();
             ToggleActive<LimitedStorageUI>(true);
             Add<Content.UI.RewardTracker>();
+            ToggleActive<Content.UI.RewardTracker>(true);
+            Add<Content.UI.Reload>();
         }
         public override void Unload()
         {

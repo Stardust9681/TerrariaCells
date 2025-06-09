@@ -147,12 +147,13 @@ namespace TerrariaCells.Common.UI.Components.Windows
         {
             if (PreUpdate(gameTime))
             {
-                base.Update(gameTime);
+                _update(gameTime);
                 if (IsMouseOnWindow())
                     Main.LocalPlayer.mouseInterface = true;
                 WindowUpdate(gameTime);
             }
         }
+        internal void _update(GameTime time) => base.Update(time);
         ///<summary>Only return false if you know what you are doing. Called before <see cref="DrawChildren(SpriteBatch)"/></summary>
         /// <returns><b>True</b> by default.</returns>
         protected virtual bool PreDrawChildren(SpriteBatch spriteBatch) { return true; }
@@ -165,8 +166,9 @@ namespace TerrariaCells.Common.UI.Components.Windows
         protected virtual bool PreDraw(SpriteBatch spriteBatch) { return true; }
         public sealed override void Draw(SpriteBatch spriteBatch)
         {
-            if (PreDraw(spriteBatch)) base.Draw(spriteBatch);
+            if (PreDraw(spriteBatch)) _draw(spriteBatch);
         }
+        internal void _draw(SpriteBatch spriteBatch) => base.Draw(spriteBatch);
         /// <summary>Only return false if you know what you are doing. Called before <see cref="DrawSelf(SpriteBatch)"/></summary>
         /// <returns><b>True</b> by default.</returns>
         protected virtual bool PreDrawSelf(SpriteBatch spriteBatch) { return true; }

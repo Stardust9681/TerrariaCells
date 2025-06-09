@@ -17,7 +17,7 @@ namespace TerrariaCells.Content.UI
 {
     public class RewardTracker : DraggableWindow
     {
-        internal override string Name => "LevelTimer";
+        internal override string Name => "RewardTrackerUI";
         public override Rectangle GrabBox => this.Bounds;
 
         internal const int Padding = 8;
@@ -42,7 +42,7 @@ namespace TerrariaCells.Content.UI
 
             //Expand to fill each child
             WindowSize = new Vector2(timerSize.X, timerSize.Y + deathsSize.Y);
-            this.WindowPosition = new Vector2(Main.screenWidth - NoDragZone, 128);
+            this.WindowPosition = new Vector2((Main.screenWidth - WindowSize.X) * 0.5f, NoDragZone);
         }
 
         protected override void UpdateChildPositions(Vector2 newPosition)
