@@ -54,7 +54,9 @@ namespace TerrariaCells.Content.UI
 
         protected override bool PreUpdate(GameTime time)
         {
-            if (!WeaponAnimations.Gun.TryGetGlobalItem(Main.LocalPlayer.HeldItem, out var gun) || !ammoDrawer.GunAmmo.Equals(gun))
+            if (!WeaponAnimations.Gun.TryGetGlobalItem(Main.LocalPlayer.HeldItem, out var gun)
+                || !ammoDrawer.GunAmmo.Equals(gun)
+                || Main.playerInventory)
             {
                 Common.Systems.DeadCellsUISystem.ToggleActive<Reload>(false);
                 return false;
