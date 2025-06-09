@@ -145,7 +145,7 @@ namespace TerrariaCells.Content.UI
             //Ammo gets subtracted at the END of the use animation?
             //Flagged as important in comments, so I didn't touch it...
             //But the resulting check for how much ammo the player actually has is gross
-            internal int CurrentAmmo => Math.Max(GunAmmo.Ammo - (!Main.LocalPlayer.GetModPlayer<Common.ModPlayers.WeaponPlayer>().reloading && !Main.LocalPlayer.ItemAnimationEndingOrEnded ? 1 : 0), 0);
+            internal int CurrentAmmo => GunAmmo.GetActualAmmo(Main.LocalPlayer);
             internal int MaxAmmo => Math.Max(GunAmmo.MaxAmmo, 1);
             public GunAmmoIndicator() : base()
             {

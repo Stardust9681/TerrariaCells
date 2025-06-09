@@ -2929,12 +2929,10 @@ public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
 
                 if (item.useAmmo > 0)
                 {
-                    int useAmmo = item.useAmmo;
-                    num10 = 0;
-                    for (int j = 0; j < 58; j++)
+                    //int useAmmo = item.useAmmo;
+                    if (Content.WeaponAnimations.Gun.TryGetGlobalItem(item, out var gun))
                     {
-                        if (inv[j].ammo == useAmmo)
-                            num10 += inv[j].stack;
+                        num10 = gun.GetActualAmmo(player);
                     }
                 }
 
