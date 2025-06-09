@@ -132,7 +132,7 @@ namespace TerrariaCells.Common.Configs
         public bool InactivePylonDust;
 
         [Header("AmmoUIPlacement")]
-        [DefaultValue(Content.UI.Reload.AmmoPositionMode.TweenSag)]
+        [DefaultValue(Content.UI.Reload.AmmoPositionMode.Resource)]
         [DrawTicks]
         public Content.UI.Reload.AmmoPositionMode AmmoIndicatorType;
     }
