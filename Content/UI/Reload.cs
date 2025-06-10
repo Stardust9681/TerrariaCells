@@ -143,6 +143,8 @@ namespace TerrariaCells.Content.UI
 
         public class GunAmmoIndicator : UIElement
         {
+            internal const int MaxPerRow = 20;
+
             internal readonly Item GunItem;
             internal readonly WeaponAnimations.Gun GunAmmo;
             //Ammo gets subtracted at the END of the use animation?
@@ -163,7 +165,7 @@ namespace TerrariaCells.Content.UI
             public override void Recalculate()
             {
                 if (GunAmmo is null) return;
-                int maxAmmo = Math.Min(MaxAmmo, 15);
+                int maxAmmo = Math.Min(MaxAmmo, MaxPerRow);
                 int rowCount = (int)MathF.Ceiling((float)MaxAmmo / (float)maxAmmo);
                 Point size = new Point();
                 size.X = maxAmmo * Terraria.GameContent.TextureAssets.Item[ItemID.HighVelocityBullet].Width();
@@ -178,7 +180,7 @@ namespace TerrariaCells.Content.UI
             {
                 if (GunAmmo is null) return;
                 Rectangle bounds = GetDimensions().ToRectangle();
-                int maxAmmo = Math.Min(MaxAmmo, 15);
+                int maxAmmo = Math.Min(MaxAmmo, MaxPerRow);
                 int rowCount = (int)MathF.Ceiling((float)MaxAmmo / (float)maxAmmo);
 
                 var tex = Terraria.GameContent.TextureAssets.Item[ItemID.HighVelocityBullet].Value;
