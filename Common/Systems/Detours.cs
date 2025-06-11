@@ -25,6 +25,7 @@ namespace TerrariaCells.Common.Systems
 {
     public class Detours : ModSystem
     {
+        private static bool isNewWorld = false;
 		public override void Load()
         {
             On_Main.DoDraw_UpdateCameraPosition += On_Main_DoDraw_UpdateCameraPosition;
@@ -42,7 +43,7 @@ namespace TerrariaCells.Common.Systems
 			On_Main.DoDraw_UpdateCameraPosition -= On_Main_DoDraw_UpdateCameraPosition;
 			On_Player.PickupItem -= On_Player_PickupItem;
 			On_UIWorldSelect.NewWorldClick -= On_UIWorldSelect_NewWorldClick;
-			On_Player.PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool -= NoAmmoDamage;
+            On_Player.PickAmmo_Item_refInt32_refSingle_refBoolean_refInt32_refSingle_refInt32_bool -= NoAmmoDamage;
             On_Player.QuickMinecartSnap -= On_Player_QuickMinecartSnap;
             On_Player.QuickMinecart -= On_Player_QuickMinecart;
             Terraria.UI.IL_ItemSlot.OverrideHover_ItemArray_int_int -= IL_OverrideHover_ItemArray_int_int;
@@ -194,6 +195,7 @@ namespace TerrariaCells.Common.Systems
 
                 return;
             }
+
             SoundEngine.PlaySound(SoundID.MenuOpen);
             Debug.Write(Main.WorldPath);
             byte[] bytes = ModContent

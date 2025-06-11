@@ -53,7 +53,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             {
                 Vector2 pos = npc.Center + new Vector2(5 * npc.direction, -20);
                 Vector2 vec = (target.Center - pos).SafeNormalize(Vector2.Zero) ;
-                Projectile proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), pos, vec * 5 + target.velocity * 0.2f, ModContent.ProjectileType<VultureBone>(), TCellsUtils.ScaledHostileDamage(20), 1);
+                Projectile proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), pos, vec * 5 + target.velocity * 0.2f, ModContent.ProjectileType<VultureBone>(), TCellsUtils.ScaledHostileDamage(npc.damage), 1);
                 for (int i = 0; i < 5; i++)
                 {
                     Dust.NewDustDirect(pos, 0, 0, DustID.Bone, vec.X*2, vec.Y*2).noGravity = true;

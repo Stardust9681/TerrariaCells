@@ -597,6 +597,2901 @@
               "OffsetY": "168"
             }
           ]
+        },
+        {
+          "Name": "forest_3",
+          "SpawnInfo": [
+            {
+              "NameOrType": "Guide",
+              "OffsetX": "780",
+              "OffsetY": "36"
+            },
+            {
+              "NameOrType": "Merchant",
+              "OffsetX": "322",
+              "OffsetY": "59"
+            },
+            {
+              "NameOrType": "BoundGoblin",
+              "OffsetX": "348",
+              "OffsetY": "124"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "578",
+              "OffsetY": "41"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "591",
+              "OffsetY": "47"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "579",
+              "OffsetY": "54"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "567",
+              "OffsetY": "63"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "588",
+              "OffsetY": "63"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "551",
+              "OffsetY": "35"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "506",
+              "OffsetY": "33"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "463",
+              "OffsetY": "34"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "432",
+              "OffsetY": "45"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "403",
+              "OffsetY": "48"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "413",
+              "OffsetY": "52"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "352",
+              "OffsetY": "44"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "516",
+              "OffsetY": "49"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "506",
+              "OffsetY": "52"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "517",
+              "OffsetY": "64"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "532",
+              "OffsetY": "63"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "561",
+              "OffsetY": "64"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "536",
+              "OffsetY": "85"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "539",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "541",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "582",
+              "OffsetY": "72"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "581",
+              "OffsetY": "80"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "599",
+              "OffsetY": "126"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "624",
+              "OffsetY": "114"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "549",
+              "OffsetY": "147"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "496",
+              "OffsetY": "162"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "421",
+              "OffsetY": "149"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "459",
+              "OffsetY": "151"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "439",
+              "OffsetY": "155"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "368",
+              "OffsetY": "150"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "508",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "480",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "431",
+              "OffsetY": "222"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "429",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "389",
+              "OffsetY": "204"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "385",
+              "OffsetY": "223"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "395",
+              "OffsetY": "223"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "356",
+              "OffsetY": "228"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "632",
+              "OffsetY": "144"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "659",
+              "OffsetY": "145"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "685",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "680",
+              "OffsetY": "169"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "714",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "709",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "726",
+              "OffsetY": "139"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "764",
+              "OffsetY": "159"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "768",
+              "OffsetY": "145"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "779",
+              "OffsetY": "163"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "767",
+              "OffsetY": "176"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "818",
+              "OffsetY": "144"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "828",
+              "OffsetY": "145"
+            }
+          ]
+        },
+        {
+          "Name": "forest_4",
+          "SpawnInfo": [
+            {
+              "NameOrType": "Guide",
+              "OffsetX": "780",
+              "OffsetY": "36"
+            },
+            {
+              "NameOrType": "Merchant",
+              "OffsetX": "322",
+              "OffsetY": "59"
+            },
+            {
+              "NameOrType": "BoundGoblin",
+              "OffsetX": "348",
+              "OffsetY": "124"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "578",
+              "OffsetY": "41"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "591",
+              "OffsetY": "47"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "579",
+              "OffsetY": "54"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "567",
+              "OffsetY": "63"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "588",
+              "OffsetY": "63"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "551",
+              "OffsetY": "35"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "506",
+              "OffsetY": "33"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "463",
+              "OffsetY": "34"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "432",
+              "OffsetY": "45"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "403",
+              "OffsetY": "48"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "413",
+              "OffsetY": "52"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "352",
+              "OffsetY": "44"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "516",
+              "OffsetY": "49"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "506",
+              "OffsetY": "52"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "517",
+              "OffsetY": "64"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "532",
+              "OffsetY": "63"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "561",
+              "OffsetY": "64"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "536",
+              "OffsetY": "85"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "539",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "541",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "582",
+              "OffsetY": "72"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "581",
+              "OffsetY": "80"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "599",
+              "OffsetY": "126"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "624",
+              "OffsetY": "114"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "549",
+              "OffsetY": "147"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "496",
+              "OffsetY": "162"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "421",
+              "OffsetY": "149"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "459",
+              "OffsetY": "151"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "439",
+              "OffsetY": "155"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "368",
+              "OffsetY": "150"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "508",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "480",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "431",
+              "OffsetY": "222"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "429",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "389",
+              "OffsetY": "204"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "385",
+              "OffsetY": "223"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "395",
+              "OffsetY": "223"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "356",
+              "OffsetY": "228"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "632",
+              "OffsetY": "144"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "659",
+              "OffsetY": "145"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "685",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "680",
+              "OffsetY": "169"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "714",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "709",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "726",
+              "OffsetY": "139"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "764",
+              "OffsetY": "159"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "768",
+              "OffsetY": "145"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "779",
+              "OffsetY": "163"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "767",
+              "OffsetY": "176"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "818",
+              "OffsetY": "144"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "828",
+              "OffsetY": "145"
+            }
+          ]
+        },
+        {
+          "Name": "forest_5",
+          "SpawnInfo": [
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "799",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "854",
+              "OffsetY": "200"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "856",
+              "OffsetY": "200"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "880",
+              "OffsetY": "197"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "907",
+              "OffsetY": "199"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "949",
+              "OffsetY": "188"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "953",
+              "OffsetY": "188"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "955",
+              "OffsetY": "164"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "947",
+              "OffsetY": "151"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "960",
+              "OffsetY": "151"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "891",
+              "OffsetY": "159"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "896",
+              "OffsetY": "165"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "847",
+              "OffsetY": "157"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "996",
+              "OffsetY": "152"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "1148",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "1131",
+              "OffsetY": "158"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1088",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "1185",
+              "OffsetY": "167"
+            },
+            {
+              "NameOrType": "ArmsDealer",
+              "OffsetX": "1234",
+              "OffsetY": "182"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "524",
+              "OffsetY": "196"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "535",
+              "OffsetY": "196"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "546",
+              "OffsetY": "207"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "490",
+              "OffsetY": "204"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "495",
+              "OffsetY": "204"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "418",
+              "OffsetY": "185"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "395",
+              "OffsetY": "203"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "432",
+              "OffsetY": "248"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "479",
+              "OffsetY": "252"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "490",
+              "OffsetY": "252"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "407",
+              "OffsetY": "104"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "427",
+              "OffsetY": "96"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "419",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "328",
+              "OffsetY": "96"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "352",
+              "OffsetY": "92"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "468",
+              "OffsetY": "114"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "439",
+              "OffsetY": "142"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "441",
+              "OffsetY": "142"
+            },
+            {
+              "NameOrType": "BoundGoblin",
+              "OffsetX": "524",
+              "OffsetY": "91"
+            },
+            {
+              "NameOrType": "Guide",
+              "OffsetX": "618",
+              "OffsetY": "192"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "491",
+              "OffsetY": "117"
+            }
+          ]
+        },
+        {
+          "Name": "forest_6",
+          "SpawnInfo": [
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "799",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "854",
+              "OffsetY": "200"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "856",
+              "OffsetY": "200"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "880",
+              "OffsetY": "197"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "907",
+              "OffsetY": "199"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "949",
+              "OffsetY": "188"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "953",
+              "OffsetY": "188"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "955",
+              "OffsetY": "164"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "947",
+              "OffsetY": "151"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "960",
+              "OffsetY": "151"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "891",
+              "OffsetY": "159"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "896",
+              "OffsetY": "165"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "847",
+              "OffsetY": "157"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "996",
+              "OffsetY": "152"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "1148",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "1131",
+              "OffsetY": "158"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1088",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "1185",
+              "OffsetY": "167"
+            },
+            {
+              "NameOrType": "Merchant",
+              "OffsetX": "1234",
+              "OffsetY": "182"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "524",
+              "OffsetY": "196"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "535",
+              "OffsetY": "196"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "546",
+              "OffsetY": "207"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "490",
+              "OffsetY": "204"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "495",
+              "OffsetY": "204"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "418",
+              "OffsetY": "185"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "395",
+              "OffsetY": "203"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "432",
+              "OffsetY": "248"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "479",
+              "OffsetY": "252"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "490",
+              "OffsetY": "252"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "407",
+              "OffsetY": "104"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "427",
+              "OffsetY": "96"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "419",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "328",
+              "OffsetY": "96"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "352",
+              "OffsetY": "92"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "468",
+              "OffsetY": "114"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "439",
+              "OffsetY": "142"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "441",
+              "OffsetY": "142"
+            },
+            {
+              "NameOrType": "BoundGoblin",
+              "OffsetX": "524",
+              "OffsetY": "91"
+            },
+            {
+              "NameOrType": "Guide",
+              "OffsetX": "618",
+              "OffsetY": "192"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "491",
+              "OffsetY": "117"
+            }
+          ]
+        },
+        {
+          "Name": "forest_7",
+          "SpawnInfo": [
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "576",
+              "OffsetY": "36"
+            },
+            {
+              "NameOrType": "TargetDummy",
+              "OffsetX": "750",
+              "OffsetY": "33"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "591",
+              "OffsetY": "36"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "544",
+              "OffsetY": "35"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "528",
+              "OffsetY": "47"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "576",
+              "OffsetY": "36"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "495",
+              "OffsetY": "46"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "493",
+              "OffsetY": "45"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "451",
+              "OffsetY": "33"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "471",
+              "OffsetY": "34"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "516",
+              "OffsetY": "49"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "534",
+              "OffsetY": "63"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "527",
+              "OffsetY": "61"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "517",
+              "OffsetY": "64"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "552",
+              "OffsetY": "64"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "392",
+              "OffsetY": "48"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "403",
+              "OffsetY": "48"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "406",
+              "OffsetY": "48"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "413",
+              "OffsetY": "52"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "358",
+              "OffsetY": "44"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "342",
+              "OffsetY": "45"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "581",
+              "OffsetY": "63"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "590",
+              "OffsetY": "63"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "599",
+              "OffsetY": "54"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "577",
+              "OffsetY": "54"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "579",
+              "OffsetY": "72"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "590",
+              "OffsetY": "72"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "542",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "544",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "538",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "526",
+              "OffsetY": "72"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "568",
+              "OffsetY": "109"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "624",
+              "OffsetY": "114"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "626",
+              "OffsetY": "143"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "689",
+              "OffsetY": "142"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "714",
+              "OffsetY": "140"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "710",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "703",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "705",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "707",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "709",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "683",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "762",
+              "OffsetY": "145"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "770",
+              "OffsetY": "145"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "779",
+              "OffsetY": "163"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "777",
+              "OffsetY": "176"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "808",
+              "OffsetY": "143"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "813",
+              "OffsetY": "144"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "557",
+              "OffsetY": "153"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "549",
+              "OffsetY": "147"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "521",
+              "OffsetY": "154"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "478",
+              "OffsetY": "152"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "493",
+              "OffsetY": "162"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "431",
+              "OffsetY": "149"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "442",
+              "OffsetY": "161"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "422",
+              "OffsetY": "162"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "383",
+              "OffsetY": "149"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "504",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "487",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "459",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "425",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "390",
+              "OffsetY": "204"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "394",
+              "OffsetY": "223"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "385",
+              "OffsetY": "241"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "394",
+              "OffsetY": "241"
+            },
+            {
+              "NameOrType": "BoundGoblin",
+              "OffsetX": "350",
+              "OffsetY": "124"
+            },
+            {
+              "NameOrType": "Merchant",
+              "OffsetX": "321",
+              "OffsetY": "59"
+            },
+            {
+              "NameOrType": "Guide",
+              "OffsetX": "780",
+              "OffsetY": "36"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "348",
+              "OffsetY": "227"
+            }
+          ]
+        },
+        {
+          "Name": "forest_8",
+          "SpawnInfo": [
+            {
+              "NameOrType": "Guide",
+              "OffsetX": "618",
+              "OffsetY": "192"
+            },
+            {
+              "NameOrType": "ArmsDealer",
+              "OffsetX": "1234",
+              "OffsetY": "182"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "313",
+              "OffsetY": "96"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "335",
+              "OffsetY": "96"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "366",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "418",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "430",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "439",
+              "OffsetY": "96"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "432",
+              "OffsetY": "109"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "417",
+              "OffsetY": "185"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "399",
+              "OffsetY": "203"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "427",
+              "OffsetY": "248"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "435",
+              "OffsetY": "248"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "481",
+              "OffsetY": "252"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "500",
+              "OffsetY": "252"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "498",
+              "OffsetY": "117"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "480",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "490",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "492",
+              "OffsetY": "204"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "521",
+              "OffsetY": "196"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "546",
+              "OffsetY": "207"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "549",
+              "OffsetY": "189"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "556",
+              "OffsetY": "207"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "558",
+              "OffsetY": "207"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "798",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "863",
+              "OffsetY": "195"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "812",
+              "OffsetY": "207"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "882",
+              "OffsetY": "196"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "885",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "887",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "896",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "898",
+              "OffsetY": "195"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "914",
+              "OffsetY": "197"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "914",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "883",
+              "OffsetY": "152"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "890",
+              "OffsetY": "152"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "951",
+              "OffsetY": "151"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "960",
+              "OffsetY": "151"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "907",
+              "OffsetY": "176"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "842",
+              "OffsetY": "157"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "1117",
+              "OffsetY": "172"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "1121",
+              "OffsetY": "172"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "1139",
+              "OffsetY": "170"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "1085",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1132",
+              "OffsetY": "158"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "1194",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "BoundGoblin",
+              "OffsetX": "528",
+              "OffsetY": "91"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "1196",
+              "OffsetY": "168"
+            }
+          ]
+        },
+        {
+          "Name": "forest_9",
+          "SpawnInfo": [
+            {
+              "NameOrType": "Guide",
+              "OffsetX": "780",
+              "OffsetY": "36"
+            },
+            {
+              "NameOrType": "ArmsDealer",
+              "OffsetX": "322",
+              "OffsetY": "59"
+            },
+            {
+              "NameOrType": "BoundGoblin",
+              "OffsetX": "348",
+              "OffsetY": "124"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "578",
+              "OffsetY": "41"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "591",
+              "OffsetY": "47"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "579",
+              "OffsetY": "54"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "567",
+              "OffsetY": "63"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "588",
+              "OffsetY": "63"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "551",
+              "OffsetY": "35"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "506",
+              "OffsetY": "33"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "463",
+              "OffsetY": "34"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "432",
+              "OffsetY": "45"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "403",
+              "OffsetY": "48"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "413",
+              "OffsetY": "52"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "352",
+              "OffsetY": "44"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "516",
+              "OffsetY": "49"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "506",
+              "OffsetY": "52"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "517",
+              "OffsetY": "64"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "532",
+              "OffsetY": "63"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "561",
+              "OffsetY": "64"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "536",
+              "OffsetY": "85"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "539",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "541",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "582",
+              "OffsetY": "72"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "581",
+              "OffsetY": "80"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "599",
+              "OffsetY": "126"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "624",
+              "OffsetY": "114"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "549",
+              "OffsetY": "147"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "496",
+              "OffsetY": "162"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "421",
+              "OffsetY": "149"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "459",
+              "OffsetY": "151"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "439",
+              "OffsetY": "155"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "368",
+              "OffsetY": "150"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "508",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "480",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "431",
+              "OffsetY": "222"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "429",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "389",
+              "OffsetY": "204"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "385",
+              "OffsetY": "223"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "395",
+              "OffsetY": "223"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "356",
+              "OffsetY": "228"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "632",
+              "OffsetY": "144"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "659",
+              "OffsetY": "145"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "685",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "680",
+              "OffsetY": "169"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "714",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "709",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "726",
+              "OffsetY": "139"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "764",
+              "OffsetY": "159"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "768",
+              "OffsetY": "145"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "779",
+              "OffsetY": "163"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "767",
+              "OffsetY": "176"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "818",
+              "OffsetY": "144"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "828",
+              "OffsetY": "145"
+            }
+          ]
+        },
+        {
+          "Name": "forest_10",
+          "SpawnInfo": [
+            {
+              "NameOrType": "Guide",
+              "OffsetX": "780",
+              "OffsetY": "36"
+            },
+            {
+              "NameOrType": "ArmsDealer",
+              "OffsetX": "322",
+              "OffsetY": "59"
+            },
+            {
+              "NameOrType": "BoundGoblin",
+              "OffsetX": "348",
+              "OffsetY": "124"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "578",
+              "OffsetY": "41"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "591",
+              "OffsetY": "47"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "579",
+              "OffsetY": "54"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "567",
+              "OffsetY": "63"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "588",
+              "OffsetY": "63"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "551",
+              "OffsetY": "35"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "506",
+              "OffsetY": "33"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "463",
+              "OffsetY": "34"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "432",
+              "OffsetY": "45"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "403",
+              "OffsetY": "48"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "413",
+              "OffsetY": "52"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "352",
+              "OffsetY": "44"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "516",
+              "OffsetY": "49"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "506",
+              "OffsetY": "52"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "517",
+              "OffsetY": "64"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "532",
+              "OffsetY": "63"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "561",
+              "OffsetY": "64"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "536",
+              "OffsetY": "85"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "539",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "541",
+              "OffsetY": "88"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "582",
+              "OffsetY": "72"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "581",
+              "OffsetY": "80"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "599",
+              "OffsetY": "126"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "624",
+              "OffsetY": "114"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "549",
+              "OffsetY": "147"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "496",
+              "OffsetY": "162"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "421",
+              "OffsetY": "149"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "459",
+              "OffsetY": "151"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "439",
+              "OffsetY": "155"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "368",
+              "OffsetY": "150"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "508",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "480",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "431",
+              "OffsetY": "222"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "429",
+              "OffsetY": "210"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "389",
+              "OffsetY": "204"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "385",
+              "OffsetY": "223"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "395",
+              "OffsetY": "223"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "356",
+              "OffsetY": "228"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "632",
+              "OffsetY": "144"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "659",
+              "OffsetY": "145"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "685",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "680",
+              "OffsetY": "169"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "714",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "709",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "726",
+              "OffsetY": "139"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "764",
+              "OffsetY": "159"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "768",
+              "OffsetY": "145"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "779",
+              "OffsetY": "163"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "767",
+              "OffsetY": "176"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "818",
+              "OffsetY": "144"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "828",
+              "OffsetY": "145"
+            }
+          ]
+        },
+        {
+          "Name": "forest_11",
+          "SpawnInfo": [
+            {
+              "NameOrType": "Guide",
+              "OffsetX": "836",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "ArmsDealer",
+              "OffsetX": "1086",
+              "OffsetY": "251"
+            },
+            {
+              "NameOrType": "BoundGoblin",
+              "OffsetX": "478",
+              "OffsetY": "145"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "313",
+              "OffsetY": "96"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "348",
+              "OffsetY": "99"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "382",
+              "OffsetY": "110"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "407",
+              "OffsetY": "128"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "382",
+              "OffsetY": "137"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "380",
+              "OffsetY": "151"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "379",
+              "OffsetY": "144"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "399",
+              "OffsetY": "148"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "402",
+              "OffsetY": "148"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "404",
+              "OffsetY": "148"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "381",
+              "OffsetY": "128"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "424",
+              "OffsetY": "131"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "444",
+              "OffsetY": "95"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "417",
+              "OffsetY": "83"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "440",
+              "OffsetY": "83"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "425",
+              "OffsetY": "97"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "463",
+              "OffsetY": "91"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "505",
+              "OffsetY": "94"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "483",
+              "OffsetY": "94"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "492",
+              "OffsetY": "98"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "494",
+              "OffsetY": "98"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "454",
+              "OffsetY": "170"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "501",
+              "OffsetY": "169"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "564",
+              "OffsetY": "175"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "567",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "545",
+              "OffsetY": "180"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "597",
+              "OffsetY": "169"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "625",
+              "OffsetY": "166"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "659",
+              "OffsetY": "199"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "631",
+              "OffsetY": "193"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "607",
+              "OffsetY": "202"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "601",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "682",
+              "OffsetY": "179"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "685",
+              "OffsetY": "170"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "701",
+              "OffsetY": "188"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "902",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "915",
+              "OffsetY": "178"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "958",
+              "OffsetY": "181"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "949",
+              "OffsetY": "196"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "957",
+              "OffsetY": "209"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "960",
+              "OffsetY": "208"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "972",
+              "OffsetY": "213"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "986",
+              "OffsetY": "179"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "975",
+              "OffsetY": "207"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "998",
+              "OffsetY": "208"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "1014",
+              "OffsetY": "185"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1008",
+              "OffsetY": "176"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1029",
+              "OffsetY": "175"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "985",
+              "OffsetY": "232"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "998",
+              "OffsetY": "234"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "1011",
+              "OffsetY": "243"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "1007",
+              "OffsetY": "241"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "1026",
+              "OffsetY": "234"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1033",
+              "OffsetY": "208"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "1041",
+              "OffsetY": "188"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "1046",
+              "OffsetY": "209"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "1069",
+              "OffsetY": "196"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "1088",
+              "OffsetY": "185"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1083",
+              "OffsetY": "176"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1103",
+              "OffsetY": "174"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "1105",
+              "OffsetY": "185"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "1123",
+              "OffsetY": "174"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "1151",
+              "OffsetY": "185"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1144",
+              "OffsetY": "175"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1168",
+              "OffsetY": "233"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1144",
+              "OffsetY": "233"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1121",
+              "OffsetY": "233"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1185",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1198",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "1216",
+              "OffsetY": "176"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1243",
+              "OffsetY": "167"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "1251",
+              "OffsetY": "166"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "1271",
+              "OffsetY": "166"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "1242",
+              "OffsetY": "186"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1251",
+              "OffsetY": "203"
+            }
+          ]
+        },
+        {
+          "Name": "forest_12",
+          "SpawnInfo": [
+            {
+              "NameOrType": "Guide",
+              "OffsetX": "836",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "Merchant",
+              "OffsetX": "1086",
+              "OffsetY": "251"
+            },
+            {
+              "NameOrType": "BoundGoblin",
+              "OffsetX": "478",
+              "OffsetY": "145"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "313",
+              "OffsetY": "96"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "348",
+              "OffsetY": "99"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "382",
+              "OffsetY": "110"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "407",
+              "OffsetY": "128"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "382",
+              "OffsetY": "137"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "380",
+              "OffsetY": "151"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "379",
+              "OffsetY": "144"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "399",
+              "OffsetY": "148"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "402",
+              "OffsetY": "148"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "404",
+              "OffsetY": "148"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "381",
+              "OffsetY": "128"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "424",
+              "OffsetY": "131"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "444",
+              "OffsetY": "95"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "417",
+              "OffsetY": "83"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "440",
+              "OffsetY": "83"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "425",
+              "OffsetY": "97"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "463",
+              "OffsetY": "91"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "505",
+              "OffsetY": "94"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "483",
+              "OffsetY": "94"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "492",
+              "OffsetY": "98"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "494",
+              "OffsetY": "98"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "454",
+              "OffsetY": "170"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "501",
+              "OffsetY": "169"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "564",
+              "OffsetY": "175"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "567",
+              "OffsetY": "168"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "545",
+              "OffsetY": "180"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "597",
+              "OffsetY": "169"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "625",
+              "OffsetY": "166"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "659",
+              "OffsetY": "199"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "631",
+              "OffsetY": "193"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "607",
+              "OffsetY": "202"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "601",
+              "OffsetY": "194"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "682",
+              "OffsetY": "179"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "685",
+              "OffsetY": "170"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "701",
+              "OffsetY": "188"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "902",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "915",
+              "OffsetY": "178"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "958",
+              "OffsetY": "181"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "949",
+              "OffsetY": "196"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "957",
+              "OffsetY": "209"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "960",
+              "OffsetY": "208"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "972",
+              "OffsetY": "213"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "986",
+              "OffsetY": "179"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "975",
+              "OffsetY": "207"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "998",
+              "OffsetY": "208"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "1014",
+              "OffsetY": "185"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1008",
+              "OffsetY": "176"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1029",
+              "OffsetY": "175"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "985",
+              "OffsetY": "232"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "998",
+              "OffsetY": "234"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "1011",
+              "OffsetY": "243"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "1007",
+              "OffsetY": "241"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "1026",
+              "OffsetY": "234"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1033",
+              "OffsetY": "208"
+            },
+            {
+              "NameOrType": "Raven",
+              "OffsetX": "1041",
+              "OffsetY": "188"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "1046",
+              "OffsetY": "209"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "1069",
+              "OffsetY": "196"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "1088",
+              "OffsetY": "185"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1083",
+              "OffsetY": "176"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1103",
+              "OffsetY": "174"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "1105",
+              "OffsetY": "185"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "1123",
+              "OffsetY": "174"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "1151",
+              "OffsetY": "185"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1144",
+              "OffsetY": "175"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1168",
+              "OffsetY": "233"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1144",
+              "OffsetY": "233"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1121",
+              "OffsetY": "233"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1185",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1198",
+              "OffsetY": "177"
+            },
+            {
+              "NameOrType": "GoblinArcher",
+              "OffsetX": "1216",
+              "OffsetY": "176"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1243",
+              "OffsetY": "167"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "1251",
+              "OffsetY": "166"
+            },
+            {
+              "NameOrType": "Wolf",
+              "OffsetX": "1271",
+              "OffsetY": "166"
+            },
+            {
+              "NameOrType": "GoblinSorcerer",
+              "OffsetX": "1242",
+              "OffsetY": "186"
+            },
+            {
+              "NameOrType": "GoblinThief",
+              "OffsetX": "1251",
+              "OffsetY": "203"
+            }
+          ]
         }
       ]
     },
@@ -606,11 +3501,6 @@
         {
           "Name": "innbetween",
           "SpawnInfo": [
-            {
-              "NameOrType": "GoblinTinkerer",
-              "OffsetX": "36",
-              "OffsetY": "49"
-            }
           ]
         }
       ]
@@ -808,11 +3698,6 @@
             },
             {
               "NameOrType": "BloodCrawler",
-              "OffsetX": "221",
-              "OffsetY": "153"
-            },
-            {
-              "NameOrType": "BloodCrawler",
               "OffsetX": "313",
               "OffsetY": "152"
             },
@@ -820,11 +3705,6 @@
               "NameOrType": "BloodCrawler",
               "OffsetX": "349",
               "OffsetY": "157"
-            },
-            {
-              "NameOrType": "BloodCrawler",
-              "OffsetX": "221",
-              "OffsetY": "153"
             },
             {
               "NameOrType": "Drippler",
@@ -895,11 +3775,6 @@
               "NameOrType": "BloodCrawler",
               "OffsetX": "421",
               "OffsetY": "98"
-            },
-            {
-              "NameOrType": "BloodCrawler",
-              "OffsetX": "221",
-              "OffsetY": "153"
             },
             {
               "NameOrType": "Crimera",
@@ -1034,7 +3909,7 @@
             {
               "NameOrType": "BrainofCthulhu",
               "OffsetX": "781",
-              "OffsetY": "58"
+              "OffsetY": "54"
             }
           ]
         },
@@ -1294,7 +4169,7 @@
             {
               "NameOrType": "BrainofCthulhu",
               "OffsetX": "779",
-              "OffsetY": "123"
+              "OffsetY": "119"
             }
           ]
         }
@@ -1632,9 +4507,14 @@
               "OffsetY": "159"
             },
             {
-              "NameOrType": "TargetDummy",
-              "OffsetX": "368",
-              "OffsetY": "7"
+              "NameOrType": "ArmsDealer",
+              "OffsetX": "507",
+              "OffsetY": "181"
+            },
+            {
+              "NameOrType": "Nurse",
+              "OffsetX": "333",
+              "OffsetY": "269"
             },
             {
               "NameOrType": "DesertScorpionWalk",

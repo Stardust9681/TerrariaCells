@@ -78,8 +78,10 @@ Configs: {
 		Headers: {
 			BuilderSettings: Builder Settings
 			InventorySettings: Inventory Settings
-			DebugAndPlaytesting: Debug And Playtesting Header
-			GameplaySettings: Gameplay Settings Header
+			DebugAndPlaytesting: Debug And Playtesting
+			GameplaySettings: Gameplay Settings
+			PylonVisuals: Inactive Pylon Visual Settings
+			AmmoUIPlacement: Ammo U I Placement Header
 		}
 
 		EnableInventoryChanges: {
@@ -131,6 +133,61 @@ Configs: {
 			Label: Disable Spawns
 			Tooltip: ""
 		}
+
+		AllowDebugCommands: {
+			Label: Allow Debug Commands
+			Tooltip: ""
+		}
+
+		GreyInactivePylons: {
+			Label: Grey Inactive Pylons
+			Tooltip: ""
+		}
+
+		TranslucentInactivePylons: {
+			Label: Translucent Inactive Pylons
+			Tooltip: ""
+		}
+
+		DarkenTranslucentPylons: {
+			Label: Darken Translucent Pylons
+			Tooltip: ""
+		}
+
+		BobbingInactivePylons: {
+			Label: Bobbing Inactive Pylons
+			Tooltip: ""
+		}
+
+		SpinInactivePylons: {
+			Label: Spin Inactive Pylons
+			Tooltip: ""
+		}
+
+		GlowInactivePylons: {
+			Label: Glow Inactive Pylons
+			Tooltip: ""
+		}
+
+		InactivePylonDust: {
+			Label: Inactive Pylon Dust
+			Tooltip: ""
+		}
+
+		HideInactivePylonsEntirely: {
+			Label: Hide Inactive Pylons Entirely
+			Tooltip: ""
+		}
+
+		AmmoIndicatorType: {
+			Label: Ammo Indicator Type
+			Tooltip: ""
+		}
+
+		AmmoIndicatorOffset: {
+			Label: Ammo Indicator Offset
+			Tooltip: ""
+		}
 	}
 
 	DebuffIndicators: {
@@ -139,6 +196,15 @@ Configs: {
 		Icon.Label: Icon
 		Particles.Label: Particles
 		IconAndParticles.Label: Icon and Particles
+	}
+
+	AmmoPositionMode: {
+		Tooltip: ""
+		Cursor.Label: Cursor
+		Tween.Label: Tween
+		TweenSag.Label: Tween Sag
+		Player.Label: Player
+		Resource.Label: Resource
 	}
 }
 
@@ -256,12 +322,14 @@ Projectiles: {
 	IceShard.DisplayName: Ice Shard
 	IceBall.DisplayName: Ice Ball
 	IceArrow.DisplayName: Ice Arrow
-	IllusionBrainHitbox.DisplayName: Illusion Brain Hitbox
+	IllusionBrainHitbox.DisplayName: Illusory Brain
 	TelegraphWarning.DisplayName: Telegraph Warning
-	TendrilAttack.DisplayName: Tendril Attack
+	TendrilAttack.DisplayName: Crimson Tendril
 	SwordStabWave.DisplayName: Sword Stab Wave
 	BloodThorn.DisplayName: Blood Thorn
-	TrailOfFlames.DisplayName: Trail Of Flames
+	TrailOfFlames.DisplayName: Fire Trail
+	IceArrowFriendly.DisplayName: Ice Arrow
+	IceSpikeFriendly.DisplayName: Ice Spike
 }
 
 Tooltips: {

@@ -51,7 +51,7 @@ namespace TerrariaCells.Content.WeaponAnimations
             }
             if (item.type == ItemID.IceBow)
             {
-                ChargedProjectile = ProjectileID.FrostArrow;
+                ChargedProjectile = ModContent.ProjectileType<Projectiles.IceArrowFriendly>();
             }
             if (item.type == ItemID.MoltenFury)
             {

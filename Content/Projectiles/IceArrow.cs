@@ -46,7 +46,10 @@ namespace TerrariaCells.Content.Projectiles
             SoundEngine.PlaySound(SoundID.DeerclopsIceAttack, Projectile.Center);
             for (int i = 0; i < 3; i++)
             {
-                Projectile.NewProjectileDirect(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<IceSpike>(), TCellsUtils.ScaledHostileDamage(25), 1);
+                Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<IceSpike>(), TCellsUtils.ScaledHostileDamage(25), 1);
+                proj.hostile = Projectile.hostile;
+                proj.friendly = Projectile.friendly;
+                proj.netUpdate = true;
             }
             for (int i = 0; i < 10; i++)
             {

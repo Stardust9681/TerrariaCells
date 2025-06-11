@@ -156,6 +156,7 @@ public partial class FunkyModifierItemModifier : GlobalItem
         (ItemID.OnyxBlaster, [ModCategory.Projectile, ModCategory.AmmoBullet]),
         (ItemID.Minishark, [ModCategory.Projectile, ModCategory.AmmoBullet]),
         (ItemID.WoodenBow, [ModCategory.Projectile, ModCategory.AmmoArrow]),
+        (ItemID.PlatinumBow, [ModCategory.Projectile, ModCategory.AmmoArrow]),
         (ItemID.IceBow, [ModCategory.Projectile, ModCategory.AmmoArrow]),
         (ItemID.PulseBow, [ModCategory.Projectile, ModCategory.AmmoArrow]),
         (ItemID.RocketLauncher, [ModCategory.Projectile, ModCategory.AmmoRocket]),

@@ -261,6 +261,9 @@ namespace TerrariaCells.Common.GlobalProjectiles
 				case ProjectileID.ToxicCloud3:
 					GlobalNPCs.BuffNPC.AddBuff(target, BuffID.Poisoned, 60 * 20, damageDone);
 					break;
+                case ProjectileID.GladiusStab:
+                    target.immune[projectile.owner] = 8;
+                    break;
 			}
         }
 

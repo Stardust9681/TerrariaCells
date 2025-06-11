@@ -67,13 +67,13 @@ namespace TerrariaCells.Common.Configs
         [DefaultValue(true)]
         public bool HideVanillaInventory;
 
-		[Header("DebugAndPlaytesting")]
-		
-		/// <summary>
-		/// If enabled, makes it so that NPC shops sell all available items for their category instead of just a small selection.
-		/// Only for testing purposes.
-		/// <summary>
-		[DefaultValue(false)]
+        [Header("DebugAndPlaytesting")]
+
+        /// <summary>
+        /// If enabled, makes it so that NPC shops sell all available items for their category instead of just a small selection.
+        /// Only for testing purposes.
+        /// <summary>
+        [DefaultValue(false)]
 		public bool PlaytesterShops;
 
         /// <summary>
@@ -83,5 +83,57 @@ namespace TerrariaCells.Common.Configs
         [DefaultValue(true)]
         public bool ListCategorizationTooltip;
 
-	}
+        /// <summary>
+        /// Allow the use of testing commands (like <c>/die</c> or <c>/tier {lv}</c>)
+        /// </summary>
+        [DefaultValue(false)]
+        public bool AllowDebugCommands;
+
+        [Header("PylonVisuals")]
+        /// <summary>
+        /// Hides inactive Pylons entirely. Overrides every other setting if enabled.
+        /// </summary>
+        [DefaultValue(false)]
+        public bool HideInactivePylonsEntirely;
+        /// <summary>
+        /// Whether inactive Pylons should be greyed out instead of their normal colour
+        /// </summary>
+        [DefaultValue(false)]
+        public bool GreyInactivePylons;
+        /// <summary>
+        /// Whether inactive Pylons should be translucent instead of fully opaque
+        /// </summary>
+        [DefaultValue(true)]
+        public bool TranslucentInactivePylons;
+        /// <summary>
+        /// Whether translucent inactive Pylons should be darkened, as if actuated. Has no effect if Translucent Inactive Pylons is not set
+        /// </summary>
+        [DefaultValue(true)]
+        public bool DarkenTranslucentPylons;
+        /// <summary>
+        /// Whether inactive Pylons should bob up and down
+        /// </summary>
+        [DefaultValue(false)]
+        public bool BobbingInactivePylons;
+        /// <summary>
+        /// Whether inactive Pylons should spin
+        /// </summary>
+        [DefaultValue(false)]
+        public bool SpinInactivePylons;
+        /// <summary>
+        /// Whether inactive Pylons should have their glow
+        /// </summary>
+        [DefaultValue(false)]
+        public bool GlowInactivePylons;
+        /// <summary>
+        /// Whether inactive Pylons should emit dust
+        /// </summary>
+        [DefaultValue(false)]
+        public bool InactivePylonDust;
+
+        [Header("AmmoUIPlacement")]
+        [DefaultValue(Content.UI.Reload.AmmoPositionMode.Resource)]
+        [DrawTicks]
+        public Content.UI.Reload.AmmoPositionMode AmmoIndicatorType;
+    }
 }

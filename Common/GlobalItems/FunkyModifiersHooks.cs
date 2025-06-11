@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 using TerrariaCells.Common.GlobalProjectiles;
+using TerrariaCells.Common.Items;
 
 namespace TerrariaCells.Common.GlobalItems;
 
@@ -30,25 +31,20 @@ public partial class FunkyModifierItemModifier : GlobalItem
         (3, 3),
     ];
 
-    public static void Reforge(Item item)
+    public static bool CanReceiveMods(int itemType)
     {
-        if (!weaponCategorizations.TryGetValue((short)item.netID, out var categorizations))
+        //!weaponCategorizations.TryGetValue((short)itemType, out var categorizations)
+        return weaponCategorizations.ContainsKey((short)itemType);
+    }
+    internal static FunkyModifier[] GetModPool(int itemType)
+    {
+        if (!weaponCategorizations.TryGetValue((short)itemType, out var categorizations))
         {
-            return;
+            ModContent.GetInstance<TerrariaCells>().Logger.Error($"Could not find modifier categorization for {itemType}");
+            return System.Array.Empty<FunkyModifier>();
         }
 
-        if (!item.TryGetGlobalItem<TierSystemGlobalItem>(out var tierSystem))
-        {
-            return;
-        }
-
-        (int min, int max) = modifierQuantityRangesPerTier[tierSystem.itemLevel];
-        int modifierCount = Main.rand.Next(min, max + 1); // offset by one to make inputs inclusive
-
-        FunkyModifierItemModifier funkyModifiers = item.GetGlobalItem<FunkyModifierItemModifier>();
-        funkyModifiers.modifiers = new FunkyModifier[modifierCount];
-
-        FunkyModifier[] modifierPool = modifierInitList
+        return modifierInitList
             .Where(checking =>
                 ModifierCategorizations(checking.modifierType)
                     .Any(modifierFilter =>
@@ -57,21 +53,50 @@ public partial class FunkyModifierItemModifier : GlobalItem
                     )
             )
             .ToArray();
+    }
+    internal static FunkyModifier[] PickMods(int itemType, int level)
+    {
+        (int min, int max) = modifierQuantityRangesPerTier[level];
+        int modifierCount = Main.rand.Next(min, max + 1); // offset by one to make inputs inclusive
 
+        FunkyModifier[] pool = GetModPool(itemType);
+        if (pool.Length < modifierCount) return pool;
+
+        FunkyModifier[] mods = new FunkyModifier[modifierCount];
         for (int i = 0; i < modifierCount; i++)
         {
-            FunkyModifier funkyModifier = modifierPool[Main.rand.Next(modifierPool.Length)];
-            if (funkyModifiers.modifiers.Contains(funkyModifier))
+            FunkyModifier funkyModifier = Main.rand.Next(pool);
+            if (mods.Contains(funkyModifier))
             {
                 continue;
             }
-            funkyModifiers.modifiers[i] = funkyModifier;
+            mods[i] = funkyModifier;
         }
+        return mods;
+    }
+    public static void Reforge(Item item, int level)
+    {
+        (int min, int max) = modifierQuantityRangesPerTier[level];
+        int modifierCount = Main.rand.Next(min, max + 1); // offset by one to make inputs inclusive
+
+        FunkyModifierItemModifier funkyModifiers = item.GetGlobalItem<FunkyModifierItemModifier>();
+        funkyModifiers.modifiers = new FunkyModifier[modifierCount];
+
+        funkyModifiers.modifiers = PickMods(item.type, level);
+    }
+    public static void Reforge(Item item)
+    {
+        if (!item.TryGetGlobalItem<TierSystemGlobalItem>(out var tierSystem))
+        {
+            return;
+        }
+        Reforge(item, tierSystem.itemLevel);
     }
 
     public override void SetDefaults(Item item)
     {
-        Reforge(item);
+        if(CanReceiveMods(item.type))
+            Reforge(item);
     }
 
     public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)

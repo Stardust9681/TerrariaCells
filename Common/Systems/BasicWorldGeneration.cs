@@ -146,6 +146,11 @@ public class CustomWorldGenPass(string name, double loadWeight) : GenPass(name, 
         Point16 offset = data.LevelPositions[STARTING_LEVEL];
         Main.spawnTileX = structure.Structures[variation].SpawnX + offset.X;
         Main.spawnTileY = structure.Structures[variation].SpawnY + offset.Y;
+        //Maybe something we want to consider:
+        //Use the loaded character's difficulty to determine what difficulty the world should be
+        //That, or change the thing we're detouring, so player can specify world difficulty
+        //Though it'd be odd to have the option to have world size or crimson/corruption when those won't apply
+        Main.GameMode = GameModeID.Normal;
     }
 
     public static void PlaceStructures(BasicWorldGenData basicWorldGenData)

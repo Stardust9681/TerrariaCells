@@ -27,7 +27,7 @@ namespace TerrariaCells.Content.Tiles
 
 		public override void SafeSetStaticDefaults()
 		{
-			AddMapEntry(Color.Goldenrod, ModContent.GetInstance<Content.Items.Placeable.HivePylon>().DisplayName);
+			AddMapEntry(Color.Goldenrod, CreateMapEntryName());
 		}
 
 		public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)

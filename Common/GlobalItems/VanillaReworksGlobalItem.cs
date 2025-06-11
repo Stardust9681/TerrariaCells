@@ -38,40 +38,44 @@ namespace TerrariaCells.Common.GlobalItems
                 // RANGED WEAPONS
                 // Guns
                 case ItemID.PhoenixBlaster:
-                    item.damage = 20;
+                    item.damage = 12;
                     item.useTime = 14;
                     item.value = 1000;
                     break;
                 case ItemID.Minishark:
                     // dps ~60, with reloading ~90, tapers off to 70
-                    item.damage = 10;
+                    item.damage = 6;
                     item.knockBack = 0f;
                     item.value = 1000;
                     break;
                 case ItemID.SniperRifle:
-                    item.damage = 60;
+                    item.damage = 50;
                     item.useTime = 25;
                     item.value = 1000;
                     break;
                 case ItemID.OnyxBlaster:
                     // Change its damage in WeaponHoldoutify.cs, no idea why is it there but I don't want to break it
-                    item.damage = 13;
+                    item.damage = 8;
                     item.useTime = 48;
                     item.value = 1000;
                     break;
                 // Bows
+                case ItemID.WoodenBow:
+                    item.damage = 6;
+                    break;
                 case ItemID.PulseBow:
-                    item.damage = 15;
+                    item.damage = 13;
                     item.useTime = 23;
                     item.value = 1000;
                     break;
                 case ItemID.IceBow:
-                    item.damage = 15;
+                    item.damage = 13;
                     item.useTime = 16;
+                    //item.shootSpeed -= 2f;
                     item.value = 1000;
                     break;
                 case ItemID.PlatinumBow:
-                    item.damage = 22;
+                    item.damage = 20;
                     item.value = 1000;
                     break;
                 // Launchers
@@ -106,7 +110,7 @@ namespace TerrariaCells.Common.GlobalItems
                 // MELEE
                 // Swords
                 case ItemID.FieryGreatsword:
-                    item.damage = 30;
+                    item.damage = 20;
                     item.useTime = 30;
                     item.value = 1000;
                     break;
@@ -268,21 +272,35 @@ namespace TerrariaCells.Common.GlobalItems
 
         public override void ModifyHitNPC(Item item, Player player, NPC target, ref NPC.HitModifiers modifiers)
         {
-            if (item.type == ItemID.FieryGreatsword && target.HasBuff(BuffID.Oiled))
+            switch (item.type)
             {
-                modifiers.SetCrit();
-                Projectile.NewProjectileDirect(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ProjectileID.Volcano, item.damage, modifiers.GetKnockback(item.knockBack), player.whoAmI, ai1: 1);
+                case ItemID.FieryGreatsword:
+                    if (target.HasBuff(BuffID.Oiled))
+                    {
+                        modifiers.SetCrit();
+                        Projectile.NewProjectileDirect(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ProjectileID.Volcano, item.damage, modifiers.GetKnockback(item.knockBack), player.whoAmI, ai1: 1);
+                    }
+                    break;
+                case ItemID.Gladius:
+                    if (target.HasBuff(BuffID.Poisoned) || target.HasBuff(BuffID.Bleeding))
+                    {
+                        modifiers.SetCrit();
+                        Projectile.NewProjectileDirect(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ProjectileID.GladiusStab, item.damage, item.knockBack, player.whoAmI, ai1: 1);
+                    }
+                    break;
+                case ItemID.Katana:
+                    if (player.GetModPlayer<WeaponPlayer>().swingType == 0)
+                    {
+                        modifiers.SetCrit();
+                    }
+                    break;
+                case ItemID.FalconBlade:
+                    if (player.moveSpeed > 1.25f)
+                    {
+                        modifiers.SetCrit();
+                    }
+                    break;
             }
-            if (item.type == ItemID.Gladius && (target.HasBuff(BuffID.Poisoned) || target.HasBuff(BuffID.BloodButcherer)))
-            {
-                modifiers.SetCrit();
-                Projectile.NewProjectileDirect(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ProjectileID.GladiusStab, item.damage, item.knockBack, player.whoAmI, ai1: 1);
-            }
-            if (item.type == ItemID.Katana && player.GetModPlayer<WeaponPlayer>().swingType == 0)
-            {
-                modifiers.SetCrit();
-            }
-            base.ModifyHitNPC(item, player, target, ref modifiers);
         }
 
         // Prevents guns from utilizing ammo

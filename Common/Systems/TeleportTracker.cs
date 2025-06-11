@@ -50,15 +50,20 @@ public class TeleportTracker : ModSystem
 
     public void Teleport(string destination)
     {
+        //Goes to next level
         if (destination.Equals("inn", StringComparison.CurrentCultureIgnoreCase))
         {
             Mod.Logger.Info($"Teleporting to next level: {nextLevel}:");
             GoToNextLevel();
+            Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().UpdateTracker(ModPlayers.RewardPlayer.TrackerAction.Restart);
+            Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().targetTime = TimeSpan.FromMinutes(3);
             return;
         }
 
+        //Goes to inn
         Mod.Logger.Info($"Detouring to inn.");
         DetourToInn(destination);
+        Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().UpdateTracker(ModPlayers.RewardPlayer.TrackerAction.Pause);
     }
 
     private void DetourToInn(string destination)
@@ -89,6 +94,7 @@ public class TeleportTracker : ModSystem
         Vector2 position = (
             roomPos + new Point16(levelStructure.SpawnX, levelStructure.SpawnY)
         ).ToWorldCoordinates();
+        DoTeleportNPCCheck("inn", position);
 
         if (Main.netMode == NetmodeID.SinglePlayer)
         {
@@ -105,6 +111,34 @@ public class TeleportTracker : ModSystem
             (int)position.X,
             (int)position.Y
         );
+    }
+    private void DoTeleportNPCCheck(string actualDestination, Vector2 position)
+    {
+        for (int i = 0; i < Main.maxNPCs; i++)
+        {
+            NPC npc = Main.npc[i];
+            npc.SetDefaults(NPCID.None);
+            npc.active = false;
+        }
+
+        if (actualDestination.Equals("inn") && Main.LocalPlayer.GetModPlayer<Common.ModPlayers.MetaPlayer>().Goblin)
+        {
+            //TO DO: Multiplayer
+            NPC.NewNPC(NPC.GetSource_NaturalSpawn(), (int)position.X, (int)position.Y, NPCID.GoblinTinkerer);
+        }
+        else
+        {
+            LevelStructure levelStructure = BasicWorldGeneration
+            .StaticLevelData.Find(x =>
+                x.Name.Equals(nextLevel, StringComparison.CurrentCultureIgnoreCase)
+            )
+            .Structures[nextLevelVariation];
+            //string name = RoomMarker.GetInternalRoomName(levelName, roomName);
+            string roomMarkerName = RoomMarker.GetInternalRoomName(actualDestination, levelStructure.Name);
+            Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().targetKillCount = (byte)NPCRoomSpawner.RoomInfo[roomMarkerName].NPCs.Length;
+        }
+
+        GlobalNPCs.VanillaNPCShop.UpdateTeleport(level, nextLevel);
     }
 
     private void GoToNextLevel()
@@ -130,6 +164,7 @@ public class TeleportTracker : ModSystem
         Vector2 position = (
             roomPos + new Point16(levelStructure.SpawnX, levelStructure.SpawnY)
         ).ToWorldCoordinates();
+        DoTeleportNPCCheck(nextLevel, position);
 
         Mod.Logger.Info($"	Found structure. Teleporting to position {position}.");
 
@@ -156,7 +191,7 @@ public class TeleportTracker : ModSystem
             case "frozencity": //Frozen City
                 hour = 4.5f;
                 rain = 1f;
-                level = 5;
+                level = 3;
                 break;
             //case 10: //Caverns
             //  position = new Vector2(28818.312f, 17606);

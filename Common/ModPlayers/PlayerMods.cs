@@ -26,7 +26,9 @@ namespace TerrariaCells.Common.ModPlayers
 			Player.buffImmune[BuffID.ShadowCandle] = true;
 
 			Player.noFallDmg = true;
-			//Player.GetJumpState(VanillaExtraJump.CloudInABottle).Enable(); //Do we want cloud jump?
+
+            if(Player.GetModPlayer<MetaPlayer>().CloudJump)
+			    Player.GetJumpState(VanillaExtraJump.CloudInABottle).Enable();
 		}
 	}
 }

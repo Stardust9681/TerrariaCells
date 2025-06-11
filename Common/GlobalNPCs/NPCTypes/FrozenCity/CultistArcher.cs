@@ -79,7 +79,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 if (npc.ai[2] > 45)
                 {
                     Vector2 pos = npc.Center + new Vector2(10 * npc.direction, 0);
-                    Projectile.NewProjectileDirect(npc.GetSource_FromAI(), pos, (target.Center - pos).SafeNormalize(Vector2.Zero)*5, ModContent.ProjectileType<IceArrow>(), TCellsUtils.ScaledHostileDamage(25), 1);
+                    Projectile.NewProjectileDirect(npc.GetSource_FromAI(), pos, (target.Center - pos).SafeNormalize(Vector2.Zero)*5, ModContent.ProjectileType<IceArrow>(), TCellsUtils.ScaledHostileDamage(npc.damage), 1);
                     SoundEngine.PlaySound(SoundID.Item5, npc.Center);
                     npc.ai[2] = -15;
                 }
