@@ -8,6 +8,14 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
     {
         public void BloodCrawlerWallAI(NPC npc)
         {
+            if (ExtraAI[1] == 1 && !npc.NPCCanStickToWalls())
+            {
+                npc.Transform(NPCID.BloodCrawler);
+                ExtraAI[1] = 0;
+                return;
+            }
+            ExtraAI[1] = 0;
+
             const float bloodCrawlerSpeedFactor = 1.5f;
 
             //make sure npc is real

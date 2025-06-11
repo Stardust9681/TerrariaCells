@@ -23,7 +23,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
         public int CustomFrameY = 0;
         public int CustomFrameCounter = 0;
         public bool ShouldWalk = false;
-        public int[] ExtraAI = {0, 0, 0, 0};
+        public int[] ExtraAI = { 0, 0, 0, 0 };
         public bool JustJumped = false;
 
         public float WalkSpeed = 2;
@@ -54,10 +54,19 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 WalkSpeed = 1;
                 JumpSpeed = 8;
             }
+            if (entity.type == NPCID.BloodCrawler)
+            {
+                ExtraAI[1] = 1; //tell bloodcrawler to transform if on wall (only in the first ai cycle)
+            }
+            if (entity.type == NPCID.BloodCrawlerWall)
+            {
+                ExtraAI[1] = 1; //tell bloodcrawler to transform if not on wall (only in the first ai cycle)
+            }
         }
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            if (npc.type == NPCID.DesertScorpionWalk) {
+            if (npc.type == NPCID.DesertScorpionWalk)
+            {
                 return DrawSandPoacher(npc, spriteBatch, screenPos, drawColor);
             }
             if (Ghouls.Contains(npc.type))
@@ -78,7 +87,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             }
             return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
         }
-        
+
         public override void FindFrame(NPC npc, int frameHeight)
         {
             if (npc.type == NPCID.DesertScorpionWalk)
@@ -105,14 +114,14 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             {
                 Main.instance.DrawCacheNPCsBehindNonSolidTiles.Add(index);
             }
-            
+
         }
         public override bool PreAI(NPC npc)
         {
-			if (Common.Systems.AIOverwriteSystem.AITypeExists(npc.type))
-				return base.PreAI(npc);
+            if (Common.Systems.AIOverwriteSystem.AITypeExists(npc.type))
+                return base.PreAI(npc);
 
-            if (npc.aiStyle == NPCAIStyleID.Fighter|| npc.type == NPCID.CultistArcherBlue)
+            if (npc.aiStyle == NPCAIStyleID.Fighter || npc.type == NPCID.CultistArcherBlue)
             {
                 Update(npc);
                 Player target = null;
