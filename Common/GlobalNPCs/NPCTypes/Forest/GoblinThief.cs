@@ -98,18 +98,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 				Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
 				if (npc.position.Equals(oldPos))
 				{
-                    if (Collision.SolidCollision(npc.position - new Vector2(0, npc.height), npc.width, npc.height))
-                    {
-                        npc.position -= npc.oldVelocity * 2;
-                        npc.ai[3] = -npc.direction;
-                        npc.ai[1] = Idle;
-                    }
-                    else
-                    {
-                        npc.ai[0] = 0;
-                        npc.ai[1] = Jump;
-                        npc.ai[3] = npc.direction;
-                    }
+                    npc.position -= npc.oldVelocity * 2;
+                    npc.ai[3] = -npc.direction;
+                    npc.ai[1] = Idle;
                     return;
 				}
 				else
@@ -169,7 +160,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
                 }
                 else
                 {
-                    npc.ai[1] = Jump;
+                    if (target.position.Y < npc.position.Y)
+                        npc.ai[1] = Jump;
+                    else
+                        npc.ai[1] = Idle;
                 }
                 npc.ai[3] = (target.position.X < npc.position.X) ? -1 : 1;
                 return;
