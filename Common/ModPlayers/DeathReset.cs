@@ -169,6 +169,8 @@ public class DeathReset : ModPlayer, IEntitySource
 		Player player = (Player)self.GetType().GetField("_player", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).GetValue(self);
 		player.armor[3].TurnToAir();
 		player.ClearBuff(216); //Finch, which is for some reason applied at character creation
+
+        player.statMana = player.statManaMax;
 	}
 }
 
