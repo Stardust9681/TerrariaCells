@@ -121,10 +121,13 @@ public class TeleportTracker : ModSystem
             npc.active = false;
         }
 
-        if (actualDestination.Equals("inn") && Main.LocalPlayer.GetModPlayer<Common.ModPlayers.MetaPlayer>().Goblin)
+        if (actualDestination.Equals("inn"))
         {
-            //TO DO: Multiplayer
-            NPC.NewNPC(NPC.GetSource_NaturalSpawn(), (int)position.X, (int)position.Y, NPCID.GoblinTinkerer);
+            if (Main.LocalPlayer.GetModPlayer<Common.ModPlayers.MetaPlayer>().Goblin)
+            {
+                //TO DO: Multiplayer
+                NPC.NewNPC(NPC.GetSource_NaturalSpawn(), (int)position.X, (int)position.Y, NPCID.GoblinTinkerer);
+            }
         }
         else
         {
