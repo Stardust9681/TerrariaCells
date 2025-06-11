@@ -260,17 +260,22 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
                     npc.velocity.X *= 0.975f;
                 Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
                 //Collision.StepDown(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
+                if (npc.ai[0] > Stab_DashLen + (Stab_Windup/2))
+                {
+                    CombatNPC.ToggleContactDamage(npc, false);
+                }
                 if (npc.ai[0] > Stab_DashLen + Stab_Windup || (npc.collideX && (MathF.Abs(npc.oldVelocity.X) - MathF.Abs(npc.velocity.X) > 2.5f)))
                 {
                     ResetAI(npc);
+                    CombatNPC.ToggleContactDamage(npc, false);
                     npc.ai[1] = Stun;
+                    npc.netUpdate = true;
                 }
             }
         }
         const int Stun_Delay = 25;
         void StunAI(NPC npc)
         {
-            CombatNPC.ToggleContactDamage(npc, false);
             npc.ai[0]++;
             npc.velocity.X *= 0.8f;
 
