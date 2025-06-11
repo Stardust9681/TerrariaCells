@@ -72,7 +72,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             {
                 return DrawCultistArcher(npc, spriteBatch, screenPos, drawColor);
             }
-            if (BloodCrawlers.Contains(npc.type))
+            if (npc.type == NPCID.BloodCrawler)
             {
                 return DrawBloodCrawler(npc, spriteBatch, screenPos, drawColor);
             }
