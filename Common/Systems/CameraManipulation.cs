@@ -59,8 +59,12 @@ namespace TerrariaCells.Common.Systems
 
 		public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
 		{
-			if (Main.gameMenu || TerrariaCellsConfig.Instance.DisableZoom)
-				return;
+            if (Main.gameMenu || TerrariaCellsConfig.Instance.DisableZoom)
+            {
+                _ZoomOverride.Time = 0;
+                _CameraModifier.Time = 0;
+                return;
+            }
 
 			// Caps zoom at 175%-200%
 			float zoomClamp = Math.Max(Transform.Zoom.X, _DefaultZoomCap);
