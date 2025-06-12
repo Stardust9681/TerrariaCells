@@ -54,10 +54,14 @@ namespace TerrariaCells.Content.UI
 
         protected override void UpdateChildPositions(Vector2 newPosition)
         {
-            _timer.Left.Set(newPosition.X, 0);
+            /*_timer.Left.Set(newPosition.X, 0);
             _timer.Top.Set(newPosition.Y, 0);
             _deaths.Left.Set(newPosition.X + ((_timer.Width.Pixels - _deaths.Width.Pixels) * 0.5f), 0);
-            _deaths.Top.Set(newPosition.Y + _timer.Height.Pixels, 0);
+            _deaths.Top.Set(newPosition.Y + _timer.Height.Pixels, 0);*/
+            _timer.Left.Set(0, 0);
+            _timer.Top.Set(0, 0);
+            _deaths.Left.Set((_timer.Width.Pixels - _deaths.Width.Pixels) * 0.5f, 0);
+            _deaths.Top.Set(_timer.Height.Pixels, 0);
         }
 
         protected override bool PreDrawSelf(SpriteBatch spriteBatch)
@@ -74,7 +78,9 @@ namespace TerrariaCells.Content.UI
             Vector2 panelPos = bounds.TopLeft();
             Vector2 panelSize = bounds.Size();
 
-            UIHelper.PANEL.Draw(spriteBatch, bounds with { X = (int)(panelPos.X + (panelSize.Y * 0.5f)), Width = (int)(panelSize.X - (panelSize.Y * 0.5f)) }, UIHelper.InventoryColour);
+            bounds.X += (int)(panelSize.Y * 0.5f);
+            bounds.Width -= (int)(panelSize.Y * 0.5f);
+            UIHelper.PANEL.Draw(spriteBatch, bounds, UIHelper.InventoryColour);
 
             TimeSpan currentTime = Main.LocalPlayer.GetModPlayer<Common.ModPlayers.RewardPlayer>().LevelTime;
             string drawString = $"{currentTime.Minutes:00}:{currentTime.Seconds:00}";
