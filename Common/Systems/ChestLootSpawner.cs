@@ -26,10 +26,8 @@ public class ChestLootSpawner : ModSystem, IEntitySource
         var buf = new byte[stream.Length];
         stream.Read(buf);
         ChestLootTables = JsonSerializer.Deserialize<Dictionary<string, int[]>>(buf);
-    }
 
-    public override void SetStaticDefaults()
-    {
+        ///See <see cref="ModPlayers.RewardPlayer."/>
         On_Player.OpenChest += OnChestOpen;
     }
 
@@ -185,12 +183,11 @@ public class ChestLootSpawner : ModSystem, IEntitySource
                 } else {
                     NPC.NewNPC(this, (x + 1) * 16, y * 16, NPCID.Firefly);
                 }
-            }
-        }
 
-        if (isNewChest)
-        {
-            lootedChests.Add(newChest);
+                self.GetModPlayer<ModPlayers.RewardPlayer>().UpdateChests_Open(x, y);
+
+                lootedChests.Add(newChest);
+            }
         }
     }
 }

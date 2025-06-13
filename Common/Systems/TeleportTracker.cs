@@ -64,6 +64,7 @@ public class TeleportTracker : ModSystem
         Mod.Logger.Info($"Detouring to inn.");
         DetourToInn(destination);
         Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().UpdateTracker(ModPlayers.RewardPlayer.TrackerAction.Pause);
+        Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().UpdateChests_OnTeleport();
     }
 
     private void DetourToInn(string destination)

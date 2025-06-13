@@ -20,10 +20,10 @@ namespace TerrariaCells.Common.GlobalNPCs
     {
 		public override bool InstancePerEntity => true;
 
-		private static int[] Weapons; //Arms Dealer
-		private static int[] Accessories; //Goblin Tinkerer
-		private static int[] Skills; //Merchant (Wizard? Plz)
-		private static int[] Armors; //Merchant
+		internal static int[] Weapons; //Arms Dealer
+        internal static int[] Accessories; //Goblin Tinkerer
+        internal static int[] Skills; //Merchant (Wizard? Plz)
+        internal static int[] Armors; //Merchant
 		public override void Load()
 		{
 			const string PATH = "chest loot tables.json";

@@ -100,10 +100,10 @@ namespace TerrariaCells.Content.UI
             TimeSpan targetTime = Main.LocalPlayer.GetModPlayer<Common.ModPlayers.RewardPlayer>().targetTime;
             int watchType = (currentTime.TotalSeconds / (float)targetTime.TotalSeconds) switch
             {
-                > 1 => Terraria.ID.ItemID.CopperWatch,
-                > 0.6 => Terraria.ID.ItemID.SilverWatch,
-                > 0.3 => Terraria.ID.ItemID.GoldWatch,
-                _ => Terraria.ID.ItemID.PlatinumWatch,
+                < 0.4 => Terraria.ID.ItemID.PlatinumWatch,
+                < 0.7 => Terraria.ID.ItemID.GoldWatch,
+                < 1 => Terraria.ID.ItemID.SilverWatch,
+                _ => Terraria.ID.ItemID.CopperWatch,
             };
             var watchSprite = Terraria.GameContent.TextureAssets.Item[watchType];
             drawPos = panelPos;
