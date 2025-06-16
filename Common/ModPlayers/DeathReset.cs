@@ -56,7 +56,28 @@ public class DeathReset : ModPlayer, IEntitySource
         ResetInventory(ResetInventoryContext.NewWorld);
     }
 
-	public override void OnRespawn()
+    public override void ModifyScreenPosition()
+    {
+        if (Player.DeadOrGhost)
+        {
+            int viewTarget = -1;
+            for (int i = 0; i < Main.maxNetPlayers; i++)
+            {
+                Player test = Main.player[i];
+                if (!test.active) continue;
+                if (test.DeadOrGhost) continue;
+                if (test.whoAmI == Main.myPlayer) continue;
+                viewTarget = i;
+                break;
+            }
+            if (viewTarget == -1)
+                return;
+            Player followPlayer = Main.player[viewTarget];
+            Main.screenPosition = followPlayer.Center - (Main.ScreenSize.ToVector2() * 0.5f);
+        }
+    }
+
+    public override void OnRespawn()
 	{
         if (Main.netMode == NetmodeID.SinglePlayer)
         {
