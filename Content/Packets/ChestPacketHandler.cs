@@ -16,11 +16,11 @@ using TerrariaCells.Common.ModPlayers;
 
 namespace TerrariaCells.Content.Packets
 {
-    internal class ChestPacketHandler(TCPacketType handlerType) : PacketHandler(handlerType)
+    internal class ChestPacketHandler() : PacketHandler(TCPacketType.ChestPacket)
 	{
         private readonly ChestLootSpawner spawner = ModContent.GetInstance<ChestLootSpawner>();
 
-        public override void HandlePacket(BinaryReader reader, int fromWho)
+        public override void HandlePacket(Mod mod, BinaryReader reader, int fromWho)
 		{
             switch ((ChestPacketType)reader.ReadByte())
             {
@@ -32,8 +32,8 @@ namespace TerrariaCells.Content.Packets
                     spawner.OpenChest(x, y, chest);
                     // The only way to sync our custom chest system to clients is to send another packet, so here we go
                     if (Main.netMode == NetmodeID.MultiplayerClient) break;
-                    ModPacket packet = ModContent.GetInstance<TerrariaCells>().GetPacket();
-                    packet.Write((byte)TCPacketType.ChestPacket);
+                    ModPacket packet = mod.GetPacket();
+                    packet.Write((byte)this.HandlerType);
                     packet.Write((byte)ChestPacketType.ClientOpenChest);
                     packet.Write(chest);
                     packet.Send();

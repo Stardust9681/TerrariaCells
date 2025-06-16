@@ -201,11 +201,9 @@ public class ForestExitPylon : ModTile, ITerraCellsCategorization
             return false;
         }
 
-        if (
-            Main.LocalPlayer.HeldItem.type == ModContent.GetContent<ExamplePylonItem>().First().Type
-        )
+        if (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<ExamplePylonItem>())
         {
-            Main.sign[0] = new Sign { x = i, y = j };
+            Main.sign[0] = new Sign() { x = i, y = j };
             Main.LocalPlayer.sign = 0;
             Main.editSign = true;
             entity.editing = true;
@@ -213,7 +211,17 @@ public class ForestExitPylon : ModTile, ITerraCellsCategorization
         }
         else
         {
-            Mod.GetContent<TeleportTracker>().First().Teleport(entity.Destination);
+            if (Main.netMode == NetmodeID.SinglePlayer)
+            {
+                ModContent.GetInstance<TeleportTracker>().Teleport(entity.Destination);
+            }
+            else if(Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                var packet = Common.Utilities.ModNetHandler.GetPacket(Mod, Common.Utilities.TCPacketType.LevelPacket);
+                var tele = ModContent.GetInstance<TeleportTracker>();
+                packet.Write(entity.Destination);
+                packet.Send();
+            }
         }
 
         return true;
