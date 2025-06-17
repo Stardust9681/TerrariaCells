@@ -17,6 +17,7 @@ namespace TerrariaCells.Common.Utilities
                 [TCPacketType.ChestPacket] = new ChestPacketHandler(),
                 [TCPacketType.PylonPacket] = new PylonPacketHandler(),
                 [TCPacketType.LevelPacket] = new LevelPacketHandler(),
+                [TCPacketType.PlayerPacket] = new PlayerPacketHandler(),
             };
         }
         internal static Dictionary<TCPacketType, PacketHandler> Handlers;
@@ -39,5 +40,6 @@ namespace TerrariaCells.Common.Utilities
         ChestPacket,
         PylonPacket,
         LevelPacket,
+        PlayerPacket,
     }
 }

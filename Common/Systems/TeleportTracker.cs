@@ -300,7 +300,14 @@ public class TeleportTracker : ModSystem
             foreach (Player player in Main.ActivePlayers)
             {
                 if (player.GetModPlayer<ModPlayers.MetaPlayer>().Goblin)
+                {
                     isGoblinUnlocked = true;
+                    Mod.Logger.Info($"{player.name} has Goblin: {true}");
+                }
+                else
+                {
+                    Mod.Logger.Info($"{player.name} has Goblin: {false}");
+                }
             }
         }
         else //Is Single Player Client
@@ -310,7 +317,7 @@ public class TeleportTracker : ModSystem
 
         Point16 tileCoords = GetTelePos(actualDestination);
         Vector2 worldCoords = tileCoords.ToWorldCoordinates();
-        if (isGoblinUnlocked)
+        if (actualDestination.ToLower().Equals("inn") && isGoblinUnlocked)
         {
             int newNPC = NPC.NewNPC(NPC.GetSource_NaturalSpawn(), (int)worldCoords.X, (int)worldCoords.Y, NPCID.GoblinTinkerer);
             if (Main.netMode == NetmodeID.Server)

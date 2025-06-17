@@ -68,9 +68,7 @@ namespace TerrariaCells.Content.Packets
                     }
                     break;
                 }
-
             }
-            
 		}
 	}
     public enum ChestPacketType : byte
