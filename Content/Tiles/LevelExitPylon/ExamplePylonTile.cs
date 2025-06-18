@@ -29,23 +29,12 @@ namespace TerrariaCells.Content.Tiles.LevelExitPylon;
 /// </summary>
 public class ForestExitPylon : ModTile, ITerraCellsCategorization
 {
-    public Asset<Texture2D> crystalTexture;
-    public Asset<Texture2D> crystalHighlightTexture;
-    public Asset<Texture2D> mapIcon;
 
     public TerraCellsItemCategory Category => TerraCellsItemCategory.Storage;
 
 
     public override string Texture =>
         (GetType().Namespace + "." + "ExamplePylonTile").Replace('.', '/');
-
-    public override void Load()
-    {
-        // We'll need these textures for later, it's best practice to cache them on load instead of continually requesting every draw call.
-        crystalTexture = ModContent.Request<Texture2D>(Texture + "_Crystal");
-        crystalHighlightTexture = ModContent.Request<Texture2D>(Texture + "_CrystalHighlight");
-        mapIcon = ModContent.Request<Texture2D>(Texture + "_MapIcon");
-    }
 
     public override void SetStaticDefaults()
     {
