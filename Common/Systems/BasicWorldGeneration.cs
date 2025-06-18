@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using MonoMod.Utils;
 using StructureHelper;
 using StructureHelper.API;
 using StructureHelper.Models;
@@ -55,9 +57,8 @@ public class BasicWorldGeneration : ModSystem
 
     public override void SetStaticDefaults()
     {
-        BasicWorldGenData = JsonSerializer.Deserialize<BasicWorldGenData>(
-            Mod.GetFileBytes(WorldGenFilePath)
-        );
+        var bytes = Mod.GetFileBytes(WorldGenFilePath);
+        BasicWorldGenData = JsonSerializer.Deserialize<BasicWorldGenData>(bytes);
         if (BasicWorldGenData == null)
         {
             throw new Exception(
@@ -65,6 +66,50 @@ public class BasicWorldGeneration : ModSystem
             );
         }
         StaticLevelData = BasicWorldGenData.LevelData;
+
+        // return;  
+
+        foreach (Level level in StaticLevelData)
+        {
+            foreach (LevelStructure structure in level.Structures)
+            {
+                if (Mod.SourceFolder != "")
+                {
+                    string path = Mod.SourceFolder + "\\" + structure.SpawnInfoPath;
+
+                    if (!File.Exists(path))
+                    {
+                        byte[] buf = Encoding.UTF8.GetBytes(['[', ']']);
+                        using (FileStream f = File.Create(path))
+                        {
+                            f.Write(buf);
+                            Mod.Logger.Info($"Created spawn info file @ {path}");
+                        }
+                        structure.SpawnInfo = [];
+                        continue;
+                    }
+                }
+
+                if (!Mod.FileExists(structure.SpawnInfoPath))
+                {
+                    throw new Exception($"No file found with path {structure.SpawnInfoPath}");                    
+                }
+
+                byte[] utf8Json = Mod.GetFileBytes(structure.SpawnInfoPath);
+
+                try
+                {
+
+                    structure.SpawnInfo = JsonSerializer.Deserialize<StructureSpawnInfo[]>(
+                        utf8Json
+                    );
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"Could not deserialze spawn info file! {structure.SpawnInfoPath} [{e}]" );
+                }
+            }
+        }
     }
 
     public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
@@ -312,6 +357,11 @@ public class Level
 
     [JsonInclude]
     public bool Surface;
+
+    public LevelStructure GetGeneratedStructure(BasicWorldGenData worldGenData)
+    {
+        return Structures[worldGenData.LevelVariations[Name]];
+    }
 }
 
 public class LevelStructure
@@ -333,5 +383,10 @@ public class LevelStructure
 
     [JsonInclude]
     public short SpawnY;
-}
 
+    [JsonInclude]
+    public string SpawnInfoPath;
+
+    [JsonIgnore]
+    public StructureSpawnInfo[] SpawnInfo;
+}

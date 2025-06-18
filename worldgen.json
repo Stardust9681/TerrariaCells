@@ -15,7 +15,8 @@
                     "OffsetX": 0,
                     "OffsetY": 800,
                     "SpawnX": 35,
-                    "SpawnY": 31
+                    "SpawnY": 31,
+                    "SpawnInfoPath": "Content/SpawnInfo/innbetween.json"
                 }
             ],
             "Surface": false
@@ -29,7 +30,8 @@
                     "OffsetX": 0,
                     "OffsetY": -50,
                     "SpawnX": 774,
-                    "SpawnY": 233
+                    "SpawnY": 233,
+                    "SpawnInfoPath": "Content/SpawnInfo/forest_1.json"
                 },
                 {
                     "Name": "forest_2",
@@ -37,7 +39,8 @@
                     "OffsetX": 0,
                     "OffsetY": -80,
                     "SpawnX": 611,
-                    "SpawnY": 100
+                    "SpawnY": 100,
+                    "SpawnInfoPath": "Content/SpawnInfo/forest_2.json"
                 },
                 {
                     "Name": "forest_3",
@@ -45,7 +48,8 @@
                     "OffsetX": 0,
                     "OffsetY": -50,
                     "SpawnX": 774,
-                    "SpawnY": 233
+                    "SpawnY": 233,
+                    "SpawnInfoPath": "Content/SpawnInfo/forest_3.json"
                 },
                 {
                     "Name": "forest_4",
@@ -53,7 +57,8 @@
                     "OffsetX": 0,
                     "OffsetY": -50,
                     "SpawnX": 774,
-                    "SpawnY": 233
+                    "SpawnY": 233,
+                    "SpawnInfoPath": "Content/SpawnInfo/forest_4.json"
                 },
                 {
                     "Name": "forest_5",
@@ -61,7 +66,8 @@
                     "OffsetX": 0,
                     "OffsetY": -80,
                     "SpawnX": 611,
-                    "SpawnY": 100
+                    "SpawnY": 100,
+                    "SpawnInfoPath": "Content/SpawnInfo/forest_5.json"
                 },
                 {
                     "Name": "forest_6",
@@ -69,7 +75,8 @@
                     "OffsetX": 0,
                     "OffsetY": -80,
                     "SpawnX": 611,
-                    "SpawnY": 100
+                    "SpawnY": 100,
+                    "SpawnInfoPath": "Content/SpawnInfo/forest_6.json"
                 },
                 {
                     "Name": "forest_7",
@@ -77,7 +84,8 @@
                     "OffsetX": 0,
                     "OffsetY": -50,
                     "SpawnX": 774,
-                    "SpawnY": 233
+                    "SpawnY": 233,
+                    "SpawnInfoPath": "Content/SpawnInfo/forest_7.json"
                 },
                 {
                     "Name": "forest_8",
@@ -85,7 +93,8 @@
                     "OffsetX": 0,
                     "OffsetY": -80,
                     "SpawnX": 611,
-                    "SpawnY": 100
+                    "SpawnY": 100,
+                    "SpawnInfoPath": "Content/SpawnInfo/forest_8.json"
                 },
                 {
                     "Name": "forest_9",
@@ -93,7 +102,8 @@
                     "OffsetX": 0,
                     "OffsetY": -50,
                     "SpawnX": 774,
-                    "SpawnY": 233
+                    "SpawnY": 233,
+                    "SpawnInfoPath": "Content/SpawnInfo/forest_9.json"
                 },
                 {
                     "Name": "forest_10",
@@ -101,7 +111,8 @@
                     "OffsetX": 0,
                     "OffsetY": -50,
                     "SpawnX": 774,
-                    "SpawnY": 233
+                    "SpawnY": 233,
+                    "SpawnInfoPath": "Content/SpawnInfo/forest_10.json"
                 },
                 {
                     "Name": "forest_11",
@@ -109,7 +120,8 @@
                     "OffsetX": 0,
                     "OffsetY": -50,
                     "SpawnX": 830,
-                    "SpawnY": 96
+                    "SpawnY": 96,
+                    "SpawnInfoPath": "Content/SpawnInfo/forest_11.json"
                 },
                 {
                     "Name": "forest_12",
@@ -117,7 +129,8 @@
                     "OffsetX": 0,
                     "OffsetY": -50,
                     "SpawnX": 830,
-                    "SpawnY": 96
+                    "SpawnY": 96,
+                    "SpawnInfoPath": "Content/SpawnInfo/forest_12.json"
                 }
             ],
             "Surface": false
@@ -131,7 +144,8 @@
                     "OffsetX": 0,
                     "OffsetY": 11,
                     "SpawnX": 169,
-                    "SpawnY": 138
+                    "SpawnY": 138,
+                    "SpawnInfoPath": "Content/SpawnInfo/crimson_1.json"
                 },
                 {
                     "Name": "crimson_2",
@@ -139,7 +153,8 @@
                     "OffsetX": 0,
                     "OffsetY": 11,
                     "SpawnX": 107,
-                    "SpawnY": 75
+                    "SpawnY": 75,
+                    "SpawnInfoPath": "Content/SpawnInfo/crimson_2.json"
                 }
             ],
             "Surface": false
@@ -153,7 +168,8 @@
                     "OffsetX": 0,
                     "OffsetY": 0,
                     "SpawnX": 70,
-                    "SpawnY": 190
+                    "SpawnY": 190,
+                    "SpawnInfoPath": "Content/SpawnInfo/frozencity_1.json"
                 }
             ],
             "Surface": false
@@ -167,7 +183,8 @@
                     "OffsetX": 0,
                     "OffsetY": 25,
                     "SpawnX": 93,
-                    "SpawnY": 84
+                    "SpawnY": 84,
+                    "SpawnInfoPath": "Content/SpawnInfo/hive_1.json"
                 }
             ],
             "Surface": false
@@ -181,7 +198,8 @@
                     "OffsetX": 0,
                     "OffsetY": 150,
                     "SpawnX": 55,
-                    "SpawnY": 38
+                    "SpawnY": 38,
+                    "SpawnInfoPath": "Content/SpawnInfo/desert_1.json"
                 }
             ],
             "Surface": false

@@ -1,0 +1,342 @@
+[
+    {
+        "Name": "DesertScorpionWalk",
+        "X": 109,
+        "Y": 255
+    },
+    {
+        "Name": "Vulture",
+        "X": 116,
+        "Y": 267
+    },
+    {
+        "Name": "Vulture",
+        "X": 121,
+        "Y": 268
+    },
+    {
+        "Name": "Vulture",
+        "X": 148,
+        "Y": 268
+    },
+    {
+        "Name": "Vulture",
+        "X": 113,
+        "Y": 255
+    },
+    {
+        "Name": "Vulture",
+        "X": 156,
+        "Y": 266
+    },
+    {
+        "Name": "Vulture",
+        "X": 171,
+        "Y": 270
+    },
+    {
+        "Name": "DesertScorpionWalk",
+        "X": 206,
+        "Y": 255
+    },
+    {
+        "Name": "DesertScorpionWalk",
+        "X": 294,
+        "Y": 255
+    },
+    {
+        "Name": "Vulture",
+        "X": 364,
+        "Y": 257
+    },
+    {
+        "Name": "Vulture",
+        "X": 370,
+        "Y": 255
+    },
+    {
+        "Name": "DesertScorpionWalk",
+        "X": 389,
+        "Y": 257
+    },
+    {
+        "Name": "Vulture",
+        "X": 411,
+        "Y": 263
+    },
+    {
+        "Name": "Vulture",
+        "X": 502,
+        "Y": 260
+    },
+    {
+        "Name": "DesertScorpionWalk",
+        "X": 439,
+        "Y": 227
+    },
+    {
+        "Name": "DesertScorpionWalk",
+        "X": 464,
+        "Y": 228
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 322,
+        "Y": 218
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 326,
+        "Y": 210
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 336,
+        "Y": 218
+    },
+    {
+        "Name": "DesertDjinn",
+        "X": 345,
+        "Y": 208
+    },
+    {
+        "Name": "Mummy",
+        "X": 370,
+        "Y": 208
+    },
+    {
+        "Name": "DesertScorpionWalk",
+        "X": 383,
+        "Y": 207
+    },
+    {
+        "Name": "Mummy",
+        "X": 415,
+        "Y": 210
+    },
+    {
+        "Name": "DesertDjinn",
+        "X": 405,
+        "Y": 202
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 418,
+        "Y": 201
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 423,
+        "Y": 201
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 403,
+        "Y": 191
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 418,
+        "Y": 191
+    },
+    {
+        "Name": "DesertDjinn",
+        "X": 424,
+        "Y": 167
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 413,
+        "Y": 164
+    },
+    {
+        "Name": "DesertMummy",
+        "X": 438,
+        "Y": 155
+    },
+    {
+        "Name": "DesertScorpionWalk",
+        "X": 462,
+        "Y": 190
+    },
+    {
+        "Name": "DesertDjinn",
+        "X": 459,
+        "Y": 199
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 484,
+        "Y": 194
+    },
+    {
+        "Name": "Mummy",
+        "X": 503,
+        "Y": 192
+    },
+    {
+        "Name": "DesertDjinn",
+        "X": 338,
+        "Y": 178
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 361,
+        "Y": 187
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 365,
+        "Y": 189
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 350,
+        "Y": 177
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 364,
+        "Y": 170
+    },
+    {
+        "Name": "Mummy",
+        "X": 311,
+        "Y": 171
+    },
+    {
+        "Name": "Mummy",
+        "X": 274,
+        "Y": 171
+    },
+    {
+        "Name": "DesertDjinn",
+        "X": 262,
+        "Y": 177
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 262,
+        "Y": 183
+    },
+    {
+        "Name": "DesertScorpionWalk",
+        "X": 245,
+        "Y": 182
+    },
+    {
+        "Name": "DesertDjinn",
+        "X": 178,
+        "Y": 176
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 187,
+        "Y": 177
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 171,
+        "Y": 177
+    },
+    {
+        "Name": "DesertScorpionWalk",
+        "X": 146,
+        "Y": 167
+    },
+    {
+        "Name": "DesertDjinn",
+        "X": 114,
+        "Y": 168
+    },
+    {
+        "Name": "DesertScorpionWalk",
+        "X": 123,
+        "Y": 166
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 124,
+        "Y": 175
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 112,
+        "Y": 175
+    },
+    {
+        "Name": "Mummy",
+        "X": 139,
+        "Y": 127
+    },
+    {
+        "Name": "Mummy",
+        "X": 158,
+        "Y": 126
+    },
+    {
+        "Name": "DesertDjinn",
+        "X": 129,
+        "Y": 134
+    },
+    {
+        "Name": "DesertDjinn",
+        "X": 213,
+        "Y": 167
+    },
+    {
+        "Name": "Mummy",
+        "X": 221,
+        "Y": 157
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 248,
+        "Y": 157
+    },
+    {
+        "Name": "DesertScorpionWalk",
+        "X": 271,
+        "Y": 160
+    },
+    {
+        "Name": "DesertDjinn",
+        "X": 285,
+        "Y": 151
+    },
+    {
+        "Name": "Mummy",
+        "X": 329,
+        "Y": 153
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 321,
+        "Y": 159
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 328,
+        "Y": 160
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 333,
+        "Y": 159
+    },
+    {
+        "Name": "ArmsDealer",
+        "X": 507,
+        "Y": 181
+    },
+    {
+        "Name": "Nurse",
+        "X": 333,
+        "Y": 269
+    },
+    {
+        "Name": "DesertScorpionWalk",
+        "X": 247,
+        "Y": 117
+    }
+]

@@ -1,0 +1,242 @@
+[
+    {
+        "Name": "Guide",
+        "X": 618,
+        "Y": 192
+    },
+    {
+        "Name": "Merchant",
+        "X": 1234,
+        "Y": 182
+    },
+    {
+        "Name": "GoblinThief",
+        "X": 313,
+        "Y": 96
+    },
+    {
+        "Name": "Wolf",
+        "X": 335,
+        "Y": 96
+    },
+    {
+        "Name": "GoblinArcher",
+        "X": 366,
+        "Y": 88
+    },
+    {
+        "Name": "GoblinThief",
+        "X": 418,
+        "Y": 88
+    },
+    {
+        "Name": "GoblinThief",
+        "X": 430,
+        "Y": 88
+    },
+    {
+        "Name": "GoblinArcher",
+        "X": 439,
+        "Y": 96
+    },
+    {
+        "Name": "GoblinThief",
+        "X": 432,
+        "Y": 109
+    },
+    {
+        "Name": "GoblinArcher",
+        "X": 417,
+        "Y": 185
+    },
+    {
+        "Name": "GoblinThief",
+        "X": 399,
+        "Y": 203
+    },
+    {
+        "Name": "GoblinThief",
+        "X": 427,
+        "Y": 248
+    },
+    {
+        "Name": "GoblinArcher",
+        "X": 435,
+        "Y": 248
+    },
+    {
+        "Name": "Wolf",
+        "X": 481,
+        "Y": 252
+    },
+    {
+        "Name": "GoblinThief",
+        "X": 500,
+        "Y": 252
+    },
+    {
+        "Name": "Wolf",
+        "X": 498,
+        "Y": 117
+    },
+    {
+        "Name": "GoblinArcher",
+        "X": 480,
+        "Y": 194
+    },
+    {
+        "Name": "GoblinThief",
+        "X": 490,
+        "Y": 194
+    },
+    {
+        "Name": "GoblinArcher",
+        "X": 492,
+        "Y": 204
+    },
+    {
+        "Name": "GoblinThief",
+        "X": 521,
+        "Y": 196
+    },
+    {
+        "Name": "GoblinSorcerer",
+        "X": 546,
+        "Y": 207
+    },
+    {
+        "Name": "GoblinThief",
+        "X": 549,
+        "Y": 189
+    },
+    {
+        "Name": "Raven",
+        "X": 556,
+        "Y": 207
+    },
+    {
+        "Name": "Raven",
+        "X": 558,
+        "Y": 207
+    },
+    {
+        "Name": "GoblinThief",
+        "X": 798,
+        "Y": 194
+    },
+    {
+        "Name": "Wolf",
+        "X": 863,
+        "Y": 195
+    },
+    {
+        "Name": "GoblinSorcerer",
+        "X": 812,
+        "Y": 207
+    },
+    {
+        "Name": "Raven",
+        "X": 882,
+        "Y": 196
+    },
+    {
+        "Name": "Raven",
+        "X": 885,
+        "Y": 194
+    },
+    {
+        "Name": "Raven",
+        "X": 887,
+        "Y": 194
+    },
+    {
+        "Name": "GoblinArcher",
+        "X": 896,
+        "Y": 194
+    },
+    {
+        "Name": "Raven",
+        "X": 898,
+        "Y": 195
+    },
+    {
+        "Name": "GoblinArcher",
+        "X": 914,
+        "Y": 197
+    },
+    {
+        "Name": "GoblinThief",
+        "X": 914,
+        "Y": 177
+    },
+    {
+        "Name": "GoblinArcher",
+        "X": 883,
+        "Y": 152
+    },
+    {
+        "Name": "Wolf",
+        "X": 890,
+        "Y": 152
+    },
+    {
+        "Name": "GoblinThief",
+        "X": 951,
+        "Y": 151
+    },
+    {
+        "Name": "GoblinThief",
+        "X": 960,
+        "Y": 151
+    },
+    {
+        "Name": "GoblinSorcerer",
+        "X": 907,
+        "Y": 176
+    },
+    {
+        "Name": "GoblinThief",
+        "X": 842,
+        "Y": 157
+    },
+    {
+        "Name": "Raven",
+        "X": 1117,
+        "Y": 172
+    },
+    {
+        "Name": "Raven",
+        "X": 1121,
+        "Y": 172
+    },
+    {
+        "Name": "GoblinSorcerer",
+        "X": 1139,
+        "Y": 170
+    },
+    {
+        "Name": "GoblinArcher",
+        "X": 1085,
+        "Y": 177
+    },
+    {
+        "Name": "GoblinThief",
+        "X": 1132,
+        "Y": 158
+    },
+    {
+        "Name": "Raven",
+        "X": 1194,
+        "Y": 168
+    },
+    {
+        "Name": "BoundGoblin",
+        "X": 528,
+        "Y": 91
+    },
+    {
+        "Name": "Raven",
+        "X": 1196,
+        "Y": 168
+    }
+]
