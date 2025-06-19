@@ -197,8 +197,8 @@
                     "Path": "Content/Structures/desert_1.shstruct",
                     "OffsetX": 0,
                     "OffsetY": 150,
-                    "SpawnX": 55,
-                    "SpawnY": 38,
+                    "SpawnX": 282,
+                    "SpawnY": 69,
                     "SpawnInfoPath": "Content/SpawnInfo/desert_1.json"
                 }
             ],

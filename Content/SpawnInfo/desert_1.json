@@ -1,342 +1,465 @@
 [
     {
+        "Name": "Nurse",
+        "X": 159,
+        "Y": 218
+    },
+    {
         "Name": "DesertScorpionWalk",
-        "X": 109,
-        "Y": 255
+        "X": 66,
+        "Y": 204
+    },
+    {
+        "Name": "DesertScorpionWalk",
+        "X": 89,
+        "Y": 204
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertScorpionWalk", "Weight" : 1},
+      { "Name" : "TargetDummy", "Weight" : 4 }
+                    ],
+        "X" : 372,
+        "Y" : 206
     },
     {
         "Name": "Vulture",
-        "X": 116,
+        "X": 257,
+        "Y": 219
+    },
+    {
+        "Name": "Vulture",
+        "X": 250,
+        "Y": 219
+    },
+    {
+        "Name": "Vulture",
+        "X": 223,
+        "Y": 220
+    },
+    {
+        "Name": "Vulture",
+        "X": 328,
+        "Y": 203
+    },
+    {
+        "Name": "DesertScorpionWalk",
+        "X": 325,
+        "Y": 203
+    },
+    {
+        "Name": "Vulture",
+        "X": 75,
+        "Y": 204
+    },
+    {
+        "Name": "Vulture",
+        "X": 126,
+        "Y": 268
+    },
+    {
+        "Name": "Vulture",
+        "X": 134,
         "Y": 267
     },
     {
         "Name": "Vulture",
-        "X": 121,
-        "Y": 268
-    },
-    {
-        "Name": "Vulture",
-        "X": 148,
-        "Y": 268
-    },
-    {
-        "Name": "Vulture",
-        "X": 113,
-        "Y": 255
-    },
-    {
-        "Name": "Vulture",
-        "X": 156,
-        "Y": 266
-    },
-    {
-        "Name": "Vulture",
-        "X": 171,
-        "Y": 270
-    },
-    {
-        "Name": "DesertScorpionWalk",
-        "X": 206,
-        "Y": 255
-    },
-    {
-        "Name": "DesertScorpionWalk",
-        "X": 294,
-        "Y": 255
-    },
-    {
-        "Name": "Vulture",
-        "X": 364,
-        "Y": 257
-    },
-    {
-        "Name": "Vulture",
-        "X": 370,
-        "Y": 255
-    },
-    {
-        "Name": "DesertScorpionWalk",
-        "X": 389,
-        "Y": 257
-    },
-    {
-        "Name": "Vulture",
-        "X": 411,
-        "Y": 263
-    },
-    {
-        "Name": "Vulture",
-        "X": 502,
-        "Y": 260
-    },
-    {
-        "Name": "DesertScorpionWalk",
-        "X": 439,
-        "Y": 227
-    },
-    {
-        "Name": "DesertScorpionWalk",
-        "X": 464,
-        "Y": 228
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 322,
-        "Y": 218
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 326,
-        "Y": 210
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 336,
-        "Y": 218
-    },
-    {
-        "Name": "DesertDjinn",
-        "X": 345,
-        "Y": 208
-    },
-    {
-        "Name": "Mummy",
-        "X": 370,
-        "Y": 208
-    },
-    {
-        "Name": "DesertScorpionWalk",
-        "X": 383,
-        "Y": 207
-    },
-    {
-        "Name": "Mummy",
-        "X": 415,
-        "Y": 210
-    },
-    {
-        "Name": "DesertDjinn",
-        "X": 405,
-        "Y": 202
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 418,
-        "Y": 201
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 423,
-        "Y": 201
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 403,
-        "Y": 191
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 418,
-        "Y": 191
-    },
-    {
-        "Name": "DesertDjinn",
-        "X": 424,
-        "Y": 167
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 413,
-        "Y": 164
-    },
-    {
-        "Name": "DesertMummy",
-        "X": 438,
-        "Y": 155
-    },
-    {
-        "Name": "DesertScorpionWalk",
-        "X": 462,
-        "Y": 190
-    },
-    {
-        "Name": "DesertDjinn",
-        "X": 459,
-        "Y": 199
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 484,
-        "Y": 194
-    },
-    {
-        "Name": "Mummy",
-        "X": 503,
-        "Y": 192
-    },
-    {
-        "Name": "DesertDjinn",
-        "X": 338,
-        "Y": 178
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 361,
-        "Y": 187
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 365,
-        "Y": 189
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 350,
-        "Y": 177
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 364,
-        "Y": 170
-    },
-    {
-        "Name": "Mummy",
-        "X": 311,
-        "Y": 171
-    },
-    {
-        "Name": "Mummy",
-        "X": 274,
-        "Y": 171
-    },
-    {
-        "Name": "DesertDjinn",
-        "X": 262,
-        "Y": 177
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 262,
-        "Y": 183
-    },
-    {
-        "Name": "DesertScorpionWalk",
-        "X": 245,
-        "Y": 182
-    },
-    {
-        "Name": "DesertDjinn",
-        "X": 178,
-        "Y": 176
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 187,
-        "Y": 177
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 171,
-        "Y": 177
-    },
-    {
-        "Name": "DesertScorpionWalk",
-        "X": 146,
-        "Y": 167
-    },
-    {
-        "Name": "DesertDjinn",
-        "X": 114,
-        "Y": 168
-    },
-    {
-        "Name": "DesertScorpionWalk",
-        "X": 123,
-        "Y": 166
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 124,
-        "Y": 175
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 112,
-        "Y": 175
-    },
-    {
-        "Name": "Mummy",
-        "X": 139,
-        "Y": 127
-    },
-    {
-        "Name": "Mummy",
-        "X": 158,
-        "Y": 126
-    },
-    {
-        "Name": "DesertDjinn",
-        "X": 129,
-        "Y": 134
-    },
-    {
-        "Name": "DesertDjinn",
-        "X": 213,
-        "Y": 167
-    },
-    {
-        "Name": "Mummy",
-        "X": 221,
-        "Y": 157
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 248,
-        "Y": 157
-    },
-    {
-        "Name": "DesertScorpionWalk",
-        "X": 271,
-        "Y": 160
-    },
-    {
-        "Name": "DesertDjinn",
-        "X": 285,
-        "Y": 151
-    },
-    {
-        "Name": "Mummy",
-        "X": 329,
-        "Y": 153
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 321,
-        "Y": 159
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 328,
-        "Y": 160
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 333,
-        "Y": 159
-    },
-    {
-        "Name": "ArmsDealer",
-        "X": 507,
-        "Y": 181
-    },
-    {
-        "Name": "Nurse",
-        "X": 333,
+        "X": 142,
         "Y": 269
     },
     {
         "Name": "DesertScorpionWalk",
-        "X": 247,
-        "Y": 117
+        "X": 414,
+        "Y": 203
+    },
+    {
+        "Name": "Vulture",
+        "X": 436,
+        "Y": 208
+    },
+    {
+        "Name": "Vulture",
+        "X": 438,
+        "Y": 203
+    },
+    {
+        "Name": "Vulture",
+        "X": 465,
+        "Y": 215
+    },
+    {
+        "Name": "Mummy",
+        "X": 411,
+        "Y": 167
+    },
+    {
+        "Name": "BlazingWheel",
+        "X": 432,
+        "Y": 152
+    },
+    {
+        "Name": "BlazingWheel",
+        "X": 399,
+        "Y": 154
+    },
+    {
+        "Name": "BlazingWheel",
+        "X": 399,
+        "Y": 144
+    },
+    {
+        "Name": "BlazingWheel",
+        "X": 513,
+        "Y": 123
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "BlazingWheel", "Weight" : 1},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 326,
+        "Y" : 88
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "BlazingWheel", "Weight" : 1},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 479,
+        "Y" : 133
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "BlazingWheel", "Weight" : 1},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 438,
+        "Y" : 111
+    },
+    {
+        "Name": "SpikeBall",
+        "X": 456,
+        "Y": 71
+    },
+    {
+        "Name": "SpikeBall",
+        "X": 479,
+        "Y": 131
+    },
+    {
+        "Name": "SpikeBall",
+        "X": 544,
+        "Y": 109
+    },
+    {
+        "Name": "SpikeBall",
+        "X": 540,
+        "Y": 98
+    },
+    {
+        "Name": "SpikeBall",
+        "X": 542,
+        "Y": 88
+    },
+    {
+        "Name": "SpikeBall",
+        "X": 519,
+        "Y": 79
+    },
+    {
+        "Name": "SpikeBall",
+        "X": 371,
+        "Y": 80
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SpikeBall", "Weight" : 1},
+      { "Name" : "TargetDummy", "Weight" : 2 }
+                    ],
+        "X" : 360,
+        "Y" : 99
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SpikeBall", "Weight" : 3},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 369,
+        "Y" : 143
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SpikeBall", "Weight" : 1},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 399,
+        "Y" : 132
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Merchant", "Weight" : 1},
+      { "Name" : "ArmsDealer", "Weight" : 1 }
+                    ],
+        "X" : 304,
+        "Y" : 134
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertDjinn", "Weight" : 3},
+      { "Name" : "DesertGhoul", "Weight" : 1},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 431,
+        "Y" : 147
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertGhoul", "Weight" : 1},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 419,
+        "Y" : 154
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertDjinn", "Weight" : 1},
+      { "Name" : "DesertGhoul", "Weight" : 3},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 384,
+        "Y" : 141
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 395,
+        "Y": 154
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 411,
+        "Y": 141
+    },
+    {
+        "Name": "Mummy",
+        "X": 415,
+        "Y": 133
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertGhoul", "Weight" : 1},
+      { "Name" : "DesertScorpionWalk", "Weight" : 1 }
+                    ],
+        "X" : 439,
+        "Y" : 133
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertGhoul", "Weight" : 1},
+      { "Name" : "DesertDjinn", "Weight" : 1 }
+                    ],
+        "X" : 433,
+        "Y" : 125
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertGhoul", "Weight" : 1},
+      { "Name" : "DesertDjinn", "Weight" : 1 },
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 441,
+        "Y" : 124
+    },
+    {
+        "Name": "DesertScorpionWalk",
+        "X": 384,
+        "Y": 133
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertGhoul", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 363,
+        "Y" : 144
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 381,
+        "Y": 110
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 370,
+        "Y": 110
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertDjinn", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 377,
+        "Y" : 110
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertGhoul", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 368,
+        "Y" : 100
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertGhoul", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 378,
+        "Y" : 105
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Mummy", "Weight" : 3},
+      { "Name" : "DesertScorpionWalk", "Weight" : 1 }
+                    ],
+        "X" : 351,
+        "Y" : 94
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertGhoul", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 379,
+        "Y" : 94
+    },
+    {
+        "Name": "DesertDjinn",
+        "X": 326,
+        "Y": 82
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 321,
+        "Y": 88
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 337,
+        "Y": 94
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertGhoul", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 326,
+        "Y" : 88
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertGhoul", "Weight" : 2},
+      { "Name" : "DesertScorpionWalk", "Weight" : 1 }
+                    ],
+        "X" : 353,
+        "Y" : 78
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertGhoul", "Weight" : 1},
+      { "Name" : "DesertDjinn", "Weight" : 2 }
+                    ],
+        "X" : 378,
+        "Y" : 78
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertGhoul", "Weight" : 2},
+      { "Name" : "DesertDjinn", "Weight" : 1 }
+                    ],
+        "X" : 367,
+        "Y" : 84
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertGhoul", "Weight" : 3},
+      { "Name" : "DesertDjinn", "Weight" : 1 }
+                    ],
+        "X" : 376,
+        "Y" : 84
+    },
+    {
+        "Name": "Mummy",
+        "X": 400,
+        "Y": 78
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertDjinn", "Weight" : 1},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 438,
+        "Y" : 111
+    },
+    {
+        "Name": "DesertDjinn",
+        "X": 452,
+        "Y": 105
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 422,
+        "Y": 111
+    },
+    {
+        "Name": "DesertScorpionWalk",
+        "X": 448,
+        "Y": 111
+    },
+    {
+        "Name": "DesertScorpionWalk",
+        "X": 426,
+        "Y": 93
+    },
+    {
+        "Name": "DesertGhoul",
+        "X": 467,
+        "Y": 173
+    },
+    {
+        "Name": "Mummy",
+        "X": 483,
+        "Y": 166
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertDjinn", "Weight" : 1},
+      { "Name" : "DesertGhoul", "Weight" : 2 }
+                    ],
+        "X" : 474,
+        "Y" : 133
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertDjinn", "Weight" : 1},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 368,
+        "Y" : 100
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "DesertGhoul", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 495,
+        "Y" : 139
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Mummy", "Weight" : 5},
+      { "Name" : "DesertGhoul", "Weight" : 1 }
+                    ],
+        "X" : 539,
+        "Y" : 111
     }
 ]
