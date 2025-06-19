@@ -95,12 +95,7 @@
     {
         "Name": "BlazingWheel",
         "X": 432,
-        "Y": 152
-    },
-    {
-        "Name": "BlazingWheel",
-        "X": 399,
-        "Y": 154
+        "Y": 150
     },
     {
         "Name": "BlazingWheel",
@@ -109,8 +104,18 @@
     },
     {
         "Name": "BlazingWheel",
+        "X": 399,
+        "Y": 153
+    },
+    {
+        "Name": "BlazingWheel",
         "X": 513,
         "Y": 123
+    },
+    {
+        "Name": "BlazingWheel",
+        "X": 456,
+        "Y": 174
     },
     { 
         "WIdPool" : [
@@ -118,7 +123,7 @@
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
         "X" : 326,
-        "Y" : 88
+        "Y" : 85
     },
     { 
         "WIdPool" : [
@@ -126,7 +131,7 @@
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
         "X" : 479,
-        "Y" : 133
+        "Y" : 130
     },
     { 
         "WIdPool" : [
@@ -134,17 +139,12 @@
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
         "X" : 438,
-        "Y" : 111
+        "Y" : 110
     },
     {
         "Name": "SpikeBall",
-        "X": 456,
-        "Y": 71
-    },
-    {
-        "Name": "SpikeBall",
-        "X": 479,
-        "Y": 131
+        "X": 481,
+        "Y": 132
     },
     {
         "Name": "SpikeBall",
@@ -158,17 +158,17 @@
     },
     {
         "Name": "SpikeBall",
-        "X": 542,
+        "X": 546,
         "Y": 88
     },
     {
         "Name": "SpikeBall",
-        "X": 519,
+        "X": 520,
         "Y": 79
     },
     {
         "Name": "SpikeBall",
-        "X": 371,
+        "X": 373,
         "Y": 80
     },
     { 
@@ -184,7 +184,7 @@
       { "Name" : "SpikeBall", "Weight" : 3},
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
-        "X" : 369,
+        "X" : 370,
         "Y" : 143
     },
     { 
@@ -192,7 +192,7 @@
       { "Name" : "SpikeBall", "Weight" : 1},
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
-        "X" : 399,
+        "X" : 401,
         "Y" : 132
     },
     { 
@@ -281,11 +281,6 @@
                     ],
         "X" : 363,
         "Y" : 144
-    },
-    {
-        "Name": "DesertGhoul",
-        "X": 381,
-        "Y": 110
     },
     {
         "Name": "DesertGhoul",
