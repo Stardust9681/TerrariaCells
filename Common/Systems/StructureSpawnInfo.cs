@@ -32,7 +32,7 @@ public class StructureSpawnInfo
     private int[] IdPool;
 
     [JsonInclude]
-    private (int, float)[] WIdPool;
+    private WeightedID[] WIdPool;
 
     private int? setID = null;
 
@@ -54,12 +54,36 @@ public class StructureSpawnInfo
         {
             WeightedRandom<int> rand2 = new(rand);
 
-            foreach (var (id, w) in WIdPool) {
-                rand2.Add(id, w);
+            foreach (var wId in WIdPool) {
+                rand2.Add(wId.GetID(), wId.Weight);
             }
 
             return SetID = rand2.Get();
         }
         return SetID = NPCID.FairyCritterBlue;
     }
+}
+internal struct WeightedID
+{
+    public int GetID()
+    {
+        if (Id.HasValue)
+            return Id.Value;
+        if (Name is not null)
+        {
+            if (NPCID.Search.TryGetId(Name, out int id)) return id;
+
+            if (Terraria.ModLoader.ModContent.TryFind<Terraria.ModLoader.ModNPC>(Name, out Terraria.ModLoader.ModNPC modNPC))
+                return modNPC.Type;
+        }
+        return NPCID.FairyCritterGreen;
+    }
+
+    [JsonInclude]
+    private string Name;
+    [JsonInclude]
+    private int? Id;
+
+    [JsonInclude]
+    public float Weight;
 }
