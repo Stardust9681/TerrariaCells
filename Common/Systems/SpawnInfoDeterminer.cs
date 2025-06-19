@@ -16,6 +16,11 @@ public class SpawnInfoDeterminer : ModSystem
         UnifiedRandom rand = new UnifiedRandom(seed);
         BasicWorldGenData worldGenData = StaticFileAccess.Instance.WorldGenData;
 
+        if (worldGenData == null)
+        {
+            return;
+        }
+
         foreach (Level level in worldGenData.LevelData)
         {
             LevelStructure structure = level.GetGeneratedStructure(worldGenData);

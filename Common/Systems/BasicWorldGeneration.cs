@@ -161,7 +161,7 @@ public class BasicWorldGeneration : ModSystem
                 throw new Exception("Invalid mod version!");
             }
             Mod.Logger.Info("Deserialized worldgen data successfully");
-        
+
             NPCRoomSpawner.ResetSpawns();
         }
         catch (Exception e)
