@@ -213,14 +213,14 @@ namespace TerrariaCells.Common.GlobalNPCs
         {
             //npc.whoAmI is read in packet handler, and the NPC is passed in here
             byte shopSize = reader.ReadByte();
-            Mod.Logger.Info($"Shop Size: {shopSize}");
+            //Mod.Logger.Info($"Shop Size: {shopSize}");
             selectedItems = new ItemDef[shopSize];
             for (int i = 0; i < shopSize; i++)
             {
                 int itemType = reader.Read7BitEncodedInt();
                 byte level = reader.ReadByte();
                 byte modCount = reader.ReadByte();
-                Mod.Logger.Info($"Shop Entry: {{ Type: {itemType}, Level: {level}, Mods: {modCount} }}");
+                //Mod.Logger.Info($"Shop Entry: {{ Type: {itemType}, Level: {level}, Mods: {modCount} }}");
                 if (modCount > 0)
                 {
                     List<FunkyModifier> mods = new List<FunkyModifier>();

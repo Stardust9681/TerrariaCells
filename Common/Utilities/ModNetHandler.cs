@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria;
+using Terraria.Localization;
+using TerrariaCells.Common.GlobalNPCs;
 
 namespace TerrariaCells.Common.Utilities
 {
@@ -22,6 +24,7 @@ namespace TerrariaCells.Common.Utilities
                 [TCPacketType.LevelPacket] = new LevelPacketHandler(),
                 [TCPacketType.PlayerPacket] = new PlayerPacketHandler(),
                 [TCPacketType.ShopPacket] = new ShopPacketHandler(),
+                [TCPacketType.BuffPacket] = new BuffPacketHandler(),
             };
         }
         internal static Dictionary<TCPacketType, PacketHandler> Handlers;
@@ -37,17 +40,6 @@ namespace TerrariaCells.Common.Utilities
             packet.Write((byte)type);
             return packet;
         }
-
-        public override bool HijackGetData(ref byte messageType, ref BinaryReader reader, int playerNumber)
-        {
-            switch (messageType)
-            {
-                case MessageID.SyncNPC:
-                    
-                    break;
-            }
-            return base.HijackGetData(ref messageType, ref reader, playerNumber);
-        }
     }
     public enum TCPacketType : byte
     {
@@ -57,5 +49,6 @@ namespace TerrariaCells.Common.Utilities
         LevelPacket,
         PlayerPacket,
         ShopPacket,
+        BuffPacket,
     }
 }

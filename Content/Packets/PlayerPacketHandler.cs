@@ -36,7 +36,11 @@ namespace TerrariaCells.Content.Packets
         }
         private void HandleMeta(Mod mod, BinaryReader reader, int fromWho)
         {
-            Player player = Main.player[fromWho];
+            Player player;
+            if (fromWho == 256)
+                player = Main.LocalPlayer;
+            else
+                player = Main.player[fromWho];
             Common.ModPlayers.MetaPlayer modPlayer = player.GetModPlayer<Common.ModPlayers.MetaPlayer>();
             modPlayer.GetSyncPlayer(reader);
         }

@@ -22,7 +22,7 @@ namespace TerrariaCells
     /// Base class for handling net packets, 
     /// see TerrariaCells/Content/Packets for implementations
     /// </summary>
-    internal abstract class PacketHandler
+    public abstract class PacketHandler
 	{
 		public TCPacketType HandlerType { get; private set; }
 		/// <summary>
