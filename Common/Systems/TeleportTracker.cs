@@ -6,6 +6,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
+using TerrariaCells.Common.Utilities;
+
 namespace TerrariaCells.Common.Systems;
 
 public class TeleportTracker : ModSystem
@@ -130,8 +132,6 @@ public class TeleportTracker : ModSystem
             string roomMarkerName = RoomMarker.GetInternalRoomName(actualDestination, levelStructure.Name);
             Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().targetKillCount = (byte)NPCRoomSpawner.RoomInfo[roomMarkerName].NPCs.Length;
         }
-
-        GlobalNPCs.VanillaNPCShop.UpdateTeleport(level, nextLevel);
     }
 
     private void GoToNextLevel()
@@ -302,11 +302,6 @@ public class TeleportTracker : ModSystem
                 if (player.GetModPlayer<ModPlayers.MetaPlayer>().Goblin)
                 {
                     isGoblinUnlocked = true;
-                    Mod.Logger.Info($"{player.name} has Goblin: {true}");
-                }
-                else
-                {
-                    Mod.Logger.Info($"{player.name} has Goblin: {false}");
                 }
             }
         }
@@ -325,7 +320,9 @@ public class TeleportTracker : ModSystem
                 NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, newNPC);
             }
         }
-        GlobalNPCs.VanillaNPCShop.UpdateTeleport(level, nextLevel);
+
+        Mod.Logger.Info("Updating NPC shops. Netmode: " + Main.netMode);
+        GlobalNPCs.VanillaNPCShop.UpdateTeleport(level, nextLevel, (Main.netMode == NetmodeID.Server));
 
         return;
     }

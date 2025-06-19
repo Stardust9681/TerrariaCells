@@ -4,10 +4,13 @@ using TerrariaCells;
 using TerrariaCells.Content;
 using TerrariaCells.Content.Packets;
 using System.Collections.Generic;
+using Terraria.ModLoader;
+using Terraria.ID;
+using Terraria;
 
 namespace TerrariaCells.Common.Utilities
 {
-    internal class ModNetHandler 
+    internal class ModNetHandler : ModSystem
     {
         static ModNetHandler()
         {
@@ -18,6 +21,7 @@ namespace TerrariaCells.Common.Utilities
                 [TCPacketType.PylonPacket] = new PylonPacketHandler(),
                 [TCPacketType.LevelPacket] = new LevelPacketHandler(),
                 [TCPacketType.PlayerPacket] = new PlayerPacketHandler(),
+                [TCPacketType.ShopPacket] = new ShopPacketHandler(),
             };
         }
         internal static Dictionary<TCPacketType, PacketHandler> Handlers;
@@ -33,6 +37,17 @@ namespace TerrariaCells.Common.Utilities
             packet.Write((byte)type);
             return packet;
         }
+
+        public override bool HijackGetData(ref byte messageType, ref BinaryReader reader, int playerNumber)
+        {
+            switch (messageType)
+            {
+                case MessageID.SyncNPC:
+                    
+                    break;
+            }
+            return base.HijackGetData(ref messageType, ref reader, playerNumber);
+        }
     }
     public enum TCPacketType : byte
     {
@@ -41,5 +56,6 @@ namespace TerrariaCells.Common.Utilities
         PylonPacket,
         LevelPacket,
         PlayerPacket,
+        ShopPacket,
     }
 }

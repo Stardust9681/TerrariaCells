@@ -51,6 +51,7 @@ namespace TerrariaCells.Content.Packets
                 packet.Send();
 
                 tele.Update_PostTeleport(tele.GetActualDestination(destination));
+                mod.Logger.Info("Post Teleport Update");
             }
             else //Received by client (from Server)
             {

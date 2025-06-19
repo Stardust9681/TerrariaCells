@@ -84,7 +84,7 @@ namespace TerrariaCells.Common.ModPlayers
                 if (metaProgression[i])
                     packet.Write(i);
             }
-            packet.Send();
+            packet.Send(toWho, fromWho);
         }
         public void GetSyncPlayer(System.IO.BinaryReader reader)
         {
@@ -94,8 +94,6 @@ namespace TerrariaCells.Common.ModPlayers
                 byte index = reader.ReadByte();
                 this.metaProgression[index] = true;
             }
-            Mod.Logger.Info($"{Player.name} has Cloud: {CloudJump}");
-            Mod.Logger.Info($"{Player.name} has Goblin: {Goblin}");
         }
         public override void CopyClientState(ModPlayer targetCopy)
         {
