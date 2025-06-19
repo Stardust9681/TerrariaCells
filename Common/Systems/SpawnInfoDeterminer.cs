@@ -9,7 +9,9 @@ public class SpawnInfoDeterminer : ModSystem
 {
     public Dictionary<StructureSpawnInfo, int> structurePickedIDs = [];
 
-    public override void OnWorldLoad()
+    // deferred call to access worldgen data after loaded
+    // called @ TerrariaCells.Common.Systems.BasicWorldGen.LoadWorldData
+    public new void OnWorldLoad()
     {
         structurePickedIDs.Clear();
         int seed = Main.ActiveWorldFileData.Seed;
@@ -21,7 +23,7 @@ public class SpawnInfoDeterminer : ModSystem
             return;
         }
 
-        foreach (Level level in worldGenData.LevelData)
+        foreach (Level level in BasicWorldGenData.LevelData)
         {
             LevelStructure structure = level.GetGeneratedStructure(worldGenData);
 

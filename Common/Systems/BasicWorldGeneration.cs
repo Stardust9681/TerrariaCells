@@ -37,6 +37,10 @@ public class BasicWorldGeneration : ModSystem
     /// Returns the TerraCells related data this world was generated with, if any.
     ///
     /// Returns null if the world was not generated with any.
+    /// 
+    /// Only set after ModSystem.LoadWorldData
+    /// If you need access to it on world load, add a call during 
+    /// 
     /// </summary>
     public BasicWorldGenData BasicWorldGenData
     {
@@ -65,6 +69,7 @@ public class BasicWorldGeneration : ModSystem
                 "Could not deserialize worldgen.json! (If building, check if worldgen.json is present in the source.)"
             );
         }
+        
         StaticLevelData = BasicWorldGenData.LevelData;
 
         // return;  
@@ -149,6 +154,11 @@ public class BasicWorldGeneration : ModSystem
         BasicWorldGenData = null;
     }
 
+    public override void OnWorldLoad()
+    {
+        BasicWorldGenData = null;
+    }
+
     public override void LoadWorldData(TagCompound tag)
     {
         try
@@ -160,8 +170,10 @@ public class BasicWorldGeneration : ModSystem
             {
                 throw new Exception("Invalid mod version!");
             }
-            Mod.Logger.Info("Deserialized worldgen data successfully");
+            Mod.Logger.Info("Deserialized BasicWorldGenData from world data successfully");
 
+            ModContent.GetInstance<SpawnInfoDeterminer>().OnWorldLoad();
+            ModContent.GetInstance<NPCRoomSpawner>().OnWorldLoad();
             NPCRoomSpawner.ResetSpawns();
         }
         catch (Exception e)
@@ -186,7 +198,7 @@ public class CustomWorldGenPass(string name, double loadWeight) : GenPass(name, 
 
         PlaceStructures(data);
 
-        Level structure = data.LevelData.Find(x => x.Name == STARTING_LEVEL);
+        Level structure = BasicWorldGenData.LevelData.Find(x => x.Name == STARTING_LEVEL);
         int variation = data.LevelVariations[STARTING_LEVEL];
         Point16 offset = data.LevelPositions[STARTING_LEVEL];
         Main.spawnTileX = structure.Structures[variation].SpawnX + offset.X;
@@ -248,7 +260,7 @@ public class CustomWorldGenPass(string name, double loadWeight) : GenPass(name, 
 /// <summary>
 /// The worldgen.json information that a world was generated with
 /// </summary>
-public class BasicWorldGenData : TagSerializable
+public class BasicWorldGenData : TagSerializable, IJsonOnDeserialized
 {
     [JsonIgnore]
     public string GeneratedWithModVersion;
@@ -283,7 +295,11 @@ public class BasicWorldGenData : TagSerializable
     /// <seealso cref="GeneratedWithModVersion">
     /// </summary>
     [JsonInclude]
-    public List<Level> LevelData;
+    public static List<Level> LevelData { get; private set; }
+
+    [JsonInclude]
+    [JsonPropertyName("LevelData")]
+    private List<Level> levelData;
 
     [JsonIgnore]
     /// <summary>
@@ -299,6 +315,11 @@ public class BasicWorldGenData : TagSerializable
     /// The dictionary maps each generated level's name to the picked variations index in the list of LevelStructure data.
     /// <summary>
     public Dictionary<string, Point16> LevelPositions = [];
+
+    void IJsonOnDeserialized.OnDeserialized()
+    {
+        LevelData = levelData;
+    }
 
     public TagCompound SerializeData()
     {
@@ -342,6 +363,8 @@ public class BasicWorldGenData : TagSerializable
 
         return data;
     }
+
+    
 }
 
 /// <summary>

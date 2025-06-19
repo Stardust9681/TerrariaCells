@@ -64,15 +64,17 @@ namespace TerrariaCells.Common.Systems
 		/// </summary>
 		internal static Dictionary<string, RoomSpawnInfo> RoomInfo = [];
 
-        // Called @ TerrariaCells.Common.Systems.SpawnInfoDeterminer
-        public new void OnWorldLoad()
-        {
+		// deferred call to access worldgen data after loaded
+		// called @ TerrariaCells.Common.Systems.BasicWorldGen.LoadWorldData
+		public new void OnWorldLoad()
+		{
 			RoomInfo.Clear();
 
 			SpawnInfoDeterminer determiner = ModContent.GetInstance<SpawnInfoDeterminer>();
 
 			BasicWorldGenData worldGenData = StaticFileAccess.Instance.WorldGenData;
-			foreach (Level level in worldGenData.LevelData)
+
+			foreach (Level level in BasicWorldGenData.LevelData)
 			{
 				LevelStructure structure = level.GetGeneratedStructure(worldGenData);
 
@@ -80,13 +82,13 @@ namespace TerrariaCells.Common.Systems
 					.Select(x => new NPCSpawnInfo(x.SetID, (ushort)x.X, (ushort)x.Y))
 					.ToArray();
 
-					// if (spawnInfo.Where(x => x.OffsetX == 0 & x.OffsetY == 0).Count() != 0)
-					// {
-					// 	throw new Exception(structure.Name);
-					// }
+				// if (spawnInfo.Where(x => x.OffsetX == 0 & x.OffsetY == 0).Count() != 0)
+				// {
+				// 	throw new Exception(structure.Name);
+				// }
 
 				RoomSpawnInfo roomInfo = new(structure.Name, spawnInfo);
-                RoomInfo.Add($"{level.Name}_{structure.Name}", roomInfo);
+				RoomInfo.Add($"{level.Name}_{structure.Name}", roomInfo);
 				Mod.Logger.Info($"Inserted {spawnInfo.Length} spawns for {level.Name}_{structure.Name}");
 			}
 		}
