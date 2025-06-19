@@ -190,6 +190,21 @@
             "Surface": false
         },
         {
+            "Name": "Sewers",
+            "Structures": [
+                {
+                    "Name": "sewers_1",
+                    "Path": "Content/Structures/sewers_1.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": 300,
+                    "SpawnX": 71,
+                    "SpawnY": 43,
+                    "SpawnInfoPath": "Content/SpawnInfo/sewers_1.json"
+                }
+            ],
+            "Surface": false
+        },
+        {
             "Name": "Desert",
             "Structures": [
                 {
@@ -200,6 +215,15 @@
                     "SpawnX": 282,
                     "SpawnY": 69,
                     "SpawnInfoPath": "Content/SpawnInfo/desert_1.json"
+                },
+                {
+                    "Name": "desert_2",
+                    "Path": "Content/Structures/desert_2.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": 100,
+                    "SpawnX": 451,
+                    "SpawnY": 76,
+                    "SpawnInfoPath": "Content/SpawnInfo/desert_2.json"
                 }
             ],
             "Surface": false

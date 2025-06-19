@@ -5,12 +5,12 @@
         "Y": 218
     },
     {
-        "Name": "DesertScorpionWalk",
+        "Name": "Vulture",
         "X": 66,
         "Y": 204
     },
     {
-        "Name": "DesertScorpionWalk",
+        "Name": "Vulture",
         "X": 89,
         "Y": 204
     },
@@ -53,39 +53,14 @@
         "Y": 204
     },
     {
-        "Name": "Vulture",
-        "X": 126,
-        "Y": 268
-    },
-    {
-        "Name": "Vulture",
-        "X": 134,
-        "Y": 267
-    },
-    {
-        "Name": "Vulture",
-        "X": 142,
-        "Y": 269
-    },
-    {
         "Name": "DesertScorpionWalk",
         "X": 414,
         "Y": 203
     },
     {
         "Name": "Vulture",
-        "X": 436,
-        "Y": 208
-    },
-    {
-        "Name": "Vulture",
-        "X": 438,
-        "Y": 208
-    },
-    {
-        "Name": "Vulture",
-        "X": 465,
-        "Y": 215
+        "X": 292,
+        "Y": 205
     },
     {
         "Name": "Mummy",
