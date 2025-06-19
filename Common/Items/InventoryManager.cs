@@ -51,7 +51,7 @@ public class InventoryManager : ModSystem, IEntitySource
     /// If nothing is found, it returns TerraCellsItemCategory.Default
     /// <summary>
     public static TerraCellsItemCategory GetItemCategorization(Item item) =>
-        item is ITerraCellsCategorization categorization
+        item.ModItem is ITerraCellsCategorization categorization
             ? categorization.Category
             : VanillaItemCategorizations.GetValueOrDefault(
                 (short)item.netID,
@@ -59,7 +59,12 @@ public class InventoryManager : ModSystem, IEntitySource
             );
 
     public static TerraCellsItemCategory GetItemCategorization(int type) =>
-        VanillaItemCategorizations.GetValueOrDefault((short)type, TerraCellsItemCategory.Default);
+        ModContent.GetModItem(type) is ITerraCellsCategorization categorization
+            ? categorization.Category
+            : VanillaItemCategorizations.GetValueOrDefault(
+                (short)type,
+                TerraCellsItemCategory.Default
+            );
 
     public static StorageItemSubcategorization GetStorageItemSubcategorization(Item item) =>
         GetItemCategorization(item) is TerraCellsItemCategory.Storage
@@ -442,6 +447,7 @@ public class InventoryManager : ModSystem, IEntitySource
         Item slotItem = player.inventory[slot];
         return CanAcceptNewItem(slotItem, newItem);
     }
+
     private static bool CanAcceptNewItem(Item slot, Item newItem)
     {
         if (slot.IsAir) return true;

@@ -299,6 +299,11 @@ Items: {
 		DisplayName: Tick Timer
 		Tooltip: ""
 	}
+
+	SpawnInfoWand: {
+		DisplayName: Spawn Info Wand
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -383,3 +388,5 @@ Tiles: {
 }
 
 NPCs.SWATHornet.DisplayName: SWAT Hornet
+levelInputEmptyContextText: Forest
+structureInputEmptyContextText: forest_1

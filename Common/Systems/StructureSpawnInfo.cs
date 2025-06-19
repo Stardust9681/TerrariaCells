@@ -14,6 +14,9 @@ public class StructureSpawnInfo
     [JsonIgnore]
     public int SetID { get => setID.Value; private set => setID = value; }
 
+    [JsonIgnore]
+    public Point Position { get => new (X, Y); private set => (X, Y) = (value.X, value.Y); }
+
     [JsonInclude]
     [JsonRequired]
     public int X;

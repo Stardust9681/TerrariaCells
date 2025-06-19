@@ -19,6 +19,7 @@ using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 using Terraria.WorldBuilding;
 using TerrariaCells.Common.Configs;
+using TerrariaCells.Content.Items;
 
 namespace TerrariaCells.Common.Systems;
 
