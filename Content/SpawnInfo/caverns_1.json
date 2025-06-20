@@ -1,0 +1,365 @@
+[    
+    {
+        "Name": "RockGolem",
+        "X": 467,
+        "Y": 172
+    },
+    {
+        "Name": "RockGolem",
+        "X": 549,
+        "Y": 92
+    },
+    {
+        "Name": "RockGolem",
+        "X": 486,
+        "Y": 96
+    },
+    {
+        "Name": "RockGolem",
+        "X": 512,
+        "Y": 121
+    },
+    {
+        "Name": "RockGolem",
+        "X": 499,
+        "Y": 133
+    },
+    {
+        "Name": "RockGolem",
+        "X": 260,
+        "Y": 193
+    },
+    {
+        "Name": "RockGolem",
+        "X": 171,
+        "Y": 148
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "RockGolem", "Weight" : 1},
+      { "Name" : "TargetDummy", "Weight" : 5 }
+                    ],
+        "X" : 74,
+        "Y" : 30
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "RockGolem", "Weight" : 1},
+      { "Name" : "TargetDummy", "Weight" : 5 }
+                    ],
+        "X" : 60,
+        "Y" : 30
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "RockGolem", "Weight" : 1},
+      { "Name" : "TargetDummy", "Weight" : 5 }
+                    ],
+        "X" : 80,
+        "Y" : 30
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "RockGolem", "Weight" : 1},
+      { "Name" : "Tim", "Weight" : 1 }
+                    ],
+        "X" : 91,
+        "Y" : 123
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "RockGolem", "Weight" : 1},
+      { "Name" : "Tim", "Weight" : 2 }
+                    ],
+        "X" : 133,
+        "Y" : 189
+    },
+    {
+        "Name": "Tim",
+        "X": 359,
+        "Y": 192
+    },
+    {
+        "Name": "Tim",
+        "X": 433,
+        "Y": 145
+    },
+    {
+        "Name": "Tim",
+        "X": 359,
+        "Y": 192
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "TargetDummy", "Weight" : 1},
+      { "Name" : "Tim", "Weight" : 1 }
+                    ],
+        "X" : 584,
+        "Y" : 92
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Skeleton", "Weight" : 1},
+      { "Name" : "Tim", "Weight" : 1 }
+                    ],
+        "X" : 563,
+        "Y" : 99
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "GraniteFlyer", "Weight" : 1},
+      { "Name" : "Tim", "Weight" : 1 }
+                    ],
+        "X" : 185,
+        "Y" : 154
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Skeleton", "Weight" : 2},
+      { "Name" : "Tim", "Weight" : 1 }
+                    ],
+        "X" : 584,
+        "Y" : 92
+    },
+    {
+        "Name": "GraniteFlyer",
+        "X": 328,
+        "Y": 172
+    },
+    {
+        "Name": "GraniteFlyer",
+        "X": 379,
+        "Y": 196
+    },
+    {
+        "Name": "GraniteFlyer",
+        "X": 318,
+        "Y": 200
+    },
+    {
+        "Name": "GraniteFlyer",
+        "X": 207,
+        "Y": 170
+    },
+    {
+        "Name": "GraniteFlyer",
+        "X": 93,
+        "Y": 130
+    },
+    {
+        "Name": "GraniteFlyer",
+        "X": 328,
+        "Y": 172
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "GraniteFlyer", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 45,
+        "Y" : 196
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "GraniteFlyer", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 50,
+        "Y" : 194
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "GraniteFlyer", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 60,
+        "Y" : 190
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "GraniteFlyer", "Weight" : 1},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 469,
+        "Y" : 184
+    },
+    {
+        "Name": "GraniteFlyer",
+        "X": 328,
+        "Y": 172
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "GraniteFlyer", "Weight" : 1},
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 491,
+        "Y" : 137
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "GraniteFlyer", "Weight" : 1},
+      { "Name" : "Skeleton", "Weight" : 1 }
+                    ],
+        "X" : 562,
+        "Y" : 106
+    },
+    {
+        "Name": "GraniteFlyer",
+        "X": 411,
+        "Y": 143
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "TargetDummy", "Weight" : 1},
+      { "Name" : "Skeleton", "Weight" : 2 }
+                    ],
+        "X" : 58,
+        "Y" : 90
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "GraniteFlyer", "Weight" : 1},
+      { "Name" : "Skeleton", "Weight" : 1 }
+                    ],
+        "X" : 158,
+        "Y" : 114
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "GraniteFlyer", "Weight" : 1},
+      { "Name" : "Skeleton", "Weight" : 1 }
+                    ],
+        "X" : 63,
+        "Y" : 125
+    },
+    {
+        "Name": "Skeleton",
+        "X": 153,
+        "Y": 149
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "GraniteFlyer", "Weight" : 1},
+      { "Name" : "Skeleton", "Weight" : 1 }
+                    ],
+        "X" : 106,
+        "Y" : 187
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "GraniteFlyer", "Weight" : 1},
+      { "Name" : "Skeleton", "Weight" : 1 }
+                    ],
+        "X" : 110,
+        "Y" : 189
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "GraniteFlyer", "Weight" : 1},
+      { "Name" : "TargetDummy", "Weight" : 1},
+      { "Name" : "Skeleton", "Weight" : 1 }
+                    ],
+        "X" : 187,
+        "Y" : 178
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "TargetDummy", "Weight" : 1},
+      { "Name" : "Skeleton", "Weight" : 1 }
+                    ],
+        "X" : 220,
+        "Y" : 193
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "TargetDummy", "Weight" : 1},
+      { "Name" : "Skeleton", "Weight" : 1 }
+                    ],
+        "X" : 239,
+        "Y" : 194
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "GraniteFlyer", "Weight" : 1},
+      { "Name" : "TargetDummy", "Weight" : 1},
+      { "Name" : "Skeleton", "Weight" : 1 }
+                    ],
+        "X" : 337,
+        "Y" : 164
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "TargetDummy", "Weight" : 1},
+      { "Name" : "Skeleton", "Weight" : 1 }
+                    ],
+        "X" : 312,
+        "Y" : 168
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "TargetDummy", "Weight" : 1},
+      { "Name" : "Skeleton", "Weight" : 2 }
+                    ],
+        "X" : 444,
+        "Y" : 132
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "TargetDummy", "Weight" : 1},
+      { "Name" : "Skeleton", "Weight" : 1 }
+                    ],
+        "X" : 462,
+        "Y" : 125
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "GraniteFlyer", "Weight" : 1},
+      { "Name" : "TargetDummy", "Weight" : 1},
+      { "Name" : "Skeleton", "Weight" : 1 }
+                    ],
+        "X" : 467,
+        "Y" : 101
+    },
+    {
+        "Name": "Skeleton",
+        "X": 520,
+        "Y": 166
+    },
+    {
+        "Name": "Skeleton",
+        "X": 517,
+        "Y": 148
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "TargetDummy", "Weight" : 1},
+      { "Name" : "Skeleton", "Weight" : 2 }
+                    ],
+        "X" : 587,
+        "Y" : 111
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "TargetDummy", "Weight" : 1},
+      { "Name" : "Skeleton", "Weight" : 2 }
+                    ],
+        "X" : 609,
+        "Y" : 93
+    },
+    {
+        "Name": "ArmsDealer",
+        "X": 552,
+        "Y": 135
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Merchant", "Weight" : 1},
+      { "Name" : "Nurse", "Weight" : 1 }
+                    ],
+        "X" : 73,
+        "Y" : 186
+    }
+
+
+]

@@ -227,6 +227,21 @@
                 }
             ],
             "Surface": false
+        },
+        {
+            "Name": "Caverns",
+            "Structures": [
+                {
+                    "Name": "caverns_1",
+                    "Path": "Content/Structures/caverns_1.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": 300,
+                    "SpawnX": 418,
+                    "SpawnY": 54,
+                    "SpawnInfoPath": "Content/SpawnInfo/caverns_1.json"
+                }
+            ],
+            "Surface": false
         }
     ]
 }
