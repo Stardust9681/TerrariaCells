@@ -18,14 +18,15 @@ public class SpawnInfoDeterminer : ModSystem
         UnifiedRandom rand = new UnifiedRandom(seed);
         BasicWorldGenData worldGenData = StaticFileAccess.Instance.WorldGenData;
 
-        if (worldGenData == null)
-        {
-            return;
-        }
-
         foreach (Level level in BasicWorldGenData.LevelData)
         {
             LevelStructure structure = level.GetGeneratedStructure(worldGenData);
+
+            if (structure.SpawnInfo == null)
+            {
+                Mod.Logger.Info($"Skipped setup of {structure.Name} SpawnInfo since it failed to load.");
+                continue;
+            }
 
             foreach (StructureSpawnInfo spawnInfo in structure.SpawnInfo)
             {
@@ -51,7 +52,5 @@ public class SpawnInfoDeterminer : ModSystem
 
             Mod.Logger.Info($"Setup {structure.SpawnInfo.Length} spawns for {level.Name}.");
         }
-
-        ModContent.GetInstance<NPCRoomSpawner>().OnWorldLoad();
     }
 }

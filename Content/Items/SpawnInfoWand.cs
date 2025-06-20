@@ -220,7 +220,15 @@ internal class SpawnInfoUI : ModSystem
                         return;
                     }
 
-                    Message = $"Found {wand.currentStructure.SpawnInfo.Length} spawns";
+                    if (wand.currentStructure.SpawnInfo == null)
+                    {
+                        Message = "SpawnInfo failed to load. Check client.log before using this structure file.";
+                        mod.Logger.Error($"{wand.currentStructure.SpawnInfoPath} failed to deserialize. Fix the JSON configuration and rebuild the mod before you potentially override the data.");
+                    }
+                    else
+                    {
+                        Message = $"Found {wand.currentStructure.SpawnInfo.Length} spawns";
+                    }
                     StructureMessage = wand.currentStructure.Path;
                 }
             });

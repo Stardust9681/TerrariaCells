@@ -78,6 +78,12 @@ namespace TerrariaCells.Common.Systems
 			{
 				LevelStructure structure = level.GetGeneratedStructure(worldGenData);
 
+				if (structure.SpawnInfo == null)
+				{
+					Main.NewText($"SpawnInfo for {structure.Name} failed to load. Check client.log for more info");
+					continue;
+				}
+
 				NPCSpawnInfo[] spawnInfo = structure.SpawnInfo
 					.Select(x => new NPCSpawnInfo(x.SetID, (ushort)x.X, (ushort)x.Y))
 					.ToArray();

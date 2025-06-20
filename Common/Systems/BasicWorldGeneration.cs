@@ -105,14 +105,14 @@ public class BasicWorldGeneration : ModSystem
 
                 try
                 {
-
                     structure.SpawnInfo = JsonSerializer.Deserialize<StructureSpawnInfo[]>(
                         utf8Json
                     );
                 }
                 catch (Exception e)
                 {
-                    throw new Exception($"Could not deserialze spawn info file! {structure.SpawnInfoPath} [{e}]" );
+                    structure.SpawnInfo = null;
+                    Mod.Logger.Error($"Could not deserialze spawn info file! {structure.SpawnInfoPath} [{e}]" );
                 }
             }
         }
@@ -196,6 +196,11 @@ public class CustomWorldGenPass(string name, double loadWeight) : GenPass(name, 
             .GetContent<BasicWorldGeneration>()
             .First()
             .BasicWorldGenData;
+
+        if (data == null)
+        {
+            throw new Exception($"TerraCells worldgen configuration is missing. (check client.log fore more info)");
+        }
 
         PlaceStructures(data);
 

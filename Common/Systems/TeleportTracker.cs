@@ -69,11 +69,17 @@ public class TeleportTracker : ModSystem
 
     private void DetourToInn(string destination)
     {
-        BasicWorldGenData worldLevelData = Mod.GetContent<BasicWorldGeneration>()
-            .First()
+        BasicWorldGenData worldLevelData = ModContent.GetInstance<BasicWorldGeneration>()
             .BasicWorldGenData;
 
-        if (!worldLevelData.LevelVariations.ContainsKey(destination)) {
+        if (worldLevelData == null)
+        {
+            Main.NewText($"Teleport failed, worldgen information missing. (check client.log for more info)");
+            return;
+        }
+
+        if (!worldLevelData.LevelVariations.ContainsKey(destination))
+        {
             Main.NewText($"Could not go to {nextLevelVariation}, for the level does not yet exist.");
             Mod.Logger.Error($"Tried to go to level {nextLevelVariation}, but it doesn't exist.");
             return;
