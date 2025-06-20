@@ -6,19 +6,21 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 {
     public partial class Fighters
     {
+        //ExtraAI[0] -> state
         const int bloodCrawlerWallChasing = 0;
-        const int bloodCrawlerWallIdleClockwise = 1;
+        const int bloodCrawlerWallIdle = 1;
+
+        //ExtraAI[1] -> time since last seen player
+        //ExtraAI[2] -> idling rotation direction factor
 
         public void BloodCrawlerWallAI(NPC npc)
         {
-            Main.NewText("...................");
-
             const float bloodCrawlerSpeedFactor = 1.5f;
 
             npc.oldVelocity /= bloodCrawlerSpeedFactor;
             npc.velocity /= bloodCrawlerSpeedFactor;
 
-            if (ExtraAI[0] == bloodCrawlerWallIdleClockwise)
+            if (ExtraAI[0] == bloodCrawlerWallIdle)
             {
                 BloodCrawlerWallIdle(npc);
             }
@@ -36,10 +38,11 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             if (Collision.CanHit(npc.position, npc.width, npc.height, Main.player[npc.target].position, Main.player[npc.target].width, Main.player[npc.target].height))
             {
                 ExtraAI[0] = bloodCrawlerWallChasing;
+                ExtraAI[1] = 0;
                 return;
             }
 
-            npc.rotation += MathHelper.ToRadians(3 * npc.direction);
+            npc.rotation += ExtraAI[2] * MathHelper.ToRadians(3 * npc.direction);
             npc.velocity = Vector2.Lerp(npc.velocity, Vector2.UnitX.RotatedBy(npc.rotation) * 1f, 0.33f);
 
             Tile tileBehindCrawler = Main.tile[(npc.Center + npc.oldVelocity).ToTileCoordinates()];
@@ -47,6 +50,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             {
                 npc.velocity = -npc.oldVelocity;
                 npc.rotation += MathHelper.Pi;
+                ExtraAI[2] *= -1;
             }
         }
 
@@ -96,7 +100,11 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             npc.spriteDirection = -1;
             if (!Collision.CanHit(npc.position, npc.width, npc.height, Main.player[npc.target].position, Main.player[npc.target].width, Main.player[npc.target].height))
             {
-                ExtraAI[0] = bloodCrawlerWallIdleClockwise;
+                ExtraAI[1]++;
+            }
+            if (ExtraAI[1] > 30)
+            {
+                ExtraAI[0] = bloodCrawlerWallIdle;
             }
             else
             {
