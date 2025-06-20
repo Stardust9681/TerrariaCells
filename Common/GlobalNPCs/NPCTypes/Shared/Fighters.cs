@@ -61,6 +61,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             if (entity.type == NPCID.BloodCrawlerWall)
             {
                 ExtraAI[1] = 1; //tell bloodcrawler to transform if not on wall (only in the first ai cycle)
+                ExtraAI[2] = 1; //go counterclockwise when idling
             }
         }
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
