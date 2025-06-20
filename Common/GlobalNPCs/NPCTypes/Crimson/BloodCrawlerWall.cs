@@ -56,6 +56,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
         void BloodCrawlerWallChasing(NPC npc)
         {
+            CombatNPC.ToggleContactDamage(npc, true); //idk why, but contact damage turns off somewhere
             VanillaBloodCrawlerWallAI(npc);
         }
 
