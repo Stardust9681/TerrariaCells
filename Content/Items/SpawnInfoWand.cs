@@ -48,6 +48,7 @@ public class SpawnInfoWand : ModItem, ITerraCellsCategorization
 public class SpawnInfoRenderer : ModSystem
 {
     public BasicWorldGenData WorldGenData => StaticFileAccess.Instance.WorldGenData;
+    public StructureSpawnInfo selected = null;
 
     public override void PreUpdateDusts()
     {
@@ -67,13 +68,28 @@ public class SpawnInfoRenderer : ModSystem
 
         int height = StructureHelper.API.Generator.GetStructureData(wand.currentStructure.Path, Mod).height;
 
+        Point mousePosition = Main.MouseWorld.ToTileCoordinates();
+
         foreach (StructureSpawnInfo spawnInfo in wand.currentStructure?.SpawnInfo ?? [])
         {
             Point pos = spawnInfo.Position;
             pos.Y = -pos.Y;
             pos.Y += height;
-            var dust = Dust.NewDustPerfect(pos.ToWorldCoordinates() + wand.structurePosition.ToWorldCoordinates(), DustID.GemDiamond, Scale: 1f);
-            dust.velocity = Vector2.Zero; dust.noGravity = true;
+            pos += wand.structurePosition;
+
+            if (pos == mousePosition)
+            {
+                Dust dust = Dust.NewDustPerfect(pos.ToWorldCoordinates(), DustID.GemRuby, Scale: 1f);
+                dust.velocity = Vector2.Zero;
+                dust.noGravity = true;
+                selected = spawnInfo;
+            }
+            else
+            {
+                Dust dust = Dust.NewDustPerfect(pos.ToWorldCoordinates(), DustID.GemDiamond, Scale: 1f);
+                dust.velocity = Vector2.Zero;
+                dust.noGravity = true;
+            }
         }
     }
 }
@@ -153,6 +169,8 @@ internal class SpawnInfoUI : ModSystem
         public static string PositionMessage = "{319, 150}";
         public static string Message = ":3";
         UIText message;
+        UIText setStructureText;
+        UIText setPositionText;
 
         public override void OnInitialize()
         {
@@ -168,7 +186,7 @@ internal class SpawnInfoUI : ModSystem
             Terraria.Localization.LocalizedText emptyContentText = mod.GetLocalization("levelInputEmptyContextText", delegate { return "Forest"; });
             var levelNameInput = new UISearchBar(emptyContentText, 1f);
             levelNameInput.SetContents("");
-            setRect(levelNameInput, 20, 20, 400, 80);
+            setRect(levelNameInput, 20, 20, 400, 20);
             levelNameInput.OnContentsChanged += textInput =>
             {
                 levelInput = textInput;
@@ -185,7 +203,7 @@ internal class SpawnInfoUI : ModSystem
             emptyContentText = mod.GetLocalization("structureInputEmptyContextText", delegate { return "forest_1"; });
             var structureNameInput = new UISearchBar(emptyContentText, 1f);
             structureNameInput.SetContents("");
-            setRect(structureNameInput, 20, 60, 400, 80);
+            setRect(structureNameInput, 20, 40, 400, 20);
             structureNameInput.OnContentsChanged += textInput =>
             {
                 structureInput = textInput;
@@ -200,7 +218,7 @@ internal class SpawnInfoUI : ModSystem
             panel.Append(structureNameInput);
 
             var setStructureButton = new UIButton<string>("Set structure");
-            setRect(setStructureButton, 20, 120, 100, 30);
+            setRect(setStructureButton, 20, 80, 100, 30);
             setStructureButton.OnLeftClick += new MouseEvent((evt, el) =>
             {
                 if (wand is not null)
@@ -222,7 +240,7 @@ internal class SpawnInfoUI : ModSystem
 
                     if (wand.currentStructure.SpawnInfo == null)
                     {
-                        Message = "SpawnInfo failed to load. Check client.log before using this structure file.";
+                        Message = "SpawnInfo failed to load. Check client.log before using this structure file";
                         mod.Logger.Error($"{wand.currentStructure.SpawnInfoPath} failed to deserialize. Fix the JSON configuration and rebuild the mod before you potentially override the data.");
                     }
                     else
@@ -234,12 +252,12 @@ internal class SpawnInfoUI : ModSystem
             });
             panel.Append(setStructureButton);
 
-            var setStructureText = new UIText(StructureMessage);
-            setRect(setStructureText, 130, 120, 0, 30);
+            setStructureText = new UIText(StructureMessage);
+            setRect(setStructureText, 130, 90, 0, 30);
             panel.Append(setStructureText);
 
             var setPositionButton = new UIButton<string>("Set position");
-            setRect(setPositionButton, 20, 160, 100, 30);
+            setRect(setPositionButton, 20, 120, 100, 30);
             setPositionButton.OnLeftClick += new MouseEvent((evt, el) =>
             {
                 if (wand is not null)
@@ -251,9 +269,27 @@ internal class SpawnInfoUI : ModSystem
             });
             panel.Append(setPositionButton);
 
-            var setPositionText = new UIText(PositionMessage);
-            setRect(setPositionText, 130, 160, 0, 30);
+            setPositionText = new UIText(PositionMessage);
+            setRect(setPositionText, 130, 130, 0, 30);
             panel.Append(setPositionText);
+
+            var resetSpawnsButton = new UIButton<string>("Respawn world NPCs");
+            setRect(resetSpawnsButton, 20, 160, 200, 30);
+            resetSpawnsButton.OnLeftClick += new MouseEvent((evt, el) =>
+            {
+                NPCRoomSpawner.ResetSpawns();
+                Message = "Reset all spawned NPCs";
+            });
+            panel.Append(resetSpawnsButton);
+            
+            var resetSpawnsButton2 = new UIButton<string>("Respawn structure NPCs");
+            setRect(resetSpawnsButton2, 20, 160, 200, 30);
+            resetSpawnsButton2.OnLeftClick += new MouseEvent((evt, el) =>
+            {
+                // NPCRoomSpawner.ResetSpawnsForStructure(wand.currentLevel, wand.currentStructure, wand.structurePosition);
+                Message = $"Respawned NPCs for {wand.currentStructure.Name}";
+            });
+            panel.Append(resetSpawnsButton2);
 
             message = new UIText(Message);
             setRect(message, 0, 200, 300, 40);
@@ -266,6 +302,8 @@ internal class SpawnInfoUI : ModSystem
         {
             base.Update(gameTime);
             message.SetText(Message);
+            setStructureText.SetText(StructureMessage);
+            setPositionText.SetText(PositionMessage);
             
         }
     }

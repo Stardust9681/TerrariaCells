@@ -56,6 +56,44 @@ namespace TerrariaCells.Common.Systems
             }
 		}
 
+		public static void ResetSpawnsForStructure(Level level, LevelStructure levelStructure, Point levelPosition)
+		{
+            Mod mod = ModLoader.GetMod("TerrariaCells");
+
+			NPCRespawnHandler.RespawnMarkers?.Clear();
+			if (RoomMarkers is null) RoomMarkers = new List<RoomMarker>();
+			else RoomMarkers.Clear();
+			foreach (NPC npc in Main.ActiveNPCs) npc.active = false; //Disable all current NPCs
+
+            BasicWorldGenData data = ModContent
+                .GetInstance<BasicWorldGeneration>()
+                .BasicWorldGenData;
+
+            if (data is null)
+            {
+                mod.Logger.Error("Could not get BasicWorldGenData");
+                return;
+            }
+
+            if (data.LevelPositions.Count == 0)
+            {
+                mod.Logger.Warn("No levels found!");
+            }
+
+			string roomName = levelStructure.Name;
+			ushort width = (ushort)
+				StructureHelper.API.Generator.GetStructureData(levelStructure.Path, mod).width;
+			ushort height = (ushort)
+				StructureHelper.API.Generator.GetStructureData(levelStructure.Path, mod).height;
+			string name = RoomMarker.GetInternalRoomName(level.Name, roomName);
+			RoomMarker marker = new RoomMarker(levelPosition, name, width, height);
+			RoomMarkers.Add(marker);
+			var worldCoords = levelPosition.ToWorldCoordinates();
+			mod.Logger.Info(
+				$"Added marker for {level.Name} at world coordinates {worldCoords} tile coordinates {levelPosition}"
+			);
+		}
+
 		/// <summary> Add entries to this list during biome generation. </summary>
 		public static List<RoomMarker> RoomMarkers = new List<RoomMarker>();
 		/// <summary>
@@ -196,7 +234,7 @@ namespace TerrariaCells.Common.Systems
 			foreach (NPCSpawnInfo info in GetNPCSpawns().NPCs)
 			{
 				int whoAmI = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (Left + info.OffsetX)*16, (Top + info.OffsetY)*16, info.NPCType);
-                NPCRespawnHandler.HandleSpecialSpawn(Main.npc[whoAmI], (Left + info.OffsetX), (Top + info.OffsetY));
+                NPCRespawnHandler.HandleSpecialSpawn(Main.npc[whoAmI], Left + info.OffsetX, Top + info.OffsetY);
             }
 			didSpawns = true;
 		}
@@ -241,8 +279,8 @@ namespace TerrariaCells.Common.Systems
 			if (didSpawns) return;
 			foreach (NPCSpawnInfo info in GetNPCSpawns().NPCs)
 			{
-				int whoAmI = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (Left + info.OffsetX) * 16 + 8, (Top + a_height - info.OffsetY) * 16 + 8, info.NPCType);
-                NPCRespawnHandler.HandleSpecialSpawn(Main.npc[whoAmI], (Left + info.OffsetX), (Top + a_height - info.OffsetY));
+				int whoAmI = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (Left + info.OffsetX) * 16 + 8, (Top + info.OffsetY) * 16 + 8, info.NPCType);
+                NPCRespawnHandler.HandleSpecialSpawn(Main.npc[whoAmI], Left + info.OffsetX, Top + info.OffsetY);
 			}
 			didSpawns = true;
 		}
