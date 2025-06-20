@@ -7,6 +7,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 using TerrariaCells.Common.Utilities;
+using TerrariaCells.Content.Packets;
 
 namespace TerrariaCells.Common.Systems;
 
@@ -58,16 +59,16 @@ public class TeleportTracker : ModSystem
         {
             Mod.Logger.Info($"Teleporting to next level: {nextLevel}:");
             GoToNextLevel();
-            Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().UpdateTracker(ModPlayers.RewardPlayer.TrackerAction.Restart);
-            Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().targetTime = TimeSpan.FromMinutes(3);
+            RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Restart);
+            RewardTrackerSystem.targetTime = TimeSpan.FromMinutes(3);
             return;
         }
 
         //Goes to inn
         Mod.Logger.Info($"Detouring to inn.");
         DetourToInn(destination);
-        Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().UpdateTracker(ModPlayers.RewardPlayer.TrackerAction.Pause);
-        Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().UpdateChests_OnTeleport();
+        RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Pause);
+        RewardTrackerSystem.UpdateChests_OnTeleport();
     }
 
     private void DetourToInn(string destination)
@@ -130,7 +131,7 @@ public class TeleportTracker : ModSystem
             .Structures[nextLevelVariation];
 
             string roomMarkerName = RoomMarker.GetInternalRoomName(actualDestination, levelStructure.Name);
-            Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().targetKillCount = (byte)NPCRoomSpawner.RoomInfo[roomMarkerName].NPCs.Length;
+            RewardTrackerSystem.targetKillCount = (byte)NPCRoomSpawner.RoomInfo[roomMarkerName].NPCs.Length;
         }
     }
 
@@ -312,18 +313,24 @@ public class TeleportTracker : ModSystem
 
         Point16 tileCoords = GetTelePos(actualDestination);
         Vector2 worldCoords = tileCoords.ToWorldCoordinates();
-        if (actualDestination.ToLower().Equals("inn") && isGoblinUnlocked)
+        if (actualDestination.ToLower().Equals("inn"))
         {
-            int newNPC = NPC.NewNPC(NPC.GetSource_NaturalSpawn(), (int)worldCoords.X, (int)worldCoords.Y, NPCID.GoblinTinkerer);
-            if (Main.netMode == NetmodeID.Server)
+            if (isGoblinUnlocked)
             {
-                NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, newNPC);
+                int newNPC = NPC.NewNPC(NPC.GetSource_NaturalSpawn(), (int)worldCoords.X, (int)worldCoords.Y, NPCID.GoblinTinkerer);
+                if (Main.netMode == NetmodeID.Server)
+                {
+                    NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, newNPC);
+                }
             }
+            RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Pause);
+        }
+        else
+        {
+            RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Restart);
         }
 
-        Mod.Logger.Info("Updating NPC shops. Netmode: " + Main.netMode);
         GlobalNPCs.VanillaNPCShop.UpdateTeleport(level, nextLevel, (Main.netMode == NetmodeID.Server));
-
         return;
     }
 

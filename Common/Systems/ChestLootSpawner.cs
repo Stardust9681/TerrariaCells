@@ -86,7 +86,7 @@ public class ChestLootSpawner : ModSystem, IEntitySource
         }
         string tileFrame = tileFrameX + tileFrameY;
 
-        Mod.Logger.Info("Chest opened: " + tileFrame);
+        //Mod.Logger.Info("Chest opened: " + tileFrame);
 
         if (DevConfig.Instance.EnableChestChanges)
         {
@@ -119,6 +119,8 @@ public class ChestLootSpawner : ModSystem, IEntitySource
             }
         }
 
+        RewardTrackerSystem.UpdateChests_Open(x, y);
+
         if (isNewChest)
         {
             lootedChests.Add(newChest);
@@ -150,7 +152,7 @@ public class ChestLootSpawner : ModSystem, IEntitySource
         }
         string tileFrame = tileFrameX + tileFrameY;
 
-        Mod.Logger.Info("Chest opened: " + tileFrame);
+        //Mod.Logger.Info("Chest opened: " + tileFrame);
 
         if (DevConfig.Instance.EnableChestChanges)
         {
@@ -184,7 +186,7 @@ public class ChestLootSpawner : ModSystem, IEntitySource
                     NPC.NewNPC(this, (x + 1) * 16, y * 16, NPCID.Firefly);
                 }
 
-                self.GetModPlayer<ModPlayers.RewardPlayer>().UpdateChests_Open(x, y);
+                RewardTrackerSystem.UpdateChests_Open(x, y, self);
 
                 lootedChests.Add(newChest);
             }

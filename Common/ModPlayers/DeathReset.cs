@@ -40,7 +40,7 @@ public class DeathReset : ModPlayer, IEntitySource
             ModContent.GetInstance<ClickedHeartsTracker>().Reset();
             ModContent.GetInstance<ChestLootSpawner>().Reset();
             WorldPylonSystem.ResetPylons();
-            Player.GetModPlayer<RewardPlayer>().UpdateTracker(RewardPlayer.TrackerAction.Stop);
+            RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Stop);
         }
 	}
 
@@ -52,7 +52,6 @@ public class DeathReset : ModPlayer, IEntitySource
         {
             return;
         }
-        Player.GetModPlayer<RewardPlayer>().UpdateTracker_EnterNewWorld();
         ResetInventory(ResetInventoryContext.NewWorld);
     }
 

@@ -33,7 +33,6 @@ namespace TerrariaCells.Content.Packets
                     if (player.DistanceSQ(sender.position) > MathF.Pow(NumberHelpers.ToTileDist(WorldPylonSystem.MAX_PYLON_RANGE), 2))
                     {
                         //ChatHelper.BroadcastChatMessage(NetworkText.FromKey(Key_FailedTP, sender.name, destination), Main.OurFavoriteColor);
-                        //mod.Logger.Debug($"Player {player.name} too far from {sender.name}. Distance: {player.Distance(sender.position)} > {NumberHelpers.ToTileDist(WorldPylonSystem.MAX_PYLON_RANGE)}");
                         return;
                     }
                 }
@@ -44,14 +43,19 @@ namespace TerrariaCells.Content.Packets
                 tele.Update_SetWorldConditions(destination);
 
 
-                ModPacket packet = ModNetHandler.GetPacket(mod, HandlerType);
+                ModPacket packet = ModNetHandler.GetPacket(mod, TCPacketType.LevelPacket);
                 packet.Write(tpTile.X);
                 packet.Write(tpTile.Y);
                 packet.Write((byte)tele.level);
                 packet.Send();
 
                 tele.Update_PostTeleport(tele.GetActualDestination(destination));
-                mod.Logger.Info("Post Teleport Update");
+
+                packet = ModNetHandler.GetPacket(mod, TCPacketType.TrackerPacket);
+                packet.Write(RewardTrackerSystem.levelTimer);
+                packet.Write(RewardTrackerSystem.killCount);
+                packet.Write((byte)RewardTrackerSystem.trackerState);
+                packet.Send();
             }
             else //Received by client (from Server)
             {

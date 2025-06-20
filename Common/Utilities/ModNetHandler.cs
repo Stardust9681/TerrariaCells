@@ -25,6 +25,7 @@ namespace TerrariaCells.Common.Utilities
                 [TCPacketType.PlayerPacket] = new PlayerPacketHandler(),
                 [TCPacketType.ShopPacket] = new ShopPacketHandler(),
                 [TCPacketType.BuffPacket] = new BuffPacketHandler(),
+                [TCPacketType.TrackerPacket] = new TrackerPacketHandler(),
             };
         }
         internal static Dictionary<TCPacketType, PacketHandler> Handlers;
@@ -50,5 +51,6 @@ namespace TerrariaCells.Common.Utilities
         PlayerPacket,
         ShopPacket,
         BuffPacket,
+        TrackerPacket,
     }
 }
