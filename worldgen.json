@@ -69,51 +69,7 @@
                     "SpawnY": 100,
                     "SpawnInfoPath": "Content/SpawnInfo/forest_5.json"
                 },
-                {
-                    "Name": "forest_6",
-                    "Path": "Content/Structures/forest_6.shstruct",
-                    "OffsetX": 0,
-                    "OffsetY": -80,
-                    "SpawnX": 611,
-                    "SpawnY": 100,
-                    "SpawnInfoPath": "Content/SpawnInfo/forest_6.json"
-                },
-                {
-                    "Name": "forest_7",
-                    "Path": "Content/Structures/forest_7.shstruct",
-                    "OffsetX": 0,
-                    "OffsetY": -50,
-                    "SpawnX": 774,
-                    "SpawnY": 233,
-                    "SpawnInfoPath": "Content/SpawnInfo/forest_7.json"
-                },
-                {
-                    "Name": "forest_8",
-                    "Path": "Content/Structures/forest_8.shstruct",
-                    "OffsetX": 0,
-                    "OffsetY": -80,
-                    "SpawnX": 611,
-                    "SpawnY": 100,
-                    "SpawnInfoPath": "Content/SpawnInfo/forest_8.json"
-                },
-                {
-                    "Name": "forest_9",
-                    "Path": "Content/Structures/forest_9.shstruct",
-                    "OffsetX": 0,
-                    "OffsetY": -50,
-                    "SpawnX": 774,
-                    "SpawnY": 233,
-                    "SpawnInfoPath": "Content/SpawnInfo/forest_9.json"
-                },
-                {
-                    "Name": "forest_10",
-                    "Path": "Content/Structures/forest_10.shstruct",
-                    "OffsetX": 0,
-                    "OffsetY": -50,
-                    "SpawnX": 774,
-                    "SpawnY": 233,
-                    "SpawnInfoPath": "Content/SpawnInfo/forest_10.json"
-                },
+
                 {
                     "Name": "forest_11",
                     "Path": "Content/Structures/forest_11.shstruct",
@@ -122,15 +78,6 @@
                     "SpawnX": 830,
                     "SpawnY": 96,
                     "SpawnInfoPath": "Content/SpawnInfo/forest_11.json"
-                },
-                {
-                    "Name": "forest_12",
-                    "Path": "Content/Structures/forest_12.shstruct",
-                    "OffsetX": 0,
-                    "OffsetY": -50,
-                    "SpawnX": 830,
-                    "SpawnY": 96,
-                    "SpawnInfoPath": "Content/SpawnInfo/forest_12.json"
                 }
             ],
             "Surface": false
