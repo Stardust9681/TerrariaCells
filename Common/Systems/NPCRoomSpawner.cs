@@ -45,9 +45,8 @@ namespace TerrariaCells.Common.Systems
                     StructureHelper.API.Generator.GetStructureData(levelStructure.Path, mod).width;
                 ushort height = (ushort)
                     StructureHelper.API.Generator.GetStructureData(levelStructure.Path, mod).height;
-                string name = RoomMarker.GetInternalRoomName(levelName, roomName);
                 Point position = pos.ToPoint();
-                RoomMarker marker = new RoomMarker(position, name, width, height);
+                RoomMarker marker = new RoomMarker(position, levelStructure, width, height);
                 RoomMarkers.Add(marker);
 				var worldCoords = position.ToWorldCoordinates();
                 mod.Logger.Info(
@@ -56,41 +55,36 @@ namespace TerrariaCells.Common.Systems
             }
 		}
 
-		public static void ResetSpawnsForStructure(Level level, LevelStructure levelStructure, Point levelPosition)
+		public static void ResetSpawnsForStructure(LevelStructure levelStructure, Point levelPosition)
 		{
             Mod mod = ModLoader.GetMod("TerrariaCells");
 
-			NPCRespawnHandler.RespawnMarkers?.Clear();
-			if (RoomMarkers is null) RoomMarkers = new List<RoomMarker>();
-			else RoomMarkers.Clear();
-			foreach (NPC npc in Main.ActiveNPCs) npc.active = false; //Disable all current NPCs
-
-            BasicWorldGenData data = ModContent
+			BasicWorldGenData data = ModContent
                 .GetInstance<BasicWorldGeneration>()
                 .BasicWorldGenData;
 
             if (data is null)
-            {
-                mod.Logger.Error("Could not get BasicWorldGenData");
-                return;
-            }
+			{
+				mod.Logger.Error("Could not get BasicWorldGenData");
+				return;
+			}
 
-            if (data.LevelPositions.Count == 0)
-            {
-                mod.Logger.Warn("No levels found!");
-            }
+			foreach (StructureSpawnInfo spawnInfo in levelStructure.SpawnInfo)
+			{
+				spawnInfo.SpawnedNPC.active = false; //Disable all current NPCs in structure
+			}
 
-			string roomName = levelStructure.Name;
+			RoomMarkers.RemoveAll(x => x.Structure == levelStructure);
+
 			ushort width = (ushort)
 				StructureHelper.API.Generator.GetStructureData(levelStructure.Path, mod).width;
 			ushort height = (ushort)
 				StructureHelper.API.Generator.GetStructureData(levelStructure.Path, mod).height;
-			string name = RoomMarker.GetInternalRoomName(level.Name, roomName);
-			RoomMarker marker = new RoomMarker(levelPosition, name, width, height);
+			RoomMarker marker = new RoomMarker(levelPosition, levelStructure, width, height);
 			RoomMarkers.Add(marker);
 			var worldCoords = levelPosition.ToWorldCoordinates();
 			mod.Logger.Info(
-				$"Added marker for {level.Name} at world coordinates {worldCoords} tile coordinates {levelPosition}"
+				$"Added marker for {levelStructure.Path} at world coordinates {worldCoords} tile coordinates {levelPosition}"
 			);
 		}
 
@@ -100,13 +94,13 @@ namespace TerrariaCells.Common.Systems
 		/// <para>Keys are room name with biome ( formatted as <c>Biome_room_name</c> ).</para>
 		/// <para>Values are SpawnInfo for corresponding room.</para>
 		/// </summary>
-		internal static Dictionary<string, RoomSpawnInfo> RoomInfo = [];
+		// internal static Dictionary<string, RoomSpawnInfo> RoomInfo = [];
 
 		// deferred call to access worldgen data after loaded
 		// called @ TerrariaCells.Common.Systems.BasicWorldGen.LoadWorldData
 		public new void OnWorldLoad()
 		{
-			RoomInfo.Clear();
+			// RoomInfo.Clear();
 
 			SpawnInfoDeterminer determiner = ModContent.GetInstance<SpawnInfoDeterminer>();
 
@@ -122,18 +116,14 @@ namespace TerrariaCells.Common.Systems
 					continue;
 				}
 
-				NPCSpawnInfo[] spawnInfo = structure.SpawnInfo
-					.Select(x => new NPCSpawnInfo(x.SetID, (ushort)x.X, (ushort)x.Y))
-					.ToArray();
-
 				// if (spawnInfo.Where(x => x.OffsetX == 0 & x.OffsetY == 0).Count() != 0)
 				// {
 				// 	throw new Exception(structure.Name);
 				// }
 
-				RoomSpawnInfo roomInfo = new(structure.Name, spawnInfo);
-				RoomInfo.Add($"{level.Name}_{structure.Name}", roomInfo);
-				Mod.Logger.Info($"Inserted {spawnInfo.Length} spawns for {level.Name}_{structure.Name}");
+				// RoomSpawnInfo roomInfo = new(structure.Name, structure.SpawnInfo);
+				// RoomInfo.Add($"{level.Name}_{structure.Name}", roomInfo);
+				// Mod.Logger.Info($"Inserted {spawnInfo.Length} spawns for {level.Name}_{structure.Name}");
 			}
 		}
 
@@ -151,30 +141,29 @@ namespace TerrariaCells.Common.Systems
 
 	public class RoomMarker
 	{
-		public static string GetInternalRoomName(string biome, string roomName) => $"{biome}_{roomName}";
 		/// <summary> 30 Tiles </summary>
 		public const float LOAD_RANGE = 480;
 
 		/// <param name="position">Position in TILE COORDINATES (xy/16)</param>
 		/// <param name="size">Size in TILES (xy/16)</param>
 		/// <param name="name">Room name for dictionary access</param>
-		public RoomMarker(Point position, string name)
+		public RoomMarker(Point position, LevelStructure structure)
 		{
 			Anchor = position;
-			RoomName = name;
+			Structure = structure;
 		}
 		/// <param name="i">Position X in TILE COORDINATES (x/16)</param>
 		/// <param name="j">Position Y in TILE COORDINATES (y/16)</param>
 		/// <param name="size">Size in TILES (xy/16)</param>
 		/// <param name="name">Room name for dictionary access</param>
-		public RoomMarker(int i, int j, string name)
+		public RoomMarker(int i, int j, LevelStructure structure)
 		{
 			Anchor = new Point(i, j);
-			RoomName = name;
+			Structure = structure;
 		}
 
 		public readonly Point Anchor; //Considering making this Point16
-		public readonly string RoomName;
+		public readonly LevelStructure Structure;
 		private bool didSpawns = false;
 		public bool DidSpawns
 		{
@@ -191,7 +180,7 @@ namespace TerrariaCells.Common.Systems
 			}
 			catch (Exception)
             {
-				ModContent.GetInstance<TerrariaCells>().Logger.Error($"Room: {RoomName} was not found/did not exist");
+				// ModContent.GetInstance<TerrariaCells>().Logger.Error($"Room: {LevelStructure.} was not found/did not exist");
 			}
 			return result;
 		}
@@ -205,8 +194,8 @@ namespace TerrariaCells.Common.Systems
 		public int Right => Anchor.X + Width;
 		public int Bottom => Anchor.Y + Height;
 
-		public RoomSpawnInfo GetNPCSpawns() => NPCRoomSpawner.RoomInfo[RoomName];
-		public bool TryGetNPCSpawns(out RoomSpawnInfo info) => NPCRoomSpawner.RoomInfo.TryGetValue(RoomName, out info);
+		// public RoomSpawnInfo GetNPCSpawns() => NPCRoomSpawner.RoomInfo[RoomName];
+		// public bool TryGetNPCSpawns(out RoomSpawnInfo info) => NPCRoomSpawner.RoomInfo.TryGetValue(RoomName, out info);
 
 		//General update tasks here
 		internal void Update(int playerIndex)
@@ -231,16 +220,16 @@ namespace TerrariaCells.Common.Systems
 		private void HandleSpawns()
 		{
 			if (didSpawns) return;
-			foreach (NPCSpawnInfo info in GetNPCSpawns().NPCs)
-			{
-				int whoAmI = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (Left + info.OffsetX)*16, (Top + info.OffsetY)*16, info.NPCType);
-                NPCRespawnHandler.HandleSpecialSpawn(Main.npc[whoAmI], Left + info.OffsetX, Top + info.OffsetY);
-            }
+			// foreach (NPCSpawnInfo info in GetNPCSpawns().NPCs)
+			// {
+			// 	int whoAmI = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (Left + info.OffsetX)*16, (Top + info.OffsetY)*16, info.NPCType);
+            //     NPCRespawnHandler.HandleSpecialSpawn(Main.npc[whoAmI], Left + info.OffsetX, Top + info.OffsetY);
+            // }
 			didSpawns = true;
 		}
 
 		#region Alpha Testing Hax
-		public RoomMarker(Point position, string roomName, ushort tileWidth, ushort tileHeight) : this(position, roomName)
+		public RoomMarker(Point position, LevelStructure structure, ushort tileWidth, ushort tileHeight) : this(position, structure)
 		{
 			// ModContent.GetInstance<TerrariaCells>().Logger.Info(roomName);
 			a_width = tileWidth;
@@ -277,66 +266,16 @@ namespace TerrariaCells.Common.Systems
 		private void a_HandleSpawns()
 		{
 			if (didSpawns) return;
-			foreach (NPCSpawnInfo info in GetNPCSpawns().NPCs)
+
+			foreach (var info in Structure.SpawnInfo)
 			{
-				int whoAmI = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (Left + info.OffsetX) * 16 + 8, (Top + info.OffsetY) * 16 + 8, info.NPCType);
-                NPCRespawnHandler.HandleSpecialSpawn(Main.npc[whoAmI], Left + info.OffsetX, Top + info.OffsetY);
+				int whoAmI = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (Left + info.X) * 16 + 8, (Top + info.Y) * 16 + 8, info.SetID);
+				info.SpawnedNPC = Main.npc[whoAmI];
+				NPCRespawnHandler.HandleSpecialSpawn(info.SpawnedNPC, Left + info.X, Top + info.Y);
 			}
 			didSpawns = true;
+			ModContent.GetInstance<TerrariaCells>().Logger.Info($"Spawned entites for {Structure.SpawnInfoPath}");
 		}
 		#endregion
 	}
-
-	public struct RoomSpawnInfo
-	{
-		public RoomSpawnInfo(string name, NPCSpawnInfo[] info)
-		{
-			RoomName = name;
-			NPCs = info;
-		}
-		public readonly string RoomName;
-		public readonly NPCSpawnInfo[] NPCs;
-	}
-
-	public struct NPCSpawnInfo
-	{
-		public NPCSpawnInfo(string name, ushort x, ushort y)
-		{
-			NameOrType = name;
-			OffsetX = x;
-			OffsetY = y;
-		}
-		public NPCSpawnInfo(int id, ushort x, ushort y)
-		{
-			npcType = id;
-			OffsetX = x;
-			OffsetY = y;
-		}
-		public readonly ushort OffsetX;
-		public readonly ushort OffsetY;
-		public readonly string NameOrType;
-		private int? npcType;
-        /// <exception cref="ArgumentException"/>
-        public int NPCType
-        {
-            get
-            {
-                return GetNPCType();
-            }
-        }
-
-        private int GetNPCType()
-        {
-            if (npcType != null) //if npcType has already been established, use that
-                return npcType.Value;
-            if (int.TryParse(NameOrType, out int result1)) //Try to parse as number first, in case we use constant ID
-                return (int)(npcType = result1);
-            if (NPCID.Search.TryGetId(NameOrType, out int result2)) //Check for Vanilla NPC with name
-                return (int)(npcType = result2);
-            if (ModContent.GetInstance<TerrariaCells>().TryFind<ModNPC>(NameOrType, out ModNPC modNPC)) //Check for ModNPC with name
-                return (int)(npcType = modNPC.Type);
-            ModContent.GetInstance<TerrariaCells>().Logger.Warn($"TerraCells NPC Spawning Error: NPC Type or Name: '{NameOrType}' was not found.");
-            return NPCID.FairyCritterPink;
-        }
-    }
 }

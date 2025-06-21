@@ -390,3 +390,5 @@ Tiles: {
 NPCs.SWATHornet.DisplayName: SWAT Hornet
 levelInputEmptyContextText: Forest
 structureInputEmptyContextText: forest_1
+idInputEmptyContextText: Forest
+blankInputEmptyContextText: _

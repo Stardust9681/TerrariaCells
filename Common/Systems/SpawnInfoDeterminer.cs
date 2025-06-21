@@ -50,7 +50,7 @@ public class SpawnInfoDeterminer : ModSystem
 
             }
 
-            Mod.Logger.Info($"Setup {structure.SpawnInfo.Length} spawns for {level.Name}.");
+            Mod.Logger.Info($"Setup {structure.SpawnInfo.Count} spawns for {level.Name}.");
         }
     }
 }

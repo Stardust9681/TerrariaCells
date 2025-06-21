@@ -143,9 +143,8 @@ public class TeleportTracker : ModSystem
                 x.Name.Equals(nextLevel, StringComparison.CurrentCultureIgnoreCase)
             )
             .Structures[nextLevelVariation];
-            //string name = RoomMarker.GetInternalRoomName(levelName, roomName);
-            string roomMarkerName = RoomMarker.GetInternalRoomName(actualDestination, levelStructure.Name);
-            Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().targetKillCount = (byte)NPCRoomSpawner.RoomInfo[roomMarkerName].NPCs.Length;
+
+            Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().targetKillCount = (byte)levelStructure.SpawnInfo.Count;
         }
 
         GlobalNPCs.VanillaNPCShop.UpdateTeleport(level, nextLevel);

@@ -107,7 +107,7 @@ public class BasicWorldGeneration : ModSystem
                 {
                     structure.SpawnInfo = JsonSerializer.Deserialize<StructureSpawnInfo[]>(
                         utf8Json
-                    );
+                    ).ToList();
                 }
                 catch (Exception e)
                 {
@@ -231,6 +231,8 @@ public class CustomWorldGenPass(string name, double loadWeight) : GenPass(name, 
             int index = WorldGen.genRand.Next(level.Structures.Count);
             basicWorldGenData.LevelVariations.Add(level.Name, index);
             LevelStructure structure = level.Structures[index];
+
+            mod.Logger.Info($"For level {level.Name} generated structure {structure.Name}");
 
             string path = structure.Path;
             Point16 pos = offset + new Point16(structure.OffsetX, structure.OffsetY);
@@ -417,5 +419,5 @@ public class LevelStructure
     public string SpawnInfoPath;
 
     [JsonIgnore]
-    public StructureSpawnInfo[] SpawnInfo;
+    public List<StructureSpawnInfo> SpawnInfo;
 }
