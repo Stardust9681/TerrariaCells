@@ -166,6 +166,24 @@ namespace TerrariaCells.Common.GlobalNPCs
                     break;
                 #endregion
 
+                //Level 5
+                #region Caverns
+                case NPCID.GraniteFlyer: //Granite Elemental
+                    npc.lifeMax = 200;
+                    npc.damage = 80;
+                    break;
+                case NPCID.Skeleton:
+                    npc.lifeMax = 300;
+                    npc.damage = 60;
+                    break;
+                case NPCID.Tim:
+                    npc.lifeMax = 250;
+                    npc.damage = 60;
+                    break;
+                case NPCID.RockGolem:
+                    break;
+                #endregion
+
                 //Do early return if you don't want enemy to have 0 defence
                 //No point repeating the same line a bajillion times :)
                 default:
