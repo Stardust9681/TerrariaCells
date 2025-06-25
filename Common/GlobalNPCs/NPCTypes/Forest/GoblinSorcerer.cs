@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.ID;
 using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 
@@ -13,8 +14,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 	{
 		public override bool AppliesToNPC(int npcType)
 		{
-			return npcType.Equals(Terraria.ID.NPCID.GoblinSorcerer);
-		}
+			//return npcType.Equals(Terraria.ID.NPCID.GoblinSorcerer);
+
+			return npcType == NPCID.GoblinSorcerer || npcType == NPCID.Tim;
+        }
 
 		const int Idle = 0;
 		const int Casting = 1;
