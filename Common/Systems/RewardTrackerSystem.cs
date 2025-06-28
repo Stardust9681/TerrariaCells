@@ -57,6 +57,8 @@ namespace TerrariaCells.Common.Systems
         public static byte targetKillCount;
         internal static void UpdateChests_OnTeleport()
         {
+            if(Main.netMode == NetmodeID.MultiplayerClient) return;
+
             bool shouldUnlock = false;
             List<Point> validChests = new List<Point>();
 
@@ -87,22 +89,22 @@ namespace TerrariaCells.Common.Systems
                 }
             }
 
-                int rewardsCount = (LevelTime.TotalSeconds / targetTime.TotalSeconds) switch
-                {
-                    < 0.4 => 1, //Platinum
-                    < 0.7 => 1, //Gold
-                    < 1 => 0, //Silver
-                    _ => 0 //Copper
-                };
-                //If we intend to add bonuses for kill counter as well:
-                /*float allKills = (float)killCount / (float)targetKillCount;
-                rewardsCount += allKills switch
-                {
-                    < 0.3f => 0,
-                    < 0.6f => 0,
-                    < .9f => 1,
-                    _ => 1
-                };*/
+            int rewardsCount = (LevelTime.TotalSeconds / targetTime.TotalSeconds) switch
+            {
+                < 0.4 => 1, //Platinum
+                < 0.7 => 1, //Gold
+                < 1 => 0, //Silver
+                _ => 0 //Copper
+            };
+            //If we intend to add bonuses for kill counter as well:
+            /*float allKills = (float)killCount / (float)targetKillCount;
+            rewardsCount += allKills switch
+            {
+                < 0.3f => 0,
+                < 0.6f => 0,
+                < .9f => 1,
+                _ => 1
+            };*/
 
             ref List<int> lootedChests = ref ModContent.GetInstance<Systems.ChestLootSpawner>().lootedChests;
             foreach (Point chest in validChests)

@@ -116,10 +116,10 @@ public class ChestLootSpawner : ModSystem, IEntitySource
                         NPC.NewNPC(this, x * 16, y * 16, NPCID.Firefly);
                     }
                 }
+
+                RewardTrackerSystem.UpdateChests_Open(x, y);
             }
         }
-
-        RewardTrackerSystem.UpdateChests_Open(x, y);
 
         if (isNewChest)
         {

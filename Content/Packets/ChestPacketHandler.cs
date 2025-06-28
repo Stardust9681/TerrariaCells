@@ -24,7 +24,7 @@ namespace TerrariaCells.Content.Packets
 		{
             switch ((ChestPacketType)reader.ReadByte())
             {
-                case ChestPacketType.ServerOpenChest:
+                case ChestPacketType.ServerOpenChest: //Asking server to open
                 {
                     int chest = reader.ReadInt32();
                     int x = Main.chest[chest].x;
@@ -40,13 +40,13 @@ namespace TerrariaCells.Content.Packets
                     break;
                 }
                 // This is called on each client, only the server should write to this packet
-                case ChestPacketType.ClientOpenChest:
+                case ChestPacketType.ClientOpenChest: //Asking client to open
                 {
                     int clientChest = reader.ReadInt32();
                     spawner.lootedChests.Add(clientChest);
                     break;
                 }
-                case ChestPacketType.ServerJoin:
+                case ChestPacketType.ServerJoin: //Runs on server
                 {
                     if (Main.netMode != NetmodeID.Server) return;
                     int whoAmI = reader.ReadInt32();
@@ -59,7 +59,7 @@ namespace TerrariaCells.Content.Packets
                     p.Send(whoAmI, -1);
                     break;
                 }
-                case ChestPacketType.ClientJoin:
+                case ChestPacketType.ClientJoin: //Runs on client
                 {
                     int cnt = reader.ReadInt32();
                     for (int i = 0; i < cnt; i++)

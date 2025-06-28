@@ -75,7 +75,8 @@ namespace TerrariaCells.Common.GlobalNPCs
 		//Adjusted to allow different behaviour with a stack counter
 		private void On_NPC_UpdateNPC_BuffSetFlags(On_NPC.orig_UpdateNPC_BuffSetFlags orig, NPC self, bool lowerBuffTime)
 		{
-			BuffNPC buffNPC = self.GetGlobalNPC<BuffNPC>();
+            if (!self.TryGetGlobalNPC<BuffNPC>(out BuffNPC buffNPC))
+                return;
 
 			for (int i = 0; i < NPC.maxBuffs; i++)
 			{
@@ -444,6 +445,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                 }
             }
 		}
+
         private void NetSend_NewBuff(NPC npc, int buffIndex, int toClient = -1, int ignoreClient = -1)
         {
             ModPacket packet = ModNetHandler.GetPacket(ModContent.GetInstance<TerrariaCells>(), TCPacketType.BuffPacket);
