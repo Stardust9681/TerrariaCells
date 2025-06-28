@@ -328,9 +328,11 @@ public class TeleportTracker : ModSystem
         else
         {
             RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Restart);
+            nextLevel = "Inn";
         }
 
         GlobalNPCs.VanillaNPCShop.UpdateTeleport(level, nextLevel, (Main.netMode == NetmodeID.Server));
+
         return;
     }
 

@@ -81,6 +81,7 @@ namespace TerrariaCells.Content.Packets
                     Main.LocalPlayer.ChangeSpawn(X, Y);
                     //Main.LocalPlayer.respawnTimer = 0;
                     Main.LocalPlayer.Spawn(PlayerSpawnContext.ReviveFromDeath);
+                    Main.LocalPlayer.ghost = false;
                 }
             }
         }

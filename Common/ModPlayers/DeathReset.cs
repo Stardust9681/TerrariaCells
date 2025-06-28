@@ -9,6 +9,7 @@ using TerrariaCells.Common.Systems;
 using Terraria.ModLoader.IO;
 using static TerrariaCells.Common.Utilities.PlayerHelpers;
 using TerrariaCells.Common.GlobalItems;
+using TerrariaCells.Common.Utilities;
 
 namespace TerrariaCells.Common.ModPlayers;
 
@@ -46,13 +47,22 @@ public class DeathReset : ModPlayer, IEntitySource
 
 	public override void OnEnterWorld()
 	{
-        //If the last world the player was in is the world they've just entered
-        //Don't do anything
-        if (!Player.IsNewWorld())
+        bool isNewWorld = Player.IsNewWorld();
+        if (Main.netMode == NetmodeID.SinglePlayer && !isNewWorld)
         {
             return;
         }
-        ResetInventory(ResetInventoryContext.NewWorld);
+        if (isNewWorld)
+        {
+            ResetInventory(ResetInventoryContext.NewWorld);
+        }
+
+        if (Main.netMode == NetmodeID.MultiplayerClient)
+        {
+            var packet = ModNetHandler.GetPacket(Mod, TCPacketType.PlayerPacket);
+            packet.Write((byte)Content.Packets.PlayerPacketHandler.PlayerSyncType.NewPlayerJoin);
+            packet.Send();
+        }
     }
 
     public override void ModifyScreenPosition()
@@ -73,6 +83,30 @@ public class DeathReset : ModPlayer, IEntitySource
                 return;
             Player followPlayer = Main.player[viewTarget];
             Main.screenPosition = followPlayer.Center - (Main.ScreenSize.ToVector2() * 0.5f);
+        }
+    }
+    public override void PostUpdate()
+    {
+        if(Main.netMode == NetmodeID.Server) return;
+        if (Player.DeadOrGhost)
+        {
+            int viewTarget = -1;
+            for (int i = 0; i < Main.maxNetPlayers; i++)
+            {
+                Player test = Main.player[i];
+                if (!test.active)
+                    continue;
+                if (test.DeadOrGhost)
+                    continue;
+                if (test.whoAmI == Main.myPlayer)
+                    continue;
+                viewTarget = i;
+                break;
+            }
+            if (viewTarget == -1)
+                return;
+            Player followPlayer = Main.player[viewTarget];
+            Player.position = followPlayer.position;
         }
     }
 
