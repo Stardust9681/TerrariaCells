@@ -37,6 +37,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
                 npc.direction = 1;
             }
 
+            float oldAI = npc.ai[1];
 			switch ((int)npc.ai[1])
 			{
 				case Idle:
@@ -52,6 +53,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 					StunAI(npc);
 					break;
 			}
+            if (npc.ai[1] != oldAI)
+                npc.netUpdate = true;
+
             npc.spriteDirection = npc.direction;
 		}
 
@@ -111,8 +115,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			{
 				npc.ai[1] = Charge;
 				npc.ai[0] = 0;
-				//npc.noTileCollide = false;
-				return;
+                npc.netUpdate = true;
+                //npc.noTileCollide = false;
+                return;
 			}
 
 			npc.ai[0]++;
@@ -159,7 +164,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 					npc.ai[1] = Stun;
 					npc.ai[0] = 0;
 					npc.ai[2] = 0;
-					return;
+                    npc.netUpdate = true;
+                    return;
 				}
 			}
 
@@ -179,7 +185,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			{
 				npc.ai[1] = Idle;
 				npc.ai[0] = 0;
-				return;
+                npc.netUpdate = true;
+                return;
 			}
 
 			npc.ai[0]++;

@@ -41,6 +41,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 				return;
 			}
 
+            float oldAI = npc.ai[1];
 			switch ((int)npc.ai[1])
 			{
 				case Idle:
@@ -56,7 +57,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 					ThrowAI(npc);
 					break;
 			}
-		}
+            if(npc.ai[1] != oldAI)
+                npc.netUpdate = true;
+        }
 
 		private void IdleAI(NPC npc)
 		{
@@ -66,6 +69,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 				npc.ai[1] = Idle;
 				npc.ai[2] = 0;
 				npc.ai[3] = 0;
+                npc.netUpdate = true;
 				return;
 			}
 
@@ -84,7 +88,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 				npc.ai[1] = Roll;
 				npc.ai[0] = 0;
 				npc.ai[3] = MathF.Sign(target.position.X - npc.position.X);
-				return;
+                npc.netUpdate = true;
+                return;
 			}
 		}
 
@@ -160,7 +165,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 				npc.ai[1] = 0;
 				npc.ai[2] = 0;
 				npc.ai[3] = 0;
-				return;
+                npc.netUpdate = true;
+                return;
 			}
 
 			npc.rotation = 0;
@@ -172,7 +178,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 			{
 				npc.dontTakeDamage = false;
 				CombatNPC.ToggleContactDamage(npc, false);
-			}
+                npc.netUpdate = true;
+            }
 
 			int direction = MathF.Sign(target.position.X - npc.position.X);
 			npc.spriteDirection = npc.direction = direction;
@@ -187,13 +194,14 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 				Vector2 vel1 = npc.oldVelocity;
 				Collision.StepUp(ref npc.position, ref vel1, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
 				npc.velocity = vel1;
-			}
+            }
 
 			if (npc.ai[0] > 60)
 			{
 				npc.ai[1] = ThrowHands;
 				npc.ai[0] = 0;
-				return;
+                npc.netUpdate = true;
+                return;
 			}
 		}
 
@@ -201,8 +209,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 		{
 			if (!npc.TryGetTarget(out Entity target))
 			{
+                npc.ai[0] = 0;
 				npc.ai[1] = Idle;
-				return;
+                npc.netUpdate = true;
+                return;
 			}
 
 			npc.velocity.X *= 0.9f;
@@ -223,7 +233,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 					npc.ai[1] = Roll;
 					npc.ai[2] = 0;
 					npc.ai[3] = MathF.Sign(target.position.X - npc.position.X);
-					return;
+                    npc.netUpdate = true;
+                    return;
 				}
 			}
 			npc.ai[0]++;
@@ -254,7 +265,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 					{
 						npc.ai[2]--;
 						npc.ai[0] = 0;
-						return;
+                        npc.netUpdate = true;
+                        return;
 					}
 					break;
 				//Throw 2 Rocks
@@ -282,7 +294,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 					if (npc.ai[0] > 60)
 					{
 						npc.ai[0] = 0;
-						return;
+                        npc.netUpdate = true;
+                        return;
 					}
 					break;
 				//Roll Boulder (3 Rocks)
@@ -309,7 +322,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 					if (npc.ai[0] > 60)
 					{
 						npc.ai[0] = 0;
-						return;
+                        npc.netUpdate = true;
+                        return;
 					}
 					break;
 			}
