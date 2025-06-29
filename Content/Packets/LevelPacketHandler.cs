@@ -38,7 +38,7 @@ namespace TerrariaCells.Content.Packets
 
                 var tele = ModContent.GetInstance<TeleportTracker>();
                 tele.Update_SetVariables(destination);
-                var tpTile = tele.GetTelePos(tele.GetActualDestination(destination));
+                Terraria.DataStructures.Point16 tpTile = tele.GetTelePos(tele.GetActualDestination(destination));
                 tele.Update_SetWorldConditions(destination);
 
 
@@ -50,6 +50,7 @@ namespace TerrariaCells.Content.Packets
                 packet.Send();
 
                 tele.Update_PostTeleport(tele.GetActualDestination(destination));
+                RewardTrackerSystem.UpdateChests_OnTeleport(tpTile);
 
                 packet = ModNetHandler.GetPacket(mod, TCPacketType.TrackerPacket);
                 packet.Write(RewardTrackerSystem.levelTimer);
@@ -66,6 +67,8 @@ namespace TerrariaCells.Content.Packets
                 var tele = ModContent.GetInstance<TeleportTracker>();
                 tele.level = level;
                 tele.NextLevel = levelName;
+
+                RewardTrackerSystem.UpdateChests_OnTeleport(new Terraria.DataStructures.Point16(X, Y));
 
                 Vector2 telePos = new Point(X, Y).ToWorldCoordinates();
                 NetMessage.SendData(

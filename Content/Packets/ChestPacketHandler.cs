@@ -46,6 +46,14 @@ namespace TerrariaCells.Content.Packets
                     spawner.lootedChests.Add(clientChest);
                     break;
                 }
+                case ChestPacketType.ClientCloseChests:
+                    ushort count = reader.ReadUInt16();
+                    for (int i = 0; i < count; i++)
+                    {
+                        int chest = reader.ReadUInt16();
+                        spawner.lootedChests.Remove(chest);
+                    }
+                    break;
                 case ChestPacketType.ServerJoin: //Runs on server
                 {
                     if (Main.netMode != NetmodeID.Server) return;
@@ -74,6 +82,17 @@ namespace TerrariaCells.Content.Packets
     public enum ChestPacketType : byte
     {
         ClientOpenChest,
+
+        ///<summary>
+        ///Ask a client to close a number of chests. Used for end-of-level rewards.
+        ///</summary>
+        ///<remarks>
+        ///<b>Send/Receive</b>:
+        ///<para><i>To Client:</i> <c><see langword="ushort"/> count, <see langword="params ushort"/>[] chests</c></para>
+        ///<para><i>To Server:</i> <c>N/A</c></para>
+        ///</remarks>
+        ClientCloseChests,
+
         ServerOpenChest,
         ServerJoin,
         ClientJoin,

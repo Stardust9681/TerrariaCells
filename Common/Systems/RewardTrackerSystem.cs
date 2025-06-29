@@ -9,6 +9,8 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.DataStructures;
+using TerrariaCells.Common.Utilities;
+using TerrariaCells.Content.Packets;
 
 namespace TerrariaCells.Common.Systems
 {
@@ -55,39 +57,37 @@ namespace TerrariaCells.Common.Systems
         public static TrackerAction trackerState = TrackerAction.Start;
         public static TimeSpan targetTime;
         public static byte targetKillCount;
-        internal static void UpdateChests_OnTeleport()
+        internal static void UpdateChests_OnTeleport(Point16 tilePos)
         {
-            if(Main.netMode == NetmodeID.MultiplayerClient) return;
-
-            bool shouldUnlock = false;
             List<Point> validChests = new List<Point>();
 
-            for (int k = 0; k < Main.maxPlayers; k++)
+            const int RANGE = 30;
+
+            /*for (int k = 0; k < Main.maxPlayers; k++)
             {
                 Player player = Main.player[k];
-                Point tilePos = player.Center.ToTileCoordinates();
-                const int RANGE = 30;
-                for (int j = -RANGE; j < RANGE; j++)
+                Point tilePos = player.Center.ToTileCoordinates();*/
+            for (int j = -RANGE; j < RANGE; j++)
+            {
+                for (int i = -RANGE; i < RANGE; i++)
                 {
-                    for (int i = -RANGE; i < RANGE; i++)
-                    {
-                        Point checkPos = new Point(tilePos.X + i, tilePos.Y + j);
-                        if (!WorldGen.InWorld(checkPos.X, checkPos.Y))
-                            continue;
-                        Tile tile = Framing.GetTileSafely(checkPos);
-                        if (tile.TileType != TileID.Containers)
-                            continue;
-                        //Styles 3, 4
-                        int style = tile.TileFrameX / 36;
-                        if (style != 3 && style != 4)
-                            continue;
-                        if (tile.TileFrameX % 36 != 0 || tile.TileFrameY % 36 != 0)
-                            continue;
+                    Point checkPos = new Point(tilePos.X + i, tilePos.Y + j);
+                    if (!WorldGen.InWorld(checkPos.X, checkPos.Y))
+                        continue;
+                    Tile tile = Framing.GetTileSafely(checkPos);
+                    if (tile.TileType != TileID.Containers)
+                        continue;
+                    //Styles 3, 4
+                    int style = tile.TileFrameX / 36;
+                    if (style != 3 && style != 4)
+                        continue;
+                    if (tile.TileFrameX % 36 != 0 || tile.TileFrameY % 36 != 0)
+                        continue;
 
-                        validChests.Add(checkPos);
-                    }
+                    validChests.Add(checkPos);
                 }
             }
+            //}
 
             int rewardsCount = (LevelTime.TotalSeconds / targetTime.TotalSeconds) switch
             {

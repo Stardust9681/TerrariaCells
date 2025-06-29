@@ -73,7 +73,7 @@ public class TeleportTracker : ModSystem
         Mod.Logger.Info($"Detouring to inn.");
         DetourToInn(destination);
         RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Pause);
-        RewardTrackerSystem.UpdateChests_OnTeleport();
+        RewardTrackerSystem.UpdateChests_OnTeleport(GetTelePos("inn"));
     }
 
     private void DetourToInn(string destination)
