@@ -29,8 +29,18 @@ namespace TerrariaCells.Content.Packets
             BuffPacketType type = (BuffPacketType)reader.ReadByte();
             //Buff Applied: { NPCID, Type, iTime, Stacks }
             //
+
+            //For SOME reason GetGlobalNPC<BuffNPC> sometimes throws "Key not found"
+            //Even though the GlobalNPC applies to ALL NPCs. But I digress
+            //So in case it doesn't exist for some NPC, but somehow that NPC sent this packet
+            //We need to "consume" the rest of the packet somehow.
+            //Hence, discard, BinaryReader.ReadBytes(..)
+
             byte npcWhoAmI = reader.ReadByte();
-            Main.npc[npcWhoAmI].GetGlobalNPC<BuffNPC>().NetReceieve(Main.npc[npcWhoAmI], type, reader, fromWho);
+            if(Main.npc[npcWhoAmI].TryGetGlobalNPC<BuffNPC>(out BuffNPC buffNPC))
+                buffNPC.NetReceieve(Main.npc[npcWhoAmI], type, reader, fromWho);
+            else
+                _ = reader.ReadBytes((int)(reader.BaseStream.Length - reader.BaseStream.Position));
         }
     }
 }

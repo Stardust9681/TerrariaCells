@@ -105,7 +105,9 @@ namespace TerrariaCells.Common.GlobalNPCs
 		}
 		private void On_NPC_DelBuff(On_NPC.orig_DelBuff orig, NPC self, int buffIndex)
 		{
-            BuffNPC buffNPC = self.GetGlobalNPC<BuffNPC>();
+            if (!self.TryGetGlobalNPC<BuffNPC>(out BuffNPC buffNPC))
+                return;
+
             if (BuffsToClear.Contains(self.buffType[buffIndex]))
 			{
 				//Check time bc NPC could gain sudden immunity (eg, to On Fire, while in Water)
@@ -139,8 +141,10 @@ namespace TerrariaCells.Common.GlobalNPCs
 		//Buff stacks were being reduced to 0 by Blood Crawlers' `NPC.Transform(..)` call
 		private static void On_NPC_Transform(On_NPC.orig_Transform orig, NPC self, int newType)
 		{
-			BuffNPC buffNPC = self.GetGlobalNPC<BuffNPC>();
-			int[] oldBuffStacks = buffNPC.buffStacks;
+            if (!self.TryGetGlobalNPC<BuffNPC>(out BuffNPC buffNPC))
+                return;
+
+            int[] oldBuffStacks = buffNPC.buffStacks;
 			int[] oldBuffTimes = buffNPC.buffOrigTimes;
 			orig.Invoke(self, newType);
 			buffNPC = self.GetGlobalNPC<BuffNPC>();
@@ -165,12 +169,14 @@ namespace TerrariaCells.Common.GlobalNPCs
 			if ((indicator & Configs.TerrariaCellsConfig.DebuffIndicators.Particles) == Configs.TerrariaCellsConfig.DebuffIndicators.None)
 				return;
 
-			//Vanilla code
-			npc.position += npc.netOffset;
-			//
+            if (!npc.TryGetGlobalNPC<BuffNPC>(out BuffNPC globalNPC))
+                return;
 
-			BuffNPC globalNPC = npc.GetGlobalNPC<BuffNPC>();
-			for (int buffIndex = 0; buffIndex < NPC.maxBuffs; buffIndex++)
+            //Vanilla code
+            npc.position += npc.netOffset;
+            //
+
+            for (int buffIndex = 0; buffIndex < NPC.maxBuffs; buffIndex++)
 			{
 				int buffType = npc.buffType[buffIndex];
 				int buffTime = npc.buffTime[buffIndex];
@@ -413,8 +419,10 @@ namespace TerrariaCells.Common.GlobalNPCs
 		//Helper method for applying debuffs consistently
 		public static void AddBuff(NPC npc, int buffType, int time, int damage, int addStacks = 0)
 		{
-			BuffNPC buffNPC = npc.GetGlobalNPC<BuffNPC>();
-			int stacksToAdd = (damage/9) + addStacks;
+            if (!npc.TryGetGlobalNPC<BuffNPC>(out BuffNPC buffNPC))
+                return;
+
+            int stacksToAdd = (damage/9) + addStacks;
 			stacksToAdd = Math.Max(stacksToAdd, 1);
 			int buffIndex = npc.FindBuffIndex(buffType);
 			if (buffIndex != -1 && buffIndex < NPC.maxBuffs)
