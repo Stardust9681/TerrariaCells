@@ -28,7 +28,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 			if (!npc.HasValidTarget)
 				npc.TargetClosest();
 
-			switch (npc.Phase())
+            float oldAI = npc.ai[1];
+            switch (npc.Phase())
 			{
 				case Idle:
 					IdleAI(npc);
@@ -42,9 +43,11 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 				default:
 					npc.Phase(Teleporting);
 					break;
-			}
-		}
-		private void IdleAI(NPC npc)
+            }
+            if (npc.ai[1] != oldAI)
+                npc.netUpdate = true;
+        }
+        private void IdleAI(NPC npc)
 		{
 			if (
 				npc.TryGetTarget(out Entity target)
@@ -190,7 +193,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 					npc.position = new Vector2(npc.ai[2], npc.ai[3] - npc.height);
 					npc.ai[2] = 0;
 					npc.ai[3] = 0;
-				}
+                    npc.netUpdate = true;
+                }
 				npc.velocity.Y += 0.14f;
 				if (timer > 255)
 					npc.Phase(Casting);

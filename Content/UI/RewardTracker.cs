@@ -82,7 +82,7 @@ namespace TerrariaCells.Content.UI
             bounds.Width -= (int)(panelSize.Y * 0.5f);
             UIHelper.PANEL.Draw(spriteBatch, bounds, UIHelper.InventoryColour);
 
-            TimeSpan currentTime = Main.LocalPlayer.GetModPlayer<Common.ModPlayers.RewardPlayer>().LevelTime;
+            TimeSpan currentTime = RewardTrackerSystem.LevelTime;
             string drawString = $"{currentTime.Minutes:00}:{currentTime.Seconds:00}";
             Vector2 size = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(drawString);
             Vector2 drawPos = new Vector2(panelPos.X + panelSize.Y + Padding, panelPos.Y + Padding);
@@ -97,7 +97,7 @@ namespace TerrariaCells.Content.UI
                 spriteBatch, Terraria.GameContent.FontAssets.MouseText.Value, drawString, drawPos, Color.SlateGray, 0f, Vector2.Zero, Vector2.One
             );*/
 
-            TimeSpan targetTime = Main.LocalPlayer.GetModPlayer<Common.ModPlayers.RewardPlayer>().targetTime;
+            TimeSpan targetTime = RewardTrackerSystem.targetTime;
             int watchType = (currentTime.TotalSeconds / (float)targetTime.TotalSeconds) switch
             {
                 < 0.4 => Terraria.ID.ItemID.PlatinumWatch,
@@ -134,7 +134,7 @@ namespace TerrariaCells.Content.UI
 
             UIHelper.PANEL.Draw(spriteBatch, bounds, UIHelper.InventoryColour);
 
-            byte killCount = Main.LocalPlayer.GetModPlayer<Common.ModPlayers.RewardPlayer>().KillCount;
+            byte killCount = RewardTrackerSystem.killCount;
             //Draw leading zeroes:
             /*
             string drawString = $"{killCount:D3}";
@@ -168,7 +168,7 @@ namespace TerrariaCells.Content.UI
                 );*/
             }
 
-            byte targetKillCount = Main.LocalPlayer.GetModPlayer<Common.ModPlayers.RewardPlayer>().targetKillCount;
+            byte targetKillCount = RewardTrackerSystem.targetKillCount;
             if (targetKillCount == 0)
                 targetKillCount = 1;
             float allKills = (float)killCount / (float)targetKillCount;

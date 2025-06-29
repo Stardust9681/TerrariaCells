@@ -12,6 +12,7 @@ using Terraria.ModLoader;
 using TerrariaCells.Common.Utilities;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using TerrariaCells.Common.GlobalItems;
 //using static TerrariaCells.Common.Utilities.JsonUtil;
 
 namespace TerrariaCells.Common.GlobalNPCs
@@ -24,7 +25,12 @@ namespace TerrariaCells.Common.GlobalNPCs
         internal static int[] Accessories; //Goblin Tinkerer
         internal static int[] Skills; //Merchant (Wizard? Plz)
         internal static int[] Armors; //Merchant
-		public override void Load()
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
+        {
+            return entity.townNPC;
+        }
+
+        public override void Load()
 		{
 			const string PATH = "chest loot tables.json";
 			using (StreamReader stream = new StreamReader(Mod.GetFileStream(PATH)))
@@ -53,14 +59,21 @@ namespace TerrariaCells.Common.GlobalNPCs
 			};
 		}
 
-        private ItemDef[] new_SelectedItems = Array.Empty<ItemDef>();
+        private ItemDef[] selectedItems = Array.Empty<ItemDef>();
         public bool nurse_HasHealed = false;
-		public override void SetDefaults(NPC npc)
-		{
-            Systems.TeleportTracker system = ModContent.GetInstance<Systems.TeleportTracker>();
-            UpdateTeleport(npc, system.level, system.NextLevel);
-		}
-		public override void ModifyActiveShop(NPC npc, string shopName, Item[] items)
+        public override void SetDefaults(NPC entity)
+        {
+            if (Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                Systems.TeleportTracker system = ModContent.GetInstance<Systems.TeleportTracker>();
+                UpdateTeleport(entity, system.level, system.NextLevel);
+            }
+            else if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                ModNetHandler.GetPacket(Mod, TCPacketType.ShopPacket).Send();
+            }
+        }
+        public override void ModifyActiveShop(NPC npc, string shopName, Item[] items)
 		{
 			int shopCustomPrice = 10;
 			switch (npc.type) {
@@ -78,9 +91,9 @@ namespace TerrariaCells.Common.GlobalNPCs
 			{
 				for (int i = 0; i < items.Length; i++)
 				{
-                    if (i < new_SelectedItems.Length)
+                    if (i < selectedItems.Length)
                     {
-                        ItemDef def = new_SelectedItems[i];
+                        ItemDef def = selectedItems[i];
                         items[i] = new Item(def.Type);
                         if (items[i].TryGetGlobalItem<GlobalItems.TierSystemGlobalItem>(out var tierItem))
                             tierItem.SetLevel(items[i], def.Level);
@@ -106,14 +119,15 @@ namespace TerrariaCells.Common.GlobalNPCs
             }
         }
 
-        public static void UpdateTeleport(int level, string? levelName = null)
+        public static void UpdateTeleport(int level, string? levelName = null, bool net = false)
         {
             foreach (NPC npc in Main.ActiveNPCs)
             {
-                npc.GetGlobalNPC<VanillaNPCShop>().UpdateTeleport(npc, level, levelName);
+                if(npc.TryGetGlobalNPC<VanillaNPCShop>(out var shopNPC))
+                    shopNPC.UpdateTeleport(npc, level, levelName);
             }
         }
-        public void UpdateTeleport(NPC npc, int level, string? levelName = null)
+        public void UpdateTeleport(NPC npc, int level, string? levelName = null, bool net = false)
         {
             switch (npc.type)
             {
@@ -130,13 +144,22 @@ namespace TerrariaCells.Common.GlobalNPCs
                 case NPCID.Nurse:
                     nurse_HasHealed = false;
                     break;
+
+                default:
+                    return;
+            }
+
+            if (net)
+            {
+                NetSendShop(npc, ModNetHandler.GetPacket(Mod, TCPacketType.ShopPacket));
+                Mod.Logger.Info($"Send shop for NPC: {npc.FullName}");
             }
         }
         private void UpdateNPCShop(NPC npc, int[] itemTypes, int itemLevel, int min = 1, int max = 40)
         {
             if (Configs.DevConfig.Instance.PlaytesterShops || min > itemTypes.Length)
             {
-                new_SelectedItems = itemTypes.Select(x => new ItemDef(x, itemLevel)).ToArray();
+                selectedItems = itemTypes.Select(x => new ItemDef(x, itemLevel)).ToArray();
                 return;
             }
             List<int> items = new List<int>();
@@ -148,7 +171,74 @@ namespace TerrariaCells.Common.GlobalNPCs
 
                 if (items.Count > max) break;
             }
-            new_SelectedItems = items.Select(x => new ItemDef(x, itemLevel)).ToArray();
+            selectedItems = items.Select(x => new ItemDef(x, itemLevel)).ToArray();
+        }
+
+        public void NetSendShop(NPC npc, ModPacket packet, int toClient = -1, int ignoreClient = -1)
+        {
+            packet.Write((byte)npc.whoAmI);
+            packet.Write((byte)selectedItems.Length);
+            //O(n^3) is terrible I know
+            //But I opted to do it this way so as to send less data over network
+            for (int i = 0; i < selectedItems.Length; i++)
+            {
+                ItemDef shopItem = selectedItems[i];
+                packet.Write7BitEncodedInt(shopItem.Type);
+                packet.Write((byte)shopItem.Level);
+                packet.Write((byte)shopItem.Mods.Length);
+                if (shopItem.Mods.Length > 0)
+                {
+                    FunkyModifier[] modifiers = FunkyModifierItemModifier.GetModPool(shopItem.Type);
+                    for (int j = 0; j < shopItem.Mods.Length; j++)
+                    {
+                        FunkyModifier itemMod = shopItem.Mods[j];
+                        //Most significant bit used to indicate valid or invalid modifier
+                        //If received value has that flag set, the result will be discarded
+                        byte modIndex = 0b1_0000000;
+                        for (int k = 0; k < modifiers.Length; k++)
+                        {
+                            if (modifiers[k].Equals(itemMod))
+                            {
+                                modIndex = (byte)k;
+                                break;
+                            }
+                        }
+                        packet.Write(modIndex);
+                    }
+                }
+            }
+            packet.Send(toClient, ignoreClient);
+        }
+        public void NetReceiveShop(NPC npc, BinaryReader reader)
+        {
+            //npc.whoAmI is read in packet handler, and the NPC is passed in here
+            byte shopSize = reader.ReadByte();
+            //Mod.Logger.Info($"Shop Size: {shopSize}");
+            selectedItems = new ItemDef[shopSize];
+            for (int i = 0; i < shopSize; i++)
+            {
+                int itemType = reader.Read7BitEncodedInt();
+                byte level = reader.ReadByte();
+                byte modCount = reader.ReadByte();
+                //Mod.Logger.Info($"Shop Entry: {{ Type: {itemType}, Level: {level}, Mods: {modCount} }}");
+                if (modCount > 0)
+                {
+                    List<FunkyModifier> mods = new List<FunkyModifier>();
+                    FunkyModifier[] modPool = FunkyModifierItemModifier.GetModPool(itemType);
+                    for (int j = 0; j < modCount; j++)
+                    {
+                        byte flagAndModType = reader.ReadByte();
+                        if ((flagAndModType & 0b1_0000000) != 0)
+                            continue;
+                        mods.Add(modPool[flagAndModType]);
+                    }
+                    selectedItems[i] = new ItemDef(itemType, level, mods.ToArray());
+                }
+                else
+                {
+                    selectedItems[i] = new ItemDef(itemType, level, Array.Empty<FunkyModifier>());
+                }
+            }
         }
     }
 
