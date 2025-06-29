@@ -109,7 +109,7 @@ public class ForestExitPylon : ModTile, ITerraCellsCategorization
         if (entity.Destination.Equals("Inn", System.StringComparison.CurrentCultureIgnoreCase))
         {
             Main.instance.MouseText(
-                "Continue to the " + Mod.GetContent<TeleportTracker>().First().NextLevel
+                "Continue to the " + ModContent.GetInstance<TeleportTracker>().NextLevel
             );
             Main.mouseText = true;
             // Main.LocalPlayer.cursorItemIconText =

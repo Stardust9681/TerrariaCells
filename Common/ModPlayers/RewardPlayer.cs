@@ -41,7 +41,6 @@ namespace TerrariaCells.Common.ModPlayers
                 ModPacket packet = ModNetHandler.GetPacket(Mod, TCPacketType.TrackerPacket);
                 packet.Write((byte)TrackerPacketHandler.ClientNetMsg.RequestSync);
                 packet.Send();
-                Mod.Logger.Info("Requested sync...");
             }
         }
     }

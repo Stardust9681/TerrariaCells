@@ -59,10 +59,8 @@ namespace TerrariaCells.Content.Packets
                 ModPacket packet = ModNetHandler.GetPacket(mod, HandlerType);
                 packet.Write((byte)PlayerSyncType.NewPlayerJoin);
 
-                bool shouldDie = false;
                 var tele = ModContent.GetInstance<TeleportTracker>();
-                if (tele.level > 1 && tele.NextLevel.Equals("Inn"))
-                    shouldDie = true;
+                bool shouldDie = tele.level > 1 && tele.NextLevel.ToLower().Equals("inn");
                 packet.Write(shouldDie);
                 packet.Send(fromWho);
             }

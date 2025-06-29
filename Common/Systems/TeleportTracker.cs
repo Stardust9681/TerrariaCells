@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
@@ -38,9 +39,13 @@ public class TeleportTracker : ModSystem
         Main.StopRain();
         Mod.Logger.Info($"af: {Main.time};{Main.dayTime}");
         // Mod.Logger.Info($"after time: ");
-        level = 1;
-        nextLevel = "Forest";
-        nextLevelVariation = 0;
+
+        if (level < 2)
+        {
+            level = 1;
+            nextLevel = "Forest";
+            nextLevelVariation = 0;
+        }
     }
 
     public override void PreUpdateWorld()
@@ -342,6 +347,7 @@ public class TeleportTracker : ModSystem
             tag[nameof(level)] = level;
         if (!nextLevel.Equals("Forest"))
             tag[nameof(nextLevel)] = nextLevel;
+        Mod.Logger.Info($"Saved \"Next Level\" as {nextLevel}");
         if (nextLevelVariation != 0)
             tag[nameof(nextLevelVariation)] = nextLevelVariation;
     }
@@ -351,7 +357,20 @@ public class TeleportTracker : ModSystem
             level = 1;
         if (!tag.TryGet<string>(nameof(nextLevel), out nextLevel))
             nextLevel = "Forest";
+        Mod.Logger.Info($"Loaded \"Next Level\" as {nextLevel}");
         if (!tag.TryGet<int>(nameof(nextLevelVariation), out nextLevelVariation))
             nextLevelVariation = 0;
+    }
+    public override void NetSend(BinaryWriter writer)
+    {
+        writer.Write((byte)level);
+        writer.Write(nextLevel);
+        writer.Write((byte)nextLevelVariation);
+    }
+    public override void NetReceive(BinaryReader reader)
+    {
+        level = reader.ReadByte();
+        nextLevel = reader.ReadString();
+        nextLevelVariation = reader.ReadByte();
     }
 }

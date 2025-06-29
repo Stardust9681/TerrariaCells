@@ -23,7 +23,6 @@ namespace TerrariaCells.Content.Packets
             {
                 string destination = reader.ReadString();
 
-                Main.NewText(destination);
                 mod.Logger.Debug(destination);
 
                 Player sender = Main.player[fromWho];
@@ -47,6 +46,7 @@ namespace TerrariaCells.Content.Packets
                 packet.Write(tpTile.X);
                 packet.Write(tpTile.Y);
                 packet.Write((byte)tele.level);
+                packet.Write(tele.NextLevel);
                 packet.Send();
 
                 tele.Update_PostTeleport(tele.GetActualDestination(destination));
@@ -61,9 +61,11 @@ namespace TerrariaCells.Content.Packets
             {
                 (short X, short Y) = (reader.ReadInt16(), reader.ReadInt16());
                 byte level = reader.ReadByte();
+                string levelName = reader.ReadString();
                 //string dest = reader.ReadString();
                 var tele = ModContent.GetInstance<TeleportTracker>();
                 tele.level = level;
+                tele.NextLevel = levelName;
 
                 Vector2 telePos = new Point(X, Y).ToWorldCoordinates();
                 NetMessage.SendData(

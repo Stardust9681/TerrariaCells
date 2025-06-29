@@ -33,7 +33,8 @@ namespace TerrariaCells.Common.Utilities
         {
             // Switch on TCPacketType, when sending a packet, this should always be written first
             TCPacketType type = (TCPacketType)reader.ReadByte();
-            if (Handlers.TryGetValue(type, out var handler)) handler.HandlePacket(mod, reader, fromWho);
+            if (Handlers.TryGetValue(type, out var handler))
+                handler.HandlePacket(mod, reader, fromWho);
         }
         internal static Terraria.ModLoader.ModPacket GetPacket(Terraria.ModLoader.Mod mod, TCPacketType type, ushort len = 256)
         {
