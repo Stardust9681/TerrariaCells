@@ -141,7 +141,7 @@ public class TeleportTracker : ModSystem
             )
             .Structures[nextLevelVariation];
 
-            Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().targetKillCount = (byte)levelStructure.SpawnInfo.Count;
+            RewardTrackerSystem.targetKillCount = (byte)levelStructure.SpawnInfo.Count;
         }
     }
 
