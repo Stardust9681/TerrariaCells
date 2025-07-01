@@ -11,6 +11,7 @@ using TerrariaCells;
 using TerrariaCells.Common.GlobalNPCs;
 using TerrariaCells.Common.Utilities;
 using TerrariaCells.Common.Systems;
+using System.Linq;
 
 namespace TerrariaCells.Content.Packets
 {
@@ -61,6 +62,13 @@ namespace TerrariaCells.Content.Packets
 
                 var tele = ModContent.GetInstance<TeleportTracker>();
                 bool shouldDie = tele.level > 1 && tele.NextLevel.ToLower().Equals("inn");
+
+                int activeLivingPlayers = 0;
+                foreach (Player p in Main.ActivePlayers)
+                    if (!p.DeadOrGhost && p.whoAmI != fromWho)
+                        activeLivingPlayers++;
+                if (activeLivingPlayers == 0)
+                    shouldDie = false;
                 packet.Write(shouldDie);
                 packet.Send(fromWho);
             }

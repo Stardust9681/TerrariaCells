@@ -70,23 +70,19 @@ namespace TerrariaCells.Common.Systems
         //More or less modified source for respawn system
         public override void PostUpdateNPCs()
         {
-            if (Main.netMode == NetmodeID.MultiplayerClient)
-                return;
-
-            if (RespawnMarkers.Count == 0)
-                return;
-
 			//Disable spawns if disabled
-			if (Configs.DevConfig.Instance.DisableSpawns)
-				return;
+			if (Configs.DevConfig.Instance.DisableSpawns) return;
+            if (Main.netMode == NetmodeID.MultiplayerClient) return;
+            if (RespawnMarkers.Count == 0) return;
 
             List<Rectangle> respawnRects = new List<Rectangle>();
             Vector2 rectSize = new Vector2(2608f*0.67f, 1840f*0.67f);
             for (int i = 0; i < Main.maxPlayers; i++)
             {
                 Player player = Main.player[i];
-                if (!player.active || player.dead)
+                if (!player.active || player.DeadOrGhost)
                     continue;
+
                 respawnRects.Add(Utils.CenteredRectangle(player.Center, rectSize));
             }
             if (respawnRects.Count == 0)
@@ -132,9 +128,15 @@ namespace TerrariaCells.Common.Systems
                     newNPC.ai[0] = marker.RespawnTile.X;
                     newNPC.ai[1] = marker.RespawnTile.Y;
                     newNPC.netUpdate = true;
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, newNPC.whoAmI);
+                    }
                 }
                 HandleSpecialSpawn(newNPC, marker.RespawnTile.X, marker.RespawnTile.Y);
                 newNPC.timeLeft = 3600; //1 min
+                newNPC.netUpdate = true;
+                newNPC.netUpdate2 = true;
             }
         }
 
