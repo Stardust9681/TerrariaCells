@@ -159,9 +159,23 @@ namespace TerrariaCells.Common.GlobalNPCs
                 #endregion
 
                 //Level 4
-                #region Hive
-                case NPCID.Hornet:
-                    npc.lifeMax = 175;
+                //Hive?
+                #region Dungeon
+                case NPCID.DiabolistRed:
+                case NPCID.DiabolistWhite:
+                    npc.lifeMax = 125;
+                    npc.damage = 75;
+                    break;
+                case NPCID.RaggedCaster:
+                case NPCID.RaggedCasterOpenCoat:
+                    npc.lifeMax = 125;
+                    npc.damage = 60;
+                    break;
+                case NPCID.RustyArmoredBonesAxe:
+                case NPCID.RustyArmoredBonesFlail:
+                case NPCID.RustyArmoredBonesSword:
+                case NPCID.RustyArmoredBonesSwordNoArmor:
+                    npc.lifeMax = 400;
                     npc.damage = 60;
                     break;
                 #endregion
