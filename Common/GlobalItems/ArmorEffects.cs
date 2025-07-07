@@ -135,15 +135,15 @@ namespace TerrariaCells.Common.GlobalItems
                 {
                     ItemID.NinjaHood => [
                         new(Mod, "Tooltip0", "15% increased damage"),
-                        new (Mod, "Tooltip1", "Set bouns: Become immune after striking an enemy")
+                        new (Mod, "Tooltip1", "Set bonus: Become immune after striking an enemy")
                     ],
                     ItemID.NinjaShirt => [
                         new(Mod, "Tooltip0", "Allows the player to dash"),
-                        new (Mod, "Tooltip1", "Set bouns: Become immune after striking an enemy")
+                        new (Mod, "Tooltip1", "Set bonus: Become immune after striking an enemy")
                     ],
                     ItemID.NinjaPants => [
                         new(Mod, "Tooltip0", "15% increased movement speed"),
-                        new (Mod, "Tooltip1", "Set bouns: Become immune after striking an enemy")
+                        new (Mod, "Tooltip1", "Set bonus: Become immune after striking an enemy")
                     ],
                     _ => []
                 };
@@ -174,16 +174,16 @@ namespace TerrariaCells.Common.GlobalItems
                 {
                     ItemID.NecroHelmet => [
                         new(Mod, "Tooltip0", "20% increased ranged damage"),
-                        new(Mod, "Tooltip1", "Set bouns: Bows charge twice as fast,\nguns reload in half the time")
+                        new(Mod, "Tooltip1", "Set bouns: Bows charge twice as fast,\nGuns reload in half the time")
                     ],
                     ItemID.NecroBreastplate => [
                         new(Mod, "Tooltip0", "Killing an enemy spawns baby spiders, which attack nearby enemies"),
-                        new(Mod, "Tooltip1", "Set bouns: Bows charge twice as fast,\nguns reload in half the time")
+                        new(Mod, "Tooltip1", "Set bouns: Bows charge twice as fast,\nGuns reload in half the time")
                     ],
                     ItemID.NecroGreaves => [
                         new(Mod, "Tooltip0", "10% increased movement speed"),
                         new(Mod, "Tooltip1", "The last bullet in a magazine deals 50% more damage"),
-                        new(Mod, "Tooltip2", "Set bouns: Bows charge twice as fast,\nguns reload in half the time")
+                        new(Mod, "Tooltip2", "Set bouns: Bows charge twice as fast,\nGuns reload in half the time")
                     ],
                     _ => []
                 };
@@ -216,7 +216,7 @@ namespace TerrariaCells.Common.GlobalItems
                 ItemID.NinjaShirt => [new(Mod, "Tooltip0", "Allows the player to dash")],
                 ItemID.NinjaPants => [new(Mod, "Tooltip0", "15% increased movement speed")],
                 ItemID.JungleHat => [new(Mod, "Tooltip0", "20% increased magic damage")],
-                ItemID.JungleShirt => [new(Mod, "Tooltip0", "Picking up mana stars reduces skil cooldowns by 1/2 second")],
+                ItemID.JungleShirt => [new(Mod, "Tooltip0", "Picking up mana stars reduces skill cooldowns by 1/2 second")],
                 ItemID.JunglePants => [
                     new(Mod, "Tooltip0", "10% increased movement speed"),
                     new(Mod, "Tooltip1", "10% increased magic damage"),
@@ -230,7 +230,7 @@ namespace TerrariaCells.Common.GlobalItems
                 ItemID.MoltenHelmet => [new(Mod, "Tooltip0", "20% increased melee damage")],
                 ItemID.MoltenBreastplate => [
                     new(Mod, "Tooltip0", "Reduces damage taken by 20%"),
-                    new(Mod, "Tooltip1", "Upon taking damage, all nearby enemies are lit on fire"),
+                    new(Mod, "Tooltip1", "Upon taking damage, all nearby enemies are ignited"),
                     ],
                 ItemID.MoltenGreaves => [
                     new(Mod, "Tooltip0", "10% increased movement speed"),
