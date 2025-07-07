@@ -145,7 +145,8 @@ public struct WeightedID
             return Id.Value;
         if (Name is not null)
         {
-            if (NPCID.Search.TryGetId(Name, out int id)) return id;
+            if (NPCID.Search.TryGetId(Name, out int id))
+                return id;
 
             if (Terraria.ModLoader.ModContent.TryFind<Terraria.ModLoader.ModNPC>(Name, out Terraria.ModLoader.ModNPC modNPC))
                 return modNPC.Type;
