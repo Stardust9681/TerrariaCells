@@ -30,29 +30,31 @@ public class TeleportTracker : ModSystem
         set => nextLevel = value;
     }
 
+    private void SetDefaults()
+    {
+        level = 1;
+        nextLevel = "Forest";
+        nextLevelVariation = 0;
+    }
+
     public override void ClearWorld()
     {
+        SetDefaults();
+        Update_SetWorldConditions("Inn");
         deferredTimeSet = true;
-        Mod.Logger.Info($"b4: {Main.time};{Main.dayTime}");
+        /*Mod.Logger.Info($"b4: {Main.time};{Main.dayTime}");
         Main.dayTime = false;
         Main.time = 1f * 3600f;
         Main.StopRain();
-        Mod.Logger.Info($"af: {Main.time};{Main.dayTime}");
+        Mod.Logger.Info($"af: {Main.time};{Main.dayTime}");*/
         // Mod.Logger.Info($"after time: ");
-
-        if (level < 2)
-        {
-            level = 1;
-            nextLevel = "Forest";
-            nextLevelVariation = 0;
-        }
     }
 
     public override void PreUpdateWorld()
     {
         if (deferredTimeSet)
         {
-            ClearWorld();
+            Update_SetWorldConditions("Inn");
             deferredTimeSet = false;
         }
     }
@@ -286,6 +288,10 @@ public class TeleportTracker : ModSystem
             //case "optionalLevel":
                 //break;
 
+            case "forest":
+                level = 1;
+                break;
+
             default:
                 level++;
                 break;
@@ -307,6 +313,7 @@ public class TeleportTracker : ModSystem
         {
             case "forest": //Forest
                 hour = 4f;
+                day = false;
                 break;
             case "crimson": //Crimson
                 hour = 2.5f;
@@ -324,9 +331,18 @@ public class TeleportTracker : ModSystem
             case "dungeon": //Dungeon
                 break;
         }
-        Main.StartRain();
-        Main.raining = rain != 0;
-        Main.rainTime = rain != 0 ? 100000f : 0f;
+        if (rain != 0)
+        {
+            Main.StartRain();
+            Main.raining = true;
+            Main.rainTime = 100000f;
+        }
+        else
+        {
+            Main.StopRain();
+            Main.raining = false;
+            Main.rainTime = 0f;
+        }
         Main.dayTime = day;
         Main.time = hour * 3600;
     }
@@ -375,7 +391,6 @@ public class TeleportTracker : ModSystem
         else
         {
             RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Restart);
-            nextLevel = "Inn";
         }
 
         GlobalNPCs.VanillaNPCShop.UpdateTeleport(level, nextLevel, (Main.netMode == NetmodeID.Server));
@@ -402,6 +417,7 @@ public class TeleportTracker : ModSystem
         Mod.Logger.Info($"Loaded \"Next Level\" as {nextLevel}");
         if (!tag.TryGet<int>(nameof(nextLevelVariation), out nextLevelVariation))
             nextLevelVariation = 0;
+        Update_SetWorldConditions(nextLevel);
     }
     public override void NetSend(BinaryWriter writer)
     {

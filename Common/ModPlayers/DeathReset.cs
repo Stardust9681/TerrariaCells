@@ -34,10 +34,9 @@ public class DeathReset : ModPlayer, IEntitySource
 
         Player.respawnTimer = MaxRespawnTime;
 
-        if (Main.netMode != NetmodeID.MultiplayerClient)
+        if (Main.netMode == NetmodeID.SinglePlayer)
         {
             //Reset systems
-            // ModContent.GetInstance<TeleportTracker>().Reset();
             ModContent.GetInstance<ClickedHeartsTracker>().Reset();
             ModContent.GetInstance<ChestLootSpawner>().Reset();
             WorldPylonSystem.ResetPylons();
@@ -87,7 +86,7 @@ public class DeathReset : ModPlayer, IEntitySource
     }
     public override void PostUpdate()
     {
-        if(Main.netMode == NetmodeID.Server) return;
+        if(Main.netMode != NetmodeID.MultiplayerClient) return;
         if (Player.DeadOrGhost)
         {
             int viewTarget = -1;
