@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.IO;
+using Terraria.ModLoader;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
@@ -17,7 +18,6 @@ public class StructureSpawnInfo
         X = x;
         Y = y;
     }
-
     public StructureSpawnInfo(int id, int x, int y) : this(x, y)
     {
         Id = id;
@@ -26,12 +26,17 @@ public class StructureSpawnInfo
     public StructureSpawnInfo(string name, int x, int y) : this(x, y)
     {
         Name = name;
-        if (Name != null && NPCID.Search.TryGetId(Name, out int result2))
+        if (!string.IsNullOrEmpty(Name))
         {
-            SetID = result2;
+            if (NPCID.Search.TryGetId(Name, out int result2))
+            {
+                SetID = result2;
+            }
+            else if (ModContent.GetInstance<TerrariaCells>().TryFind<ModNPC>(Name, out ModNPC modNPC))
+            {
+                SetID = modNPC.Type;
+            }
         }
-
-
     }
     public StructureSpawnInfo(int[] idPool, UnifiedRandom rand, int x, int y) : this(x, y)
     {
@@ -41,7 +46,6 @@ public class StructureSpawnInfo
             SetID = rand.Next(IdPool);
         }
     }
-
     public StructureSpawnInfo(WeightedID[] widPool, UnifiedRandom rand, int x, int y) : this(x, y)
     {
         WIdPool = widPool;
@@ -102,9 +106,17 @@ public class StructureSpawnInfo
         {
             return SetID = Id.Value;
         }
-        if (Name != null && NPCID.Search.TryGetId(Name, out int result2))
+        if (Name != null)
         {
-            return SetID = result2;
+            if (NPCID.Search.TryGetId(Name, out int result2))
+            {
+                SetID = result2;
+            }
+            else if (ModContent.GetInstance<TerrariaCells>().TryFind<ModNPC>(Name, out ModNPC modNPC))
+            {
+                SetID = modNPC.Type;
+            }
+            return SetID;
         }
         if (IdPool != null)
         {
@@ -148,7 +160,7 @@ public struct WeightedID
             if (NPCID.Search.TryGetId(Name, out int id))
                 return id;
 
-            if (Terraria.ModLoader.ModContent.TryFind<Terraria.ModLoader.ModNPC>(Name, out Terraria.ModLoader.ModNPC modNPC))
+            if (ModContent.GetInstance<TerrariaCells>().TryFind<ModNPC>(Name, out Terraria.ModLoader.ModNPC modNPC))
                 return modNPC.Type;
         }
         return NPCID.FairyCritterGreen;
