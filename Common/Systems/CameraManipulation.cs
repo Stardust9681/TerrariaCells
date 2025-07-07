@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TerrariaCells.Common.Configs;
 using Terraria.Graphics.CameraModifiers;
+using Terraria.ID;
 
 namespace TerrariaCells.Common.Systems
 {
@@ -77,7 +78,7 @@ namespace TerrariaCells.Common.Systems
 		}
 		public override void ModifyScreenPosition()
 		{
-			if (!Main.LocalPlayer.dead)
+			if ((!Main.LocalPlayer.dead || Main.netMode == NetmodeID.MultiplayerClient) && (Main.screenPosition.DistanceSQ(_CameraModifier.Position) < (Main.ScreenSize.ToVector2() * 0.5f).LengthSquared()))
 			{
 				_CameraModifier.TryApply(ref Main.screenPosition);
 				Main.instance.CameraModifiers.ApplyTo(ref Main.screenPosition);
