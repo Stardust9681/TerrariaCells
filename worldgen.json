@@ -169,8 +169,23 @@
                     "OffsetX": 0,
                     "OffsetY": 100,
                     "SpawnX": 451,
-                    "SpawnY": 76,
+                    "SpawnY": 74,
                     "SpawnInfoPath": "Content/SpawnInfo/desert_2.json"
+                }
+            ],
+            "Surface": false
+        },
+        {
+            "Name": "Dungeon",
+            "Structures": [
+                {
+                    "Name": "dungeon_1",
+                    "Path": "Content/Structures/dungeon_1.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": 300,
+                    "SpawnX": 195,
+                    "SpawnY": 46,
+                    "SpawnInfoPath": "Content/SpawnInfo/dungeon_1.json"
                 }
             ],
             "Surface": false
@@ -184,7 +199,7 @@
                     "OffsetX": 0,
                     "OffsetY": 300,
                     "SpawnX": 418,
-                    "SpawnY": 54,
+                    "SpawnY": 52,
                     "SpawnInfoPath": "Content/SpawnInfo/caverns_1.json"
                 }
             ],

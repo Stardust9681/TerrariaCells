@@ -1,8 +1,11 @@
 [
-    {
-        "Name": "Guide",
-        "X": 836,
-        "Y": 177
+    { 
+        "WIdPool" : [
+      { "Name" : "Merchant", "Weight" : 1},
+      { "Name" : "ArmsDealer", "Weight" : 1 }
+                    ],
+        "X" : 836,
+        "Y" : 177
     },
     {
         "Name": "ArmsDealer",

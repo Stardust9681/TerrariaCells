@@ -4,10 +4,13 @@
         "X": 780,
         "Y": 36
     },
-    {
-        "Name": "Merchant",
-        "X": 322,
-        "Y": 59
+    { 
+        "WIdPool" : [
+      { "Name" : "Merchant", "Weight" : 1},
+      { "Name" : "ArmsDealer", "Weight" : 1 }
+                    ],
+        "X" : 322,
+        "Y" : 59
     },
     {
         "Name": "BoundGoblin",
