@@ -23,7 +23,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 
 		internal static int[] Weapons; //Arms Dealer
         internal static int[] Accessories; //Goblin Tinkerer
-        internal static int[] Skills; //Merchant (Wizard? Plz)
+        internal static int[] Skills; //Merchant
         internal static int[] Armors; //Merchant
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
         {

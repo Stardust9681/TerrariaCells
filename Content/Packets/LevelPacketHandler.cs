@@ -50,7 +50,6 @@ namespace TerrariaCells.Content.Packets
                 packet.Send();
 
                 tele.Update_PostTeleport(tele.GetActualDestination(destination));
-                RewardTrackerSystem.UpdateChests_OnTeleport(tpTile);
 
                 packet = ModNetHandler.GetPacket(mod, TCPacketType.TrackerPacket);
                 packet.Write(RewardTrackerSystem.levelTimer);

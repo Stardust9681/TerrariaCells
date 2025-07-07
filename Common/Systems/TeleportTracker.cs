@@ -60,24 +60,34 @@ public class TeleportTracker : ModSystem
     public void Teleport(string destination)
     {
         //Goes to next level
-        if (destination.Equals("inn", StringComparison.CurrentCultureIgnoreCase))
+        if (destination.Equals("Inn", StringComparison.CurrentCultureIgnoreCase))
         {
             Mod.Logger.Info($"Teleporting to next level: {nextLevel}:");
             GoToNextLevel();
-            RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Restart);
+            //RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Restart);
             RewardTrackerSystem.targetTime = TimeSpan.FromMinutes(3);
             return;
         }
 
         //Goes to inn
-        Mod.Logger.Info($"Detouring to inn.");
+        Mod.Logger.Info($"Detouring to Inn.");
         DetourToInn(destination);
-        RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Pause);
-        RewardTrackerSystem.UpdateChests_OnTeleport(GetTelePos("inn"));
+        //RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Pause);
+        //RewardTrackerSystem.UpdateChests_OnTeleport(GetTelePos("inn"));
     }
 
     private void DetourToInn(string destination)
     {
+        Update_SetVariables(destination); //Input: current location
+        Point16 telePos = GetTelePos("Inn"); //Input: "going to" location
+        Update_SetWorldConditions(destination); //Input: current location
+
+        Main.LocalPlayer.Teleport(telePos.ToWorldCoordinates(), TeleportationStyleID.Portal);
+        DoTeleportNPCCheck("Inn", telePos.ToWorldCoordinates());
+        Update_PostTeleport("Inn"); //Input: "going to" location
+        RewardTrackerSystem.UpdateChests_OnTeleport(telePos);
+        return;
+
         BasicWorldGenData worldLevelData = ModContent.GetInstance<BasicWorldGeneration>()
             .BasicWorldGenData;
 
@@ -144,9 +154,19 @@ public class TeleportTracker : ModSystem
             RewardTrackerSystem.targetKillCount = (byte)levelStructure.SpawnInfo.Count;
         }
     }
-
     private void GoToNextLevel()
     {
+        Update_SetVariables("Inn"); //Input: current location
+        Point16 telePos = GetTelePos(nextLevel); //Input: "going to" location
+        Update_SetWorldConditions("Inn"); //Input: current location
+
+        Main.LocalPlayer.Teleport(telePos.ToWorldCoordinates(), TeleportationStyleID.Portal);
+
+        Update_PostTeleport(nextLevel); //Input: "going to" location
+        RewardTrackerSystem.UpdateChests_OnTeleport(telePos);
+        return;
+
+
         BasicWorldGenData worldLevelData = Mod.GetContent<BasicWorldGeneration>()
             .First()
             .BasicWorldGenData;
@@ -188,6 +208,10 @@ public class TeleportTracker : ModSystem
                 hour = 4.5f;
                 rain = 1f;
                 level = 3;
+                break;
+            case "dungeon":
+                level = 4;
+
                 break;
             //case 10: //Caverns
             //  position = new Vector2(28818.312f, 17606);
@@ -255,7 +279,17 @@ public class TeleportTracker : ModSystem
             Mod.Logger.Error($"Invalid destination:'{actualDestination}' Could not find level variations.");
             nextLevelVariation = 0;
         }
-        level++;
+
+        switch (destination)
+        {
+            //Add cases here for levels that we don't want to increment level counter
+            //case "optionalLevel":
+                //break;
+
+            default:
+                level++;
+                break;
+        }
     }
     public string GetActualDestination(string destination)
     {
@@ -286,6 +320,8 @@ public class TeleportTracker : ModSystem
             case "frozencity": //Frozen City
                 hour = 4.5f;
                 rain = 1f;
+                break;
+            case "dungeon": //Dungeon
                 break;
         }
         Main.StartRain();
@@ -334,6 +370,7 @@ public class TeleportTracker : ModSystem
                 }
             }
             RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Pause);
+            RewardTrackerSystem.UpdateChests_OnTeleport(tileCoords);
         }
         else
         {
