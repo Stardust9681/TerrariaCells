@@ -35,6 +35,7 @@ public class BasicWorldGeneration : ModSystem
     ];
     private BasicWorldGenData basicWorldGenData;
 
+    private static bool _didWarning = false;
     /// <summary>
     /// Returns the TerraCells related data this world was generated with, if any.
     ///
@@ -48,16 +49,21 @@ public class BasicWorldGeneration : ModSystem
     {
         get
         {
-            if (basicWorldGenData == null)
+            if (basicWorldGenData == null && !_didWarning) 
             {
                 Main.NewText(
                     "TerraCells world generation data missing! Some TerraCells features may not work."
                 );
                 Mod.Logger.Error("Missing BasicWorldGenData!");
+                _didWarning = true;
             }
             return basicWorldGenData;
         }
-        private set => basicWorldGenData = value;
+        private set
+        {
+            basicWorldGenData = value;
+            _didWarning = false;
+        }
     }
     public static List<Level> StaticLevelData { get; private set; }
 
