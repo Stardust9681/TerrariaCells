@@ -47,13 +47,14 @@ namespace TerrariaCells.Common.Systems
         private static void On_NPC_CheckActive(On_NPC.orig_CheckActive orig, NPC self)
         {
             bool wasActive = self.active;
+            int prevHealth = self.life;
             orig.Invoke(self);
-            if (self.life > 1 && !NPCID.Sets.ProjectileNPC[self.type] && wasActive && !self.active)
+            if (prevHealth > 1 && !NPCID.Sets.ProjectileNPC[self.type] && wasActive && !self.active)
             {
                 NPCRespawnMarker marker = new NPCRespawnMarker(
                         self.type,
-                         self.position, //Utilities.TCellsUtils.FindGround(self.getRect(), 20) - new Vector2(self.width * 0.5f, self.height * 0.5f),
-                        self.life);
+                        self.position, //Utilities.TCellsUtils.FindGround(self.getRect(), 20) - new Vector2(self.width * 0.5f, self.height * 0.5f),
+                        prevHealth);
                 if (NPCID.Sets.SpecialSpawningRules.TryGetValue(self.type, out int value) && value == 0)
                     marker.RespawnTile = new Point16((short)self.ai[0], (short)self.ai[1]);
                 HandleSpecialDespawn(self, ref marker);
@@ -128,10 +129,10 @@ namespace TerrariaCells.Common.Systems
                     newNPC.ai[0] = marker.RespawnTile.X;
                     newNPC.ai[1] = marker.RespawnTile.Y;
                     newNPC.netUpdate = true;
-                    if (Main.netMode == NetmodeID.Server)
-                    {
-                        NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, newNPC.whoAmI);
-                    }
+                }
+                if (Main.netMode == NetmodeID.Server)
+                {
+                    NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, newNPC.whoAmI);
                 }
                 HandleSpecialSpawn(newNPC, marker.RespawnTile.X, marker.RespawnTile.Y);
                 newNPC.timeLeft = 3600; //1 min

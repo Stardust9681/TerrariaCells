@@ -276,7 +276,6 @@ namespace TerrariaCells.Common.Systems
 		{
 			foreach (var info in Structure.SpawnInfo)
 			{
-                
 				int whoAmI = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (Left + info.X) * 16 + 8, (Top + a_height - info.Y) * 16 + 8, info.SetID);
 				info.SpawnedNPC = Main.npc[whoAmI];
 				NPCRespawnHandler.HandleSpecialSpawn(info.SpawnedNPC, Left + info.X, Top + info.Y);
