@@ -17,7 +17,15 @@ namespace TerrariaCells.Common.Systems
 			NPCRespawnHandler.RespawnMarkers?.Clear();
 			if (RoomMarkers is null) RoomMarkers = new List<RoomMarker>();
 			else RoomMarkers.Clear();
-			foreach (NPC npc in Main.ActiveNPCs) npc.active = false; //Disable all current NPCs
+            foreach (NPC npc in Main.ActiveNPCs)
+            {
+                npc.netSkip = -1;
+                npc.active = false; //Disable all current NPCs
+                if (Main.netMode == NetmodeID.Server)
+                {
+                    NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc.whoAmI);
+                }
+            }
 
             BasicWorldGenData data = ModContent
                 .GetInstance<BasicWorldGeneration>()

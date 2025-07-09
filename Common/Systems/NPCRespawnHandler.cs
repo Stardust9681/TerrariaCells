@@ -62,10 +62,15 @@ namespace TerrariaCells.Common.Systems
             }
         }
 
+        internal static void ResetRespawnMarkers()
+        {
+            RespawnMarkers = new List<NPCRespawnMarker>();
+        }
+
         //Prepare datastructures
         public override void ClearWorld()
         {
-            RespawnMarkers = new List<NPCRespawnMarker>();
+            ResetRespawnMarkers();
         }
 
         //More or less modified source for respawn system
