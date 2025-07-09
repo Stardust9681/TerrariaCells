@@ -202,6 +202,10 @@ public class ForestExitPylon : ModTile, ITerraCellsCategorization
         {
             if (Main.netMode == NetmodeID.SinglePlayer)
             {
+                if (!ModContent.GetInstance<TeleportTracker>().CanTeleport(entity.Destination))
+                {
+                    Main.NewText("This level: coming soon. Maybe.");
+                }
                 ModContent.GetInstance<TeleportTracker>().Teleport(entity.Destination);
             }
             else if(Main.netMode == NetmodeID.MultiplayerClient)

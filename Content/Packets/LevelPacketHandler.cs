@@ -23,8 +23,6 @@ namespace TerrariaCells.Content.Packets
             {
                 string destination = reader.ReadString();
 
-                mod.Logger.Debug(destination);
-
                 Player sender = Main.player[fromWho];
                 foreach (Player player in Main.ActivePlayers)
                 {
@@ -37,6 +35,9 @@ namespace TerrariaCells.Content.Packets
                 }
 
                 var tele = ModContent.GetInstance<TeleportTracker>();
+                if (!tele.CanTeleport(destination))
+                    return;
+
                 tele.Update_SetVariables(destination);
                 Terraria.DataStructures.Point16 tpTile = tele.GetTelePos(tele.GetActualDestination(destination));
                 tele.Update_SetWorldConditions(destination);

@@ -59,6 +59,11 @@ public class TeleportTracker : ModSystem
         }
     }
 
+    public bool CanTeleport(string nextLevel)
+    {
+        return StaticFileAccess.Instance.WorldGenData.LevelPositions.TryGetValue(nextLevel, out _);
+    }
+
     public void Teleport(string destination)
     {
         //Goes to next level
@@ -80,6 +85,8 @@ public class TeleportTracker : ModSystem
 
     private void DetourToInn(string destination)
     {
+        if(!CanTeleport(destination)) return;
+
         Update_SetVariables(destination); //Input: current location
         Point16 telePos = GetTelePos("Inn"); //Input: "going to" location
         Update_SetWorldConditions(destination); //Input: current location
