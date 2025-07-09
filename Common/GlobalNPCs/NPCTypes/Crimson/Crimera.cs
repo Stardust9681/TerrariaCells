@@ -26,8 +26,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 		public override void Behaviour(NPC npc)
 		{
 			if (!npc.HasValidTarget)
-				npc.TargetClosest(false);
-			if (!npc.HasValidTarget)
 			{
 				IdleAI(npc);
 				return;
@@ -61,7 +59,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 
 		private void IdleAI(NPC npc)
 		{
-			CombatNPC.ToggleContactDamage(npc, false);
+            npc.TargetClosest(false);
+            CombatNPC.ToggleContactDamage(npc, false);
 			if (npc.TargetInAggroRange(420))
 			{
 				npc.ai[2] = Main.rand.Next(new int[] { -1, 1 });
