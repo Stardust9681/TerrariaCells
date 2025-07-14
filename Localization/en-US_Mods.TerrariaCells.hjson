@@ -330,6 +330,9 @@ Projectiles: {
 	TrailOfFlames.DisplayName: Fire Trail
 	IceArrowFriendly.DisplayName: Ice Arrow
 	IceSpikeFriendly.DisplayName: Ice Spike
+	BeeWallBee.DisplayName: Bee
+	BeeMissile.DisplayName: Bee Missile
+	BeeMissileBee.DisplayName: Bee
 }
 
 Tooltips: {
