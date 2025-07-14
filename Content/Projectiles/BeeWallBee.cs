@@ -10,7 +10,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Hive
+namespace TerrariaCells.Content.Projectiles
 {
     public class BeeWallBee : ModProjectile
     {

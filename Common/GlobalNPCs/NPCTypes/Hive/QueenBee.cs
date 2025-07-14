@@ -2,7 +2,6 @@
 using ReLogic.Content;
 using System;
 using System.IO;
-using System.Runtime.CompilerServices;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -11,21 +10,22 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using TerrariaCells.Common.GlobalNPCs;
-using TerrariaCells.Common.GlobalNPCs.NPCTypes.Hive;
 using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 using TerrariaCells.Common.Utilities;
+using TerrariaCells.Content.Projectiles;
 
 public class QueenBee : AIType
 {
     public static Vector2 SpawnPosition = Vector2.Zero;
-    //0: never made a wall
-    //1: has made phase 2 wall
-    //2: has made phase 3 wall
-    public int WallPhase = 0;
+    
 
     const int BazookaPullOutAnimTime = 60;
     const int BazookaHeldOutTime = 190;
     const int BazookaPutAwayAnimTime = 30;
+    public static Asset<Texture2D>? MainTexture;
+    public static Asset<Texture2D>? WingTexture;
+    public static Asset<Texture2D>? BeezookaTexture;
+
     public override bool FindFrame(NPC npc, int frameHeight)
     {
         int animSpeed = 5;
@@ -74,29 +74,22 @@ public class QueenBee : AIType
         }
             return false;
     }
-    public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
-    {
-        binaryWriter.Write7BitEncodedInt(WallPhase);
-    }
-    public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
-    {
-        WallPhase = binaryReader.Read7BitEncodedInt();
-    }
+    
     public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
     {
-        Asset<Texture2D> t = TextureAssets.Npc[npc.type];
-        Asset<Texture2D> beezooka = ModContent.Request<Texture2D>("TerrariaCells/Common/Assets/QueenBeeBazooka");
-        Asset<Texture2D> wings = ModContent.Request<Texture2D>("TerrariaCells/Common/Assets/QueenBeeWings");
+        MainTexture ??= TextureAssets.Npc[npc.type];
+        BeezookaTexture ??= ModContent.Request<Texture2D>("TerrariaCells/Common/Assets/QueenBeeBazooka");
+        WingTexture ??= ModContent.Request<Texture2D>("TerrariaCells/Common/Assets/QueenBeeWings");
         //qb has 12 frames. divide image height by 12. multiply by frame.Y (determines what frame its on.) add 4 if not charging (npc.ai[0] != 1) because idle frames are after charging frames
-        Rectangle frame = new Rectangle(0, t.Height() / 12 * (npc.frame.Y + (npc.localAI[2] == 1 ? 0 : 4)), t.Width(), t.Height() / 12);
+        Rectangle frame = new Rectangle(0, MainTexture.Height() / 12 * (npc.frame.Y + (npc.localAI[2] == 1 ? 0 : 4)), MainTexture.Width(), MainTexture.Height() / 12);
 
         //wings are a separate sprite during bazooka animation
         if (npc.ai[0] == 3 && npc.ai[2] > 0)
         {
-            frame = new Rectangle(0, beezooka.Height() / 15 * npc.frame.Y, beezooka.Width(), beezooka.Height() / 15);
-            Rectangle wingframe = new(0, wings.Height() / 4 * ((int)npc.localAI[2] / 5), wings.Width(), wings.Height() / 4);
-            spriteBatch.Draw(wings.Value, npc.Center - Main.screenPosition - new Vector2(0, 30), wingframe, drawColor, npc.rotation, new Vector2(wings.Width(), wings.Height() / 4) / 2, npc.scale, npc.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1);
-            spriteBatch.Draw(beezooka.Value, npc.Center - Main.screenPosition - new Vector2(0, 30), frame, drawColor, npc.rotation, new Vector2(beezooka.Width(), beezooka.Height() / 15) / 2, npc.scale, npc.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1);
+            frame = new Rectangle(0, BeezookaTexture.Height() / 15 * npc.frame.Y, BeezookaTexture.Width(), BeezookaTexture.Height() / 15);
+            Rectangle wingframe = new(0, WingTexture.Height() / 4 * ((int)npc.localAI[2] / 5), WingTexture.Width(), WingTexture.Height() / 4);
+            spriteBatch.Draw(WingTexture.Value, npc.Center - Main.screenPosition - new Vector2(0, 30), wingframe, drawColor, npc.rotation, new Vector2(WingTexture.Width(), WingTexture.Height() / 4) / 2, npc.scale, npc.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1);
+            spriteBatch.Draw(BeezookaTexture.Value, npc.Center - Main.screenPosition - new Vector2(0, 30), frame, drawColor, npc.rotation, new Vector2(BeezookaTexture.Width(), BeezookaTexture.Height() / 15) / 2, npc.scale, npc.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1);
         }
         else
         {
@@ -106,7 +99,7 @@ public class QueenBee : AIType
             {
                 rotation = TCellsUtils.LerpFloat(-10, 10, npc.ai[3], 40, TCellsUtils.LerpEasing.Bell, 0, false);
             }
-            spriteBatch.Draw(t.Value, npc.Center - Main.screenPosition - new Vector2(0, 30), frame, drawColor, MathHelper.ToRadians(rotation), new Vector2(t.Width(), t.Height() / 12) / 2, npc.scale, npc.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1);
+            spriteBatch.Draw(MainTexture.Value, npc.Center - Main.screenPosition - new Vector2(0, 30), frame, drawColor, MathHelper.ToRadians(rotation), new Vector2(MainTexture.Width(), MainTexture.Height() / 12) / 2, npc.scale, npc.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1);
         }
         return false;
     }
@@ -119,7 +112,6 @@ public class QueenBee : AIType
         {
             return;
         }
-        //SpawnPosition = Vector2.Zero;
         if (SpawnPosition == Vector2.Zero)
         {
             SpawnPosition = Main.player[npc.target].Center;
@@ -206,11 +198,6 @@ public class QueenBee : AIType
     }
     public void ChooseNewAttack(NPC npc)
     {
-        //no idea why this variable is saving between instances of queen bee
-        if (WallPhase > 0 && npc.GetLifePercent() > 0.7f)
-        {
-            WallPhase = 0;
-        }
 
         //if stingers go into dash
         if (npc.ai[0] == 0)
@@ -235,7 +222,7 @@ public class QueenBee : AIType
             npc.ai[0] = 0;
         }
         //go into wall if below threshold and hasnt done that wall yet
-        if ((WallPhase == 0 && npc.GetLifePercent() <= 0.7f) || (WallPhase == 1 && npc.GetLifePercent() <= 0.3f))
+        if ((npc.GetGlobalNPC<ExtraQueenBee>().WallPhase == 0 && npc.GetLifePercent() <= 0.7f) || (npc.GetGlobalNPC<ExtraQueenBee>().WallPhase == 1 && npc.GetLifePercent() <= 0.3f))
         {
             npc.ai[0] = 2;
         }
@@ -248,12 +235,12 @@ public class QueenBee : AIType
         Vector2 targetPos = target.Center;
         npc.ai[3]++;
         
-        if (WallPhase == 0)
+        if (npc.GetGlobalNPC<ExtraQueenBee>().WallPhase == 0)
         {
             targetPos = SpawnPosition - new Vector2(220, 200);
 
         }
-        if (WallPhase == 1)
+        if (npc.GetGlobalNPC<ExtraQueenBee>().WallPhase == 1)
         {
             targetPos = SpawnPosition - new Vector2(-220, 200);
 
@@ -280,7 +267,7 @@ public class QueenBee : AIType
             {
                 npc.ai[3] = 0;
                 npc.ai[2] = 0;
-                WallPhase++;
+                npc.GetGlobalNPC<ExtraQueenBee>().WallPhase++;
                 ChooseNewAttack(npc);
             }
         }
@@ -468,6 +455,20 @@ public class QueenBee : AIType
 }
 public class ExtraQueenBee : GlobalNPC
 {
+    //0: never made a wall
+    //1: has made phase 2 wall
+    //2: has made phase 3 wall
+    public int WallPhase = 0;
+    public override bool InstancePerEntity => true;
+    public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
+    {
+        binaryWriter.Write7BitEncodedInt(WallPhase);
+    }
+    public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
+    {
+        WallPhase = binaryReader.Read7BitEncodedInt();
+    }
+
     public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
     {
         return entity.type == NPCID.QueenBee;
@@ -475,14 +476,5 @@ public class ExtraQueenBee : GlobalNPC
     public override void SetDefaults(NPC entity)
     {
         base.SetDefaults(entity);
-    }
-    public override void SetStaticDefaults()
-    {
-        NPCID.Sets.TrailCacheLength[NPCID.QueenBee] = 10;
-        NPCID.Sets.TrailingMode[NPCID.QueenBee] = 2;
-    }
-    public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
-    {
-        return npc.localAI[2] == 1;
     }
 }
