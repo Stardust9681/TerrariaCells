@@ -24,10 +24,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             npc.ai[1] = 0;
             npc.ai[2] = 0;
             npc.ai[3] = 0;
+            npc.netUpdate = true;
         }
         public override void Behaviour(NPC npc)
         {
             npc.TargetClosest(false);
+
+            float oldAI = npc.ai[1];
             switch ((int)npc.ai[1])
             {
                 case IdleNoTarget:
@@ -43,12 +46,15 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
                     LungeAI(npc);
                     break;
             }
+            if (npc.ai[1] != oldAI)
+                npc.netUpdate = true;
+
             npc.spriteDirection = npc.direction;
         }
 
         void IdleNoTargetAI(NPC npc)
         {
-            if (npc.TryGetTarget(out _))
+            if (npc.TryGetTarget(out Entity target) && npc.TargetInAggroRange(target, Utilities.NumberHelpers.ToTileDist(30)))
             {
                 ResetAI(npc);
                 npc.ai[1] = IdleTarget;
@@ -86,7 +92,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
                 return;
             }
 
-            if (npc.TargetInAggroRange(target, Utilities.NumberHelpers.ToTileDist(30), true, true))
+            if (npc.TargetInAggroRange(target, Utilities.NumberHelpers.ToTileDist(24), true, true))
             {
                 ResetAI(npc);
                 npc.ai[1] = Approach;
@@ -117,8 +123,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 
             int direction = target.Center.X < npc.Center.X ? -1 : 1;
 
-            float distX = MathF.Abs(target.position.X - npc.position.X);
-            if (!npc.TargetInAggroRange(target, Utilities.NumberHelpers.ToTileDist(32), true, true))
+            float distX = MathF.Abs(target.Center.X - npc.Center.X);
+            if (!npc.TargetInAggroRange(target, Utilities.NumberHelpers.ToTileDist(26), true, true))
             {
                 ResetAI(npc);
                 npc.ai[1] = IdleTarget;

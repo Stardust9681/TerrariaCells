@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TerrariaCells.Common.Configs;
 using Terraria.Graphics.CameraModifiers;
+using Terraria.ID;
 
 namespace TerrariaCells.Common.Systems
 {
@@ -59,8 +60,12 @@ namespace TerrariaCells.Common.Systems
 
 		public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
 		{
-			if (Main.gameMenu || TerrariaCellsConfig.Instance.DisableZoom)
-				return;
+            if (Main.gameMenu || TerrariaCellsConfig.Instance.DisableZoom)
+            {
+                _ZoomOverride.Time = 0;
+                _CameraModifier.Time = 0;
+                return;
+            }
 
 			// Caps zoom at 175%-200%
 			float zoomClamp = Math.Max(Transform.Zoom.X, _DefaultZoomCap);
@@ -73,7 +78,7 @@ namespace TerrariaCells.Common.Systems
 		}
 		public override void ModifyScreenPosition()
 		{
-			if (!Main.LocalPlayer.dead)
+			if ((!Main.LocalPlayer.dead || Main.netMode == NetmodeID.MultiplayerClient) && (Main.screenPosition.DistanceSQ(_CameraModifier.Position) < (Main.ScreenSize.ToVector2() * 0.5f).LengthSquared()))
 			{
 				_CameraModifier.TryApply(ref Main.screenPosition);
 				Main.instance.CameraModifiers.ApplyTo(ref Main.screenPosition);

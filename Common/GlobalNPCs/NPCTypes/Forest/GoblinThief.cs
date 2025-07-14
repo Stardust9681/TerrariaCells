@@ -38,7 +38,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 		{
 			if (!npc.HasValidTarget)
 				npc.TargetClosest(false);
-			switch (npc.ai[1])
+
+            float oldAI = npc.ai[1];
+            switch (npc.ai[1])
 			{
 				case Idle:
 					IdleAI(npc);
@@ -59,7 +61,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 					npc.ai[1] = Idle;
 					break;
 			}
-			npc.spriteDirection = npc.direction;
+            if (npc.ai[1] != oldAI)
+                npc.netUpdate = true;
+            npc.spriteDirection = npc.direction;
 		}
 
         private void ResetAI(NPC npc)
@@ -68,6 +72,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             npc.ai[1] = 0;
             npc.ai[2] = 0;
             npc.ai[3] = 0;
+            npc.netUpdate = true;
         }
 
 		void IdleAI(NPC npc)
@@ -98,18 +103,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 				Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
 				if (npc.position.Equals(oldPos))
 				{
-                    if (Collision.SolidCollision(npc.position - new Vector2(0, npc.height), npc.width, npc.height))
-                    {
-                        npc.position -= npc.oldVelocity * 2;
-                        npc.ai[3] = -npc.direction;
-                        npc.ai[1] = Idle;
-                    }
-                    else
-                    {
-                        npc.ai[0] = 0;
-                        npc.ai[1] = Jump;
-                        npc.ai[3] = npc.direction;
-                    }
+                    npc.position -= npc.oldVelocity * 2;
+                    npc.ai[3] = -npc.direction;
+                    npc.ai[1] = Idle;
                     return;
 				}
 				else
@@ -169,7 +165,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
                 }
                 else
                 {
-                    npc.ai[1] = Jump;
+                    if (target.position.Y < npc.position.Y)
+                        npc.ai[1] = Jump;
+                    else
+                        npc.ai[1] = Idle;
                 }
                 npc.ai[3] = (target.position.X < npc.position.X) ? -1 : 1;
                 return;
@@ -260,17 +259,22 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
                     npc.velocity.X *= 0.975f;
                 Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
                 //Collision.StepDown(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
+                if (npc.ai[0] > Stab_DashLen + (Stab_Windup/2))
+                {
+                    CombatNPC.ToggleContactDamage(npc, false);
+                }
                 if (npc.ai[0] > Stab_DashLen + Stab_Windup || (npc.collideX && (MathF.Abs(npc.oldVelocity.X) - MathF.Abs(npc.velocity.X) > 2.5f)))
                 {
                     ResetAI(npc);
+                    CombatNPC.ToggleContactDamage(npc, false);
                     npc.ai[1] = Stun;
+                    npc.netUpdate = true;
                 }
             }
         }
         const int Stun_Delay = 25;
         void StunAI(NPC npc)
         {
-            CombatNPC.ToggleContactDamage(npc, false);
             npc.ai[0]++;
             npc.velocity.X *= 0.8f;
 

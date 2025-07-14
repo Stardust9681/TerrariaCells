@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using MonoMod.Utils;
 using StructureHelper;
 using StructureHelper.API;
 using StructureHelper.Models;
@@ -17,6 +19,8 @@ using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 using Terraria.WorldBuilding;
 using TerrariaCells.Common.Configs;
+using TerrariaCells.Content.Items;
+
 
 namespace TerrariaCells.Common.Systems;
 
@@ -31,40 +35,94 @@ public class BasicWorldGeneration : ModSystem
     ];
     private BasicWorldGenData basicWorldGenData;
 
+    private static bool _didWarning = false;
     /// <summary>
     /// Returns the TerraCells related data this world was generated with, if any.
     ///
     /// Returns null if the world was not generated with any.
+    /// 
+    /// Only set after ModSystem.LoadWorldData
+    /// If you need access to it on world load, add a call during 
+    /// 
     /// </summary>
     public BasicWorldGenData BasicWorldGenData
     {
         get
         {
-            if (basicWorldGenData == null)
+            if (basicWorldGenData == null && !_didWarning) 
             {
                 Main.NewText(
                     "TerraCells world generation data missing! Some TerraCells features may not work."
                 );
                 Mod.Logger.Error("Missing BasicWorldGenData!");
+                _didWarning = true;
             }
             return basicWorldGenData;
         }
-        private set => basicWorldGenData = value;
+        private set
+        {
+            basicWorldGenData = value;
+            _didWarning = false;
+        }
     }
     public static List<Level> StaticLevelData { get; private set; }
 
     public override void SetStaticDefaults()
     {
-        BasicWorldGenData = JsonSerializer.Deserialize<BasicWorldGenData>(
-            Mod.GetFileBytes(WorldGenFilePath)
-        );
+        var bytes = Mod.GetFileBytes(WorldGenFilePath);
+        BasicWorldGenData = JsonSerializer.Deserialize<BasicWorldGenData>(bytes);
         if (BasicWorldGenData == null)
         {
             throw new Exception(
                 "Could not deserialize worldgen.json! (If building, check if worldgen.json is present in the source.)"
             );
         }
+        
         StaticLevelData = BasicWorldGenData.LevelData;
+
+        // return;  
+
+        foreach (Level level in StaticLevelData)
+        {
+            foreach (LevelStructure structure in level.Structures)
+            {
+                if (Mod.SourceFolder != "")
+                {
+                    string path = Mod.SourceFolder + "\\" + structure.SpawnInfoPath;
+
+                    if (!File.Exists(path))
+                    {
+                        byte[] buf = Encoding.UTF8.GetBytes(['[', ']']);
+                        using (FileStream f = File.Create(path))
+                        {
+                            f.Write(buf);
+                            Mod.Logger.Info($"Created spawn info file @ {path}");
+                        }
+                        structure.SpawnInfo = [];
+                        continue;
+                    }
+                }
+
+                if (!Mod.FileExists(structure.SpawnInfoPath))
+                {
+                    throw new Exception($"No file found with path {structure.SpawnInfoPath}");                    
+                }
+
+                byte[] utf8Json = Mod.GetFileBytes(structure.SpawnInfoPath);
+
+                try
+                {
+                    structure.SpawnInfo = JsonSerializer.Deserialize<StructureSpawnInfo[]>(
+                        utf8Json
+                    ).ToList();
+                }
+                catch (Exception e)
+                {
+                    structure.SpawnInfo = null;
+                    Mod.Logger.Error($"Could not deserialze spawn info file! {structure.SpawnInfoPath} [{e}]" );
+                }
+            }
+        }
     }
 
     public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
@@ -104,6 +162,11 @@ public class BasicWorldGeneration : ModSystem
         BasicWorldGenData = null;
     }
 
+    public override void OnWorldLoad()
+    {
+        BasicWorldGenData = null;
+    }
+
     public override void LoadWorldData(TagCompound tag)
     {
         try
@@ -115,8 +178,10 @@ public class BasicWorldGeneration : ModSystem
             {
                 throw new Exception("Invalid mod version!");
             }
-            Mod.Logger.Info("Deserialized worldgen data successfully");
-        
+            Mod.Logger.Info("Deserialized BasicWorldGenData from world data successfully");
+
+            ModContent.GetInstance<SpawnInfoDeterminer>().OnWorldLoad();
+            ModContent.GetInstance<NPCRoomSpawner>().OnWorldLoad();
             NPCRoomSpawner.ResetSpawns();
         }
         catch (Exception e)
@@ -139,9 +204,14 @@ public class CustomWorldGenPass(string name, double loadWeight) : GenPass(name, 
             .First()
             .BasicWorldGenData;
 
+        if (data == null)
+        {
+            throw new Exception($"TerraCells worldgen configuration is missing. (check client.log fore more info)");
+        }
+
         PlaceStructures(data);
 
-        Level structure = data.LevelData.Find(x => x.Name == STARTING_LEVEL);
+        Level structure = BasicWorldGenData.LevelData.Find(x => x.Name == STARTING_LEVEL);
         int variation = data.LevelVariations[STARTING_LEVEL];
         Point16 offset = data.LevelPositions[STARTING_LEVEL];
         Main.spawnTileX = structure.Structures[variation].SpawnX + offset.X;
@@ -168,6 +238,8 @@ public class CustomWorldGenPass(string name, double loadWeight) : GenPass(name, 
             int index = WorldGen.genRand.Next(level.Structures.Count);
             basicWorldGenData.LevelVariations.Add(level.Name, index);
             LevelStructure structure = level.Structures[index];
+
+            mod.Logger.Info($"For level {level.Name} generated structure {structure.Name}");
 
             string path = structure.Path;
             Point16 pos = offset + new Point16(structure.OffsetX, structure.OffsetY);
@@ -203,7 +275,7 @@ public class CustomWorldGenPass(string name, double loadWeight) : GenPass(name, 
 /// <summary>
 /// The worldgen.json information that a world was generated with
 /// </summary>
-public class BasicWorldGenData : TagSerializable
+public class BasicWorldGenData : TagSerializable, IJsonOnDeserialized
 {
     [JsonIgnore]
     public string GeneratedWithModVersion;
@@ -238,7 +310,11 @@ public class BasicWorldGenData : TagSerializable
     /// <seealso cref="GeneratedWithModVersion">
     /// </summary>
     [JsonInclude]
-    public List<Level> LevelData;
+    public static List<Level> LevelData { get; private set; }
+
+    [JsonInclude]
+    [JsonPropertyName("LevelData")]
+    private List<Level> levelData;
 
     [JsonIgnore]
     /// <summary>
@@ -254,6 +330,11 @@ public class BasicWorldGenData : TagSerializable
     /// The dictionary maps each generated level's name to the picked variations index in the list of LevelStructure data.
     /// <summary>
     public Dictionary<string, Point16> LevelPositions = [];
+
+    void IJsonOnDeserialized.OnDeserialized()
+    {
+        LevelData = levelData;
+    }
 
     public TagCompound SerializeData()
     {
@@ -297,6 +378,8 @@ public class BasicWorldGenData : TagSerializable
 
         return data;
     }
+
+    
 }
 
 /// <summary>
@@ -312,6 +395,11 @@ public class Level
 
     [JsonInclude]
     public bool Surface;
+
+    public LevelStructure GetGeneratedStructure(BasicWorldGenData worldGenData)
+    {
+        return Structures[worldGenData.LevelVariations[Name]];
+    }
 }
 
 public class LevelStructure
@@ -333,5 +421,10 @@ public class LevelStructure
 
     [JsonInclude]
     public short SpawnY;
-}
 
+    [JsonInclude]
+    public string SpawnInfoPath;
+
+    [JsonIgnore]
+    public List<StructureSpawnInfo> SpawnInfo;
+}

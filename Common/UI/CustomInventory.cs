@@ -58,7 +58,8 @@ public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
         {
             return false;
         }
-        return base.PreUpdate(time);
+        _update(time);
+        return false;
     }
 
     static readonly (Vector2, int, TerraCellsItemCategory)[] inventorySlots =

@@ -1,0 +1,27 @@
+[    
+    {
+        "Name": "BoundWizard",
+        "X": 165,
+        "Y": 67
+    },
+    {
+        "Name": "Salamander",
+        "X": 115,
+        "Y": 61
+    },
+    {
+        "Name": "Salamander2",
+        "X": 90,
+        "Y": 41
+    },
+    {
+        "Name": "Crawdad",
+        "X": 79,
+        "Y": 41
+    },
+    {
+        "Name": "Salamander3",
+        "X": 33,
+        "Y": 65
+    }
+]

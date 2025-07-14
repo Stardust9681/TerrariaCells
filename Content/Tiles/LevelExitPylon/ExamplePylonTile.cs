@@ -29,23 +29,12 @@ namespace TerrariaCells.Content.Tiles.LevelExitPylon;
 /// </summary>
 public class ForestExitPylon : ModTile, ITerraCellsCategorization
 {
-    public Asset<Texture2D> crystalTexture;
-    public Asset<Texture2D> crystalHighlightTexture;
-    public Asset<Texture2D> mapIcon;
 
     public TerraCellsItemCategory Category => TerraCellsItemCategory.Storage;
 
 
     public override string Texture =>
         (GetType().Namespace + "." + "ExamplePylonTile").Replace('.', '/');
-
-    public override void Load()
-    {
-        // We'll need these textures for later, it's best practice to cache them on load instead of continually requesting every draw call.
-        crystalTexture = ModContent.Request<Texture2D>(Texture + "_Crystal");
-        crystalHighlightTexture = ModContent.Request<Texture2D>(Texture + "_CrystalHighlight");
-        mapIcon = ModContent.Request<Texture2D>(Texture + "_MapIcon");
-    }
 
     public override void SetStaticDefaults()
     {
@@ -109,7 +98,7 @@ public class ForestExitPylon : ModTile, ITerraCellsCategorization
         if (entity.Destination.Equals("Inn", System.StringComparison.CurrentCultureIgnoreCase))
         {
             Main.instance.MouseText(
-                "Continue to the " + Mod.GetContent<TeleportTracker>().First().NextLevel
+                "Continue to the " + ModContent.GetInstance<TeleportTracker>().NextLevel
             );
             Main.mouseText = true;
             // Main.LocalPlayer.cursorItemIconText =
@@ -201,11 +190,9 @@ public class ForestExitPylon : ModTile, ITerraCellsCategorization
             return false;
         }
 
-        if (
-            Main.LocalPlayer.HeldItem.type == ModContent.GetContent<ExamplePylonItem>().First().Type
-        )
+        if (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<ExamplePylonItem>())
         {
-            Main.sign[0] = new Sign { x = i, y = j };
+            Main.sign[0] = new Sign() { x = i, y = j };
             Main.LocalPlayer.sign = 0;
             Main.editSign = true;
             entity.editing = true;
@@ -213,7 +200,21 @@ public class ForestExitPylon : ModTile, ITerraCellsCategorization
         }
         else
         {
-            Mod.GetContent<TeleportTracker>().First().Teleport(entity.Destination);
+            if (Main.netMode == NetmodeID.SinglePlayer)
+            {
+                if (!ModContent.GetInstance<TeleportTracker>().CanTeleport(entity.Destination))
+                {
+                    Main.NewText("This level: coming soon. Maybe.");
+                }
+                ModContent.GetInstance<TeleportTracker>().Teleport(entity.Destination);
+            }
+            else if(Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                var packet = Common.Utilities.ModNetHandler.GetPacket(Mod, Common.Utilities.TCPacketType.LevelPacket);
+                var tele = ModContent.GetInstance<TeleportTracker>();
+                packet.Write(entity.Destination);
+                packet.Send();
+            }
         }
 
         return true;

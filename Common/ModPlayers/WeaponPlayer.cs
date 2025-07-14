@@ -64,6 +64,20 @@ namespace TerrariaCells.Common.ModPlayers
             }
             base.PostUpdate();
         }
+
+        public override void Load()
+        {
+            On_Player.ApplyAttackCooldown += On_Player_ApplyAttackCooldown;
+        }
+        public override void Unload()
+        {
+            On_Player.ApplyAttackCooldown -= On_Player_ApplyAttackCooldown;
+        }
+
+        private void On_Player_ApplyAttackCooldown(On_Player.orig_ApplyAttackCooldown orig, Player self)
+        {
+            self.attackCD = 0;
+        }
     }
 
     public class ReloadDrawLayer : PlayerDrawLayer

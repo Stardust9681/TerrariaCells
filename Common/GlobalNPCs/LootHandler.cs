@@ -93,7 +93,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                 case NPCID.BrainofCthulhu:
                     npcLoot.Add(commonLesserHealthPotion);
                     //npcLoot.Add(new CommonDrop(ItemID.CloudinaBottle, 1));
-                    npcLoot.Add(new ItemDropWithConditionRule(ItemID.CloudinaBottle, 1, 1, 1, new PowerDropRuleCondition(static mplayer => !mplayer.CloudJump)));
+                    npcLoot.Add(new DropPerPlayerOnThePlayer(ItemID.CloudinaBottle, 1, 1, 1, new PowerDropRuleCondition(static mplayer => !mplayer.CloudJump)));
                     break;
                 case NPCID.EyeofCthulhu:
                 case NPCID.KingSlime:

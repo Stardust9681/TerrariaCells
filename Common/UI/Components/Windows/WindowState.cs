@@ -22,8 +22,30 @@ namespace TerrariaCells.Common.UI.Components.Windows
         internal abstract string Name { get; }
         internal virtual string InsertionIndex => "Vanilla: Mouse Text";
 
-        public Vector2 WindowPosition { get; protected set; }
-        public Vector2 WindowSize { get; protected set; }
+        public Vector2 WindowPosition
+        {
+            get
+            {
+                return new Vector2(Left.GetValue(Main.screenWidth), Top.GetValue(Main.screenHeight));
+            }
+            protected set
+            {
+                Left.Set(0, value.X/Main.screenWidth);
+                Top.Set(0, value.Y/Main.screenHeight);
+            }
+        }
+        public Vector2 WindowSize
+        {
+            get
+            {
+                return new Vector2(Width.GetValue(Main.screenWidth), Height.GetValue(Main.screenHeight));
+            }
+            protected set
+            {
+                Width.Set(value.X, 0);
+                Height.Set(value.Y, 0);
+            }
+        }
         public Rectangle Bounds => new Rectangle((int)WindowPosition.X, (int)WindowPosition.Y, (int)WindowSize.X, (int)WindowSize.Y);
         protected virtual void OnOpened() { }
         public void Open()
@@ -55,12 +77,7 @@ namespace TerrariaCells.Common.UI.Components.Windows
         }
         public bool IsMouseOnWindow()
         {
-            Vector2 mouseScreen = Main.MouseScreen;
-            return
-                mouseScreen.X > WindowPosition.X
-                && mouseScreen.X < WindowPosition.X + WindowSize.X
-                && mouseScreen.Y > WindowPosition.Y
-                && mouseScreen.Y < WindowPosition.Y + WindowSize.Y;
+            return ContainsPoint(Main.MouseScreen);
         }
 
         //===== Inheritence-Helping Methods =====

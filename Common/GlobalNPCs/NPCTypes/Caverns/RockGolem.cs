@@ -41,6 +41,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 				return;
 			}
 
+            float oldAI = npc.ai[1];
 			switch ((int)npc.ai[1])
 			{
 				case Idle:
@@ -56,7 +57,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 					ThrowAI(npc);
 					break;
 			}
-		}
+            if(npc.ai[1] != oldAI)
+                npc.netUpdate = true;
+        }
 
 		private void IdleAI(NPC npc)
 		{
@@ -66,6 +69,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 				npc.ai[1] = Idle;
 				npc.ai[2] = 0;
 				npc.ai[3] = 0;
+                npc.netUpdate = true;
 				return;
 			}
 
@@ -84,7 +88,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 				npc.ai[1] = Roll;
 				npc.ai[0] = 0;
 				npc.ai[3] = MathF.Sign(target.position.X - npc.position.X);
-				return;
+                npc.netUpdate = true;
+                return;
 			}
 		}
 
@@ -120,28 +125,35 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 				Collision.StepUp(ref npc.position, ref vel1, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
 				npc.velocity = vel1;
 
-				if (npc.collideX || npc.ai[0] > 45)
-				{
-					if (MathF.Abs(npc.velocity.X) < 0.3f)
-					{
-						npc.ai[1] = Delay;
-						npc.ai[0] = 0;
-						npc.velocity.Y -= 6f;
-						npc.height = 74;
-						npc.position.Y -= 42;
-						npc.netUpdate = true;
-						return;
-					}
-				}
+                bool collisionFlag = npc.collideX && MathF.Abs(npc.velocity.X) < 0.3f;
+                bool timeFlag = npc.ai[0] > 180;
 
 				float xDist = npc.position.X - target.position.X;
 				xDist *= npc.ai[3];
-				if (xDist < 14 * 16)
-					npc.velocity.X = MathHelper.Lerp(npc.velocity.X, 6f * npc.ai[3], 0.01f);
+				if (xDist < 12 * 16)
+					npc.velocity.X = MathHelper.Lerp(npc.velocity.X, 6f * npc.ai[3], 0.02f);
 				else
-					npc.velocity.X *= 0.9f;
+					npc.velocity.X *= 0.95f;
 
-				npc.rotation += MathHelper.ToRadians(npc.velocity.X) * 4f;
+                bool distanceFlag = xDist > Utilities.NumberHelpers.ToTileDist(16);
+
+                if (collisionFlag || timeFlag || distanceFlag)
+                {
+                    npc.ai[1] = Delay;
+                    npc.ai[0] = 0;
+                    npc.velocity.Y -= 6f;
+                    npc.height = 74;
+                    npc.position.Y -= 42;
+                    npc.netUpdate = true;
+                    for (int i = 0; i < Main.rand.Next(8, 12); i++)
+                    {
+                        Dust d = Dust.NewDustDirect(npc.Center, 1, 1, DustID.Stone);
+                        d.velocity.Y = -MathF.Abs(d.velocity.Y) * 2.5f;
+                    }
+                    return;
+                }
+
+                npc.rotation += MathHelper.ToRadians(npc.velocity.X) * 4f;
 			}
 			else if (npc.ai[0] > 15)
 			{
@@ -160,7 +172,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 				npc.ai[1] = 0;
 				npc.ai[2] = 0;
 				npc.ai[3] = 0;
-				return;
+                npc.netUpdate = true;
+                return;
 			}
 
 			npc.rotation = 0;
@@ -172,7 +185,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 			{
 				npc.dontTakeDamage = false;
 				CombatNPC.ToggleContactDamage(npc, false);
-			}
+                npc.netUpdate = true;
+            }
 
 			int direction = MathF.Sign(target.position.X - npc.position.X);
 			npc.spriteDirection = npc.direction = direction;
@@ -187,13 +201,14 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 				Vector2 vel1 = npc.oldVelocity;
 				Collision.StepUp(ref npc.position, ref vel1, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
 				npc.velocity = vel1;
-			}
+            }
 
 			if (npc.ai[0] > 60)
 			{
 				npc.ai[1] = ThrowHands;
 				npc.ai[0] = 0;
-				return;
+                npc.netUpdate = true;
+                return;
 			}
 		}
 
@@ -201,8 +216,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 		{
 			if (!npc.TryGetTarget(out Entity target))
 			{
+                npc.ai[0] = 0;
 				npc.ai[1] = Idle;
-				return;
+                npc.netUpdate = true;
+                return;
 			}
 
 			npc.velocity.X *= 0.9f;
@@ -210,21 +227,25 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 
 			if (npc.ai[0] == 0)
 			{
-				if (npc.ai[2] > 2 && MathF.Abs(npc.Bottom.Y - target.Bottom.Y) < 2 * 16)
+                /*if (npc.ai[2] > 2 && MathF.Abs(npc.Bottom.Y - target.Bottom.Y) < 2 * 16)
 					//npc.ai[3] = Main.rand.Next(2) + 2; //Pick from 2 and 3
 					npc.ai[3] = 3;
 				else if (npc.ai[2] > 1)
 					npc.ai[3] = Main.rand.Next(2) + 1; //Pick from 1 and 2
 				else if (npc.ai[2] > 0)
-					npc.ai[3] = 1; //Pick from 1
-				else
-				{
-					npc.ai[0] = 0;
-					npc.ai[1] = Roll;
-					npc.ai[2] = 0;
-					npc.ai[3] = MathF.Sign(target.position.X - npc.position.X);
-					return;
-				}
+					npc.ai[3] = 1; //Pick from 1*/
+                if (npc.ai[2] > 0)
+                {
+                    npc.ai[3] = 3;
+                }
+                else
+                {
+                    npc.ai[0] = 0;
+                    npc.ai[1] = Roll;
+                    npc.ai[2] = 0;
+                    npc.ai[3] = MathF.Sign(target.position.X - npc.position.X);
+                    return;
+                }
 			}
 			npc.ai[0]++;
 
@@ -254,14 +275,15 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 					{
 						npc.ai[2]--;
 						npc.ai[0] = 0;
-						return;
+                        npc.netUpdate = true;
+                        return;
 					}
 					break;
 				//Throw 2 Rocks
 				case 2:
 					//3 frame wind-up (10-12)
 					//2 frame follow-through (13-14)
-					if (npc.ai[0] == 40 && npc.ai[2] > 1)
+					if (npc.ai[0] == 40)// && npc.ai[2] > 1)
 					{
 						npc.ai[2] -= 2;
 						Vector2 vel = npc.DirectionTo(target.Center - new Vector2(0, MathF.Abs(npc.position.X - target.position.X) * 0.2f)) * RockSpeed;
@@ -282,13 +304,14 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 					if (npc.ai[0] > 60)
 					{
 						npc.ai[0] = 0;
-						return;
+                        npc.netUpdate = true;
+                        return;
 					}
 					break;
 				//Roll Boulder (3 Rocks)
 				case 3:
 					//3 frame summon (9-11)
-					if (npc.ai[0] == 8 && npc.ai[2] > 2)
+					if (npc.ai[0] == 8)// && npc.ai[2] > 2)
 					{
 						Vector2 vel = new Vector2(MathF.Sign(target.position.X - npc.position.X) * 4, -3f);
 						Projectile proj = Projectile.NewProjectileDirect(
@@ -300,16 +323,17 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 							1f,
 							Main.myPlayer
 						);
-						proj.friendly = false;
+                        npc.ai[2] -= 3;
+                        proj.friendly = false;
 						proj.netUpdate = true;
-						npc.ai[2] -= 3;
 					}
 
 					//3 frame wind-down (11-9)
 					if (npc.ai[0] > 60)
 					{
 						npc.ai[0] = 0;
-						return;
+                        npc.netUpdate = true;
+                        return;
 					}
 					break;
 			}

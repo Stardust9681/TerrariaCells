@@ -59,7 +59,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 			{
 				ShouldWalk = false;
 				npc.velocity.X *= 0.9f;
-				if (npc.Grounded() && MathF.Abs(npc.velocity.X) < 1)
+				if ((npc.collideY && npc.velocity.Y == 0) && MathF.Abs(npc.velocity.X) < 1)
 				{
 					if (Main.rand.NextBool(10))
 					{

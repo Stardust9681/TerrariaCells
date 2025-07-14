@@ -135,8 +135,12 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 Dust.NewDustDirect(npc.BottomLeft, npc.width, 0, DustID.Sand, 0, -4);
             }
 
+            bool validTargetInRange = npc.TargetInAggroRange(280);
+            if (!validTargetInRange)
+                this.ShouldWalk = false;
+
             //start dig
-            if (npc.ai[2] >= timeWalking && npc.ai[3] == 0 && npc.collideY && target != null)
+            if (validTargetInRange && npc.ai[2] >= timeWalking && npc.ai[3] == 0 && npc.collideY && target != null)
             {
                 npc.hide = true;
                 npc.ai[2] = 0;
@@ -200,7 +204,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                     npc.ai[3] = 0;
                 }
             }
-
         }
     }
 }

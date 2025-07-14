@@ -25,6 +25,7 @@ namespace TerrariaCells.Content.Projectiles
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.extraUpdates = 1;
+            Projectile.penetrate = -1;
         }
         public override bool PreDraw(ref Color lightColor)
         {
@@ -33,13 +34,16 @@ namespace TerrariaCells.Content.Projectiles
         }
         public override void AI()
         {
+            if (Projectile.ai[1] == 0)
+                Projectile.ai[1] = 1;
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             Projectile.velocity.Y += 0.03f;
 
             Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.IceTorch);
             d.scale = Main.rand.NextFloat(1.2f, 1.4f);
-            d.velocity *= 0.9f;
+            d.velocity = Projectile.velocity * 0.6f * Projectile.ai[1];
             d.noGravity = true;
+            Projectile.ai[1] *= -1;
         }
         public override void OnKill(int timeLeft)
         {

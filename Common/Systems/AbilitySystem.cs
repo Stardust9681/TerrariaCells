@@ -380,7 +380,7 @@ namespace TerrariaCells.Common.Systems
 		//Change selected item back to previously-held item if it was hot-swapped off
 		public override void PostUpdate()
 		{
-			if (prevSelectedItem != -1 && !Player.ItemAnimationEndingOrEnded)
+			if (prevSelectedItem != -1 && (Player.ItemAnimationEndingOrEnded || !Player.ItemAnimationActive))
 			{
 				Player.selectedItem = prevSelectedItem;
 				prevSelectedItem = -1;

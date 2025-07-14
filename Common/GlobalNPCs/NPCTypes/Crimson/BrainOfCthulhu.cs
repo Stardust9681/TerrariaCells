@@ -112,9 +112,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
                 npc.localAI[1] = npc.Center.X;
                 npc.localAI[2] = npc.Center.Y;// + (3.5f * 16);
                 npc.ai[0]++;
-				npc.EncourageDespawn(0);
+                npc.timeLeft = 0;
 				npc.GetGlobalNPC<CombatNPC>().allowContactDamage = false;
 				npc.Opacity = 0;
+                npc.netUpdate = true;
 
 				PowerupPickups.brainOfCthuluSpawnPoint = npc.position + (Vector2.UnitX * 80);
 				return;
