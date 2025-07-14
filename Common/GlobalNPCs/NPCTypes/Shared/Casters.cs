@@ -81,7 +81,19 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
         public override bool PreAI(NPC npc)
         {
-			if (Common.Systems.AIOverwriteSystem.AITypeExists(npc.type))
+            //for diabolist and ragged caster, use existing AI but limit its aggro range
+            //so they don't fire from offscreen
+            if (npc.type == NPCID.DiabolistRed || npc.type == NPCID.DiabolistWhite ||
+                npc.type == NPCID.RaggedCaster || npc.type == NPCID.RaggedCasterOpenCoat)
+            {
+                npc.TargetClosest();
+                if (npc.HasValidTarget && !npc.TargetInAggroRange(Main.player[npc.target], 640))
+                {
+                    return false;
+                }
+            }
+
+            if (Common.Systems.AIOverwriteSystem.AITypeExists(npc.type))
 				return base.PreAI(npc);
             if (npc.type != NPCID.DesertDjinn && npc.type != NPCID.CultistDevote)
                 return base.PreAI(npc);
