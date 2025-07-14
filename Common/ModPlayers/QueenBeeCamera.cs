@@ -7,7 +7,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Hive
+namespace TerrariaCells.Common.ModPlayers
 {
     public class QueenBeeCamera : ModPlayer
     {
@@ -26,7 +26,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Hive
             {
                 Systems.CameraManipulation.SetCamera(45, QueenBee.SpawnPosition - Main.ScreenSize.ToVector2()/2);
                 Systems.CameraManipulation.SetZoom(45, new Vector2(95, 55) * 12);
-                if ((Player.Center.X + Player.velocity.X < QueenBee.SpawnPosition.X - 613 && Player.velocity.X < 0) || (Player.Center.X + Player.velocity.X > QueenBee.SpawnPosition.X + 613 && Player.velocity.X > 0))
+                if (Player.Center.X + Player.velocity.X < QueenBee.SpawnPosition.X - 613 && Player.velocity.X < 0 || Player.Center.X + Player.velocity.X > QueenBee.SpawnPosition.X + 613 && Player.velocity.X > 0)
                 {
                     Player.velocity.X = 0;
                     Player.position.X = Player.oldPosition.X;

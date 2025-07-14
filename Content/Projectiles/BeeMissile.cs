@@ -12,7 +12,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using TerrariaCells.Common.Utilities;
 
-namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Hive
+namespace TerrariaCells.Content.Projectiles
 {
     public class BeeMissile : ModProjectile
     {

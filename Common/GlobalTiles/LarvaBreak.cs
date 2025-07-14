@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrariaCells.Common.ModPlayers;
 
-namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Hive
+namespace TerrariaCells.Common.GlobalTiles
 {
     public class LarvaBreak : GlobalTile
     {
