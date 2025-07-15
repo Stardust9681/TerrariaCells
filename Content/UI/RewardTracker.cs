@@ -15,16 +15,16 @@ using Terraria.GameContent.UI.Elements;
 
 namespace TerrariaCells.Content.UI
 {
-    public class RewardTracker : DraggableWindow
+    public class RewardTracker : WindowState
     {
         internal override string Name => "RewardTrackerUI";
-        public override Rectangle GrabBox => this.Bounds;
+        //public override Rectangle GrabBox => this.Bounds;
 
         internal const int Padding = 8;
 
         private TimerPanel _timer;
         private DeathsPanel _deaths;
-        protected override void Init()
+        public override void OnInitialize()
         {
             Vector2 timerSize = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString("00:00.00");
             timerSize += new Vector2(TimerPanel.Padding * 2, TimerPanel.Padding);
@@ -42,17 +42,18 @@ namespace TerrariaCells.Content.UI
 
             //Expand to fill each child
             WindowSize = new Vector2(timerSize.X, timerSize.Y + deathsSize.Y);
-            this.WindowPosition = new Vector2((Main.screenWidth - WindowSize.X) * 0.5f, NoDragZone);
+            this.WindowPosition = new Vector2((Main.screenWidth - WindowSize.X) * 0.5f, 10);
             UpdateChildPositions(WindowPosition);
         }
 
         protected override void OnOpened()
         {
-            this.WindowPosition = new Vector2((Main.screenWidth - WindowSize.X) * 0.5f, NoDragZone);
+            this.WindowPosition = new Vector2((Main.screenWidth - WindowSize.X) * 0.5f, 10);
             UpdateChildPositions(WindowPosition);
+            Recalculate();
         }
 
-        protected override void UpdateChildPositions(Vector2 newPosition)
+        protected void UpdateChildPositions(Vector2 newPosition)
         {
             /*_timer.Left.Set(newPosition.X, 0);
             _timer.Top.Set(newPosition.Y, 0);
@@ -106,6 +107,8 @@ namespace TerrariaCells.Content.UI
                 _ => Terraria.ID.ItemID.CopperWatch,
             };
             var watchSprite = Terraria.GameContent.TextureAssets.Item[watchType];
+            if (!watchSprite.IsLoaded)
+                watchSprite.Wait.Invoke();
             drawPos = panelPos;
             spriteBatch.Draw(watchSprite.Value, new Rectangle((int)drawPos.X, (int)drawPos.Y, (int)panelSize.Y, (int)panelSize.Y), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
         }
