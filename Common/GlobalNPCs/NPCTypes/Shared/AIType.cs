@@ -16,6 +16,8 @@ using MonoMod.RuntimeDetour;
 using System.Collections.Concurrent;
 using Terraria.ID;
 using Terraria.ModLoader.Core;
+using Terraria.ModLoader.IO;
+using System.IO;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 {
@@ -30,6 +32,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
 		public abstract bool AppliesToNPC(int npcType);
 		public abstract void Behaviour(NPC npc);
+        public virtual void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) { }
+        public virtual void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader) { }
 		public virtual bool FindFrame(NPC npc, int frameHeight) => true;
 		public virtual bool PreDraw(NPC npc, SpriteBatch spritebatch, Vector2 screenPos, Color lightColor) { return true; }
 	}
@@ -161,8 +165,19 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 			ai.Behaviour(npc);
 			return false;
 		}
-
-		public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+        public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
+        {
+            if (!AIOverwriteSystem.TryGetAIType(npc.type, out AIType ai))
+                return;
+            ai.SendExtraAI(npc, bitWriter, binaryWriter);
+        }
+        public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
+        {
+            if (!AIOverwriteSystem.TryGetAIType(npc.type, out AIType ai))
+                return;
+            ai.ReceiveExtraAI(npc, bitReader, binaryReader);
+        }
+        public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			if (!AIOverwriteSystem.TryGetAIType(npc.type, out AIType ai))
 				return base.PreDraw(npc, spriteBatch, screenPos, drawColor);

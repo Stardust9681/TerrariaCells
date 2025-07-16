@@ -19,6 +19,5 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Common\GlobalNPCs\NPCTypes\Corruption\" />
-      <Folder Include="Common\GlobalNPCs\NPCTypes\Hive\" />
     </ItemGroup>
 </Project>
