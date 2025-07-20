@@ -597,9 +597,14 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             }
             SetDirection(wormEntity, toSegmentAhead);
 
-            if (Main.npc[wormEntity.realLife].life <= 0)
+            if (!Main.npc[wormEntity.realLife].active)
             {
-                wormEntity.StrikeInstantKill();
+                wormEntity.life = 0;
+                wormEntity.HitEffect();
+                wormEntity.checkDead();
+                wormEntity.active = false;
+                NetMessage.SendData(MessageID.DamageNPC, -1, -1, null, wormEntity.whoAmI, -1f);
+                return;
             }
         }
 
