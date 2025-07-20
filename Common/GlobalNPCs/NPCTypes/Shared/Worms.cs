@@ -25,22 +25,22 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
         public override bool InstancePerEntity => true;
 
-        public float AttackSpeed = 100f; //Speed of the worm at the start of its attack in tiles per second
+        public float AttackSpeedHorizontal = 100f; //Speed of the worm at the start of its horizontal attack in tiles per second
+        public float AttackSpeedVertical = 100f; //Speed of the worm at the start of its vertical attack in tiles per second
         public int AttackCooldownTicks = 180;
         public int MaxHorizontalAttackDistance = 30; //Max distance in tiles how far the worm can attack from horizontally
         public int MaxVerticalAttackDistance = 20; //Max distance in tiles how far the worm can attack from vertically
         public int AttackEndDistance = 30; //Distance after which, if beneath the player, the attack stops in tiles
         public int AttackWarningDust = DustID.Sand;
+        public int SegmentCount = 30;
+        public int AggroRange = 50; //Distance at which the worm starts its attack loop in tiles
         public SoundStyle AttackWarningSound = SoundID.WormDig;
 
-        //THESE TWO NEED TO BE UPDATED FOR EVERY NEW TYPE OF WORM
-        public static Dictionary<int, int> WormHeadToBody = new Dictionary<int, int>()
+        //THIS NEEDS TO BE UPDATED FOR EVERY NEW TYPE OF WORM
+        public static List<int> WormHeads = new List<int>()
         {
-            { NPCID.GiantWormHead, NPCID.GiantWormBody },
-        };
-        public static Dictionary<int, int> WormBodyToTail = new Dictionary<int, int>()
-        {
-            { NPCID.GiantWormBody, NPCID.GiantWormTail },
+            NPCID.GiantWormHead,
+            NPCID.TombCrawlerHead,
         };
 
         enum WormState
@@ -285,31 +285,34 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             AttackWarningSound.MaxInstances = 1;
             AttackWarningSound.SoundLimitBehavior = SoundLimitBehavior.IgnoreNew;
 
-            if (WormHeadToBody.Keys.Contains(npc.type) || WormHeadToBody.Values.Contains(npc.type) || WormBodyToTail.Values.Contains(npc.type))
+            if (WormHeads.Contains(npc.type) || WormHeads.Contains(npc.type - 1) || WormHeads.Contains(npc.type - 2))
             {
                 npc.aiStyle = -1;
             }
 
-            if (npc.type is NPCID.GiantWormHead)
+            if (WormHeads.Contains(npc.type))
             {
                 targetWormEntity = npc;
-                segmentCountBehind = 30;
+            }
+
+            switch (npc.type)
+            {
+                case NPCID.TombCrawlerHead:
+                    AttackSpeedVertical = 150;
+                    SegmentCount = 100;
+                    break;
             }
         }
 
         public override bool PreAI(NPC npc)
         {
-            if (npc.type is NPCID.GiantWormHead or NPCID.GiantWormBody)
+            if (WormHeads.Contains(npc.type))
             {
-                TrySpawnSegmentBehind(npc);
-            }
-
-            if (npc.type is NPCID.GiantWormHead)
-            {
+                TrySpawnBody(npc);
                 WormHeadAI(npc);
             }
 
-            if (npc.type is NPCID.GiantWormBody or NPCID.GiantWormTail)
+            if (WormHeads.Contains(npc.type - 1) || WormHeads.Contains(npc.type - 2))
             {
                 WormSegmentAndTailAI(npc);
             }
@@ -337,7 +340,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                     velocity = direction * 6f;
 
                     //Transition
-                    if (playerDistance < 30f * 16f)
+                    if (playerDistance < AggroRange * 16f)
                     {
                         wormState = WormState.PreparingAttack;
                     }
@@ -457,7 +460,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                                 break;
                         }
                         wormState = WormState.Attacking;
-                        speed = AttackSpeed * 16f / 60f;
+                        speed = AttackSpeedHorizontal * 16f / 60f;
                     }
 
                     #endregion
@@ -595,45 +598,53 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             SetDirection(wormEntity, toSegmentAhead);
         }
 
-        void TrySpawnSegmentBehind(NPC wormEntity)
+        void TrySpawnBody(NPC wormEntity)
         {
-            NPC ogTargetWormEntity = Worms.targetWormEntity;
             Worms.targetWormEntity = wormEntity;
-            if (behindSegmentIndex > 0 || segmentCountBehind <= -1)
+
+            if (!WormHeads.Contains(wormEntity.type) || behindSegmentIndex > 0)
             {
                 return;
             }
 
-            if (wormEntity.type is NPCID.GiantWormHead)
+            direction = new Vector2(0, 1f);
+
+            int prevSegmentIndex = wormEntity.whoAmI;
+            for (int i = 0; i < SegmentCount; i++)
             {
-                direction = new Vector2(0, 1f);
-                segmentCountBehind = 30;
+                int spawnedSegmentType = wormEntity.type + 1;
+
+                int spawnedSegmentIndex = NPC.NewNPC(
+                    new EntitySource_SpawnNPC(),
+                    (int)wormEntity.Center.X,
+                    (int)wormEntity.Center.Y + wormEntity.height / 2,
+                    wormEntity.type + 1);
+                behindSegmentIndex = spawnedSegmentIndex;
+                int thisSegmentCountBehind = segmentCountBehind;
+
+                NPC spawnedNPC = Main.npc[spawnedSegmentIndex];
+                Worms.targetWormEntity = spawnedNPC;
+
+                spawnedNPC.realLife = wormEntity.realLife;
+                aheadSegmentIndex = prevSegmentIndex;
+                segmentCountBehind = SegmentCount - 1 - i;
+                spawnedNPC.GetGlobalNPC<CombatNPC>().allowContactDamage = false;
+                prevSegmentIndex = spawnedNPC.whoAmI;
             }
 
-            int spawnedSegmentType;
+            int spawnedTailIndex = NPC.NewNPC(
+                new EntitySource_SpawnNPC(),
+                (int)wormEntity.Center.X,
+                (int)wormEntity.Center.Y + wormEntity.height / 2,
+                wormEntity.type + 2);
+            behindSegmentIndex = spawnedTailIndex;
+            NPC spawnedTail = Main.npc[spawnedTailIndex];
+            Worms.targetWormEntity = spawnedTail;
 
-            if (segmentCountBehind == 0)
-            {
-                spawnedSegmentType = NPCID.GiantWormTail;
-            }
-            else
-            {
-                spawnedSegmentType = NPCID.GiantWormBody;
-            }
-
-            int spawnedSegmentIndex = NPC.NewNPC(new EntitySource_SpawnNPC(), (int)wormEntity.Center.X, (int)wormEntity.Center.Y + wormEntity.height / 2, spawnedSegmentType);
-            behindSegmentIndex = spawnedSegmentIndex;
-            int thisSegmentCountBehind = segmentCountBehind;
-
-            NPC spawnedNPC = Main.npc[spawnedSegmentIndex];
-            Worms.targetWormEntity = spawnedNPC;
-
-            spawnedNPC.realLife = wormEntity.realLife;
-            aheadSegmentIndex = wormEntity.whoAmI;
-            segmentCountBehind = thisSegmentCountBehind - 1;
-            spawnedNPC.GetGlobalNPC<CombatNPC>().allowContactDamage = false;
-
-            Worms.targetWormEntity = ogTargetWormEntity;
+            spawnedTail.realLife = wormEntity.realLife;
+            aheadSegmentIndex = prevSegmentIndex;
+            segmentCountBehind = 0;
+            spawnedTail.GetGlobalNPC<CombatNPC>().allowContactDamage = false;
         }
     }
 }
