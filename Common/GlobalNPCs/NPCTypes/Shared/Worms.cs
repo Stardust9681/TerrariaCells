@@ -596,6 +596,11 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 wormEntity.Center = segmentAhead.Center - toSegmentAhead * 16f;
             }
             SetDirection(wormEntity, toSegmentAhead);
+
+            if (Main.npc[wormEntity.realLife].life <= 0)
+            {
+                wormEntity.StrikeInstantKill();
+            }
         }
 
         void TrySpawnBody(NPC wormEntity)
@@ -625,7 +630,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 NPC spawnedNPC = Main.npc[spawnedSegmentIndex];
                 Worms.targetWormEntity = spawnedNPC;
 
-                spawnedNPC.realLife = wormEntity.realLife;
+                spawnedNPC.realLife = wormEntity.whoAmI;
                 aheadSegmentIndex = prevSegmentIndex;
                 segmentCountBehind = SegmentCount - 1 - i;
                 spawnedNPC.GetGlobalNPC<CombatNPC>().allowContactDamage = false;
@@ -641,7 +646,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             NPC spawnedTail = Main.npc[spawnedTailIndex];
             Worms.targetWormEntity = spawnedTail;
 
-            spawnedTail.realLife = wormEntity.realLife;
+            spawnedTail.realLife = wormEntity.whoAmI;
             aheadSegmentIndex = prevSegmentIndex;
             segmentCountBehind = 0;
             spawnedTail.GetGlobalNPC<CombatNPC>().allowContactDamage = false;
