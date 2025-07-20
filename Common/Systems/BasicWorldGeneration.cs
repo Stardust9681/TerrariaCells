@@ -51,9 +51,9 @@ public class BasicWorldGeneration : ModSystem
         {
             if (basicWorldGenData == null && !_didWarning) 
             {
-                Main.NewText(
-                    "TerraCells world generation data missing! Some TerraCells features may not work."
-                );
+                //Main.NewText(
+                //    "TerraCells world generation data missing! Some TerraCells features may not work."
+                //);
                 Mod.Logger.Error("Missing BasicWorldGenData!");
                 _didWarning = true;
             }
