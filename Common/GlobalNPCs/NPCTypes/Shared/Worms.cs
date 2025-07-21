@@ -25,8 +25,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
         public override bool InstancePerEntity => true;
 
-        public float AttackSpeedHorizontal = 100f; //Speed of the worm at the start of its horizontal attack in tiles per second
-        public float AttackSpeedVertical = 100f; //Speed of the worm at the start of its vertical attack in tiles per second
+        public float AttackSpeedHorizontal = 80; //Speed of the worm at the start of its horizontal attack in tiles per second
+        public float AttackSpeedVertical = 80; //Speed of the worm at the start of its vertical attack in tiles per second
         public int AttackCooldownTicks = 180;
         public int MaxHorizontalAttackDistance = 30; //Max distance in tiles how far the worm can attack from horizontally
         public int MaxVerticalAttackDistance = 20; //Max distance in tiles how far the worm can attack from vertically
@@ -299,9 +299,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
             switch (npc.type)
             {
+                //example how to change values of new worm type
                 case NPCID.TombCrawlerHead:
-                    AttackSpeedVertical = 150;
-                    SegmentCount = 100;
+                    AttackSpeedVertical = 80;
+                    SegmentCount = 30;
                     break;
             }
         }
