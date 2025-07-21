@@ -41,6 +41,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
         {
             NPCID.GiantWormHead,
             NPCID.TombCrawlerHead,
+            NPCID.DevourerHead,
+            NPCID.SeekerHead,
         };
 
         enum WormState
