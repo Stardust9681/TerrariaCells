@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Reflection;
 using System.Text;
 using Terraria;
 using Terraria.Chat;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using TerrariaCells.Common.GlobalItems;
@@ -281,5 +283,164 @@ namespace TerrariaCells.Common.Commands
 
         }
 
+    }
+
+    /// <summary>
+    /// Command to kill, hurt or get type of npcs
+    /// </summary>
+    public class NPCCommand : ModifierCommand
+    {
+        public override CommandType Type => CommandType.Chat;
+
+        public override string Command => "npc";
+
+        public override string Usage
+    => "/npc <'kill' or 'type'> <index 1> <index 2> <index 3> ... (0 or more indeces)" +
+            "\n/npc <hurt> <damage> <index 1> <index 2> <index 3> ... (0 or more indeces)" +
+            "\n kill — kill npcs at indeces in Main.npc (all active npcs if no index is provided)" +
+            "\n hurt - hurt npcs at indeces in Main.npc (all active npcs if no index is provided)" +
+            "\n type - get npc types at indeces in Main.npc (all active npcs if no index is provided)";
+
+        public override string Description => "Command used to kill an npc at a specific index in Main.npc";
+
+        public override void Action(CommandCaller caller, string input, string[] args)
+        {
+            if (!Common.Configs.DevConfig.Instance.AllowDebugCommands)
+            {
+                caller.Reply("Debug Commands are disabled");
+                return;
+            }
+            // Checking input Arguments
+            if (args.Length < 1)
+            {
+                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("At least one argument was expected"), Color.Yellow);
+                return;
+            }
+
+            switch (args[0])
+            {
+                case "kill":
+                    #region kill npcs
+
+                    for (int i = 1; i < args.Length; i++)
+                    {
+                        if (!int.TryParse(args[i], out int index))
+                        {
+                            ChatHelper.BroadcastChatMessage(
+                                       NetworkText.FromLiteral(i + 1 + (i != 0 ? i != 1 ? i != 2 ? "th" : "rd" : "nd" : "st") + " index is not an integer (has to be one)"),
+                                       Color.Yellow);
+                            continue;
+                        }
+                        if (index < 0 || index >= Main.maxNPCs)
+                        {
+                            ChatHelper.BroadcastChatMessage(
+                                NetworkText.FromLiteral(i + 1 + (i != 0 ? i != 1 ? i != 2 ? "th" : "rd" : "nd" : "st") + " index is out of bounds of the Main.npc array (from 0 to 199 allowed)"),
+                                Color.Yellow);
+                            continue;
+                        }
+
+                        Main.npc[index].StrikeInstantKill();
+                    }
+
+                    if (args.Length == 1)
+                    {
+                        for (int i = 0; i < Main.maxNPCs; i++)
+                        {
+                            Main.npc[i].StrikeInstantKill();
+                        }
+                    }
+
+                    #endregion
+                    return;
+                case "hurt":
+                    #region hurt npcs
+
+                    if (!int.TryParse(args[1], out int damage))
+                    {
+                        ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("First argument after hurt must be an integer denoting damage"), Color.Yellow);
+                    }
+
+                    for (int i = 2; i < args.Length; i++)
+                    {
+                        if (!int.TryParse(args[i], out int index))
+                        {
+                            ChatHelper.BroadcastChatMessage(
+                                       NetworkText.FromLiteral(i + 1 + (i != 0 ? i != 1 ? i != 2 ? "th" : "rd" : "nd" : "st") + " index is not an integer (has to be one)"),
+                                       Color.Yellow);
+                            continue;
+                        }
+                        if (index < 0 || index >= Main.maxNPCs)
+                        {
+                            ChatHelper.BroadcastChatMessage(
+                                NetworkText.FromLiteral(i + 1 + (i != 0 ? i != 1 ? i != 2 ? "th" : "rd" : "nd" : "st") + " index is out of bounds of the Main.npc array (from 0 to 199 allowed)"),
+                                Color.Yellow);
+                            continue;
+                        }
+
+                        Main.npc[index].life -= damage;
+                    }
+
+                    if (args.Length == 2)
+                    {
+                        for (int i = 0; i < Main.maxNPCs; i++)
+                        {
+                            Main.npc[i].life -= damage;
+                        }
+                    }
+
+                    #endregion
+                    return;
+                case "type":
+                    #region get npc types
+
+                    for (int i = 1; i < args.Length; i++)
+                    {
+                        if (!int.TryParse(args[i], out int index))
+                        {
+                            ChatHelper.BroadcastChatMessage(
+                                       NetworkText.FromLiteral(i + 1 + (i != 0 ? i != 1 ? i != 2 ? "th" : "rd" : "nd" : "st") + " index is not an integer (has to be one)"),
+                                       Color.Yellow);
+                            continue;
+                        }
+                        if (index < 0 || index >= Main.maxNPCs)
+                        {
+                            ChatHelper.BroadcastChatMessage(
+                                NetworkText.FromLiteral(i + 1 + (i != 0 ? i != 1 ? i != 2 ? "th" : "rd" : "nd" : "st") + " index is out of bounds of the Main.npc array (from 0 to 199 allowed)"),
+                                Color.Yellow);
+                            continue;
+                        }
+
+                        if (!Main.npc[index].active)
+                        {
+                            continue;
+                        }
+
+                        ChatHelper.BroadcastChatMessage(
+                            NetworkText.FromLiteral("Type of npc at index " + index + " is of type " + NPCID.Search.GetName(Main.npc[index].type)),
+                            Color.White);
+                    }
+
+                    if (args.Length == 1)
+                    {
+                        for (int i = 0; i < Main.maxNPCs; i++)
+                        {
+                            if (!Main.npc[i].active)
+                            {
+                                continue;
+                            }
+
+                            ChatHelper.BroadcastChatMessage(
+                                NetworkText.FromLiteral("Type of npc at index " + i + " is of type " + NPCID.Search.GetName(Main.npc[i].type)),
+                                Color.White);
+                        }
+                    }
+
+                    #endregion
+                    return;
+                default:
+                    ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("First argument must be 'kill', 'hurt' or 'type'"), Color.Yellow);
+                    return;
+            }
+        }
     }
 }
