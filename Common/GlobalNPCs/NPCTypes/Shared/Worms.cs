@@ -304,6 +304,12 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             switch (npc.type)
             {
                 //example how to change values of new worm type
+                case NPCID.EaterofWorldsHead:
+                case NPCID.EaterofWorldsBody:
+                case NPCID.EaterofWorldsTail:
+                    //SegmentCount = 1;
+                    HasOneHPPool = false;
+                    break;
                 case NPCID.GiantWormHead:
                 case NPCID.GiantWormBody:
                 case NPCID.GiantWormTail:
@@ -630,10 +636,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
             if (npc.realLife == -1)
             {
+                Main.NewText("npc of whoAmI " + npc.whoAmI + " died.");
+
                 #region split worm / kill head / kill tail
 
                 if (IsWormHead(npc) && Main.npc[behindSegmentIndex].realLife == -1)
                 {
+                    Main.NewText("Kill worm head " + Main.time);
                     NPC behindSegment = Main.npc[behindSegmentIndex];
                     behindSegment.realLife = -2; //don't trigger this worm splitting logic
 
@@ -648,6 +657,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 }
                 else if (IsWormBody(npc))
                 {
+                    Main.NewText("Kill worm body " + Main.time);
                     NPC aheadSegment = Main.npc[aheadSegmentIndex];
                     NPC behindSegment = Main.npc[behindSegmentIndex];
                     aheadSegment.realLife = -2; //don't trigger this worm splitting logic
@@ -673,6 +683,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 }
                 else if (IsWormTail(npc))
                 {
+                    Main.NewText("Kill worm tail");
                     NPC aheadSegment = Main.npc[aheadSegmentIndex];
                     aheadSegment.realLife = -2; //don't trigger this worm splitting logic
 
@@ -691,6 +702,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
             void TurnBehindSegmentIntoHead(NPC behindSegment, int headType)
             {
+                Main.NewText("turn behind segment into head");
                 int spawnedHeadIndex = NPC.NewNPC(
                     new EntitySource_SpawnNPC(),
                     (int)behindSegment.Center.X,
@@ -717,6 +729,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
             void TurnAheadSegmentIntoTail(NPC aheadSegment, int tailType)
             {
+                Main.NewText("turn ahead segment into tail");
                 //turn ahead segment into tail
                 int spawnedTailIndex = NPC.NewNPC(
                     new EntitySource_SpawnNPC(),
