@@ -15,7 +15,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 	{
 		public override bool AppliesToNPC(int npcType)
 		{
-			return npcType is NPCID.Crimera or NPCID.BigCrimera or NPCID.LittleCrimera;
+            return npcType is NPCID.Crimera or NPCID.BigCrimera or NPCID.LittleCrimera or NPCID.EaterofSouls or NPCID.LittleEater or NPCID.BigEater;
 		}
 
 		const int Idle = 0;
