@@ -286,7 +286,7 @@ namespace TerrariaCells.Common.Commands
     }
 
     /// <summary>
-    /// Command to kill, hurt or get type of npcs
+    /// Command to kill, hurt or get type or position of npcs
     /// </summary>
     public class NPCCommand : ModifierCommand
     {
@@ -295,11 +295,12 @@ namespace TerrariaCells.Common.Commands
         public override string Command => "npc";
 
         public override string Usage
-    => "/npc <'kill' or 'type'> <index 1> <index 2> <index 3> ... (0 or more indeces)" +
+    => "/npc <'kill', 'type' or 'ai'> <index 1> <index 2> <index 3> ... (0 or more indeces)" +
             "\n/npc <hurt> <damage> <index 1> <index 2> <index 3> ... (0 or more indeces)" +
             "\n kill — kill npcs at indeces in Main.npc (all active npcs if no index is provided)" +
             "\n hurt - hurt npcs at indeces in Main.npc (all active npcs if no index is provided)" +
-            "\n type - get npc types at indeces in Main.npc (all active npcs if no index is provided)";
+            "\n type - get npc types at indeces in Main.npc (all active npcs if no index is provided)" +
+            "\n ai - get the 4 entries in npc.ai at indeces in Main.npc (all active npcs if no index is provided)";
 
         public override string Description => "Command used to kill an npc at a specific index in Main.npc";
 
@@ -416,7 +417,7 @@ namespace TerrariaCells.Common.Commands
                         }
 
                         ChatHelper.BroadcastChatMessage(
-                            NetworkText.FromLiteral("Type of npc at index " + index + " is of type " + NPCID.Search.GetName(Main.npc[index].type)),
+                            NetworkText.FromLiteral("Type of npc at index " + index + " is " + NPCID.Search.GetName(Main.npc[index].type)),
                             Color.White);
                     }
 
@@ -430,7 +431,105 @@ namespace TerrariaCells.Common.Commands
                             }
 
                             ChatHelper.BroadcastChatMessage(
-                                NetworkText.FromLiteral("Type of npc at index " + i + " is of type " + NPCID.Search.GetName(Main.npc[i].type)),
+                                NetworkText.FromLiteral("Type of npc at index " + i + " is " + NPCID.Search.GetName(Main.npc[i].type)),
+                                Color.White);
+                        }
+                    }
+
+                    #endregion
+                    return;
+                case "ai":
+                    #region get npc ai
+
+                    for (int i = 1; i < args.Length; i++)
+                    {
+                        if (!int.TryParse(args[i], out int index))
+                        {
+                            ChatHelper.BroadcastChatMessage(
+                                       NetworkText.FromLiteral(i + 1 + (i != 0 ? i != 1 ? i != 2 ? "th" : "rd" : "nd" : "st") + " index is not an integer (has to be one)"),
+                                       Color.Yellow);
+                            continue;
+                        }
+                        if (index < 0 || index >= Main.maxNPCs)
+                        {
+                            ChatHelper.BroadcastChatMessage(
+                                NetworkText.FromLiteral(i + 1 + (i != 0 ? i != 1 ? i != 2 ? "th" : "rd" : "nd" : "st") + " index is out of bounds of the Main.npc array (from 0 to 199 allowed)"),
+                                Color.Yellow);
+                            continue;
+                        }
+
+                        if (!Main.npc[index].active)
+                        {
+                            continue;
+                        }
+
+                        NPC npc = Main.npc[index];
+                        ChatHelper.BroadcastChatMessage(
+                            NetworkText.FromLiteral("AI of npc at index " + index + " is this: " + npc.ai[0] + ", " + npc.ai[1] + ", " + npc.ai[2] + ", " + npc.ai[3]),
+                            Color.White);
+                    }
+
+                    if (args.Length == 1)
+                    {
+                        for (int i = 0; i < Main.maxNPCs; i++)
+                        {
+                            if (!Main.npc[i].active)
+                            {
+                                continue;
+                            }
+
+                            NPC npc = Main.npc[i];
+                            ChatHelper.BroadcastChatMessage(
+                                NetworkText.FromLiteral("AI of npc at index " + i + " is this: " + npc.ai[0] + ", " + npc.ai[1] + ", " + npc.ai[2] + ", " + npc.ai[3]),
+                                Color.White);
+                        }
+                    }
+
+                    #endregion
+                    return;
+                case "pos":
+                    #region get npc position
+
+                    for (int i = 1; i < args.Length; i++)
+                    {
+                        if (!int.TryParse(args[i], out int index))
+                        {
+                            ChatHelper.BroadcastChatMessage(
+                                       NetworkText.FromLiteral(i + 1 + (i != 0 ? i != 1 ? i != 2 ? "th" : "rd" : "nd" : "st") + " index is not an integer (has to be one)"),
+                                       Color.Yellow);
+                            continue;
+                        }
+                        if (index < 0 || index >= Main.maxNPCs)
+                        {
+                            ChatHelper.BroadcastChatMessage(
+                                NetworkText.FromLiteral(i + 1 + (i != 0 ? i != 1 ? i != 2 ? "th" : "rd" : "nd" : "st") + " index is out of bounds of the Main.npc array (from 0 to 199 allowed)"),
+                                Color.Yellow);
+                            continue;
+                        }
+
+                        if (!Main.npc[index].active)
+                        {
+                            continue;
+                        }
+
+                        NPC npc = Main.npc[index];
+                        ChatHelper.BroadcastChatMessage(
+                            NetworkText.FromLiteral("Position of npc at index " + index + " is " + npc.Center),
+                            Color.White);
+                    }
+
+                    if (args.Length == 1)
+                    {
+                        for (int i = 0; i < Main.maxNPCs; i++)
+                        {
+                            if (!Main.npc[i].active)
+                            {
+                                continue;
+                            }
+
+                            NPC npc = Main.npc[i];
+                            ChatHelper.BroadcastChatMessage(
+                                NetworkText.FromLiteral("Position of npc at index " + i + " is " + npc.Center),
                                 Color.White);
                         }
                     }
@@ -438,7 +537,7 @@ namespace TerrariaCells.Common.Commands
                     #endregion
                     return;
                 default:
-                    ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("First argument must be 'kill', 'hurt' or 'type'"), Color.Yellow);
+                    ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("First argument must be 'kill', 'hurt', 'type', 'ai' or 'pos'"), Color.Yellow);
                     return;
             }
         }
