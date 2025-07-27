@@ -149,10 +149,13 @@
         "X": 494,
         "Y": 220
     },
-    {
-        "Name": "CultistArcherBlue",
-        "X": 502,
-        "Y": 89
+    { 
+        "WIdPool" : [
+      { "Name" : "Merchant", "Weight" : 1},
+      { "Name" : "ArmsDealer", "Weight" : 1 }
+                    ],
+        "X" : 505,
+        "Y" : 89
     },
     {
         "Name": "IceGolem",

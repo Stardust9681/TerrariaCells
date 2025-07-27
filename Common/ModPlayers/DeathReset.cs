@@ -7,7 +7,9 @@ using TerrariaCells.Common.Configs;
 using TerrariaCells.Common.Items;
 using TerrariaCells.Common.Systems;
 using Terraria.ModLoader.IO;
-using static TerrariaCells.Common.ModPlayers.RewardPlayer;
+using static TerrariaCells.Common.Utilities.PlayerHelpers;
+using TerrariaCells.Common.GlobalItems;
+using TerrariaCells.Common.Utilities;
 
 namespace TerrariaCells.Common.ModPlayers;
 
@@ -25,92 +27,94 @@ public class DeathReset : ModPlayer, IEntitySource
 	)
 	{
         Player.RemoveSpawn();
-		if (DevConfig.Instance.DropItems)
-		{
-			// Player.DropItems(); // let me keep my vanity pleas ;-;
-			foreach ((int itemslot, TerraCellsItemCategory _) in InventoryManager.slotCategorizations)
-			{
-				Entity.inventory[itemslot].shimmered = true;
-				Entity.DropItem(this, Entity.Center, ref Entity.inventory[itemslot]);
-			}
-			
-			Entity.inventory[50].shimmered = true; Entity.DropItem(this, Entity.Center, ref Entity.inventory[50]); 
-			Entity.inventory[51].shimmered = true; Entity.DropItem(this, Entity.Center, ref Entity.inventory[51]); 
-			Entity.inventory[52].shimmered = true; Entity.DropItem(this, Entity.Center, ref Entity.inventory[52]); 
-			Entity.inventory[53].shimmered = true; Entity.DropItem(this, Entity.Center, ref Entity.inventory[53]); 
-			Entity.inventory[58].shimmered = true; Entity.DropItem(this, Entity.Center, ref Entity.inventory[58]); 
-			Entity.armor[0].shimmered =      true; Entity.DropItem(this, Entity.Center, ref Entity.armor[0]);      
-			Entity.armor[1].shimmered =      true; Entity.DropItem(this, Entity.Center, ref Entity.armor[1]);      
-			Entity.armor[2].shimmered =      true; Entity.DropItem(this, Entity.Center, ref Entity.armor[2]);      
-			Entity.armor[3].shimmered =      true; Entity.DropItem(this, Entity.Center, ref Entity.armor[3]);      
-			Entity.armor[4].shimmered =      true; Entity.DropItem(this, Entity.Center, ref Entity.armor[4]);      
-			Entity.armor[5].shimmered =      true; Entity.DropItem(this, Entity.Center, ref Entity.armor[5]);      
-
-			//Give default inventory on death
-			Item[] startInv = GetStartingItems();
-			for (int i = 0; i < startInv.Length; i++)
-			{
-				Player.inventory[i] = startInv[i].Clone();
-				if (startInv[i].IsAir)
-					Player.inventory[i].TurnToAir();
-			}
-		}
+        ResetInventory(ResetInventoryContext.Death);
 
 		//Reset mana
 		Player.statMana = Player.statManaMax2;
 
         Player.respawnTimer = MaxRespawnTime;
 
-		//Reset systems
-        // ModContent.GetInstance<TeleportTracker>().Reset();
-		ModContent.GetInstance<ClickedHeartsTracker>().Reset();
-		ModContent.GetInstance<ChestLootSpawner>().Reset();
-		WorldPylonSystem.ResetPylons();
-        Player.GetModPlayer<RewardPlayer>().UpdateTracker(RewardPlayer.TrackerAction.Stop);
+        if (Main.netMode == NetmodeID.SinglePlayer)
+        {
+            //Reset systems
+            ModContent.GetInstance<ClickedHeartsTracker>().Reset();
+            ModContent.GetInstance<ChestLootSpawner>().Reset();
+            WorldPylonSystem.ResetPylons();
+            RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Stop);
+        }
 	}
 
 	public override void OnEnterWorld()
 	{
-        //If the last world the player was in is the world they've just entered
-        //Don't do anything
-        if (Player.spN[0] is not null
-            && Main.worldName.Equals(Player.spN[0])
-            && Main.worldID == Player.spI[0])
+        bool isNewWorld = Player.IsNewWorld();
+        if (Main.netMode == NetmodeID.SinglePlayer && !isNewWorld)
         {
             return;
         }
-        Player.GetModPlayer<RewardPlayer>().UpdateTracker_EnterNewWorld();
-        //Don't replace inventories when this is disabled. Whoopsies
-        if (!DevConfig.Instance.DropItems)
-            return;
-        //Set starting inventory
-		foreach ((int itemslot, TerraCellsItemCategory _) in InventoryManager.slotCategorizations)
-		{
-			Entity.inventory[itemslot].TurnToAir();
-		}
-		Entity.inventory[50].TurnToAir();
-		Entity.inventory[51].TurnToAir();
-		Entity.inventory[52].TurnToAir();
-		Entity.inventory[53].TurnToAir();
-		Entity.inventory[58].TurnToAir();
-		Entity.armor[0].TurnToAir();
-		Entity.armor[1].TurnToAir();
-		Entity.armor[2].TurnToAir();
-		Entity.armor[3].TurnToAir();
-		Entity.armor[4].TurnToAir();
-		Entity.armor[5].TurnToAir();
-		Item[] startInv = GetStartingItems();
-		for (int i = 0; i < startInv.Length; i++)
-		{
-			Player.inventory[i] = startInv[i].Clone();
-			if (startInv[i].IsAir)
-				Player.inventory[i].TurnToAir();
-		}
-	}
+        if (isNewWorld)
+        {
+            ResetInventory(ResetInventoryContext.NewWorld);
+        }
 
-	public override void OnRespawn()
+        if (Main.netMode == NetmodeID.MultiplayerClient)
+        {
+            var packet = ModNetHandler.GetPacket(Mod, TCPacketType.PlayerPacket);
+            packet.Write((byte)Content.Packets.PlayerPacketHandler.PlayerSyncType.NewPlayerJoin);
+            packet.Send();
+        }
+    }
+
+    public override void ModifyScreenPosition()
+    {
+        if (Player.DeadOrGhost)
+        {
+            int viewTarget = -1;
+            for (int i = 0; i < Main.maxNetPlayers; i++)
+            {
+                Player test = Main.player[i];
+                if (!test.active) continue;
+                if (test.DeadOrGhost) continue;
+                if (test.whoAmI == Main.myPlayer) continue;
+                viewTarget = i;
+                break;
+            }
+            if (viewTarget == -1)
+                return;
+            Player followPlayer = Main.player[viewTarget];
+            Main.screenPosition = followPlayer.Center - (Main.ScreenSize.ToVector2() * 0.5f);
+        }
+    }
+    public override void PostUpdate()
+    {
+        if(Main.netMode != NetmodeID.MultiplayerClient) return;
+        if (Player.DeadOrGhost)
+        {
+            int viewTarget = -1;
+            for (int i = 0; i < Main.maxNetPlayers; i++)
+            {
+                Player test = Main.player[i];
+                if (!test.active)
+                    continue;
+                if (test.DeadOrGhost)
+                    continue;
+                if (test.whoAmI == Main.myPlayer)
+                    continue;
+                viewTarget = i;
+                break;
+            }
+            if (viewTarget == -1)
+                return;
+            Player followPlayer = Main.player[viewTarget];
+            Player.position = followPlayer.position;
+        }
+    }
+
+    public override void OnRespawn()
 	{
-        WorldGen.SaveAndQuit();
+        if (Main.netMode == NetmodeID.SinglePlayer)
+        {
+            WorldGen.SaveAndQuit();
+        }
         return;
 
 		foreach (NPC npc in Main.ActiveNPCs)
@@ -123,16 +127,97 @@ public class DeathReset : ModPlayer, IEntitySource
 		NPCRoomSpawner.ResetSpawns();
 	}
 
-	Item[] GetStartingItems() => new Item[]
-		{
-			new Item(Terraria.ID.ItemID.CopperShortsword), //Weapon Slot 1
-			new Item(Terraria.ID.ItemID.WoodenBow), //Weapon Slot 2
-			new Item(0, 0), //Skill Slot 1 (idk if this'll keep it open I hope it does tho)
-			new Item(0, 0), //Skill Slot 2
-			new Item(Terraria.ID.ItemID.LesserHealingPotion, 2), //Potion Slot
-		};
-	public override IEnumerable<Item> AddStartingItems(bool mediumCoreDeath) => GetStartingItems();
-	public override void ModifyStartingInventory(IReadOnlyDictionary<string, List<Item>> itemsByMod, bool mediumCoreDeath)
+    enum ResetInventoryContext : byte
+    {
+        NewWorld,
+        Death,
+    }
+    private void ResetInventory(ResetInventoryContext context)
+    {
+        if (!DevConfig.Instance.DropItems)
+            return;
+        if (Player.whoAmI != Main.myPlayer)
+            return;
+
+        #region Drop Items
+        ref Item[] inventory = ref Player.inventory;
+        ref Item[] equips = ref Player.armor;
+        Vector2 centre = Player.Center;
+        IEntitySource playerDeath = Player.GetSource_Death();
+        if (context == ResetInventoryContext.NewWorld)
+        {
+            foreach ((int itemslot, TerraCellsItemCategory _) in InventoryManager.slotCategorizations)
+            {
+                inventory[itemslot].TurnToAir();
+            }
+
+            inventory[50].TurnToAir();
+            inventory[51].TurnToAir();
+            inventory[52].TurnToAir();
+            inventory[53].TurnToAir();
+            inventory[58].TurnToAir();
+            equips[0].TurnToAir();
+            equips[1].TurnToAir();
+            equips[2].TurnToAir();
+            equips[3].TurnToAir();
+            equips[4].TurnToAir();
+            equips[5].TurnToAir();
+        }
+        else if (context == ResetInventoryContext.Death && Main.netMode != NetmodeID.Server)
+        {
+            foreach ((int itemslot, TerraCellsItemCategory _) in InventoryManager.slotCategorizations)
+            {
+                inventory[itemslot].shimmered = true;
+                Player.DropItem(playerDeath, centre, ref inventory[itemslot]);
+            }
+
+            inventory[50].shimmered =   true; Player.DropItem(playerDeath, centre, ref inventory[50]);
+            inventory[51].shimmered =   true; Player.DropItem(playerDeath, centre, ref inventory[51]);
+            inventory[52].shimmered =   true; Player.DropItem(playerDeath, centre, ref inventory[52]);
+            inventory[53].shimmered =   true; Player.DropItem(playerDeath, centre, ref inventory[53]);
+            inventory[58].shimmered =   true; Player.DropItem(playerDeath, centre, ref inventory[58]);
+            equips[0].shimmered =       true; Player.DropItem(playerDeath, centre, ref equips[0]);
+            equips[1].shimmered =       true; Player.DropItem(playerDeath, centre, ref equips[1]);
+            equips[2].shimmered =       true; Player.DropItem(playerDeath, centre, ref equips[2]);
+            equips[3].shimmered =       true; Player.DropItem(playerDeath, centre, ref equips[3]);
+            equips[4].shimmered =       true; Player.DropItem(playerDeath, centre, ref equips[4]);
+            equips[5].shimmered =       true; Player.DropItem(playerDeath, centre, ref equips[5]);
+        }
+        #endregion
+
+        #region Startup Inventory
+        Dictionary<int, Item> inv = new Dictionary<int, Item>()
+        {
+            [0] = new Item(ItemID.CopperShortsword),
+            [1] = new Item(ItemID.WoodenBow),
+        };
+        switch (context)
+        {
+            case ResetInventoryContext.NewWorld:
+                inv[4] = new Item(ItemID.LesserHealingPotion, 2);
+                break;
+        }
+
+        foreach (KeyValuePair<int, Item> pair in inv)
+        {
+            Player.inventory[pair.Key] = pair.Value;
+
+            switch (context)
+            {
+                case ResetInventoryContext.Death:
+                    if (Player.inventory[pair.Key].TryGetGlobalItem<TierSystemGlobalItem>(out var tierItem))
+                    {
+                        //Level + 1, because while they're.. decent, they're not AMAZING, and the weapons should be on-tier
+                        tierItem.SetLevel(Player.inventory[pair.Key], ModContent.GetInstance<Systems.TeleportTracker>().level + 1);
+                        FunkyModifierItemModifier.Reforge(Player.inventory[pair.Key], tierItem.itemLevel);
+                    }
+                    break;
+            }
+        }
+        #endregion
+    }
+
+    public override void ModifyStartingInventory(IReadOnlyDictionary<string, List<Item>> itemsByMod, bool mediumCoreDeath)
 	{
 		itemsByMod["Terraria"].Clear();
 	}
@@ -153,7 +238,9 @@ public class DeathReset : ModPlayer, IEntitySource
     private byte[] On_Player_SavePlayerFile_Vanilla(On_Player.orig_SavePlayerFile_Vanilla orig, Terraria.IO.PlayerFileData playerFile)
     {
         playerFile.Player.ChangeSpawn((int)(playerFile.Player.position.X / 16), (int)(playerFile.Player.Bottom.Y / 16));
-        return orig.Invoke(playerFile);
+        byte[] result_orig = orig.Invoke(playerFile);
+        playerFile.Player.RemoveSpawn();
+        return result_orig;
     }
 
     public override void Unload()

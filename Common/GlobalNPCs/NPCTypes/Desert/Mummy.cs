@@ -70,19 +70,20 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 			if (target != null)
 			{
 				validTarget = npc.TargetInAggroRange(target, 240);
-				if (MathF.Abs(target.position.X - npc.position.X) < 80)
-					ShouldWalk = false;
-                if (MathF.Abs(target.position.X - npc.position.X) > 240)
-                    ShouldWalk = true;
 			}
 			else
 			{
-				validTarget = npc.TargetInAggroRange(240);
-				ShouldWalk = false;
+                validTarget = false;
+                this.ShouldWalk = false;
 			}
 
-			if (validTarget && npc.ai[2] >= SlamCooldown && npc.ai[3] == 0 && npc.direction == MathF.Sign(target.position.X - npc.position.X))
-			{
+            if (MathF.Abs(target.position.X - npc.position.X) < 80)
+                ShouldWalk = false;
+            else
+                this.ShouldWalk = npc.TargetInAggroRange(240);
+
+            if (validTarget && npc.ai[2] >= SlamCooldown && npc.ai[3] == 0 && npc.direction == MathF.Sign(target.position.X - npc.position.X))
+            {
                 npc.ai[2] = 0;
                 npc.ai[3] = 1;
                 CustomFrameCounter = 0;

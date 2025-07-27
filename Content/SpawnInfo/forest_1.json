@@ -329,17 +329,16 @@
         "X": 350,
         "Y": 124
     },
-    {
-        "Name": "ArmsDealer",
-        "X": 321,
-        "Y": 59
+    { 
+        "WIdPool" : [
+      { "Name" : "Merchant", "Weight" : 1},
+      { "Name" : "ArmsDealer", "Weight" : 1 }
+                    ],
+        "X" : 321,
+        "Y" : 59
     },
     {
-        "IdPool": [
-            1,
-            2,
-            3
-        ],
+        "Name": "Guide",
         "X": 780,
         "Y": 36
     },

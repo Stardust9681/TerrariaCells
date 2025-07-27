@@ -38,7 +38,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 		{
 			if (!npc.HasValidTarget)
 				npc.TargetClosest(false);
-			switch (npc.ai[1])
+
+            float oldAI = npc.ai[1];
+            switch (npc.ai[1])
 			{
 				case Idle:
 					IdleAI(npc);
@@ -59,7 +61,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 					npc.ai[1] = Idle;
 					break;
 			}
-			npc.spriteDirection = npc.direction;
+            if (npc.ai[1] != oldAI)
+                npc.netUpdate = true;
+            npc.spriteDirection = npc.direction;
 		}
 
         private void ResetAI(NPC npc)
@@ -68,6 +72,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             npc.ai[1] = 0;
             npc.ai[2] = 0;
             npc.ai[3] = 0;
+            npc.netUpdate = true;
         }
 
 		void IdleAI(NPC npc)

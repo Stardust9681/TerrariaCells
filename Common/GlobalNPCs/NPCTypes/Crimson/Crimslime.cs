@@ -34,7 +34,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 				ResetAI(npc);
 			}
 
-			switch ((int)npc.ai[1])
+            float oldAI = npc.ai[1];
+            switch ((int)npc.ai[1])
 			{
 				case Idle:
 					IdleAI(npc);
@@ -46,6 +47,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 					JumpAI(npc);
 					break;
 			}
+            if (npc.ai[1] != oldAI)
+                npc.netUpdate = true;
 		}
 
 		private static void ResetAI(NPC npc)
@@ -55,7 +58,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			npc.ai[2] = 0;
 			npc.ai[3] = 0;
 			CombatNPC.ToggleContactDamage(npc, false);
-		}
+            npc.netUpdate = true;
+        }
 		//HorizontalMovement(npc, npc.ai[0], npc.ai[2] * 6f, Start, End);
 		private static void HorizontalMovement(NPC npc, float timer, float velocity, int start, int end)
 		{

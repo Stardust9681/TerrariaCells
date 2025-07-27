@@ -26,8 +26,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 		public override void Behaviour(NPC npc)
 		{
 			if (!npc.HasValidTarget)
-				npc.TargetClosest(false);
-			if (!npc.HasValidTarget)
 			{
 				IdleAI(npc);
 				return;
@@ -37,6 +35,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
                 npc.direction = 1;
             }
 
+            float oldAI = npc.ai[1];
 			switch ((int)npc.ai[1])
 			{
 				case Idle:
@@ -52,12 +51,16 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 					StunAI(npc);
 					break;
 			}
+            if (npc.ai[1] != oldAI)
+                npc.netUpdate = true;
+
             npc.spriteDirection = npc.direction;
 		}
 
 		private void IdleAI(NPC npc)
 		{
-			CombatNPC.ToggleContactDamage(npc, false);
+            npc.TargetClosest(false);
+            CombatNPC.ToggleContactDamage(npc, false);
 			if (npc.TargetInAggroRange(420))
 			{
 				npc.ai[2] = Main.rand.Next(new int[] { -1, 1 });
@@ -111,8 +114,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			{
 				npc.ai[1] = Charge;
 				npc.ai[0] = 0;
-				//npc.noTileCollide = false;
-				return;
+                npc.netUpdate = true;
+                //npc.noTileCollide = false;
+                return;
 			}
 
 			npc.ai[0]++;
@@ -159,7 +163,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 					npc.ai[1] = Stun;
 					npc.ai[0] = 0;
 					npc.ai[2] = 0;
-					return;
+                    npc.netUpdate = true;
+                    return;
 				}
 			}
 
@@ -179,7 +184,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			{
 				npc.ai[1] = Idle;
 				npc.ai[0] = 0;
-				return;
+                npc.netUpdate = true;
+                return;
 			}
 
 			npc.ai[0]++;
