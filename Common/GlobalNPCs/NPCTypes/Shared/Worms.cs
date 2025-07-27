@@ -1,4 +1,6 @@
 ﻿using Microsoft.Build.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +9,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrariaCells.Common.Commands;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 {
@@ -45,6 +48,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             NPCID.TombCrawlerHead,
             NPCID.DevourerHead,
             NPCID.SeekerHead,
+            NPCID.EaterofWorldsHead,
         };
 
         enum WormState
@@ -289,7 +293,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             AttackWarningSound.MaxInstances = 1;
             AttackWarningSound.SoundLimitBehavior = SoundLimitBehavior.IgnoreNew;
 
-            if (WormHeads.Contains(npc.type) || WormHeads.Contains(npc.type - 1) || WormHeads.Contains(npc.type - 2))
+            if (IsWormHead(npc) || IsWormBody(npc) || IsWormTail(npc))
             {
                 npc.aiStyle = -1;
                 npc.realLife = -1;
@@ -309,6 +313,12 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 case NPCID.GiantWormTail:
                     HasOneHPPool = false;
                     break;
+                case NPCID.EaterofWorldsHead:
+                case NPCID.EaterofWorldsBody:
+                case NPCID.EaterofWorldsTail:
+                    DistanceBetweenSegments = 2f;
+                    HasOneHPPool = false;
+                    break;
             }
         }
 
@@ -326,6 +336,24 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             }
 
             return base.PreAI(npc);
+        }
+
+        public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+        {
+            if (npc.type is NPCID.EaterofWorldsHead or NPCID.EaterofWorldsBody or NPCID.EaterofWorldsTail)
+            {
+                spriteBatch.Draw(
+                    Terraria.GameContent.TextureAssets.Npc[npc.type].Value,
+                    npc.Center - screenPos + new Vector2(0, 4),
+                    null,
+                    Color.White,
+                    npc.rotation,
+                    new Vector2(24, 46),
+                    1,
+                    SpriteEffects.None,
+                    0);
+            }
+            base.PostDraw(npc, spriteBatch, screenPos, drawColor);
         }
 
         public void WormHeadAI(NPC wormEntity)
@@ -613,8 +641,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
         void KillSegment(NPC segment)
         {
+            Main.NewText("kill segment at index " + segment.whoAmI);
             if (!segment.active)
             {
+                Main.NewText("except no because segment isn't active");
                 return;
             }
             segment.life = 0;
@@ -635,7 +665,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 if (IsWormHead(npc) && Main.npc[behindSegmentIndex].realLife == -1)
                 {
                     NPC behindSegment = Main.npc[behindSegmentIndex];
-                    behindSegment.realLife = -2; //don't trigger this worm splitting logic
 
                     if (IsWormBody(behindSegment))
                     {
@@ -643,6 +672,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                     }
                     else
                     {
+                        behindSegment.realLife = -2; //don't trigger this worm splitting logic again
                         KillSegment(behindSegment);
                     }
                 }
@@ -650,8 +680,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 {
                     NPC aheadSegment = Main.npc[aheadSegmentIndex];
                     NPC behindSegment = Main.npc[behindSegmentIndex];
-                    aheadSegment.realLife = -2; //don't trigger this worm splitting logic
-                    behindSegment.realLife = -2; //don't trigger this worm splitting logic
 
                     if (IsWormBody(aheadSegment))
                     {
@@ -659,6 +687,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                     }
                     else
                     {
+                        aheadSegment.realLife = -2; //don't trigger this worm splitting logic again
                         KillSegment(aheadSegment);
                     }
 
@@ -668,13 +697,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                     }
                     else
                     {
+                        behindSegment.realLife = -2; //don't trigger this worm splitting logic again
                         KillSegment(behindSegment);
                     }
                 }
                 else if (IsWormTail(npc))
                 {
                     NPC aheadSegment = Main.npc[aheadSegmentIndex];
-                    aheadSegment.realLife = -2; //don't trigger this worm splitting logic
 
                     if (IsWormBody(aheadSegment))
                     {
@@ -682,6 +711,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                     }
                     else
                     {
+                        aheadSegment.realLife = -2; //don't trigger this worm splitting logic again
                         KillSegment(aheadSegment);
                     }
                 }
@@ -693,7 +723,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             {
                 targetWormEntity = behindSegment;
                 behindSegment.type = headType;
-                behindSegment.realLife = -1;
                 wormState = WormState.Attacking;
                 velocity = Vector2.Zero;
 
@@ -786,15 +815,12 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             int prevSegmentIndex = wormEntity.whoAmI;
             for (int i = 0; i < SegmentCount; i++)
             {
-                int spawnedSegmentType = wormEntity.type + 1;
-
                 int spawnedSegmentIndex = NPC.NewNPC(
                     new EntitySource_SpawnNPC(),
                     (int)wormEntity.Center.X,
                     (int)wormEntity.Center.Y + wormEntity.height / 2,
                     wormEntity.type + 1);
                 behindSegmentIndex = spawnedSegmentIndex;
-                int thisSegmentCountBehind = segmentCountBehind;
 
                 NPC spawnedSegment = Main.npc[spawnedSegmentIndex];
                 Worms.targetWormEntity = spawnedSegment;
@@ -840,5 +866,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
         bool IsWormHead(NPC npc) => WormHeads.Contains(npc.type);
         bool IsWormBody(NPC npc) => WormHeads.Contains(npc.type - 1);
         bool IsWormTail(NPC npc) => WormHeads.Contains(npc.type - 2);
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => WormHeads.Any(x => x == entity.type || x == entity.type - 1 || x == entity.type - 2);
     }
 }
