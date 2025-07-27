@@ -25,22 +25,26 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
         public override bool InstancePerEntity => true;
 
-        public float AttackSpeedHorizontal = 100f; //Speed of the worm at the start of its horizontal attack in tiles per second
-        public float AttackSpeedVertical = 100f; //Speed of the worm at the start of its vertical attack in tiles per second
+        public float AttackSpeedHorizontal = 80; //Speed of the worm at the start of its horizontal attack in tiles per second
+        public float AttackSpeedVertical = 80; //Speed of the worm at the start of its vertical attack in tiles per second
         public int AttackCooldownTicks = 180;
         public int MaxHorizontalAttackDistance = 30; //Max distance in tiles how far the worm can attack from horizontally
         public int MaxVerticalAttackDistance = 20; //Max distance in tiles how far the worm can attack from vertically
         public int AttackEndDistance = 30; //Distance after which, if beneath the player, the attack stops in tiles
         public int AttackWarningDust = DustID.Sand;
-        public int SegmentCount = 30;
+        public int SegmentCount = 10;
         public int AggroRange = 50; //Distance at which the worm starts its attack loop in tiles
+        public float DistanceBetweenSegments = 1; //Distance between segments in tiles
         public SoundStyle AttackWarningSound = SoundID.WormDig;
+        public bool HasOneHPPool = true;
 
         //THIS NEEDS TO BE UPDATED FOR EVERY NEW TYPE OF WORM
         public static List<int> WormHeads = new List<int>()
         {
             NPCID.GiantWormHead,
             NPCID.TombCrawlerHead,
+            NPCID.DevourerHead,
+            NPCID.SeekerHead,
         };
 
         enum WormState
@@ -288,18 +292,22 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             if (WormHeads.Contains(npc.type) || WormHeads.Contains(npc.type - 1) || WormHeads.Contains(npc.type - 2))
             {
                 npc.aiStyle = -1;
+                npc.realLife = -1;
             }
 
             if (WormHeads.Contains(npc.type))
             {
                 targetWormEntity = npc;
+                behindSegmentIndex = 1000;
             }
 
             switch (npc.type)
             {
-                case NPCID.TombCrawlerHead:
-                    AttackSpeedVertical = 150;
-                    SegmentCount = 100;
+                //example how to change values of new worm type
+                case NPCID.GiantWormHead:
+                case NPCID.GiantWormBody:
+                case NPCID.GiantWormTail:
+                    HasOneHPPool = false;
                     break;
             }
         }
@@ -591,28 +599,184 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             float distanceToSegmentAhead = MathF.Sqrt(toSegmentAhead.X * toSegmentAhead.X + toSegmentAhead.Y * toSegmentAhead.Y);
             toSegmentAhead.Normalize();
 
-            if (distanceToSegmentAhead > 16f)
+            if (distanceToSegmentAhead > 16f || true)
             {
-                wormEntity.Center = segmentAhead.Center - toSegmentAhead * 16f;
+                wormEntity.Center = segmentAhead.Center - toSegmentAhead * 16f * DistanceBetweenSegments;
             }
             SetDirection(wormEntity, toSegmentAhead);
 
-            if (!Main.npc[wormEntity.realLife].active)
+            if (HasOneHPPool && wormEntity.realLife != -1 && !Main.npc[wormEntity.realLife].active)
             {
-                wormEntity.life = 0;
-                wormEntity.HitEffect();
-                wormEntity.checkDead();
-                wormEntity.active = false;
-                NetMessage.SendData(MessageID.DamageNPC, -1, -1, null, wormEntity.whoAmI, -1f);
+                KillSegment(wormEntity);
+            }
+        }
+
+        void KillSegment(NPC segment)
+        {
+            if (!segment.active)
+            {
                 return;
             }
+            segment.life = 0;
+            segment.HitEffect();
+            segment.checkDead();
+            segment.active = false;
+            NetMessage.SendData(MessageID.DamageNPC, -1, -1, null, segment.whoAmI, -1f);
+        }
+
+        public override void OnKill(NPC npc)
+        {
+            targetWormEntity = npc;
+
+            if (npc.realLife == -1)
+            {
+                #region split worm / kill head / kill tail
+
+                if (IsWormHead(npc) && Main.npc[behindSegmentIndex].realLife == -1)
+                {
+                    NPC behindSegment = Main.npc[behindSegmentIndex];
+                    behindSegment.realLife = -2; //don't trigger this worm splitting logic
+
+                    if (IsWormBody(behindSegment))
+                    {
+                        TurnBehindSegmentIntoHead(behindSegment, npc.type);
+                    }
+                    else
+                    {
+                        KillSegment(behindSegment);
+                    }
+                }
+                else if (IsWormBody(npc))
+                {
+                    NPC aheadSegment = Main.npc[aheadSegmentIndex];
+                    NPC behindSegment = Main.npc[behindSegmentIndex];
+                    aheadSegment.realLife = -2; //don't trigger this worm splitting logic
+                    behindSegment.realLife = -2; //don't trigger this worm splitting logic
+
+                    if (IsWormBody(aheadSegment))
+                    {
+                        TurnAheadSegmentIntoTail(aheadSegment, npc.type + 1);
+                    }
+                    else
+                    {
+                        KillSegment(aheadSegment);
+                    }
+
+                    if (IsWormBody(behindSegment))
+                    {
+                        TurnBehindSegmentIntoHead(behindSegment, npc.type - 1);
+                    }
+                    else
+                    {
+                        KillSegment(behindSegment);
+                    }
+                }
+                else if (IsWormTail(npc))
+                {
+                    NPC aheadSegment = Main.npc[aheadSegmentIndex];
+                    aheadSegment.realLife = -2; //don't trigger this worm splitting logic
+
+                    if (IsWormBody(aheadSegment))
+                    {
+                        TurnAheadSegmentIntoTail(aheadSegment, npc.type);
+                    }
+                    else
+                    {
+                        KillSegment(aheadSegment);
+                    }
+                }
+
+                #endregion
+            }
+
+            void TurnBehindSegmentIntoHead(NPC behindSegment, int headType)
+            {
+                targetWormEntity = behindSegment;
+                behindSegment.type = headType;
+                behindSegment.realLife = -1;
+                wormState = WormState.Attacking;
+                velocity = Vector2.Zero;
+
+                targetWormEntity = npc;
+            }
+
+            void TurnAheadSegmentIntoTail(NPC aheadSegment, int tailType)
+            {
+                targetWormEntity = aheadSegment;
+                aheadSegment.type = tailType;
+
+                targetWormEntity = npc;
+            }
+        }
+
+        public override bool? DrawHealthBar(NPC npc, byte hbPosition, ref float scale, ref Vector2 position)
+        {
+            if (IsWormHead(npc))
+            {
+                targetWormEntity = npc;
+
+                if (HasOneHPPool)
+                {
+                    Vector2 headPosition = npc.Center;
+
+                    int safetyGuardMaxLoopCount = 200;
+                    while (!IsWormTail(targetWormEntity))
+                    {
+                        if (safetyGuardMaxLoopCount-- < 0)
+                        {
+                            Main.NewText("Exceeded max loop count for hp drawing", Color.Red);
+                            break;
+                        }
+
+                        targetWormEntity = Main.npc[behindSegmentIndex];
+                    }
+                    Vector2 tailPosition = targetWormEntity.Center;
+
+                    position = 0.5f * (headPosition + tailPosition);
+
+                    return true;
+                }
+                else
+                {
+                    position = npc.Center;
+
+                    return true;
+                }
+            }
+
+            if (IsWormBody(npc) || IsWormTail(npc))
+            {
+                if (HasOneHPPool)
+                {
+                    return false;
+                }
+                else
+                {
+                    position = npc.Center;
+
+                    return true;
+                }
+            }
+
+            return base.DrawHealthBar(npc, hbPosition, ref scale, ref position);
+        }
+
+        public override void OnSpawn(NPC npc, IEntitySource source)
+        {
+            if (WormHeads.Contains(npc.type))
+            {
+                targetWormEntity = npc;
+                behindSegmentIndex = 1000;
+            }
+
+            base.OnSpawn(npc, source);
         }
 
         void TrySpawnBody(NPC wormEntity)
         {
             Worms.targetWormEntity = wormEntity;
 
-            if (!WormHeads.Contains(wormEntity.type) || behindSegmentIndex > 0)
+            if (!WormHeads.Contains(wormEntity.type) || behindSegmentIndex != 1000)
             {
                 return;
             }
@@ -632,14 +796,21 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 behindSegmentIndex = spawnedSegmentIndex;
                 int thisSegmentCountBehind = segmentCountBehind;
 
-                NPC spawnedNPC = Main.npc[spawnedSegmentIndex];
-                Worms.targetWormEntity = spawnedNPC;
+                NPC spawnedSegment = Main.npc[spawnedSegmentIndex];
+                Worms.targetWormEntity = spawnedSegment;
 
-                spawnedNPC.realLife = wormEntity.whoAmI;
+                if (HasOneHPPool)
+                {
+                    spawnedSegment.realLife = wormEntity.whoAmI;
+                }
+                else
+                {
+                    spawnedSegment.realLife = -1;
+                }
                 aheadSegmentIndex = prevSegmentIndex;
                 segmentCountBehind = SegmentCount - 1 - i;
-                spawnedNPC.GetGlobalNPC<CombatNPC>().allowContactDamage = false;
-                prevSegmentIndex = spawnedNPC.whoAmI;
+                spawnedSegment.GetGlobalNPC<CombatNPC>().allowContactDamage = false;
+                prevSegmentIndex = spawnedSegment.whoAmI;
             }
 
             int spawnedTailIndex = NPC.NewNPC(
@@ -649,12 +820,25 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 wormEntity.type + 2);
             behindSegmentIndex = spawnedTailIndex;
             NPC spawnedTail = Main.npc[spawnedTailIndex];
+            spawnedTail.realLife = -1;
             Worms.targetWormEntity = spawnedTail;
 
-            spawnedTail.realLife = wormEntity.whoAmI;
+            if (HasOneHPPool)
+            {
+                spawnedTail.realLife = wormEntity.whoAmI;
+            }
+            else
+            {
+                spawnedTail.realLife = -1;
+            }
             aheadSegmentIndex = prevSegmentIndex;
             segmentCountBehind = 0;
             spawnedTail.GetGlobalNPC<CombatNPC>().allowContactDamage = false;
+            wormEntity.realLife = -1;
         }
+
+        bool IsWormHead(NPC npc) => WormHeads.Contains(npc.type);
+        bool IsWormBody(NPC npc) => WormHeads.Contains(npc.type - 1);
+        bool IsWormTail(NPC npc) => WormHeads.Contains(npc.type - 2);
     }
 }
