@@ -15,16 +15,16 @@ using Terraria.GameContent.UI.Elements;
 
 namespace TerrariaCells.Content.UI
 {
-    public class RewardTracker : DraggableWindow
+    public class RewardTracker : WindowState
     {
         internal override string Name => "RewardTrackerUI";
-        public override Rectangle GrabBox => this.Bounds;
+        //public override Rectangle GrabBox => this.Bounds;
 
         internal const int Padding = 8;
 
         private TimerPanel _timer;
         private DeathsPanel _deaths;
-        protected override void Init()
+        public override void OnInitialize()
         {
             Vector2 timerSize = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString("00:00.00");
             timerSize += new Vector2(TimerPanel.Padding * 2, TimerPanel.Padding);
@@ -42,17 +42,18 @@ namespace TerrariaCells.Content.UI
 
             //Expand to fill each child
             WindowSize = new Vector2(timerSize.X, timerSize.Y + deathsSize.Y);
-            this.WindowPosition = new Vector2((Main.screenWidth - WindowSize.X) * 0.5f, NoDragZone);
+            this.WindowPosition = new Vector2((Main.screenWidth - WindowSize.X) * 0.5f, 10);
             UpdateChildPositions(WindowPosition);
         }
 
         protected override void OnOpened()
         {
-            this.WindowPosition = new Vector2((Main.screenWidth - WindowSize.X) * 0.5f, NoDragZone);
+            this.WindowPosition = new Vector2((Main.screenWidth - WindowSize.X) * 0.5f, 10);
             UpdateChildPositions(WindowPosition);
+            Recalculate();
         }
 
-        protected override void UpdateChildPositions(Vector2 newPosition)
+        protected void UpdateChildPositions(Vector2 newPosition)
         {
             /*_timer.Left.Set(newPosition.X, 0);
             _timer.Top.Set(newPosition.Y, 0);
@@ -82,7 +83,7 @@ namespace TerrariaCells.Content.UI
             bounds.Width -= (int)(panelSize.Y * 0.5f);
             UIHelper.PANEL.Draw(spriteBatch, bounds, UIHelper.InventoryColour);
 
-            TimeSpan currentTime = Main.LocalPlayer.GetModPlayer<Common.ModPlayers.RewardPlayer>().LevelTime;
+            TimeSpan currentTime = RewardTrackerSystem.LevelTime;
             string drawString = $"{currentTime.Minutes:00}:{currentTime.Seconds:00}";
             Vector2 size = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(drawString);
             Vector2 drawPos = new Vector2(panelPos.X + panelSize.Y + Padding, panelPos.Y + Padding);
@@ -97,7 +98,7 @@ namespace TerrariaCells.Content.UI
                 spriteBatch, Terraria.GameContent.FontAssets.MouseText.Value, drawString, drawPos, Color.SlateGray, 0f, Vector2.Zero, Vector2.One
             );*/
 
-            TimeSpan targetTime = Main.LocalPlayer.GetModPlayer<Common.ModPlayers.RewardPlayer>().targetTime;
+            TimeSpan targetTime = RewardTrackerSystem.targetTime;
             int watchType = (currentTime.TotalSeconds / (float)targetTime.TotalSeconds) switch
             {
                 < 0.4 => Terraria.ID.ItemID.PlatinumWatch,
@@ -106,6 +107,8 @@ namespace TerrariaCells.Content.UI
                 _ => Terraria.ID.ItemID.CopperWatch,
             };
             var watchSprite = Terraria.GameContent.TextureAssets.Item[watchType];
+            if (!watchSprite.IsLoaded)
+                watchSprite.Wait.Invoke();
             drawPos = panelPos;
             spriteBatch.Draw(watchSprite.Value, new Rectangle((int)drawPos.X, (int)drawPos.Y, (int)panelSize.Y, (int)panelSize.Y), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
         }
@@ -134,7 +137,7 @@ namespace TerrariaCells.Content.UI
 
             UIHelper.PANEL.Draw(spriteBatch, bounds, UIHelper.InventoryColour);
 
-            byte killCount = Main.LocalPlayer.GetModPlayer<Common.ModPlayers.RewardPlayer>().KillCount;
+            byte killCount = RewardTrackerSystem.killCount;
             //Draw leading zeroes:
             /*
             string drawString = $"{killCount:D3}";
@@ -168,7 +171,7 @@ namespace TerrariaCells.Content.UI
                 );*/
             }
 
-            byte targetKillCount = Main.LocalPlayer.GetModPlayer<Common.ModPlayers.RewardPlayer>().targetKillCount;
+            byte targetKillCount = RewardTrackerSystem.targetKillCount;
             if (targetKillCount == 0)
                 targetKillCount = 1;
             float allKills = (float)killCount / (float)targetKillCount;

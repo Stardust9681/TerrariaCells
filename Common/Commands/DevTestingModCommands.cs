@@ -7,6 +7,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using TerrariaCells.Common.GlobalItems;
+using TerrariaCells.Common.Systems;
 
 namespace TerrariaCells.Common.Commands
 {
@@ -540,6 +541,22 @@ namespace TerrariaCells.Common.Commands
                     ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("First argument must be 'kill', 'hurt', 'type', 'ai' or 'pos'"), Color.Yellow);
                     return;
             }
+            
+    public class ResetSpawnsCommand : ModCommand
+    {
+        public override string Command => "resetspawns";
+        public override string Usage => "/resetspawns";
+        public override string Description => "Command used to reset spawns (Multiplayer only)";
+
+        public override CommandType Type => CommandType.World;
+
+        public override void Action(CommandCaller caller, string input, string[] args)
+        {
+            if (args.Length != 0)
+                caller.Reply("No arguments necessary. They have been discarded");
+
+            NPCRoomSpawner.ResetSpawns();
+            NPCRespawnHandler.ResetRespawnMarkers();
         }
     }
 }

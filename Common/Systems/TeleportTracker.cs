@@ -1,9 +1,14 @@
 using System;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
+
+using TerrariaCells.Common.Utilities;
+using TerrariaCells.Content.Packets;
 
 namespace TerrariaCells.Common.Systems;
 
@@ -25,50 +30,73 @@ public class TeleportTracker : ModSystem
         set => nextLevel = value;
     }
 
-    public override void ClearWorld()
+    private void SetDefaults()
     {
-        deferredTimeSet = true;
-        Mod.Logger.Info($"b4: {Main.time};{Main.dayTime}");
-        Main.dayTime = false;
-        Main.time = 1f * 3600f;
-        Main.StopRain();
-        Mod.Logger.Info($"af: {Main.time};{Main.dayTime}");
-        // Mod.Logger.Info($"after time: ");
         level = 1;
         nextLevel = "Forest";
         nextLevelVariation = 0;
+    }
+
+    public override void ClearWorld()
+    {
+        SetDefaults();
+        Update_SetWorldConditions("Inn");
+        deferredTimeSet = true;
+        /*Mod.Logger.Info($"b4: {Main.time};{Main.dayTime}");
+        Main.dayTime = false;
+        Main.time = 1f * 3600f;
+        Main.StopRain();
+        Mod.Logger.Info($"af: {Main.time};{Main.dayTime}");*/
+        // Mod.Logger.Info($"after time: ");
     }
 
     public override void PreUpdateWorld()
     {
         if (deferredTimeSet)
         {
-            ClearWorld();
+            Update_SetWorldConditions("Inn");
             deferredTimeSet = false;
         }
+    }
+
+    public bool CanTeleport(string nextLevel)
+    {
+        return StaticFileAccess.Instance.WorldGenData.LevelPositions.TryGetValue(nextLevel, out _);
     }
 
     public void Teleport(string destination)
     {
         //Goes to next level
-        if (destination.Equals("inn", StringComparison.CurrentCultureIgnoreCase))
+        if (destination.Equals("Inn", StringComparison.CurrentCultureIgnoreCase))
         {
             Mod.Logger.Info($"Teleporting to next level: {nextLevel}:");
             GoToNextLevel();
-            Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().UpdateTracker(ModPlayers.RewardPlayer.TrackerAction.Restart);
-            Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().targetTime = TimeSpan.FromMinutes(3);
+            //RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Restart);
+            RewardTrackerSystem.targetTime = TimeSpan.FromMinutes(3);
             return;
         }
 
         //Goes to inn
-        Mod.Logger.Info($"Detouring to inn.");
+        Mod.Logger.Info($"Detouring to Inn.");
         DetourToInn(destination);
-        Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().UpdateTracker(ModPlayers.RewardPlayer.TrackerAction.Pause);
-        Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().UpdateChests_OnTeleport();
+        //RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Pause);
+        //RewardTrackerSystem.UpdateChests_OnTeleport(GetTelePos("inn"));
     }
 
     private void DetourToInn(string destination)
     {
+        if(!CanTeleport(destination)) return;
+
+        Update_SetVariables(destination); //Input: current location
+        Point16 telePos = GetTelePos("Inn"); //Input: "going to" location
+        Update_SetWorldConditions(destination); //Input: current location
+
+        Main.LocalPlayer.Teleport(telePos.ToWorldCoordinates(), TeleportationStyleID.Portal);
+        DoTeleportNPCCheck("Inn", telePos.ToWorldCoordinates());
+        Update_PostTeleport("Inn"); //Input: "going to" location
+        RewardTrackerSystem.UpdateChests_OnTeleport(telePos);
+        return;
+
         BasicWorldGenData worldLevelData = ModContent.GetInstance<BasicWorldGeneration>()
             .BasicWorldGenData;
 
@@ -88,19 +116,7 @@ public class TeleportTracker : ModSystem
         nextLevel = destination;
         nextLevelVariation = worldLevelData.LevelVariations[destination];
 
-        Point16 roomPos = worldLevelData.LevelPositions[destination];
-
-        LevelStructure levelStructure = BasicWorldGeneration
-            .StaticLevelData.Find(x =>
-                x.Name.Equals("inn", StringComparison.CurrentCultureIgnoreCase)
-            )
-            .Structures[0];
-
-        roomPos = worldLevelData.LevelPositions["Inn"];
-
-        Vector2 position = (
-            roomPos + new Point16(levelStructure.SpawnX, levelStructure.SpawnY)
-        ).ToWorldCoordinates();
+        Vector2 position = GetTelePos("Inn").ToWorldCoordinates();
         DoTeleportNPCCheck("inn", position);
 
         if (Main.netMode == NetmodeID.SinglePlayer)
@@ -128,7 +144,7 @@ public class TeleportTracker : ModSystem
             npc.active = false;
         }
 
-        if (actualDestination.Equals("inn"))
+        if (actualDestination.ToLower().Equals("inn"))
         {
             if (Main.LocalPlayer.GetModPlayer<Common.ModPlayers.MetaPlayer>().Goblin)
             {
@@ -144,14 +160,22 @@ public class TeleportTracker : ModSystem
             )
             .Structures[nextLevelVariation];
 
-            Main.LocalPlayer.GetModPlayer<ModPlayers.RewardPlayer>().targetKillCount = (byte)levelStructure.SpawnInfo.Count;
+            RewardTrackerSystem.targetKillCount = (byte)levelStructure.SpawnInfo.Count;
         }
-
-        GlobalNPCs.VanillaNPCShop.UpdateTeleport(level, nextLevel);
     }
-
     private void GoToNextLevel()
     {
+        Update_SetVariables("Inn"); //Input: current location
+        Point16 telePos = GetTelePos(nextLevel); //Input: "going to" location
+        Update_SetWorldConditions("Inn"); //Input: current location
+
+        Main.LocalPlayer.Teleport(telePos.ToWorldCoordinates(), TeleportationStyleID.Portal);
+
+        Update_PostTeleport(nextLevel); //Input: "going to" location
+        RewardTrackerSystem.UpdateChests_OnTeleport(telePos);
+        return;
+
+
         BasicWorldGenData worldLevelData = Mod.GetContent<BasicWorldGeneration>()
             .First()
             .BasicWorldGenData;
@@ -164,18 +188,10 @@ public class TeleportTracker : ModSystem
             return;
         }
 
-        LevelStructure levelStructure = BasicWorldGeneration
-            .StaticLevelData.Find(x =>
-                x.Name.Equals(nextLevel, StringComparison.CurrentCultureIgnoreCase)
-            )
-            .Structures[nextLevelVariation];
-
-        Vector2 position = (
-            roomPos + new Point16(levelStructure.SpawnX, levelStructure.SpawnY)
-        ).ToWorldCoordinates();
+        Vector2 position = GetTelePos(nextLevel).ToWorldCoordinates();
         DoTeleportNPCCheck(nextLevel, position);
 
-        Mod.Logger.Info($"	Found structure. Teleporting to position {position}.");
+        Mod.Logger.Info($"Found structure. Teleporting to position {position}.");
 
         float hour = 8.5f;
         bool day = true;
@@ -201,6 +217,10 @@ public class TeleportTracker : ModSystem
                 hour = 4.5f;
                 rain = 1f;
                 level = 3;
+                break;
+            case "dungeon":
+                level = 4;
+
                 break;
             //case 10: //Caverns
             //  position = new Vector2(28818.312f, 17606);
@@ -229,5 +249,193 @@ public class TeleportTracker : ModSystem
         nextLevel = "Inn";
         nextLevelVariation = 0;
         return;
+    }
+
+    public Point16 GetTelePos(string actualDestination)
+    {
+        BasicWorldGenData worldLevelData = ModContent.GetInstance<BasicWorldGeneration>().BasicWorldGenData;
+
+        Point16 roomPos = worldLevelData.LevelPositions[actualDestination];
+
+        LevelStructure levelStructure = BasicWorldGeneration
+            .StaticLevelData.Find(x =>
+                x.Name.Equals(actualDestination, StringComparison.CurrentCultureIgnoreCase)
+            )
+            .Structures[nextLevelVariation];
+
+        roomPos = worldLevelData.LevelPositions[actualDestination];
+
+        return roomPos + new Point16(levelStructure.SpawnX, levelStructure.SpawnY);
+    }
+    public void Update_SetVariables(string destination)
+    {
+        string actualDestination = GetActualDestination(destination);
+
+        if (!destination.ToLower().Equals("inn")) //Going to Inn
+        {
+            Mod.Logger.Info($"Updating variables. Moving to: {actualDestination}. Target = {destination}");
+            nextLevel = destination;
+            nextLevelVariation = 0;
+            return;
+        }
+
+        //Moving from Inn
+
+        Mod.Logger.Info($"Updating variables in {destination}. Moving to: {actualDestination}");
+        BasicWorldGenData worldLevelData = ModContent.GetInstance<BasicWorldGeneration>().BasicWorldGenData;
+        if (!worldLevelData.LevelVariations.TryGetValue(actualDestination, out nextLevelVariation))
+        {
+            Mod.Logger.Error($"Invalid destination:'{actualDestination}' Could not find level variations.");
+            nextLevelVariation = 0;
+        }
+
+        switch (destination)
+        {
+            //Add cases here for levels that we don't want to increment level counter
+            //case "optionalLevel":
+                //break;
+
+            case "forest":
+                level = 1;
+                break;
+
+            default:
+                level++;
+                break;
+        }
+    }
+    public string GetActualDestination(string destination)
+    {
+        if (destination.ToLower().Equals("inn")) return nextLevel;
+        return "Inn";
+    }
+    public void Update_SetWorldConditions(string destination)
+    {
+        destination = GetActualDestination(destination);
+
+        float hour = 8.5f;
+        bool day = true;
+        float rain = 0f;
+        switch (destination.ToLower())
+        {
+            case "forest": //Forest
+                hour = 4f;
+                day = false;
+                break;
+            case "crimson": //Crimson
+                hour = 2.5f;
+                break;
+            case "desert": //Desert
+                break;
+            case "hive": //Hive
+                hour = 4;
+                day = false;
+                break;
+            case "frozencity": //Frozen City
+                hour = 4.5f;
+                rain = 1f;
+                break;
+            case "dungeon": //Dungeon
+                break;
+        }
+        if (rain != 0)
+        {
+            Main.StartRain();
+            Main.raining = true;
+            Main.rainTime = 100000f;
+        }
+        else
+        {
+            Main.StopRain();
+            Main.raining = false;
+            Main.rainTime = 0f;
+        }
+        Main.dayTime = day;
+        Main.time = hour * 3600;
+    }
+    public void Update_PostTeleport(string actualDestination)
+    {
+        if (Main.netMode == NetmodeID.MultiplayerClient) return;
+
+        foreach(NPC npc in Main.ActiveNPCs)
+        {
+            npc.SetDefaults(NPCID.None);
+            npc.active = false;
+        }
+        NPCRespawnHandler.RespawnMarkers.Clear();
+
+        bool isGoblinUnlocked = false;
+        if (Main.netMode == NetmodeID.Server)
+        {
+            foreach (Player player in Main.ActivePlayers)
+            {
+                if (player.GetModPlayer<ModPlayers.MetaPlayer>().Goblin)
+                {
+                    isGoblinUnlocked = true;
+                }
+            }
+        }
+        else //Is Single Player Client
+        {
+            isGoblinUnlocked = Main.LocalPlayer.GetModPlayer<ModPlayers.MetaPlayer>().Goblin;
+        }
+
+        Point16 tileCoords = GetTelePos(actualDestination);
+        Vector2 worldCoords = tileCoords.ToWorldCoordinates();
+        if (actualDestination.ToLower().Equals("inn"))
+        {
+            if (isGoblinUnlocked)
+            {
+                int newNPC = NPC.NewNPC(NPC.GetSource_NaturalSpawn(), (int)worldCoords.X, (int)worldCoords.Y, NPCID.GoblinTinkerer);
+                if (Main.netMode == NetmodeID.Server)
+                {
+                    NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, newNPC);
+                }
+            }
+            RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Pause);
+            RewardTrackerSystem.UpdateChests_OnTeleport(tileCoords);
+        }
+        else
+        {
+            RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Restart);
+        }
+
+        GlobalNPCs.VanillaNPCShop.UpdateTeleport(level, nextLevel, (Main.netMode == NetmodeID.Server));
+
+        return;
+    }
+
+    public override void SaveWorldData(TagCompound tag)
+    {
+        if (level != 1)
+            tag[nameof(level)] = level;
+        if (!nextLevel.Equals("Forest"))
+            tag[nameof(nextLevel)] = nextLevel;
+        Mod.Logger.Info($"Saved \"Next Level\" as {nextLevel}");
+        if (nextLevelVariation != 0)
+            tag[nameof(nextLevelVariation)] = nextLevelVariation;
+    }
+    public override void LoadWorldData(TagCompound tag)
+    {
+        if (!tag.TryGet<int>(nameof(level), out level))
+            level = 1;
+        if (!tag.TryGet<string>(nameof(nextLevel), out nextLevel))
+            nextLevel = "Forest";
+        Mod.Logger.Info($"Loaded \"Next Level\" as {nextLevel}");
+        if (!tag.TryGet<int>(nameof(nextLevelVariation), out nextLevelVariation))
+            nextLevelVariation = 0;
+        Update_SetWorldConditions(nextLevel);
+    }
+    public override void NetSend(BinaryWriter writer)
+    {
+        writer.Write((byte)level);
+        writer.Write(nextLevel);
+        writer.Write((byte)nextLevelVariation);
+    }
+    public override void NetReceive(BinaryReader reader)
+    {
+        level = reader.ReadByte();
+        nextLevel = reader.ReadString();
+        nextLevelVariation = reader.ReadByte();
     }
 }

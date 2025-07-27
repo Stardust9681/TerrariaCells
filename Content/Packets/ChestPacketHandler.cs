@@ -16,15 +16,15 @@ using TerrariaCells.Common.ModPlayers;
 
 namespace TerrariaCells.Content.Packets
 {
-    internal class ChestPacketHandler(TCPacketType handlerType) : PacketHandler(handlerType)
+    internal class ChestPacketHandler() : PacketHandler(TCPacketType.ChestPacket)
 	{
         private readonly ChestLootSpawner spawner = ModContent.GetInstance<ChestLootSpawner>();
 
-        public override void HandlePacket(BinaryReader reader, int fromWho)
+        public override void HandlePacket(Mod mod, BinaryReader reader, int fromWho)
 		{
             switch ((ChestPacketType)reader.ReadByte())
             {
-                case ChestPacketType.ServerOpenChest:
+                case ChestPacketType.ServerOpenChest: //Asking server to open
                 {
                     int chest = reader.ReadInt32();
                     int x = Main.chest[chest].x;
@@ -32,21 +32,29 @@ namespace TerrariaCells.Content.Packets
                     spawner.OpenChest(x, y, chest);
                     // The only way to sync our custom chest system to clients is to send another packet, so here we go
                     if (Main.netMode == NetmodeID.MultiplayerClient) break;
-                    ModPacket packet = ModContent.GetInstance<TerrariaCells>().GetPacket();
-                    packet.Write((byte)TCPacketType.ChestPacket);
+                    ModPacket packet = mod.GetPacket();
+                    packet.Write((byte)this.HandlerType);
                     packet.Write((byte)ChestPacketType.ClientOpenChest);
                     packet.Write(chest);
                     packet.Send();
                     break;
                 }
                 // This is called on each client, only the server should write to this packet
-                case ChestPacketType.ClientOpenChest:
+                case ChestPacketType.ClientOpenChest: //Asking client to open
                 {
                     int clientChest = reader.ReadInt32();
                     spawner.lootedChests.Add(clientChest);
                     break;
                 }
-                case ChestPacketType.ServerJoin:
+                case ChestPacketType.ClientCloseChests:
+                    ushort count = reader.ReadUInt16();
+                    for (int i = 0; i < count; i++)
+                    {
+                        int chest = reader.ReadUInt16();
+                        spawner.lootedChests.Remove(chest);
+                    }
+                    break;
+                case ChestPacketType.ServerJoin: //Runs on server
                 {
                     if (Main.netMode != NetmodeID.Server) return;
                     int whoAmI = reader.ReadInt32();
@@ -59,7 +67,7 @@ namespace TerrariaCells.Content.Packets
                     p.Send(whoAmI, -1);
                     break;
                 }
-                case ChestPacketType.ClientJoin:
+                case ChestPacketType.ClientJoin: //Runs on client
                 {
                     int cnt = reader.ReadInt32();
                     for (int i = 0; i < cnt; i++)
@@ -68,14 +76,23 @@ namespace TerrariaCells.Content.Packets
                     }
                     break;
                 }
-
             }
-            
 		}
 	}
     public enum ChestPacketType : byte
     {
         ClientOpenChest,
+
+        ///<summary>
+        ///Ask a client to close a number of chests. Used for end-of-level rewards.
+        ///</summary>
+        ///<remarks>
+        ///<b>Send/Receive</b>:
+        ///<para><i>To Client:</i> <c><see langword="ushort"/> count, <see langword="params ushort"/>[] chests</c></para>
+        ///<para><i>To Server:</i> <c>N/A</c></para>
+        ///</remarks>
+        ClientCloseChests,
+
         ServerOpenChest,
         ServerJoin,
         ClientJoin,

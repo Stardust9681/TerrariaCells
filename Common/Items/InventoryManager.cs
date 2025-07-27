@@ -11,6 +11,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using TerrariaCells.Common.Configs;
 using TerrariaCells.Common.Items;
+using TerrariaCells.Common.Systems;
 
 namespace TerrariaCells.Common.Items;
 
@@ -156,30 +157,48 @@ public class InventoryManager : ModSystem, IEntitySource
             )
             .ToDictionary();
 
-        On_Player.CanAcceptItemIntoInventory += new(FilterPickups);
+        On_Player.CanAcceptItemIntoInventory += FilterPickups;
+        On_Player.GetItem_FillIntoOccupiedSlot += On_Player_GetItem_FillIntoOccupiedSlot;
     }
 
-    public override void PostUpdateWorld()
+    private bool On_Player_GetItem_FillIntoOccupiedSlot(On_Player.orig_GetItem_FillIntoOccupiedSlot orig, Player self, int plr, Item newItem, GetItemSettings settings, Item returnItem, int i)
+    {
+        bool origResult = orig.Invoke(self, plr, newItem, settings, returnItem, i);
+        if (i is not (>= WEAPON_SLOT_1 and <= POTION_SLOT) or (>= STORAGE_SLOT_1 and <= STORAGE_SLOT_4))
+            return false;
+        return origResult;
+    }
+
+    public override void PostUpdatePlayers()
     {
         if (DevConfig.Instance.EnableInventoryLock)
         {
-            foreach (Terraria.Player player in Main.ActivePlayers)
+            if (Main.netMode == NetmodeID.Server)
             {
-                if (player.selectedItem < INVENTORY_SLOT_COUNT)
-                    continue;
+                foreach (Player player in Main.ActivePlayers)
+                {
+                    SortInventory(player);
 
-                if (player.selectedItem > INVENTORY_SLOT_COUNT + 2)
-                    player.selectedItem = 0;
-                else
-                    player.selectedItem = INVENTORY_SLOT_COUNT - 1;
+                    if (player.selectedItem < INVENTORY_SLOT_COUNT)
+                        continue;
+
+                    if (player.selectedItem > INVENTORY_SLOT_COUNT + 2)
+                        player.selectedItem = 0;
+                    else
+                        player.selectedItem = INVENTORY_SLOT_COUNT - 1;
+                }
             }
-            // }
-
-            // if (config.EnableInventoryLock)
-            // {
-            foreach (Terraria.Player player in Main.player)
+            else
             {
-                SortInventory(player);
+                SortInventory(Main.LocalPlayer);
+
+                if (Main.LocalPlayer.selectedItem < INVENTORY_SLOT_COUNT)
+                    return;
+
+                if (Main.LocalPlayer.selectedItem > INVENTORY_SLOT_COUNT + 2)
+                    Main.LocalPlayer.selectedItem = 0;
+                else
+                    Main.LocalPlayer.selectedItem = INVENTORY_SLOT_COUNT - 1;
             }
         }
     }
@@ -391,9 +410,12 @@ public class InventoryManager : ModSystem, IEntitySource
         Item item
     )
     {
+        bool origResult = orig.Invoke(player, item);
+        if (!origResult)
+            return origResult;
         if (!DevConfig.Instance.EnableInventoryLock)
         {
-            return true;
+            return origResult;
         }
 
         return GetItemCategorization(item) switch
@@ -409,24 +431,6 @@ public class InventoryManager : ModSystem, IEntitySource
                 "Missing Item category check (I hate runtime exceptions but i cant think of a better solution atm)"
             ),
         };
-    }
-
-    public Item OnItemPickup(
-        On_Player.orig_PickupItem orig,
-        Terraria.Player self,
-        int playerIndex,
-        int worldItemArrayIndex,
-        Item itemToPickUp
-    )
-    {
-        // if (config.EnableInventoryLock)
-        // {
-        //     MoveItemToItsDedicatedCategory(Main.player[playerIndex], itemToPickUp, 13);
-        // }
-
-
-
-        return itemToPickUp;
     }
 
     public static bool DoesStorageItemGoIntoRegularInventory(

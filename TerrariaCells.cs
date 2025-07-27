@@ -15,7 +15,7 @@ namespace TerrariaCells
         }
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
-            ModNetHandler.HandlePacket(reader, whoAmI);
+            ModNetHandler.HandlePacket(this, reader, whoAmI);
         }
 
         public override void Load()
@@ -27,15 +27,16 @@ namespace TerrariaCells
     /// Base class for handling net packets, 
     /// see TerrariaCells/Content/Packets for implementations
     /// </summary>
-    internal abstract class PacketHandler
-    {
-        internal TCPacketType HandlerType { get; set; }
-        /// <summary>
+    public abstract class PacketHandler
+	{
+		public TCPacketType HandlerType { get; private set; }
+		/// <summary>
         /// Override this class to read through certain packets
         /// </summary>
+        /// <param name="mod">mod instance for convenience sake</param>
         /// <param name="reader">the reader</param>
         /// <param name="fromWho">the owner player that sent this packet, equals 255 if server</param>
-        public abstract void HandlePacket(BinaryReader reader, int fromWho);
+		public abstract void HandlePacket(Mod mod, BinaryReader reader, int fromWho);
 
         protected PacketHandler(TCPacketType handlerType)
         {

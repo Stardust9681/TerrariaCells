@@ -15,9 +15,9 @@ using TerrariaCells.Common.Utilities;
 
 namespace TerrariaCells.Content.Packets
 {
-    internal class PylonPacketHandler(TCPacketType handlerType) : PacketHandler(handlerType)
+    internal class PylonPacketHandler() : PacketHandler(TCPacketType.PylonPacket)
     {
-        public override void HandlePacket(BinaryReader reader, int fromWho)
+        public override void HandlePacket(Mod mod, BinaryReader reader, int fromWho)
         {
             switch((PylonPacketType)reader.ReadByte())
             {
@@ -50,7 +50,7 @@ namespace TerrariaCells.Content.Packets
                         p.Write(point.Y);
                     }
                     p.Send(playerIndex, -1);
-                    ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("" + playerIndex), Color.White);
+                    //ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("" + playerIndex), Color.White);
                     break;
                 }
                 case PylonPacketType.ClientPlayerEnter:

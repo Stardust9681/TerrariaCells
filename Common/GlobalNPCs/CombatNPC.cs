@@ -46,6 +46,7 @@ namespace TerrariaCells.Common.GlobalNPCs
         }
 		public override void SetDefaults(NPC npc)
 		{
+            //Some levels will lead to more than one *other* level. Using a/b/.. to direct path in comments
 			switch (npc.type)
 			{
                 //Level 1
@@ -109,7 +110,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                     return;
                 #endregion
 
-                //Level 3
+                //Level 3.a
                 #region Desert
                 case NPCID.Mummy:
 					npc.lifeMax = 400;
@@ -136,7 +137,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                     break;
 				#endregion
 
-                //Level 3
+                //Level 3.b
                 #region Frozen City
                 case NPCID.CultistDevote:
                     npc.lifeMax = 100;
@@ -158,10 +159,30 @@ namespace TerrariaCells.Common.GlobalNPCs
                     break;
                 #endregion
 
-                //Level 4
+                //Level 4.a.a
                 #region Hive
                 case NPCID.Hornet:
                     npc.lifeMax = 175;
+                    break;
+                #endregion
+
+                //Level 4.b.a
+                #region Dungeon
+                case NPCID.DiabolistRed:
+                case NPCID.DiabolistWhite:
+                    npc.lifeMax = 125;
+                    npc.damage = 75;
+                    break;
+                case NPCID.RaggedCaster:
+                case NPCID.RaggedCasterOpenCoat:
+                    npc.lifeMax = 125;
+                    npc.damage = 60;
+                    break;
+                case NPCID.RustyArmoredBonesAxe:
+                case NPCID.RustyArmoredBonesFlail:
+                case NPCID.RustyArmoredBonesSword:
+                case NPCID.RustyArmoredBonesSwordNoArmor:
+                    npc.lifeMax = 400;
                     npc.damage = 60;
                     break;
                 #endregion

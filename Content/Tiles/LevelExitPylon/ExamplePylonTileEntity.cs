@@ -1,3 +1,4 @@
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -60,6 +61,15 @@ public class ForestExitPylonTileEntity : ModTileEntity
                 number3: Position.Y
             );
         }
+    }
+
+    public override void NetSend(BinaryWriter writer)
+    {
+        writer.Write(Destination);
+    }
+    public override void NetReceive(BinaryReader reader)
+    {
+        Destination = reader.ReadString();
     }
 
     public override void Update()

@@ -1,0 +1,242 @@
+[    
+    {
+        "Name": "SpikeBall",
+        "X": 100,
+        "Y": 110
+    },
+    {
+        "Name": "SpikeBall",
+        "X": 260,
+        "Y": 115
+    },
+    {
+        "Name": "SkeletonSniper",
+        "X": 101,
+        "Y": 136
+    },
+    {
+        "Name": "SkeletonSniper",
+        "X": 138,
+        "Y": 56
+    },
+    {
+        "Name": "SkeletonSniper",
+        "X": 468,
+        "Y": 56
+    },
+    {
+        "Name": "SkeletonSniper",
+        "X": 470,
+        "Y": 56
+    },
+    {
+        "Name": "SkeletonSniper",
+        "X": 468,
+        "Y": 54
+    },
+    {
+        "Name": "SkeletonSniper",
+        "X": 468,
+        "Y": 54
+    },
+    {
+        "Name": "SkeletonSniper",
+        "X": 468,
+        "Y": 56
+    },
+    {
+        "Name": "SkeletonSniper",
+        "X": 407,
+        "Y": 36
+    },
+    {
+        "Name": "RustyArmoredBonesSword",
+        "X": 67,
+        "Y": 103
+    },
+    {
+        "Name": "RustyArmoredBonesSword",
+        "X": 123,
+        "Y": 56
+    },
+    {
+        "Name": "RustyArmoredBonesSword",
+        "X": 87,
+        "Y": 56
+    },
+    {
+        "Name": "RustyArmoredBonesSword",
+        "X": 207,
+        "Y": 76
+    },
+    {
+        "Name": "RustyArmoredBonesSword",
+        "X": 309,
+        "Y": 59
+    },
+    {
+        "Name": "RustyArmoredBonesSword",
+        "X": 385,
+        "Y": 96
+    },
+    {
+        "Name": "RustyArmoredBonesSword",
+        "X": 289,
+        "Y": 154
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "RaggedCaster", "Weight" : 1},
+      { "Name" : "DiabolistRed", "Weight" : 1 }
+                    ],
+        "X" : 117,
+        "Y" : 156
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "RaggedCaster", "Weight" : 1},
+      { "Name" : "DiabolistRed", "Weight" : 1 }
+                    ],
+        "X" : 145,
+        "Y" : 69
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "RaggedCaster", "Weight" : 1},
+      { "Name" : "DiabolistRed", "Weight" : 1 }
+                    ],
+        "X" : 203,
+        "Y" : 63
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "RaggedCaster", "Weight" : 1},
+      { "Name" : "DiabolistRed", "Weight" : 1 }
+                    ],
+        "X" : 342,
+        "Y" : 132
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "RaggedCaster", "Weight" : 1},
+      { "Name" : "DiabolistRed", "Weight" : 1 }
+                    ],
+        "X" : 365,
+        "Y" : 131
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "RaggedCaster", "Weight" : 1},
+      { "Name" : "DiabolistRed", "Weight" : 1 }
+                    ],
+        "X" : 409,
+        "Y" : 170
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "RaggedCaster", "Weight" : 1},
+      { "Name" : "DiabolistRed", "Weight" : 1 }
+                    ],
+        "X" : 455,
+        "Y" : 86
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "RaggedCaster", "Weight" : 1},
+      { "Name" : "SkeletonSniper", "Weight" : 1},
+      { "Name" : "DiabolistRed", "Weight" : 1 }
+                    ],
+        "X" : 247,
+        "Y" : 84
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "RaggedCaster", "Weight" : 1},
+      { "Name" : "SkeletonSniper", "Weight" : 1},
+      { "Name" : "DiabolistRed", "Weight" : 1 }
+                    ],
+        "X" : 315,
+        "Y" : 159
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "RaggedCaster", "Weight" : 1},
+      { "Name" : "SkeletonSniper", "Weight" : 1},
+      { "Name" : "DiabolistRed", "Weight" : 1 }
+                    ],
+        "X" : 361,
+        "Y" : 102
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SkeletonSniper", "Weight" : 1},
+      { "Name" : "RustyArmoredBonesSword", "Weight" : 3 }
+                    ],
+        "X" : 144,
+        "Y" : 136
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SkeletonSniper", "Weight" : 1},
+      { "Name" : "RustyArmoredBonesSword", "Weight" : 3 }
+                    ],
+        "X" : 151,
+        "Y" : 97
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SkeletonSniper", "Weight" : 1},
+      { "Name" : "RustyArmoredBonesSword", "Weight" : 3 }
+                    ],
+        "X" : 209,
+        "Y" : 57
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SkeletonSniper", "Weight" : 1},
+      { "Name" : "RustyArmoredBonesSword", "Weight" : 3 }
+                    ],
+        "X" : 323,
+        "Y" : 95
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SkeletonSniper", "Weight" : 1},
+      { "Name" : "RustyArmoredBonesSword", "Weight" : 3 }
+                    ],
+        "X" : 239,
+        "Y" : 111
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SkeletonSniper", "Weight" : 1},
+      { "Name" : "RustyArmoredBonesSword", "Weight" : 3 }
+                    ],
+        "X" : 418,
+        "Y" : 151
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "RaggedCaster", "Weight" : 1},
+      { "Name" : "SkeletonSniper", "Weight" : 1},
+      { "Name" : "RustyArmoredBonesSword", "Weight" : 1},
+      { "Name" : "DiabolistRed", "Weight" : 1 },
+      { "Name" : "TargetDummy", "Weight" : 4}
+                    ],
+        "X" : 230,
+        "Y" : 119
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "RaggedCaster", "Weight" : 1},
+      { "Name" : "SkeletonSniper", "Weight" : 1},
+      { "Name" : "RustyArmoredBonesSword", "Weight" : 1},
+      { "Name" : "DiabolistRed", "Weight" : 1 },
+      { "Name" : "TargetDummy", "Weight" : 4}
+                    ],
+        "X" : 203,
+        "Y" : 119
+    }
+]
+
+

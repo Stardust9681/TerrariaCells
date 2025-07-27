@@ -17,7 +17,15 @@ namespace TerrariaCells.Common.Systems
 			NPCRespawnHandler.RespawnMarkers?.Clear();
 			if (RoomMarkers is null) RoomMarkers = new List<RoomMarker>();
 			else RoomMarkers.Clear();
-			foreach (NPC npc in Main.ActiveNPCs) npc.active = false; //Disable all current NPCs
+            foreach (NPC npc in Main.ActiveNPCs)
+            {
+                npc.netSkip = -1;
+                npc.active = false; //Disable all current NPCs
+                if (Main.netMode == NetmodeID.Server)
+                {
+                    NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc.whoAmI);
+                }
+            }
 
             BasicWorldGenData data = ModContent
                 .GetInstance<BasicWorldGeneration>()
@@ -57,7 +65,7 @@ namespace TerrariaCells.Common.Systems
 
 		public static void ResetSpawnsForStructure(LevelStructure levelStructure, Point levelPosition)
 		{
-            Mod mod = ModLoader.GetMod("TerrariaCells");
+            Mod mod = ModLoader.GetMod(nameof(TerrariaCells));
 
 			BasicWorldGenData data = ModContent
                 .GetInstance<BasicWorldGeneration>()
@@ -130,10 +138,12 @@ namespace TerrariaCells.Common.Systems
 		public override void PostUpdateNPCs()
 		{
 			if (Configs.DevConfig.Instance.DisableSpawns) return;
+            if(Main.netMode == NetmodeID.MultiplayerClient) return;
 
 			for (int i = 0; i < Main.maxPlayers; i++)
 			{
 				if (!Main.player[i].active) continue;
+                if(Main.player[i].DeadOrGhost) continue;
 				foreach (RoomMarker marker in RoomMarkers) marker.a_Update(i);
 			}
 		}
@@ -228,6 +238,10 @@ namespace TerrariaCells.Common.Systems
 			didSpawns = true;
 		}
 
+
+        //You know what they say...
+        //Temporary solutions make for the most permanent solutions.
+        //Doesn't really matter, just an amusing perspective.
 		#region Alpha Testing Hax
 		public RoomMarker(Point position, LevelStructure structure, ushort tileWidth, ushort tileHeight) : this(position, structure)
 		{
@@ -247,7 +261,10 @@ namespace TerrariaCells.Common.Systems
 
 		internal void a_Update(int playerIndex)
 		{
-			if (a_InRange(Main.player[playerIndex].Center))
+            if (didSpawns)
+                return;
+
+            if (a_InRange(Main.player[playerIndex].Center))
 			{
 				//Any other room load behaviours to add here?
 				a_HandleSpawns();
@@ -265,14 +282,17 @@ namespace TerrariaCells.Common.Systems
 
 		private void a_HandleSpawns()
 		{
-			if (didSpawns) return;
-
 			foreach (var info in Structure.SpawnInfo)
 			{
-				int whoAmI = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (Left + info.X) * 16 + 8, (Top + info.Y) * 16 + 8, info.SetID);
+				int whoAmI = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (Left + info.X) * 16 + 8, (Top + a_height - info.Y) * 16 + 8, info.SetID);
 				info.SpawnedNPC = Main.npc[whoAmI];
 				NPCRespawnHandler.HandleSpecialSpawn(info.SpawnedNPC, Left + info.X, Top + info.Y);
-			}
+
+                if (Main.netMode == NetmodeID.Server)
+                {
+                    NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, whoAmI);
+                }
+            }
 			didSpawns = true;
 			ModContent.GetInstance<TerrariaCells>().Logger.Info($"Spawned entites for {Structure.SpawnInfoPath}");
 		}

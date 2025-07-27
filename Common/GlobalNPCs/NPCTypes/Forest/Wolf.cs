@@ -24,10 +24,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             npc.ai[1] = 0;
             npc.ai[2] = 0;
             npc.ai[3] = 0;
+            npc.netUpdate = true;
         }
         public override void Behaviour(NPC npc)
         {
             npc.TargetClosest(false);
+
+            float oldAI = npc.ai[1];
             switch ((int)npc.ai[1])
             {
                 case IdleNoTarget:
@@ -43,6 +46,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
                     LungeAI(npc);
                     break;
             }
+            if (npc.ai[1] != oldAI)
+                npc.netUpdate = true;
+
             npc.spriteDirection = npc.direction;
         }
 
