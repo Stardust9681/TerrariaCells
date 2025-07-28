@@ -541,7 +541,9 @@ namespace TerrariaCells.Common.Commands
                     ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("First argument must be 'kill', 'hurt', 'type', 'ai' or 'pos'"), Color.Yellow);
                     return;
             }
-            
+        }
+    }
+
     public class ResetSpawnsCommand : ModCommand
     {
         public override string Command => "resetspawns";
