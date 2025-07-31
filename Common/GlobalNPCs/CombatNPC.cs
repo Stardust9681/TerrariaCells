@@ -110,7 +110,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                     return;
                 #endregion
 
-                //Lebel 2
+                //Level 2
                 #region Corruption
                 case NPCID.EaterofSouls:
                     npc.lifeMax = 30;
