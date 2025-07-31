@@ -359,7 +359,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                     Terraria.GameContent.TextureAssets.Npc[npc.type].Value,
                     npc.Center - screenPos + new Vector2(0, 4),
                     null,
-                    Color.White,
+                    drawColor,
                     npc.rotation,
                     new Vector2(24, 46),
                     1,
