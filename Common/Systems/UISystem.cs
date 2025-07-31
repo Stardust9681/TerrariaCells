@@ -59,7 +59,7 @@ namespace TerrariaCells.Common.Systems
             Add<LimitedStorageUI>();
             ToggleActive<LimitedStorageUI>(true);
             Add<Content.UI.RewardTracker>();
-            ToggleActive<Content.UI.RewardTracker>(true);
+            //ToggleActive<Content.UI.RewardTracker>(true);
             Add<Content.UI.Reload>();
         }
         public override void Unload()

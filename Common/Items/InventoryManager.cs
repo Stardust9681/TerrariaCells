@@ -163,10 +163,11 @@ public class InventoryManager : ModSystem, IEntitySource
 
     private bool On_Player_GetItem_FillIntoOccupiedSlot(On_Player.orig_GetItem_FillIntoOccupiedSlot orig, Player self, int plr, Item newItem, GetItemSettings settings, Item returnItem, int i)
     {
-        bool origResult = orig.Invoke(self, plr, newItem, settings, returnItem, i);
-        if (i is not (>= WEAPON_SLOT_1 and <= POTION_SLOT) or (>= STORAGE_SLOT_1 and <= STORAGE_SLOT_4))
+        if (i is not (>= WEAPON_SLOT_1 and <= POTION_SLOT) && i is not (>= STORAGE_SLOT_1 and <= STORAGE_SLOT_4) && i is not (>= 50 and <= 53))
+        {
             return false;
-        return origResult;
+        }
+        return orig.Invoke(self, plr, newItem, settings, returnItem, i);
     }
 
     public override void PostUpdatePlayers()

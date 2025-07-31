@@ -9,11 +9,17 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrariaCells.Common.GlobalItems;
+using TerrariaCells.Common.Systems;
 
 namespace TerrariaCells.Common.UI
 {
     public class UIPlayer : ModPlayer
     {
+        public override void OnEnterWorld()
+        {
+            DeadCellsUISystem.ToggleActive<Content.UI.RewardTracker>(true);
+        }
+
         public override void PostUpdate()
         {
             //toggle UI so that it only shows if the player is holding a weapon that uses it. Only set state if it needs to.
