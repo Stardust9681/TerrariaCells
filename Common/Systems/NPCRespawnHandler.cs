@@ -47,7 +47,7 @@ namespace TerrariaCells.Common.Systems
         private static void On_NPC_CheckActive(On_NPC.orig_CheckActive orig, NPC self)
         {
             bool wasActive = self.active;
-            int prevHealth = self.life;
+            int prevHealth = self.lifeMax;
             orig.Invoke(self);
             if (prevHealth > 1 && !NPCID.Sets.ProjectileNPC[self.type] && wasActive && !self.active)
             {
