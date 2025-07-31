@@ -115,6 +115,14 @@ namespace TerrariaCells.Common.GlobalNPCs
                 case NPCID.EaterofSouls:
                     npc.lifeMax = 30;
                     break;
+                case NPCID.DevourerHead:
+                    npc.lifeMax = 400;
+                    npc.damage = 40;
+                    break;
+                case NPCID.DevourerBody:
+                case NPCID.DevourerTail:
+                    npc.lifeMax = 400;
+                    break;
                 #endregion
 
                 //Level 3.a
