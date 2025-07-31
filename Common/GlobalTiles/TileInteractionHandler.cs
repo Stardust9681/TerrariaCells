@@ -96,7 +96,7 @@ namespace TerrariaCells.Common.GlobalTiles
                 case TileID.ManaCrystal:
                     return tile.IsActuated;
                 case TileID.CatBast:
-                    return tile.TileFrameX > 72;
+                    return tile.TileFrameX >= 72;
                 default:
                     return false;
             }
