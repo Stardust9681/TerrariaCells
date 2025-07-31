@@ -7,6 +7,7 @@ using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrariaCells.Common.Commands;
@@ -305,19 +306,31 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 behindSegmentIndex = 1000;
             }
 
+
             switch (npc.type)
             {
-                //example how to change values of new worm type
                 case NPCID.GiantWormHead:
                 case NPCID.GiantWormBody:
                 case NPCID.GiantWormTail:
                     HasOneHPPool = false;
+                    npc.defense = 0;
+                    break;
+                case NPCID.SeekerHead:
+                case NPCID.SeekerBody:
+                case NPCID.SeekerTail:
+                case NPCID.DevourerHead:
+                case NPCID.DevourerBody:
+                case NPCID.DevourerTail:
+                    npc.defense = 0;
                     break;
                 case NPCID.EaterofWorldsHead:
                 case NPCID.EaterofWorldsBody:
                 case NPCID.EaterofWorldsTail:
                     DistanceBetweenSegments = 2f;
                     HasOneHPPool = false;
+                    SegmentCount = 100;
+                    npc.defense = 0;
+                    npc.lifeMax = npc.life = 150;
                     break;
             }
         }
@@ -383,10 +396,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                     break;
                 case WormState.PreparingAttack:
                     //idles under the player in a figure 8 pattern until it can attack
-                    speed = float.Lerp(speed, 10f, 10f / 60f);
+                    speed = float.Lerp(speed, 15f, 10f / 60f);
                     targetPosition = playerCenter + new Vector2(0, 16f * 40f);
                     Vector2 toTargetPosition = targetPosition - wormEntity.Center;
-                    velocity = new Vector2(float.Lerp(velocity.X, toTargetPosition.X, 0.05f / 60f), float.Lerp(velocity.Y, toTargetPosition.Y, 0.5f / 60f));
+                    velocity = new Vector2(float.Lerp(velocity.X, toTargetPosition.X, 0.02f / 60f), float.Lerp(velocity.Y, toTargetPosition.Y, 0.5f / 60f));
 
                     #region worm state transition
 
@@ -641,10 +654,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
         void KillSegment(NPC segment)
         {
-            Main.NewText("kill segment at index " + segment.whoAmI);
             if (!segment.active)
             {
-                Main.NewText("except no because segment isn't active");
                 return;
             }
             segment.life = 0;
@@ -867,5 +878,18 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
         bool IsWormBody(NPC npc) => WormHeads.Contains(npc.type - 1);
         bool IsWormTail(NPC npc) => WormHeads.Contains(npc.type - 2);
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => WormHeads.Any(x => x == entity.type || x == entity.type - 1 || x == entity.type - 2);
+    }
+
+    public class EaterOfWorldsBossBar : GlobalBossBar
+    {
+        public override bool PreDraw(SpriteBatch spriteBatch, NPC npc, ref BossBarDrawParams drawParams)
+        {
+            if (npc.type == NPCID.EaterofWorldsHead)
+            {
+                drawParams.LifeMax = 15300; //150 life per segment, 100 body segments + 1 head and 1 tail -> 15300
+            }
+
+            return base.PreDraw(spriteBatch, npc, ref drawParams);
+        }
     }
 }
