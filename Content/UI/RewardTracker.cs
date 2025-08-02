@@ -110,9 +110,8 @@ namespace TerrariaCells.Content.UI
                 < 1 => Terraria.ID.ItemID.SilverWatch,
                 _ => Terraria.ID.ItemID.CopperWatch,
             };
+            Main.instance.LoadItem(watchType);
             var watchSprite = Terraria.GameContent.TextureAssets.Item[watchType];
-            if (!watchSprite.IsLoaded)
-                watchSprite.Wait.Invoke();
             drawPos = panelPos;
             spriteBatch.Draw(watchSprite.Value, new Rectangle((int)drawPos.X, (int)drawPos.Y, (int)panelSize.Y, (int)panelSize.Y), null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, 0f);
         }
