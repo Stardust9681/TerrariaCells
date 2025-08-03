@@ -213,9 +213,9 @@ namespace TerrariaCells.Common.GlobalNPCs
                 #endregion
 
                 //Do early return if you don't want enemy to have 0 defence
-                //No point repeating the same line a bajillion times :)
+                //No point repeating the same line a bajillion times
                 default:
-					return;
+                    break;
 			}
 			npc.defense = 0;
 		}
