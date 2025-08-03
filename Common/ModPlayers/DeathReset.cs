@@ -151,37 +151,37 @@ public class DeathReset : ModPlayer, IEntitySource
                 inventory[itemslot].TurnToAir();
             }
 
-            inventory[50].TurnToAir();
-            inventory[51].TurnToAir();
-            inventory[52].TurnToAir();
-            inventory[53].TurnToAir();
-            inventory[58].TurnToAir();
-            equips[0].TurnToAir();
-            equips[1].TurnToAir();
-            equips[2].TurnToAir();
-            equips[3].TurnToAir();
-            equips[4].TurnToAir();
-            equips[5].TurnToAir();
+            inventory[50].TurnToAir(true);
+            inventory[51].TurnToAir(true);
+            inventory[52].TurnToAir(true);
+            inventory[53].TurnToAir(true);
+            inventory[58].TurnToAir(true);
+            equips[0].TurnToAir(true);
+            equips[1].TurnToAir(true);
+            equips[2].TurnToAir(true);
+            equips[3].TurnToAir(true);
+            equips[4].TurnToAir(true);
+            equips[5].TurnToAir(true);
         }
         else if (context == ResetInventoryContext.Death && Main.netMode != NetmodeID.Server)
         {
             foreach ((int itemslot, TerraCellsItemCategory _) in InventoryManager.slotCategorizations)
             {
                 inventory[itemslot].shimmered = true;
-                Player.DropItem(playerDeath, centre, ref inventory[itemslot]);
+                Player.TryDroppingSingleItem(playerDeath, inventory[itemslot]);
             }
 
-            inventory[50].shimmered =   true; Player.DropItem(playerDeath, centre, ref inventory[50]);
-            inventory[51].shimmered =   true; Player.DropItem(playerDeath, centre, ref inventory[51]);
-            inventory[52].shimmered =   true; Player.DropItem(playerDeath, centre, ref inventory[52]);
-            inventory[53].shimmered =   true; Player.DropItem(playerDeath, centre, ref inventory[53]);
-            inventory[58].shimmered =   true; Player.DropItem(playerDeath, centre, ref inventory[58]);
-            equips[0].shimmered =       true; Player.DropItem(playerDeath, centre, ref equips[0]);
-            equips[1].shimmered =       true; Player.DropItem(playerDeath, centre, ref equips[1]);
-            equips[2].shimmered =       true; Player.DropItem(playerDeath, centre, ref equips[2]);
-            equips[3].shimmered =       true; Player.DropItem(playerDeath, centre, ref equips[3]);
-            equips[4].shimmered =       true; Player.DropItem(playerDeath, centre, ref equips[4]);
-            equips[5].shimmered =       true; Player.DropItem(playerDeath, centre, ref equips[5]);
+            inventory[50].shimmered =   true; Player.TryDroppingSingleItem(playerDeath, inventory[50]);
+            inventory[51].shimmered =   true; Player.TryDroppingSingleItem(playerDeath, inventory[51]);
+            inventory[52].shimmered =   true; Player.TryDroppingSingleItem(playerDeath, inventory[52]);
+            inventory[53].shimmered =   true; Player.TryDroppingSingleItem(playerDeath, inventory[53]);
+            inventory[58].shimmered =   true; Player.TryDroppingSingleItem(playerDeath, inventory[58]);
+            equips[0].shimmered =       true; Player.TryDroppingSingleItem(playerDeath, equips[0]);
+            equips[1].shimmered =       true; Player.TryDroppingSingleItem(playerDeath, equips[1]);
+            equips[2].shimmered =       true; Player.TryDroppingSingleItem(playerDeath, equips[2]);
+            equips[3].shimmered =       true; Player.TryDroppingSingleItem(playerDeath, equips[3]);
+            equips[4].shimmered =       true; Player.TryDroppingSingleItem(playerDeath, equips[4]);
+            equips[5].shimmered =       true; Player.TryDroppingSingleItem(playerDeath, equips[5]);
         }
         #endregion
 
