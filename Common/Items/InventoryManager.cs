@@ -159,6 +159,16 @@ public class InventoryManager : ModSystem, IEntitySource
 
         On_Player.CanAcceptItemIntoInventory += FilterPickups;
         On_Player.GetItem_FillIntoOccupiedSlot += On_Player_GetItem_FillIntoOccupiedSlot;
+        On_Player.GetItem_FillEmptyInventorySlot += On_Player_GetItem_FillEmptyInventorySlot;
+    }
+
+    private bool On_Player_GetItem_FillEmptyInventorySlot(On_Player.orig_GetItem_FillEmptyInventorySlot orig, Player self, int plr, Item newItem, GetItemSettings settings, Item returnItem, int i)
+    {
+        if (i is not (>= WEAPON_SLOT_1 and <= POTION_SLOT) && i is not (>= STORAGE_SLOT_1 and <= STORAGE_SLOT_4) && i is not (>= 50 and <= 53))
+        {
+            return false;
+        }
+        return orig.Invoke(self, plr, newItem, settings, returnItem, i);
     }
 
     private bool On_Player_GetItem_FillIntoOccupiedSlot(On_Player.orig_GetItem_FillIntoOccupiedSlot orig, Player self, int plr, Item newItem, GetItemSettings settings, Item returnItem, int i)
