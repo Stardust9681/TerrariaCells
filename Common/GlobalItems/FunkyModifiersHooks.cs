@@ -54,9 +54,22 @@ public partial class FunkyModifierItemModifier : GlobalItem
             )
             .ToArray();
     }
+    internal static (int Min, int Max) GetModCount(int level)
+    {
+        return level switch
+        {
+            //If this ain't the most cursed switch statement you ever saw....
+            <= 0 => (0, 0),
+            1 => (0, 1),
+            2 => (0, 2),
+            3 => (1, 3),
+            4 => (2, 3),
+            >= 5 => (3, 3),
+        };
+    }
     internal static FunkyModifier[] PickMods(int itemType, int level)
     {
-        (int min, int max) = modifierQuantityRangesPerTier[level];
+        (int min, int max) = GetModCount(level);
         int modifierCount = Main.rand.Next(min, max + 1); // offset by one to make inputs inclusive
 
         FunkyModifier[] pool = GetModPool(itemType);
@@ -76,11 +89,11 @@ public partial class FunkyModifierItemModifier : GlobalItem
     }
     public static void Reforge(Item item, int level)
     {
-        (int min, int max) = modifierQuantityRangesPerTier[level];
-        int modifierCount = Main.rand.Next(min, max + 1); // offset by one to make inputs inclusive
+        //(int min, int max) = GetModCount(level);
+        //int modifierCount = Main.rand.Next(min, max+1); // offset by one to make inputs inclusive
 
         FunkyModifierItemModifier funkyModifiers = item.GetGlobalItem<FunkyModifierItemModifier>();
-        funkyModifiers.modifiers = new FunkyModifier[modifierCount];
+        //funkyModifiers.modifiers = new FunkyModifier[modifierCount];
 
         funkyModifiers.modifiers = PickMods(item.type, level);
     }
