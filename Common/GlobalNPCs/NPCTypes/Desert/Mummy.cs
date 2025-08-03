@@ -73,8 +73,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 			}
 			else
 			{
-                validTarget = false;
                 this.ShouldWalk = false;
+                return;
 			}
 
             if (MathF.Abs(target.position.X - npc.position.X) < 80)

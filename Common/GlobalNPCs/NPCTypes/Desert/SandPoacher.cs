@@ -83,8 +83,14 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             }
         }
 
-        public void SandPoacherAI(NPC npc, Player target)
+        public void SandPoacherAI(NPC npc, Player? target)
         {
+            if (target is null)
+            {
+                ShouldWalk = false;
+                return;
+            }
+
             int timeWalking = 200;
             int timeDigging = 100;
             int stabTime = 30;
