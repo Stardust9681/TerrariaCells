@@ -111,7 +111,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 			{
 				npc.ai[2] = 5;
 				npc.height = 32;
-				npc.position.Y += 42;
+                //Removed NPC position adjustment here because it often led to it somehow going into the ground!!
+                //BUT I CAN'T TELL WHY BECAUSE I JUST KEEP PUTTING IT FURTHER UP UNTIL SUDDENLY IT'S STARTING ITS ROLL IN THE AIR AGAIN
 				npc.netUpdate = true;
 			}
 			npc.ai[0]++;
@@ -348,7 +349,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 					spritebatch.Draw(boulder.Value, npc.Bottom - screenPos - new Vector2(0, boulder.Height()*0.5f), null, lightColor, npc.rotation, boulder.Size() * 0.5f, 1f, SpriteEffects.None, 0);
 					return false;
 				case Roll:
-					if (!npc.dontTakeDamage) return base.PreDraw(npc, spritebatch, screenPos, lightColor);
+					//if (!npc.dontTakeDamage) return base.PreDraw(npc, spritebatch, screenPos, lightColor);
 					spritebatch.Draw(boulder.Value, npc.Bottom - screenPos - new Vector2(0, boulder.Height() * 0.5f), null, lightColor, npc.rotation, boulder.Size()*0.5f, 1f, SpriteEffects.None, 0);
 					return false;
 			}
