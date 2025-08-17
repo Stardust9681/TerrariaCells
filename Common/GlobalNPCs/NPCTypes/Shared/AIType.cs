@@ -21,6 +21,7 @@ using System.IO;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 {
+    [Autoload(false)]
 	public abstract class AIType : ILoadable
 	{
 		public void Load(Mod mod)
@@ -38,16 +39,19 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 		public virtual bool PreDraw(NPC npc, SpriteBatch spritebatch, Vector2 screenPos, Color lightColor) { return true; }
 	}
 
-	internal class AITypeHandler : GlobalNPC
+    [Autoload(false)]
+	public class AITypeHandler : GlobalNPC
 	{
         internal static readonly FieldInfo NPCLoader_HookFindFrame = typeof(NPCLoader).GetField("HookFindFrame", BindingFlags.NonPublic | BindingFlags.Static);
         public override void Load()
 		{
+            return;
 			IL_NPC.StrikeNPC_HitInfo_bool_bool += IL_StrikeNPC;
             IL_NPC.FindFrame += IL_NPC_FindFrame;
 		}
         public override void Unload()
 		{
+            return;
 			IL_NPC.StrikeNPC_HitInfo_bool_bool -= IL_StrikeNPC;
             IL_NPC.FindFrame -= IL_NPC_FindFrame;
         }

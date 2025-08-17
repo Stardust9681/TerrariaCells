@@ -16,12 +16,16 @@ using Mono.Cecil.Cil;
 
 using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 using TerrariaCells.Common.GlobalItems;
+using Terraria.ModLoader.IO;
+using System.IO;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 {
-	public class BrainOfCthulhu : AIType
+	public class BrainOfCthulhu : GlobalNPC, Shared.PreFindFrame.IGlobal
 	{
-		public override void Load()
+        internal static Vector2? SpawnPos { get; private set; } = null;
+
+        public override void Load()
 		{
 			Terraria.GameContent.UI.BigProgressBar.IL_BrainOfCthuluBigProgressBar.ValidateAndCollectNecessaryInfo += BoCHealthBarInfo;
 		}
@@ -88,15 +92,15 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
         //Timer() => ai[0]
         //
 
-
-		public override bool AppliesToNPC(int npcType)
-		{
-			return npcType == NPCID.BrainofCthulhu;
-		}
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == NPCID.BrainofCthulhu;
+        //public override bool AppliesToNPC(int npcType)
+		//{
+		//	return npcType == NPCID.BrainofCthulhu;
+		//}
 
 		//This is probably not ideal NPC behaviour code
 		//Probably don't emulate this
-		public override void Behaviour(NPC npc)
+		public override bool PreAI(NPC npc)
 		{
             int timer = (int)npc.ai[0];
 
@@ -109,17 +113,22 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 
                 //npc.ai[1] = ((uint)npc.Center.X * worldHeight) + (uint)npc.Center.Y;
                 //npc.ai[1] = PositionToFloat(npc.Center);
-                npc.localAI[1] = npc.Center.X;
-                npc.localAI[2] = npc.Center.Y;// + (3.5f * 16);
-                npc.ai[0]++;
-                npc.timeLeft = 0;
 				npc.GetGlobalNPC<CombatNPC>().allowContactDamage = false;
-				npc.Opacity = 0;
                 npc.netUpdate = true;
 
-				PowerupPickups.brainOfCthuluSpawnPoint = npc.position + (Vector2.UnitX * 80);
-				return;
-			}
+                if (SpawnPos is null)
+                {
+                    npc.EncourageDespawn(0);
+                    SpawnPos = npc.Center;
+                    PowerupPickups.brainOfCthuluSpawnPoint = SpawnPos;
+                    npc.Opacity = 0;
+                    npc.ai[0]++;
+                    return false;
+                }
+
+                npc.localAI[1] = SpawnPos.Value.X;
+                npc.localAI[2] = SpawnPos.Value.Y;// + (3.5f * 16);
+            }
 
             //Vector2 centre = Vector2.Zero;
             //centre.X = (int)(npc.ai[1] / worldHeight);
@@ -172,7 +181,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 
 					npc.Opacity = 1;
 				}
-
 			}
 			void WarnCharge()
 			{
@@ -781,14 +789,14 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 				if (timer == Start)
 				{
 					Point spawnPos = centre.ToTileCoordinates();
-					for (int j = 0; j < 16; j++)
+					for (int j = 0; j < 16 && WorldGen.InWorld(spawnPos.X, spawnPos.Y); j++)
 					{
 						if (WorldGen.SolidTile2(spawnPos.X, spawnPos.Y))
 							break;
 						spawnPos.Y++;
 					}
 					spawnPos.Y++;
-					for (int j = 0; j < 16; j++)
+					for (int j = 0; j < 16 && WorldGen.InWorld(spawnPos.X, spawnPos.Y); j++)
 					{
 						if (WorldGen.SolidTile2(spawnPos.X, spawnPos.Y))
 							break;
@@ -906,27 +914,29 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			Fall();
 
             npc.ai[0]++;
-			//npc.DoTimer();
+            //npc.DoTimer();
+
+            return false;
 		}
 
-		readonly int[] RightTentacles = new int[] {
+		private static readonly int[] RightTentacles = new int[] {
 			233, 285, 336, 387, 439, 490, 542, 593, 612, 645, 695, 747, 798, 851, 900, 1056,
 			1107, 1159, 1210, 1261, 1313, 1365, 1467, 1518, 1570, 1621, 1673, 1724, 1776,
 			1826, 1877, 1930, 1981, 2032, 2083, 2135, 2186, 2237, 2289, 2342, 2392, 2444,
 			2495, 2546, 2598, 2623, 2630, 2650, 2662, 2668
 		};
 
-		readonly int[] LeftTentacles = new int[] {
+		private static readonly int[] LeftTentacles = new int[] {
 			260, 310, 362, 413, 465, 516, 567, 614, 671, 721, 772, 824, 874, 1082, 1133, 1184,
 			1236, 1287, 1338, 1493, 1544, 1595, 1647, 1698, 1749, 1801, 1853, 1904, 1955, 2006,
 			2057, 2109, 2161, 2213, 2265, 2315, 2366, 2419, 2470, 2521, 2572
 		};
 
-		readonly int[] PlatformHeights = new int[] {
+		private static readonly int[] PlatformHeights = new int[] {
 			26, 31, 37, 43
 		};
 
-		public override bool FindFrame(NPC npc, int frameHeight)
+		public bool PreFindFrame(NPC npc, int frameHeight)
 		{
 			npc.frameCounter++;
 			if (npc.dontTakeDamage)

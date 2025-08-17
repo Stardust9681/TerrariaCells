@@ -10,20 +10,24 @@ using static TerrariaCells.Common.Utilities.NPCHelpers;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 {
-	public class GoblinSorcerer : AIType
+	public class GoblinSorcerer : Terraria.ModLoader.GlobalNPC
 	{
-		public override bool AppliesToNPC(int npcType)
-		{
-			//return npcType.Equals(Terraria.ID.NPCID.GoblinSorcerer);
-
-			return npcType == NPCID.GoblinSorcerer || npcType == NPCID.Tim;
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
+        {
+            return entity.type == NPCID.GoblinSorcerer || entity.type == NPCID.Tim;
         }
+        //public override bool AppliesToNPC(int npcType)
+		//{
+		//	//return npcType.Equals(Terraria.ID.NPCID.GoblinSorcerer);
+
+		//	return npcType == NPCID.GoblinSorcerer || npcType == NPCID.Tim;
+        //}
 
 		const int Idle = 0;
 		const int Casting = 1;
 		const int Teleporting = 2;
 
-		public override void Behaviour(NPC npc)
+		public override bool PreAI(NPC npc)
 		{
 			if (!npc.HasValidTarget)
 				npc.TargetClosest();
@@ -46,6 +50,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             }
             if (npc.ai[1] != oldAI)
                 npc.netUpdate = true;
+
+            return false;
         }
         private void IdleAI(NPC npc)
 		{

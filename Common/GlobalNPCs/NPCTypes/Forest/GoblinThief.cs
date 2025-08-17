@@ -6,12 +6,9 @@ using static TerrariaCells.Common.Utilities.NPCHelpers;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 {
-	/// <remarks>
-	/// Also used for <see cref="Terraria.ID.NPCID.Wolf"/>
-	/// </remarks>
-	public class GoblinThief : AIType
+	public class GoblinThief : Terraria.ModLoader.GlobalNPC, Shared.PreFindFrame.IGlobal
 	{
-        private ReLogic.Content.Asset<Texture2D> goblin_StabSprite;
+        private static ReLogic.Content.Asset<Texture2D> goblin_StabSprite;
         public override void Load()
         {
             if (!Main.dedServ)
@@ -20,12 +17,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             }
             base.Load();
         }
-        public override bool AppliesToNPC(int npcType)
-		{
-            return npcType is Terraria.ID.NPCID.GoblinThief;
-		}
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == Terraria.ID.NPCID.GoblinThief;
+        //public override bool AppliesToNPC(int npcType)
+        //{
+        //  return npcType is Terraria.ID.NPCID.GoblinThief;
+        //}
 
-		const int Idle = 0;
+        const int Idle = 0;
 		const int ApproachTarget = 1;
 		const int Jump = 2;
         const int Stab = 3;
@@ -34,7 +32,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 		const float MaxSpeed = 4f;
 		const float Accel = 0.1f;
 
-		public override void Behaviour(NPC npc)
+		public override bool PreAI(NPC npc)
 		{
 			if (!npc.HasValidTarget)
 				npc.TargetClosest(false);
@@ -64,6 +62,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             if (npc.ai[1] != oldAI)
                 npc.netUpdate = true;
             npc.spriteDirection = npc.direction;
+            return false;
 		}
 
         private void ResetAI(NPC npc)
@@ -285,7 +284,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             }
         }
 
-		public override bool FindFrame(NPC npc, int frameHeight)
+		public bool PreFindFrame(NPC npc, int frameHeight)
 		{
             if (npc.ai[1] < Stab)
             {
@@ -315,7 +314,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
                 }
                 else
                 {
-                    npc.frame.Y = ((2 * (int)npc.ai[0] / Stun_Delay) + 4) * (sheetHeight / 6);
+                    npc.frame.Y = Math.Min(((2 * (int)npc.ai[0] / Stun_Delay) + 4) * (sheetHeight / 6), 5 * sheetHeight / 6);
                 }
             }
             return false;

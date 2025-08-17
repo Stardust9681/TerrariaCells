@@ -11,24 +11,21 @@ using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 {
-	public class Crimera : AIType
+	public class Crimera : Terraria.ModLoader.GlobalNPC
 	{
-		public override bool AppliesToNPC(int npcType)
-		{
-            return npcType is NPCID.Crimera or NPCID.BigCrimera or NPCID.LittleCrimera or NPCID.EaterofSouls or NPCID.LittleEater or NPCID.BigEater;
-		}
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type is NPCID.Crimera or NPCID.BigCrimera or NPCID.LittleCrimera or NPCID.EaterofSouls or NPCID.LittleEater or NPCID.BigEater;
 
 		const int Idle = 0;
 		const int Orbit = 1;
 		const int Charge = 2;
 		const int Stun = 3;
 
-		public override void Behaviour(NPC npc)
+		public override bool PreAI(NPC npc)
 		{
 			if (!npc.HasValidTarget)
 			{
 				IdleAI(npc);
-				return;
+				return false;
 			}
             if (npc.direction == 0)
             {
@@ -55,6 +52,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
                 npc.netUpdate = true;
 
             npc.spriteDirection = npc.direction;
+
+            return false;
 		}
 
 		private void IdleAI(NPC npc)
