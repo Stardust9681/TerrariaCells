@@ -12,10 +12,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
         {
             return entity.type == Terraria.ID.NPCID.GoblinArcher;
         }
-        //public override bool AppliesToNPC(int npcType)
-		//{
-		//	return npcType.Equals(Terraria.ID.NPCID.GoblinArcher);
-		//}
 
 		const int Idle = 0;
 		const int ApproachTarget = 1;
@@ -327,5 +323,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             }
             return false;
         }
+
+        public override bool? CanFallThroughPlatforms(NPC npc) => false;
     }
 }

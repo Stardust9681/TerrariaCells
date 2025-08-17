@@ -299,5 +299,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             }
             return false;
         }
+
+        public override bool? CanFallThroughPlatforms(NPC npc) => npc.stairFall;
     }
 }

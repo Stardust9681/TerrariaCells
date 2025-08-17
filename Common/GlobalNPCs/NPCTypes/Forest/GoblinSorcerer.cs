@@ -215,5 +215,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 			npc.velocity.X *= 0.8f;
 			npc.DoTimer();
 		}
-	}
+
+        public override bool? CanFallThroughPlatforms(NPC npc) => false;
+    }
 }
