@@ -81,9 +81,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 		private void CastingAI(NPC npc)
 		{
 			int timer = npc.Timer();
-			if (timer % 15 == 0)
+			if (timer % 15 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				NPC ball = NPC.NewNPCDirect(npc.GetSource_FromAI(), npc.Center, Terraria.ID.NPCID.ChaosBall, ai0: 1);
+                NPC ball = NPC.NewNPCDirect(npc.GetSource_FromAI(), npc.Center, Terraria.ID.NPCID.ChaosBall, ai0: 1);
                 ball.target = npc.target;
                 //ball.velocity = npc.DirectionTo(Main.player[npc.target].Center) * 3.6f;
                 //ball.velocity = npc.DirectionTo(Main.player[npc.target].Center) * 5.0f;
@@ -92,7 +92,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
                 ball.velocity = npc.DirectionTo(Main.player[npc.target].Center) * speed;
 
                 ball.damage = npc.damage;
-				ball.netUpdate = true;
+                ball.netUpdate = true;
 			}
 			if (timer > 45 * 3)
 			{
@@ -186,6 +186,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 
 				npc.ai[2] = ground.X;
 				npc.ai[3] = ground.Y;
+                npc.netUpdate = true;
 			}
 			if (timer > 210)
 			{

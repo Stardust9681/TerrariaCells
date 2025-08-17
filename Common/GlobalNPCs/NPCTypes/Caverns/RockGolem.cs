@@ -317,20 +317,23 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 					//3 frame summon (9-11)
 					if (npc.ai[0] == 8)// && npc.ai[2] > 2)
 					{
-						Vector2 vel = new Vector2(MathF.Sign(target.position.X - npc.position.X) * 4, -3f);
-						Projectile proj = Projectile.NewProjectileDirect(
-							npc.GetSource_FromAI(),
-							npc.Center + vel,
-							vel,
-							ProjectileID.Boulder,
-							Utilities.TCellsUtils.ScaledHostileDamage(60),
-							1f,
-							Main.myPlayer
-						);
+                        if (Main.netMode != NetmodeID.MultiplayerClient)
+                        {
+                            Vector2 vel = new Vector2(MathF.Sign(target.position.X - npc.position.X) * 4, -3f);
+                            Projectile proj = Projectile.NewProjectileDirect(
+                                npc.GetSource_FromAI(),
+                                npc.Center + vel,
+                                vel,
+                                ProjectileID.Boulder,
+                                Utilities.TCellsUtils.ScaledHostileDamage(60),
+                                1f,
+                                Main.myPlayer
+                            );
+                            proj.friendly = false;
+                            proj.netUpdate = true;
+                        }
                         npc.ai[2] -= 3;
-                        proj.friendly = false;
-						proj.netUpdate = true;
-					}
+                    }
 
 					//3 frame wind-down (11-9)
 					if (npc.ai[0] > 60)
