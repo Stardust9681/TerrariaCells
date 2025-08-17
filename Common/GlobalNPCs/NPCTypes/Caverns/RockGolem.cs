@@ -438,5 +438,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 			}
 			return false;
 		}
-	}
+
+        public override bool? CanFallThroughPlatforms(NPC npc) => false;
+    }
 }
