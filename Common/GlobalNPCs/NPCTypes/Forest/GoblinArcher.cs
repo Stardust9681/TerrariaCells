@@ -3,16 +3,19 @@ using Terraria;
 using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 using TerrariaCells.Common.Utilities;
-using static Terraria.GameContent.Animations.IL_Actions.Sprites;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 {
-	public class GoblinArcher : AIType
+	public class GoblinArcher : Terraria.ModLoader.GlobalNPC, Shared.PreFindFrame.IGlobal
 	{
-		public override bool AppliesToNPC(int npcType)
-		{
-			return npcType.Equals(Terraria.ID.NPCID.GoblinArcher);
-		}
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
+        {
+            return entity.type == Terraria.ID.NPCID.GoblinArcher;
+        }
+        //public override bool AppliesToNPC(int npcType)
+		//{
+		//	return npcType.Equals(Terraria.ID.NPCID.GoblinArcher);
+		//}
 
 		const int Idle = 0;
 		const int ApproachTarget = 1;
@@ -33,7 +36,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             npc.netUpdate = true;
         }
 
-		public override void Behaviour(NPC npc)
+		public override bool PreAI(NPC npc)
 		{
 			if (!npc.HasValidTarget)
 				npc.TargetClosest(false);
@@ -60,6 +63,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             if (npc.ai[1] != oldAI)
                 npc.netUpdate = true;
             npc.spriteDirection = npc.direction;
+            return false;
 		}
 
 		void IdleAI(NPC npc)
@@ -275,7 +279,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 			npc.ai[0]++;
 		}
 
-        public override bool FindFrame(NPC npc, int frameHeight)
+        public bool PreFindFrame(NPC npc, int frameHeight)
         {
             //Frames 0-4 = Aim bow down-up
             //Frames 5,6 = ???

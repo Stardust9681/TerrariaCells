@@ -9,6 +9,7 @@ using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 
 namespace TerrariaCells.Common.Systems
 {
+    [Autoload(false)]
 	public class AIOverwriteSystem : ModSystem
 	{
 		private static int[] _AIPointers;

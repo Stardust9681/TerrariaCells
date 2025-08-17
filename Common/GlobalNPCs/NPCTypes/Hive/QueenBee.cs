@@ -14,7 +14,9 @@ using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 using TerrariaCells.Common.Utilities;
 using TerrariaCells.Content.Projectiles;
 
-public class QueenBee : AIType
+namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Hive;
+
+public class QueenBee : GlobalNPC, Shared.PreFindFrame.IGlobal
 {
     public static Vector2 SpawnPosition = Vector2.Zero;
     
@@ -26,7 +28,7 @@ public class QueenBee : AIType
     public static Asset<Texture2D>? WingTexture;
     public static Asset<Texture2D>? BeezookaTexture;
 
-    public override bool FindFrame(NPC npc, int frameHeight)
+    public bool PreFindFrame(NPC npc, int frameHeight)
     {
         int animSpeed = 5;
         if (npc.ai[0] == 1 && npc.ai[3] >= 30 && npc.ai[1] % 3 == 2)
@@ -104,13 +106,13 @@ public class QueenBee : AIType
         return false;
     }
 
-    public override void Behaviour(NPC npc)
+    public override bool PreAI(NPC npc)
     {
         Trailing(npc);
         Targetting(npc);
         if (!npc.HasValidTarget)
         {
-            return;
+            return false;
         }
         if (SpawnPosition == Vector2.Zero)
         {
@@ -132,6 +134,7 @@ public class QueenBee : AIType
         {
             Beezooka(npc);
         }
+        return false;
     }
     public void Beezooka(NPC npc)
     {
@@ -447,11 +450,13 @@ public class QueenBee : AIType
     public void Trailing(NPC npc)
     {
     }
-    
-    public override bool AppliesToNPC(int npcType)
-    {
-        return npcType == NPCID.QueenBee;
-    }
+
+    public override bool InstancePerEntity => true;
+    public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == NPCID.QueenBee;
+    //public override bool AppliesToNPC(int npcType)
+    //{
+    //    return npcType == NPCID.QueenBee;
+    //}
 }
 public class ExtraQueenBee : GlobalNPC
 {

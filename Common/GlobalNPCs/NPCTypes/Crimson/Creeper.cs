@@ -8,14 +8,15 @@ using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 {
-	public class Creeper : AIType
+	public class Creeper : Terraria.ModLoader.GlobalNPC
 	{
-		public override bool AppliesToNPC(int npcType)
-		{
-			return npcType == Terraria.ID.NPCID.Creeper;
-		}
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == Terraria.ID.NPCID.Creeper;
+        //public override bool AppliesToNPC(int npcType)
+		//{
+		//	return npcType == Terraria.ID.NPCID.Creeper;
+		//}
 
-		public override void Behaviour(NPC npc)
+		public override bool PreAI(NPC npc)
 		{
 			bool horizontalMovement = npc.ai[1] != 0;
 
@@ -44,6 +45,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			{
 				npc.active = false;
 			}
+            return false;
 		}
 	}
 }

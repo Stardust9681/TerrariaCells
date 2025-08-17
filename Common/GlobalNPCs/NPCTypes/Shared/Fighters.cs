@@ -29,6 +29,18 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
         public float WalkSpeed = 2;
         public float Acceleration = 0.1f;
         public float JumpSpeed = 8;
+
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
+        {
+            return Mummies.Contains(entity.type)
+                || Ghouls.Contains(entity.type)
+                || entity.type == NPCID.CultistArcherBlue
+                || entity.type == NPCID.BloodCrawler
+                || entity.type == NPCID.BloodCrawlerWall
+                || entity.type == NPCID.DesertScorpionWalk
+                || entity.type == NPCID.DesertScorpionWall;
+        }
+
         public override void SetStaticDefaults()
         {
             for (int i = 0; i < Ghouls.Length; i++)
@@ -119,8 +131,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
         }
         public override bool PreAI(NPC npc)
         {
-            if (Common.Systems.AIOverwriteSystem.AITypeExists(npc.type))
-                return base.PreAI(npc);
+            //if (Common.Systems.AIOverwriteSystem.AITypeExists(npc.type))
+            //    return base.PreAI(npc);
 
             if (npc.aiStyle == NPCAIStyleID.Fighter || npc.type == NPCID.CultistArcherBlue)
             {
