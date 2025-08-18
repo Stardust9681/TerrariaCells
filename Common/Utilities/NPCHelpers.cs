@@ -89,7 +89,7 @@ namespace TerrariaCells.Common.Utilities
 			{
 				Vector2 collision = Collision.TileCollision(testPos, Vector2.UnitY * 16, npc.width, npc.height);
 				if (collision.Y != 16)
-					return testPos  + collision;
+					return testPos + collision;
 			}
 			return testPos + new Vector2(0, tilesToCheck * 16);
 		}

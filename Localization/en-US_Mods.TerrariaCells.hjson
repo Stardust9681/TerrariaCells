@@ -338,6 +338,7 @@ Projectiles: {
 	BeeWallBee.DisplayName: Bee
 	BeeMissile.DisplayName: Bee Missile
 	BeeMissileBee.DisplayName: Bee
+	DripplerExplosion.DisplayName: Drippler Explosion
 }
 
 Tooltips: {
