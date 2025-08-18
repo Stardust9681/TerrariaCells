@@ -13,7 +13,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 	public class CombatNPC : GlobalNPC
 	{
 		public override bool InstancePerEntity => true;
-		public bool allowContactDamage = false;
+		public bool allowContactDamage = true;
 
 		public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
 		{
