@@ -44,7 +44,8 @@ namespace TerrariaCells.Common.GlobalNPCs
 			BuffID.CursedInferno,
 			BuffID.Poisoned,
 			BuffID.Venom,
-			BuffID.Bleeding
+			BuffID.Bleeding,
+            BuffID.OnFire3,
 		};
 		public readonly int[] buffStacks = new int[NPC.maxBuffs];
 		public readonly int[] buffOrigTimes = new int[NPC.maxBuffs];
@@ -212,6 +213,17 @@ namespace TerrariaCells.Common.GlobalNPCs
 							dust.velocity = npc.velocity * 0.3f + Vector2.One.RotatedByRandom(MathHelper.TwoPi);
 						}
 						break;
+                    case BuffID.OnFire3:
+                        int maxStrength_OF3 = Math.Min(buffStacks, 6);
+                        if (Main.rand.NextBool(10 - maxStrength_OF3))
+                        {
+                            dust = Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.InfernoFork, Alpha: 100);
+                            dust.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+                            dust.scale = (MathF.Sin(dust.rotation) * 0.25f) + (2 + maxStrength_OF3 * 0.1f);
+                            dust.noGravity = true;
+                            dust.velocity = npc.velocity * 0.3f + Vector2.One.RotatedBy(MathHelper.TwoPi);
+                        }
+                        break;
 
 					case BuffID.Poisoned:
 						int maxStrength_P = Math.Min(buffStacks, 8);
@@ -269,6 +281,8 @@ namespace TerrariaCells.Common.GlobalNPCs
 			npc.onFire = false;
 			bool was_onFire2 = npc.onFire2;
 			npc.onFire2 = false;
+            bool was_onFire3 = npc.onFire3;
+            npc.onFire3 = false;
 			bool was_poisoned = npc.poisoned;
 			npc.poisoned = false;
 			bool was_venom = npc.venom;
@@ -278,6 +292,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 
 			npc.onFire = was_onFire;
 			npc.onFire2 = was_onFire2;
+            npc.onFire3 = was_onFire3;
 			npc.poisoned = was_poisoned;
 			npc.venom = was_venom;
 		}
@@ -337,6 +352,11 @@ namespace TerrariaCells.Common.GlobalNPCs
 						npc.lifeRegen -= Adjust(LinearScale(buffStacks, 3, 5));
 						damage += 4;
 						break;
+                    case BuffID.OnFire3:
+                        npc.onFire3 = true;
+                        npc.lifeRegen -= Adjust(LinearScale(buffStacks, 2, 3));
+                        damage += 2;
+                        break;
 
 					//Front-Loaded DPS
 					case BuffID.Poisoned:
@@ -355,6 +375,8 @@ namespace TerrariaCells.Common.GlobalNPCs
 						npc.lifeRegen -= Adjust(ExponentialScale(buffStacks, 0.025f));
 						if (damage > 2)
 							damage /= 2; //Tick more frequently
+                        if (damage < (buffStacks / 2))
+                            damage = buffStacks / 2;
 						break;
 
 					default:
