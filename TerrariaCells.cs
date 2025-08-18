@@ -1,6 +1,8 @@
 global using Microsoft.Xna.Framework;
 using System;
 using System.IO;
+using System.Reflection;
+
 using Terraria.ModLoader;
 using TerrariaCells.Common.Utilities;
 
@@ -21,6 +23,11 @@ namespace TerrariaCells
         public override void Load()
         {
             StaticFileAccess.Init(this);
+        }
+
+        public override void PostSetupContent()
+        {
+            Common.ModPlayers.Regenerator.PlayerResourceSetsManager_SetActive_string.Invoke(Terraria.Main.ResourceSetsManager, new object?[] { "HorizontalBars" });
         }
     }
     /// <summary>
