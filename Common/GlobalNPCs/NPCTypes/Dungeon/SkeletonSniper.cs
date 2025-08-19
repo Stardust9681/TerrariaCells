@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 using TerrariaCells.Common.Utilities;
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 using static TerrariaCells.Common.Utilities.PlayerHelpers;
+using Terraria.DataStructures;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Dungeon
 {
@@ -25,6 +26,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Dungeon
         const int FollowPlayer = 1;
         const int Shoot = 2;
         const int Reload = 3;
+
+        public override void OnSpawn(NPC npc, IEntitySource source) => CombatNPC.ToggleContactDamage(npc, false);
 
         public override bool PreAI(NPC npc)
         {
@@ -316,6 +319,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Dungeon
                 Terraria.Utils.DrawLine(spriteBatch, startPos, targetPos, lineColor, lineColor * 0.75f, width);
             }
         }
+        public override bool? CanFallThroughPlatforms(NPC npc) => false;
 
         //Hitstun
         public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
