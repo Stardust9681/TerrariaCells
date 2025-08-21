@@ -54,6 +54,7 @@ public class DeathReset : ModPlayer, IEntitySource
         if (isNewWorld)
         {
             ResetInventory(ResetInventoryContext.NewWorld);
+            Common.GlobalNPCs.NPCTypes.Crimson.BrainOfCthulhu.SpawnPos = null;
         }
 
         if (Main.netMode == NetmodeID.MultiplayerClient)
