@@ -17,7 +17,7 @@ using Terraria.DataStructures;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 {
-    public class Drippler : GlobalNPC
+    public class Drippler : GlobalNPC, Shared.PreHitEffect.IGlobal
     {
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == NPCID.Drippler;
 
@@ -74,6 +74,12 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
             }
         }
 
+        public bool PreHitEffect(NPC npc, int dir, double dmg, bool instant)
+        {
+            if (npc.ai[0] < 45)
+                return false;
+            return true;
+        }
         public override bool CheckDead(NPC npc)
         {
             npc.dontTakeDamage = true;
@@ -83,7 +89,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
         }
         public override bool PreKill(NPC npc)
         {
-            return npc.ai[0] > 1;
+            bool dies = npc.ai[0] > 45 && npc.dontTakeDamage;
+            if (!dies)
+                npc.life = 1;
+            return dies;
         }
         public override void OnKill(NPC npc)
         {

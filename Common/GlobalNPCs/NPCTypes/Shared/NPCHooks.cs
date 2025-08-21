@@ -11,6 +11,7 @@ using Mono.Cecil.Cil;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 {
@@ -20,18 +21,22 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
     {
         public interface INPC //Used for ModNPC
         {
-            bool PreFindFrame(NPC npc, int frameHeight);// => true;
+            ///<inheritdoc cref="ModNPC.FindFrame(int)"/>
+            ///<remarks>Return false to disable framing.</remarks>
+            bool PreFindFrame(int frameHeight);
         }
         public interface IGlobal //Used for GlobalNPC
         {
-            bool PreFindFrame(NPC npc, int frameHeight);// => true;
+            ///<inheritdoc cref="GlobalNPC.FindFrame(NPC, int)"/>
+            ///<remarks>Return false to disable framing.</remarks>
+            bool PreFindFrame(NPC npc, int frameHeight);
         }
         private static GlobalHookList<GlobalNPC> _hook;
         internal static bool Invoke(NPC npc, int frameHeight)
         {
             if (npc.ModNPC is INPC n)
             {
-                if(!n.PreFindFrame(npc, frameHeight)) return false;
+                if(!n.PreFindFrame(frameHeight)) return false;
             }
 
             foreach (GlobalNPC g in _hook.Enumerate(npc))
@@ -52,17 +57,69 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
         }
     }
 
+    public class PreHitEffect : ILoadable
+    {
+        public interface INPC
+        {
+            /// <summary>
+            /// Controls whether vanilla hit effects should run. Return false to disable.
+            /// </summary>
+            /// <param name="hitDirection">Direction of hit</param>
+            /// <param name="damageDealt">Damage dealt</param>
+            /// <param name="instantKill">Whether strike was instant kill</param>
+            /// <returns></returns>
+            bool PreHitEffect(int hitDirection, double damageDealt, bool instantKill);
+        }
+        public interface IGlobal
+        {
+            ///<inheritdoc cref="INPC.PreHitEffect(int, double, bool)"/>
+            ///<param name="npc">The NPC this is being run on</param>
+            bool PreHitEffect(NPC npc, int hitDirection, double damageDealt, bool instantKill);
+        }
+        private static GlobalHookList<GlobalNPC> _hook;
+        internal static bool Invoke(NPC npc, int hitDirection, double dmg, bool instant)
+        {
+            if (npc.ModNPC is INPC n)
+            {
+                if (!n.PreHitEffect(hitDirection, dmg, instant))
+                    return false;
+            }
+
+            foreach (GlobalNPC g in _hook.Enumerate(npc))
+            {
+                if (g is not IGlobal ig)
+                    continue;
+
+                if (!ig.PreHitEffect(npc, hitDirection, dmg, instant))
+                    return false;
+            }
+            return true;
+        }
+
+        public void Load(Mod mod)
+        {
+            _hook = NPCLoader.AddModHook(GlobalHookList<GlobalNPC>.Create(e => ((IGlobal)e).PreHitEffect));
+        }
+        public void Unload()
+        {
+            _hook = null;
+        }
+    }
+
     public class NPCTypeEdits : GlobalNPC
     {
         public override void Load()
         {
             IL_NPC.StrikeNPC_HitInfo_bool_bool += IL_StrikeNPC;
             IL_NPC.FindFrame += IL_NPC_FindFrame;
+            On_NPC.VanillaHitEffect += On_NPC_VanillaHitEffect;
         }
+
         public override void Unload()
         {
             IL_NPC.StrikeNPC_HitInfo_bool_bool -= IL_StrikeNPC;
             IL_NPC.FindFrame -= IL_NPC_FindFrame;
+            On_NPC.VanillaHitEffect -= On_NPC_VanillaHitEffect;
         }
 
         private void IL_StrikeNPC(ILContext context)
@@ -169,6 +226,12 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             {
                 npc.position -= npc.netOffset;
             }
+        }
+
+        private void On_NPC_VanillaHitEffect(On_NPC.orig_VanillaHitEffect orig, NPC self, int hitDirection, double dmg, bool instantKill)
+        {
+            if (PreHitEffect.Invoke(self, hitDirection, dmg, instantKill))
+                orig.Invoke(self, hitDirection, dmg, instantKill);
         }
     }
 }
