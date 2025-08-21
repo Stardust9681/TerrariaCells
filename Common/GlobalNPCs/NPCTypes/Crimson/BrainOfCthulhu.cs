@@ -94,41 +94,37 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == NPCID.BrainofCthulhu;
         //public override bool AppliesToNPC(int npcType)
-		//{
-		//	return npcType == NPCID.BrainofCthulhu;
-		//}
+        //{
+        //	return npcType == NPCID.BrainofCthulhu;
+        //}
 
-		//This is probably not ideal NPC behaviour code
-		//Probably don't emulate this
-		public override bool PreAI(NPC npc)
-		{
-            int timer = (int)npc.ai[0];
+        public override void OnSpawn(NPC npc, IEntitySource source)
+        {
+            npc.GetGlobalNPC<CombatNPC>().allowContactDamage = false;
+            npc.netUpdate = true;
 
-			if (timer == 0)
-			{
-                //Basically combining the X/Y position in such a way that it can be extracted later:
-                //X = (int)(npc.ai[1] / (Main.maxTilesY * 16));
-                //Y = (int)(npc.ai[1] % X)
-                //There are a couple edge cases, where the NPC is spawned at the world borders
-
-                //npc.ai[1] = ((uint)npc.Center.X * worldHeight) + (uint)npc.Center.Y;
-                //npc.ai[1] = PositionToFloat(npc.Center);
-				npc.GetGlobalNPC<CombatNPC>().allowContactDamage = false;
-                npc.netUpdate = true;
-
-                if (SpawnPos is null)
-                {
-                    npc.EncourageDespawn(0);
-                    SpawnPos = npc.Center;
-                    PowerupPickups.brainOfCthuluSpawnPoint = SpawnPos;
-                    npc.Opacity = 0;
-                    npc.ai[0]++;
-                    return false;
-                }
-
-                npc.localAI[1] = SpawnPos.Value.X;
-                npc.localAI[2] = SpawnPos.Value.Y;// + (3.5f * 16);
+            if (SpawnPos is null)
+            {
+                npc.EncourageDespawn(0);
+                npc.timeLeft = 0;
+                SpawnPos = npc.Center;
+                PowerupPickups.brainOfCthuluSpawnPoint = SpawnPos;
+                npc.Opacity = 0;
+                return;
             }
+
+            npc.localAI[1] = SpawnPos.Value.X;
+            npc.localAI[2] = SpawnPos.Value.Y;
+        }
+
+        //This is probably not ideal NPC behaviour code
+        //Probably don't emulate this
+        public override bool PreAI(NPC npc)
+		{
+            if (npc.despawnEncouraged)
+                return false;
+
+            int timer = (int)npc.ai[0];
 
             //Vector2 centre = Vector2.Zero;
             //centre.X = (int)(npc.ai[1] / worldHeight);
