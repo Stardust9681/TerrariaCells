@@ -13,7 +13,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 	public class CombatNPC : GlobalNPC
 	{
 		public override bool InstancePerEntity => true;
-		public bool allowContactDamage = false;
+		public bool allowContactDamage = true;
 
 		public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
 		{
@@ -110,10 +110,18 @@ namespace TerrariaCells.Common.GlobalNPCs
                     return;
                 #endregion
 
-                //Lebel 2
+                //Level 2
                 #region Corruption
                 case NPCID.EaterofSouls:
                     npc.lifeMax = 30;
+                    break;
+                case NPCID.DevourerHead:
+                    npc.lifeMax = 400;
+                    npc.damage = 40;
+                    break;
+                case NPCID.DevourerBody:
+                case NPCID.DevourerTail:
+                    npc.lifeMax = 400;
                     break;
                 #endregion
 

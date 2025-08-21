@@ -19,6 +19,17 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
         public override bool InstancePerEntity => true;
         public int CustomFrameCounter = 0;
         public int CustomFrameY = 0;
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
+        {
+            int type = entity.type;
+            return type == NPCID.DesertDjinn
+                || type == NPCID.CultistDevote
+                || type == NPCID.DiabolistRed
+                || type == NPCID.DiabolistWhite
+                || type == NPCID.RaggedCaster
+                || type == NPCID.RaggedCasterOpenCoat;
+        }
+
         public override void SetDefaults(NPC entity)
         {
             base.SetDefaults(entity);
@@ -93,8 +104,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 }
             }
 
-            if (Common.Systems.AIOverwriteSystem.AITypeExists(npc.type))
-				return base.PreAI(npc);
             if (npc.type != NPCID.DesertDjinn && npc.type != NPCID.CultistDevote)
                 return base.PreAI(npc);
 

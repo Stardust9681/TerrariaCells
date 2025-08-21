@@ -22,7 +22,7 @@ namespace TerrariaCells.Common.GlobalTiles
                 
                 if (Main.tile[i - 1, j].TileType != TileID.Larva && Main.tile[i, j - 2].TileType != TileID.Larva)
                 {
-                    QueenBee.SpawnPosition = new Vector2(i + 1.5f, j + 2)*16;
+                    Common.GlobalNPCs.NPCTypes.Hive.QueenBee.SpawnPosition = new Vector2(i + 1.5f, j + 2)*16;
                     Main.LocalPlayer.GetModPlayer<QueenBeeCamera>().NearQueenBee = true;
                 }
             }
@@ -35,7 +35,7 @@ namespace TerrariaCells.Common.GlobalTiles
             if (type == TileID.Larva && Main.netMode == NetmodeID.Server &&
                 Main.tile[i - 1, j].TileType != TileID.Larva && Main.tile[i, j - 2].TileType != TileID.Larva)
             {
-                QueenBee.SpawnPosition = new Vector2(i + 2, j + 2)*16;
+                Common.GlobalNPCs.NPCTypes.Hive.QueenBee.SpawnPosition = new Vector2(i + 2, j + 2)*16;
             }
         }
     }

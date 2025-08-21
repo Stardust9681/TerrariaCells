@@ -11,12 +11,13 @@ using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 {
-	public class RockGolem : AIType
+	public class RockGolem : Terraria.ModLoader.GlobalNPC, Shared.PreFindFrame.IGlobal
 	{
-		public override bool AppliesToNPC(int npcType)
-		{
-			return npcType == NPCID.RockGolem;
-		}
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == NPCID.RockGolem;
+        //public override bool AppliesToNPC(int npcType)
+		//{
+		//	return npcType == NPCID.RockGolem;
+		//}
 
 		//Can have up to 6 floating rocks summoned at a time (as a ranged resource)
 		//Can turn into standard boulder (regains all rocks)
@@ -31,14 +32,14 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 		const int Delay = 2;
 		const int ThrowHands = 3;
 
-		public override void Behaviour(NPC npc)
+		public override bool PreAI(NPC npc)
 		{
 			if (!npc.HasValidTarget)
 				npc.TargetClosest(false);
 			if (!npc.HasValidTarget)
 			{
 				IdleAI(npc);
-				return;
+				return false;
 			}
 
             float oldAI = npc.ai[1];
@@ -59,6 +60,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 			}
             if(npc.ai[1] != oldAI)
                 npc.netUpdate = true;
+
+            return false;
         }
 
 		private void IdleAI(NPC npc)
@@ -314,20 +317,23 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 					//3 frame summon (9-11)
 					if (npc.ai[0] == 8)// && npc.ai[2] > 2)
 					{
-						Vector2 vel = new Vector2(MathF.Sign(target.position.X - npc.position.X) * 4, -3f);
-						Projectile proj = Projectile.NewProjectileDirect(
-							npc.GetSource_FromAI(),
-							npc.Center + vel,
-							vel,
-							ProjectileID.Boulder,
-							Utilities.TCellsUtils.ScaledHostileDamage(60),
-							1f,
-							Main.myPlayer
-						);
+                        if (Main.netMode != NetmodeID.MultiplayerClient)
+                        {
+                            Vector2 vel = new Vector2(MathF.Sign(target.position.X - npc.position.X) * 4, -3f);
+                            Projectile proj = Projectile.NewProjectileDirect(
+                                npc.GetSource_FromAI(),
+                                npc.Center + vel,
+                                vel,
+                                ProjectileID.Boulder,
+                                Utilities.TCellsUtils.ScaledHostileDamage(60),
+                                1f,
+                                Main.myPlayer
+                            );
+                            proj.friendly = false;
+                            proj.netUpdate = true;
+                        }
                         npc.ai[2] -= 3;
-                        proj.friendly = false;
-						proj.netUpdate = true;
-					}
+                    }
 
 					//3 frame wind-down (11-9)
 					if (npc.ai[0] > 60)
@@ -356,7 +362,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 			return base.PreDraw(npc, spritebatch, screenPos, lightColor);
 		}
 
-		public override bool FindFrame(NPC npc, int frameHeight)
+		public bool PreFindFrame(NPC npc, int frameHeight)
 		{
 			if (npc.ai[1] == Delay)
 			{
@@ -432,5 +438,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 			}
 			return false;
 		}
-	}
+
+        public override bool? CanFallThroughPlatforms(NPC npc) => false;
+    }
 }

@@ -10,20 +10,24 @@ using static TerrariaCells.Common.Utilities.NPCHelpers;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 {
-	public class GoblinSorcerer : AIType
+	public class GoblinSorcerer : Terraria.ModLoader.GlobalNPC
 	{
-		public override bool AppliesToNPC(int npcType)
-		{
-			//return npcType.Equals(Terraria.ID.NPCID.GoblinSorcerer);
-
-			return npcType == NPCID.GoblinSorcerer || npcType == NPCID.Tim;
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
+        {
+            return entity.type == NPCID.GoblinSorcerer || entity.type == NPCID.Tim;
         }
+        //public override bool AppliesToNPC(int npcType)
+		//{
+		//	//return npcType.Equals(Terraria.ID.NPCID.GoblinSorcerer);
+
+		//	return npcType == NPCID.GoblinSorcerer || npcType == NPCID.Tim;
+        //}
 
 		const int Idle = 0;
 		const int Casting = 1;
 		const int Teleporting = 2;
 
-		public override void Behaviour(NPC npc)
+		public override bool PreAI(NPC npc)
 		{
 			if (!npc.HasValidTarget)
 				npc.TargetClosest();
@@ -46,6 +50,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             }
             if (npc.ai[1] != oldAI)
                 npc.netUpdate = true;
+
+            return false;
         }
         private void IdleAI(NPC npc)
 		{
@@ -75,9 +81,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 		private void CastingAI(NPC npc)
 		{
 			int timer = npc.Timer();
-			if (timer % 15 == 0)
+			if (timer % 15 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				NPC ball = NPC.NewNPCDirect(npc.GetSource_FromAI(), npc.Center, Terraria.ID.NPCID.ChaosBall, ai0: 1);
+                NPC ball = NPC.NewNPCDirect(npc.GetSource_FromAI(), npc.Center, Terraria.ID.NPCID.ChaosBall, ai0: 1);
                 ball.target = npc.target;
                 //ball.velocity = npc.DirectionTo(Main.player[npc.target].Center) * 3.6f;
                 //ball.velocity = npc.DirectionTo(Main.player[npc.target].Center) * 5.0f;
@@ -86,7 +92,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
                 ball.velocity = npc.DirectionTo(Main.player[npc.target].Center) * speed;
 
                 ball.damage = npc.damage;
-				ball.netUpdate = true;
+                ball.netUpdate = true;
 			}
 			if (timer > 45 * 3)
 			{
@@ -180,6 +186,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 
 				npc.ai[2] = ground.X;
 				npc.ai[3] = ground.Y;
+                npc.netUpdate = true;
 			}
 			if (timer > 210)
 			{
@@ -208,5 +215,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 			npc.velocity.X *= 0.8f;
 			npc.DoTimer();
 		}
-	}
+
+        public override bool? CanFallThroughPlatforms(NPC npc) => false;
+    }
 }
