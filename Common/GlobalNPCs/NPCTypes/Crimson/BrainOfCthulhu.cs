@@ -23,7 +23,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 {
 	public class BrainOfCthulhu : GlobalNPC, Shared.PreFindFrame.IGlobal
 	{
-        internal static Vector2? SpawnPos { get; private set; } = null;
+        public static Vector2? SpawnPos { get; internal set; } = null;
 
         public override void Load()
 		{
@@ -105,9 +105,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 
             if (SpawnPos is null)
             {
-                npc.EncourageDespawn(0);
+                npc.EncourageDespawn(-1);
                 npc.timeLeft = 0;
-                SpawnPos = npc.Center;
+                SpawnPos = npc.position + (Vector2.UnitX * 80);
                 PowerupPickups.brainOfCthuluSpawnPoint = SpawnPos;
                 npc.Opacity = 0;
                 return;
@@ -121,8 +121,16 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
         //Probably don't emulate this
         public override bool PreAI(NPC npc)
 		{
-            if (npc.despawnEncouraged)
+            if (SpawnPos is null)
+            {
+                npc.EncourageDespawn(-1);
+                npc.netUpdate = true;
                 return false;
+            }
+            if (npc.despawnEncouraged)
+            {
+                return false;
+            }
 
             int timer = (int)npc.ai[0];
 
