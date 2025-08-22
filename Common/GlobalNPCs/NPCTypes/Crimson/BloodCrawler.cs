@@ -6,6 +6,8 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
+using TerrariaCells.Common.Utilities;
+
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 {
     public partial class Fighters
@@ -13,16 +15,15 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
         private static Asset<Texture2D> BloodCrawler_Pounce;
         const float bloodCrawlerAttackMaxBlockDistanceX = 20f;
         const float bloodCrawlerAttackMaxBlockDistanceY = 4f;
-        const int bloodCrawlerChargeUpTime = 70;
+        const int bloodCrawlerChargeUpTime = 60;
         const int bloodCrawlerDelayBetweenAttacks = 30;
 
-        int[] BloodCrawlers { get; set; } = { NPCID.BloodCrawler, NPCID.BloodCrawlerWall };
+        private static int[] BloodCrawlers { get; set; } = { NPCID.BloodCrawler, NPCID.BloodCrawlerWall };
 
         public bool DrawBloodCrawler(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             if (ExtraAI[0] > 0)
             {
-                Asset<Texture2D> pounce = ModContent.Request<Texture2D>("TerrariaCells/Common/Assets/BloodcrawlerPounce");
                 spriteBatch.Draw(
                     BloodCrawler_Pounce.Value,
                     npc.position - screenPos,
@@ -60,12 +61,12 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
         public void BloodCrawlerAI(NPC npc, Player target)
         {
-            if (ExtraAI[1] == 1 && npc.NPCCanStickToWalls())
+            /*if (ExtraAI[1] == 1 && npc.NPCCanStickToWalls())
             {
                 npc.Transform(NPCID.BloodCrawlerWall);
                 ExtraAI[1] = 0;
                 return;
-            }
+            }*/
             ExtraAI[1] = 0;
 
             if (target == null)
@@ -121,16 +122,32 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             {
                 ExtraAI[0]++;
 
+                if (ExtraAI[0] == 1)
+                {
+                    if (npc.TryGetTarget(out Entity target))
+                    {
+                        npc.ai[2] = MathF.Sign(target.position.X - npc.position.X);
+                    }
+                    else if (MathF.Abs(npc.ai[2]) != 1)
+                    {
+                        npc.ai[2] = npc.spriteDirection;
+                    }
+                }
+
                 if (ExtraAI[0] < bloodCrawlerChargeUpTime)
                 {
                     npc.GetGlobalNPC<CombatNPC>().allowContactDamage = false;
                     npc.velocity = Vector2.Zero;
                     ShouldWalk = false;
+                    npc.direction = MathF.Sign(npc.ai[2]);
+                    npc.spriteDirection = npc.direction;
                 }
                 else if (ExtraAI[0] == bloodCrawlerChargeUpTime)
                 {
                     npc.GetGlobalNPC<CombatNPC>().allowContactDamage = true;
-                    npc.velocity = new Vector2(npc.direction * 10, -5);
+                    npc.velocity = new Vector2(npc.ai[2] * 10, -5);
+                    npc.direction = MathF.Sign(npc.ai[2]);
+                    npc.spriteDirection = npc.direction;
                 }
                 else if (ExtraAI[0] > bloodCrawlerChargeUpTime + 10 && npc.collideY)
                 {
@@ -138,7 +155,17 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                     ExtraAI[0] = -bloodCrawlerDelayBetweenAttacks;
                 }
             }
+        }
 
+        void BloodCrawler_OnHit(NPC npc, Player player, NPC.HitInfo hit, int dmg)
+        {
+            if (hit.DamageType.CountsAsClass(DamageClass.Melee))
+            {
+                if (ExtraAI[0] > 0 && ExtraAI[0] < bloodCrawlerChargeUpTime)
+                {
+                    ExtraAI[0] = Math.Max(ExtraAI[0] - 5, 0);
+                }
+            }
         }
     }
 }
