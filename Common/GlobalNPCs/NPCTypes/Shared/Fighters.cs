@@ -18,7 +18,7 @@ using Terraria.ModLoader.IO;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 {
-    public partial class Fighters : GlobalNPC
+    public partial class Fighters : GlobalNPC, OnAnyPlayerHit.IGlobal
     {
         public override bool InstancePerEntity => true;
         public int CustomFrameY = 0;
@@ -180,6 +180,14 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 return false;
             }
             return base.PreAI(npc);
+        }
+
+        public void OnAnyPlayerHit(NPC npc, Player attacker, NPC.HitInfo hit, int damage)
+        {
+            if (npc.type == NPCID.BloodCrawler)
+            {
+                BloodCrawler_OnHit(npc, attacker, hit, damage);
+            }
         }
 
         public override void OnSpawn(NPC npc, IEntitySource source)
