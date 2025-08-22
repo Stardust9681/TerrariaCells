@@ -10,6 +10,7 @@ using System.Runtime.InteropServices.Marshalling;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -179,6 +180,11 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 return false;
             }
             return base.PreAI(npc);
+        }
+
+        public override void OnSpawn(NPC npc, IEntitySource source)
+        {
+            CombatNPC.ToggleContactDamage(npc, false);
         }
 
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)

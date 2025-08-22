@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Utilities;
@@ -122,6 +123,11 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 return CultistDevoteeAI(npc, target);
             }
             return base.PreAI(npc);
+        }
+
+        public override void OnSpawn(NPC npc, IEntitySource source)
+        {
+            CombatNPC.ToggleContactDamage(npc, false);
         }
 
         //teleport to a random position. teleports near the given position.
