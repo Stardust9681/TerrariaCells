@@ -1,12 +1,14 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.ModLoader;
+
 using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 {
-    public class Wolf : Terraria.ModLoader.GlobalNPC//, Shared.PreFindFrame.IGlobal
+    public class Wolf : Terraria.ModLoader.GlobalNPC, PreFindFrame.IGlobal, OnAnyPlayerHit.IGlobal
     {
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == Terraria.ID.NPCID.Wolf;
         //public override bool AppliesToNPC(int npcType)
@@ -304,5 +306,18 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
         }
 
         public override bool? CanFallThroughPlatforms(NPC npc) => npc.stairFall;
+
+        public void OnAnyPlayerHit(NPC npc, Player attacker, NPC.HitInfo info, int damage)
+        {
+            if (info.DamageType.CountsAsClass(DamageClass.Melee))
+            {
+                switch ((int)npc.ai[1])
+                {
+                    case Approach:
+                        npc.ai[0] = MathF.Max(npc.ai[0] - 5, 0);
+                        break;
+                }
+            }
+        }
     }
 }

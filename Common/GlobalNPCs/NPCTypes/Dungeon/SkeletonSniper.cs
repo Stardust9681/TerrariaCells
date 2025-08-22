@@ -18,7 +18,7 @@ using Terraria.DataStructures;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Dungeon
 {
-    public class SkeletonSniper : GlobalNPC, Common.GlobalNPCs.PreFindFrame.IGlobal
+    public class SkeletonSniper : GlobalNPC, Common.GlobalNPCs.PreFindFrame.IGlobal, OnAnyPlayerHit.IGlobal
     {
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == NPCID.SkeletonSniper;
 
@@ -321,24 +321,16 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Dungeon
         }
         public override bool? CanFallThroughPlatforms(NPC npc) => false;
 
-        //Hitstun
-        public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
+        public void OnAnyPlayerHit(NPC npc, Player attacker, NPC.HitInfo info, int damage)
         {
-            if (hit.DamageType.CountsAsClass(DamageClass.Melee))
+            if (info.DamageType.CountsAsClass(DamageClass.Melee))
             {
-                if (npc.ai[1] == Shoot || npc.ai[1] == Reload)
+                switch ((int)npc.ai[1])
                 {
-                    npc.ai[0] -= damageDone / 7f;
-                }
-            }
-        }
-        public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
-        {
-            if (hit.DamageType.CountsAsClass(DamageClass.Melee))
-            {
-                if (npc.ai[1] == Shoot || npc.ai[1] == Reload)
-                {
-                    npc.ai[0] -= damageDone / 7f;
+                    case Shoot:
+                    case Reload:
+                        npc.ai[0] -= damage / 6f;
+                        break;
                 }
             }
         }

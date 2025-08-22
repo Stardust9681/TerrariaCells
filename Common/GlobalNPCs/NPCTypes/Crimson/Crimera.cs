@@ -8,10 +8,11 @@ using static TerrariaCells.Common.Utilities.NPCHelpers;
 using Microsoft.Xna.Framework.Graphics;
 
 using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
+using Terraria.ModLoader;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 {
-	public class Crimera : Terraria.ModLoader.GlobalNPC
+	public class Crimera : Terraria.ModLoader.GlobalNPC, OnAnyPlayerHit.IGlobal
 	{
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type is NPCID.Crimera or NPCID.BigCrimera or NPCID.LittleCrimera or NPCID.EaterofSouls or NPCID.LittleEater or NPCID.BigEater;
 
@@ -179,7 +180,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			{
 				CombatNPC.ToggleContactDamage(npc, false);
 			}
-			if (timer > 45)
+			if (timer > 35)
 			{
 				npc.ai[1] = Idle;
 				npc.ai[0] = 0;
@@ -198,5 +199,18 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			}
 			return base.PreDraw(npc, spritebatch, screenPos, lightColor);
 		}
+
+        public void OnAnyPlayerHit(NPC npc, Player attacker, NPC.HitInfo info, int damage)
+        {
+            if (info.DamageType.CountsAsClass(DamageClass.Melee))
+            {
+                switch ((int)npc.ai[1])
+                {
+                    case Stun:
+                        npc.ai[0] = 0;
+                        break;
+                }
+            }
+        }
     }
 }

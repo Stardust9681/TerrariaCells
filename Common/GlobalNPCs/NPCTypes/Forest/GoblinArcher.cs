@@ -2,10 +2,11 @@
 using Terraria;
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 using TerrariaCells.Common.Utilities;
+using Terraria.ModLoader;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 {
-	public class GoblinArcher : Terraria.ModLoader.GlobalNPC, Common.GlobalNPCs.PreFindFrame.IGlobal
+	public class GoblinArcher : Terraria.ModLoader.GlobalNPC, Common.GlobalNPCs.PreFindFrame.IGlobal, OnAnyPlayerHit.IGlobal
 	{
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
         {
@@ -326,5 +327,20 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
         }
 
         public override bool? CanFallThroughPlatforms(NPC npc) => false;
+
+        public void OnAnyPlayerHit(NPC npc, Player attacker, NPC.HitInfo info, int damage)
+        {
+            if (info.DamageType.CountsAsClass(DamageClass.Melee))
+            {
+                switch ((int)npc.ai[1])
+                {
+                    case FireArrows:
+                        if (npc.ai[0] < 25)
+                            break;
+                        npc.ai[0] = MathF.Max(npc.ai[0] - 10, 25);
+                        break;
+                }
+            }
+        }
     }
 }

@@ -13,7 +13,7 @@ using TerrariaCells.Common.Utilities;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Hive
 {
-    public class Hornet : GlobalNPC
+    public class Hornet : GlobalNPC, OnAnyPlayerHit.IGlobal
     {
         private static readonly int[] HORNETS = new int[]
         {
@@ -264,6 +264,22 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Hive
         public override void OnSpawn(NPC npc, IEntitySource source)
         {
             CombatNPC.ToggleContactDamage(npc, false);
+        }
+
+        public void OnAnyPlayerHit(NPC npc, Player attacker, NPC.HitInfo info, int damage)
+        {
+            if (info.DamageType.CountsAsClass(DamageClass.Melee))
+            {
+                switch ((int)npc.ai[1])
+                {
+                    case 2:
+                        npc.ai[0] = 0;
+                        npc.ai[1] = 3;
+                        npc.ai[2] = MathF.Sign(attacker.position.X - npc.position.X) * MathF.Sqrt(MathF.Abs(attacker.position.X - npc.position.X)) * 0.0425f;
+                        npc.ai[3] = 0;
+                        break;
+                }
+            }
         }
     }
 }

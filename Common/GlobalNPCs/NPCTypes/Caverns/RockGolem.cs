@@ -7,10 +7,11 @@ using Microsoft.Xna.Framework;
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
+using Terraria.ModLoader;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 {
-	public class RockGolem : Terraria.ModLoader.GlobalNPC, Common.GlobalNPCs.PreFindFrame.IGlobal
+	public class RockGolem : Terraria.ModLoader.GlobalNPC, Common.GlobalNPCs.PreFindFrame.IGlobal, OnAnyPlayerHit.IGlobal
 	{
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == NPCID.RockGolem;
         //public override bool AppliesToNPC(int npcType)
@@ -208,7 +209,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 				npc.velocity = vel1;
             }
 
-			if (npc.ai[0] > 60)
+			if (npc.ai[0] > 45)
 			{
 				npc.ai[1] = ThrowHands;
 				npc.ai[0] = 0;
@@ -441,5 +442,21 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 		}
 
         public override bool? CanFallThroughPlatforms(NPC npc) => false;
+
+        public void OnAnyPlayerHit(NPC npc, Player attacker, NPC.HitInfo info, int damage)
+        {
+            if (info.DamageType.CountsAsClass(DamageClass.Melee))
+            {
+                switch ((int)npc.ai[1])
+                {
+                    case ThrowHands:
+                        npc.ai[0] = 0;
+                        npc.ai[1] = Delay;
+                        npc.ai[2] = 0;
+                        npc.ai[3] = 0;
+                        break;
+                }
+            }
+        }
     }
 }

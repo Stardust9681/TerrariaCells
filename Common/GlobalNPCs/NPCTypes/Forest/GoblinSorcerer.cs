@@ -5,12 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
+
 using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 {
-	public class GoblinSorcerer : Terraria.ModLoader.GlobalNPC
+	public class GoblinSorcerer : Terraria.ModLoader.GlobalNPC, OnAnyPlayerHit.IGlobal
 	{
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
         {
@@ -219,5 +221,21 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 		}
 
         public override bool? CanFallThroughPlatforms(NPC npc) => false;
+
+        public void OnAnyPlayerHit(NPC npc, Player attacker, NPC.HitInfo info, int damage)
+        {
+            if (info.DamageType.CountsAsClass(DamageClass.Melee))
+            {
+                switch ((int)npc.ai[1])
+                {
+                    case Casting:
+                        npc.ai[0] = MathF.Max(npc.ai[0] - 15, 0);
+                        break;
+                    case Teleporting:
+                        npc.ai[0] = MathF.Max(npc.ai[0] - 5, 0);
+                        break;
+                }
+            }
+        }
     }
 }
