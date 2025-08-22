@@ -32,11 +32,19 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 
         private void FloatAI(NPC npc)
         {
+            float maxSpeed = 0.8f;
+
             npc.ai[1] = MathF.Sign(npc.velocity.X);
             if (npc.ai[1] == 0)
                 npc.ai[1] = 1;
+            npc.TargetClosest(false);
+            if (npc.TryGetTarget(out Entity target) && npc.TargetInAggroRange(target, 560, false))
+            {
+                npc.ai[1] = MathF.Sign(target.position.X - npc.position.X);
+                maxSpeed *= 1.5f;
+            }
 
-            npc.velocity.X = MathHelper.Lerp(npc.velocity.X, npc.ai[1] * 0.8f, 0.05f);
+            npc.velocity.X = MathHelper.Lerp(npc.velocity.X, npc.ai[1] * maxSpeed, 0.05f);
             if (npc.collideX)
             {
                 npc.velocity.X *= -1;
