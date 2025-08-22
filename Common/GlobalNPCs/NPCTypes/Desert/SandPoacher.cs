@@ -172,6 +172,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             //stab
             if (npc.ai[3] == 2)
             {
+                CombatNPC.ToggleContactDamage(npc, true);
                 ShouldWalk = false;
                 npc.velocity.X *= 0.9f;
                 npc.direction = npc.oldDirection;
@@ -190,6 +191,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
                 if (ExtraAI[0] > stabTime)
                 {
+                    CombatNPC.ToggleContactDamage(npc, false);
                     npc.ai[3] = 3;
                     ExtraAI[0] = 0;
                     CustomFrameCounter = 0;
@@ -200,6 +202,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             //wait
             if (npc.ai[3] == 3)
             {
+                CombatNPC.ToggleContactDamage(npc, false);
                 ShouldWalk = false;
                 npc.velocity.X *= 0.9f;
                 npc.direction = npc.oldDirection;

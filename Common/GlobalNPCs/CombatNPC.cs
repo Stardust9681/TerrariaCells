@@ -8,6 +8,8 @@ using TerrariaCells.Common.Utilities;
 
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 using System.Linq;
+using Terraria.ModLoader.IO;
+using System.IO;
 
 namespace TerrariaCells.Common.GlobalNPCs
 {
@@ -58,6 +60,20 @@ namespace TerrariaCells.Common.GlobalNPCs
                 }
             }
         }
+
+        //As an aside, I hate that this is called "send extra AI" when it should just have been netsend like literally every other hook of its nature
+        //I'm not sending AI here, as it turns out. ]:/
+        public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
+        {
+            bitWriter.WriteBit(npc.GetGlobalNPC<CombatNPC>().allowContactDamage);
+
+            bitWriter.Flush(binaryWriter);
+        }
+        public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
+        {
+            npc.GetGlobalNPC<CombatNPC>().allowContactDamage = bitReader.ReadBit();
+        }
+
 
         public override void SetStaticDefaults()
 		{
