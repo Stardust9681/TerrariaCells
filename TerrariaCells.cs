@@ -27,7 +27,10 @@ namespace TerrariaCells
 
         public override void PostSetupContent()
         {
-            Common.ModPlayers.Regenerator.PlayerResourceSetsManager_SetActive_string.Invoke(Terraria.Main.ResourceSetsManager, new object?[] { "HorizontalBars" });
+            if (!Terraria.Main.dedServ)
+            {
+                Common.ModPlayers.Regenerator.PlayerResourceSetsManager_SetActive_string.Invoke(Terraria.Main.ResourceSetsManager, new object?[] { "HorizontalBars" });
+            }
         }
     }
     /// <summary>

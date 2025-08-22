@@ -59,6 +59,7 @@ namespace TerrariaCells.Common.Systems
 			RegisterAbility(ItemID.WrathPotion, new Ability(NumberHelpers.SecToFrames(60), 20.SecToFrames()));
 			RegisterAbility(ItemID.MagicPowerPotion, new Ability(NumberHelpers.SecToFrames(60), 5.SecToFrames()));
 			RegisterAbility(ItemID.SwiftnessPotion, new Ability(NumberHelpers.SecToFrames(60), 20.SecToFrames()));
+            //RegisterAbility(ItemID.LifeCrystal, new Ability(0));
 		}
 
 		/// <summary>

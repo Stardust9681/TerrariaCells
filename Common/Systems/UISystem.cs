@@ -64,6 +64,8 @@ namespace TerrariaCells.Common.Systems
         }
         public override void Unload()
         {
+            if (Main.dedServ) return;
+
             Interfaces.Clear();
             Interfaces = null;
             Windows.Clear();

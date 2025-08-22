@@ -23,15 +23,17 @@ namespace TerrariaCells.Common.Systems
 
             Start = 1 << 0,
             Pause = 1 << 1,
-            Reset = 1 << 2,
+            ResetTimer = 1 << 2,
+            ResetKills = 1 << 3,
 
-            Stop = Pause | Reset,
-            Restart = Start | Reset,
+            ResetAll = ResetTimer | ResetKills,
+            Stop = Pause | ResetAll,
+            Restart = Start | ResetAll,
         }
         internal static void UpdateTracker_EnterNewWorld()
         {
-            UpdateTracker(TrackerAction.Restart);
-            targetTime = TimeSpan.FromMinutes(3);
+            UpdateTracker(TrackerAction.ResetAll);
+            targetTime = TimeSpan.FromMinutes(6);
             targetKillCount = 50;
         }
         public static void UpdateTracker(TrackerAction action)
@@ -46,8 +48,10 @@ namespace TerrariaCells.Common.Systems
                     case TrackerAction.Pause:
                         trackerEnabled = false;
                         break;
-                    case TrackerAction.Reset:
+                    case TrackerAction.ResetTimer:
                         levelTimer = 0;
+                        break;
+                    case TrackerAction.ResetKills:
                         killCount = 0;
                         break;
                 }
@@ -158,10 +162,20 @@ namespace TerrariaCells.Common.Systems
                     }
                 }
             }
-            Item droppedItem = Main.item[Item.NewItem(player.GetSource_TileInteraction(x, y), Utils.ToWorldCoordinates(new Vector2(x, y)), weaponType, 1, true, 0, true)];
-            if (droppedItem.TryGetGlobalItem<GlobalItems.TierSystemGlobalItem>(out var tierItem))
+
+            int lv = ModContent.GetInstance<Systems.TeleportTracker>().level + 1;
+            IEntitySource source = player.GetSource_TileInteraction(x, y);
+            Vector2 pos = Utils.ToWorldCoordinates(new Vector2(x, y));
+            EasyDropItem(source, pos, weaponType, 1, lv);
+            EasyDropItem(source, pos, ItemID.LifeCrystal, 2);
+            EasyDropItem(source, pos, ItemID.GoldCoin, lv * 2);
+        }
+        private static void EasyDropItem(IEntitySource source, Vector2 pos, int type, int stack, int? giveLevel = null)
+        {
+            Item droppedItem = Main.item[Item.NewItem(source, pos, type, stack, true, 0, true)];
+            if (giveLevel != null && droppedItem.TryGetGlobalItem<GlobalItems.TierSystemGlobalItem>(out var tierItem))
             {
-                tierItem.SetLevel(droppedItem, ModContent.GetInstance<Systems.TeleportTracker>().level + 1);
+                tierItem.SetLevel(droppedItem, giveLevel.Value);
             }
         }
 

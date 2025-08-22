@@ -60,6 +60,8 @@ namespace TerrariaCells.Common.Systems
 				Dust d = Dust.NewDustDirect(worldCoords, 32, 64, Main.rand.Next(dustTypes));
 				d.velocity = -Vector2.UnitY.RotatedByRandom(MathHelper.ToRadians(30)) * Main.rand.NextFloat(3, 6);
 			}
+            //Start count if not already started
+            RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Start);
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item29, worldCoords);
 		}
 		//Clear discovered pylons, and populate it with all the pylons in the world (effectively resetting it to "default" state)

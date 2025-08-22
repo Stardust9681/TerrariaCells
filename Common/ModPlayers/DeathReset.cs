@@ -41,6 +41,7 @@ public class DeathReset : ModPlayer, IEntitySource
             ModContent.GetInstance<ChestLootSpawner>().Reset();
             WorldPylonSystem.ResetPylons();
             RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Stop);
+            Player.GetModPlayer<LifeModPlayer>().extraHealth = 0;
         }
 	}
 

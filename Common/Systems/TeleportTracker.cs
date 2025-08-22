@@ -72,7 +72,7 @@ public class TeleportTracker : ModSystem
             Mod.Logger.Info($"Teleporting to next level: {nextLevel}:");
             GoToNextLevel();
             //RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Restart);
-            RewardTrackerSystem.targetTime = TimeSpan.FromMinutes(3);
+            RewardTrackerSystem.targetTime += TimeSpan.FromMinutes(6);
             return;
         }
 
@@ -336,6 +336,7 @@ public class TeleportTracker : ModSystem
                 rain = 1f;
                 break;
             case "dungeon": //Dungeon
+                day = false;
                 break;
         }
         if (rain != 0)
@@ -397,7 +398,7 @@ public class TeleportTracker : ModSystem
         }
         else
         {
-            RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Restart);
+            RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Start | RewardTrackerSystem.TrackerAction.ResetKills);
         }
 
         GlobalNPCs.VanillaNPCShop.UpdateTeleport(level, nextLevel, (Main.netMode == NetmodeID.Server));
