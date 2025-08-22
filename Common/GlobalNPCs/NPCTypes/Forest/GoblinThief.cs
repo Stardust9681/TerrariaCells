@@ -3,12 +3,13 @@
 using System;
 
 using Terraria;
+using Terraria.ModLoader;
 
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 {
-	public class GoblinThief : Terraria.ModLoader.GlobalNPC, Common.GlobalNPCs.PreFindFrame.IGlobal
+	public class GoblinThief : Terraria.ModLoader.GlobalNPC, Common.GlobalNPCs.PreFindFrame.IGlobal, OnAnyPlayerHit.IGlobal
 	{
         private static ReLogic.Content.Asset<Texture2D> goblin_StabSprite;
         public override void Load()
@@ -337,5 +338,24 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
         }
 
         public override bool? CanFallThroughPlatforms(NPC npc) => npc.stairFall;
+
+        public void OnAnyPlayerHit(NPC npc, Player attacker, NPC.HitInfo info, int damage)
+        {
+            if (info.DamageType.CountsAsClass(DamageClass.Melee))
+            {
+                switch ((int)npc.ai[1])
+                {
+                    case Stab:
+                        npc.ai[0] = Stun_Delay * 0.5f;
+                        npc.ai[1] = Stun;
+                        npc.ai[2] = 0;
+                        npc.ai[3] = 0;
+                        break;
+                    case Stun:
+                        npc.ai[0] = MathF.Max(npc.ai[0] - 5, 0);
+                        break;
+                }
+            }
+        }
     }
 }

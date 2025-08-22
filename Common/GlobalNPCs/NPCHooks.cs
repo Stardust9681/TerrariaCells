@@ -12,6 +12,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 using static System.Net.Mime.MediaTypeNames;
+using System.Reflection.Metadata;
 
 namespace TerrariaCells.Common.GlobalNPCs
 {
@@ -97,6 +98,53 @@ namespace TerrariaCells.Common.GlobalNPCs
         public void Load(Mod mod)
         {
             _hook = NPCLoader.AddModHook(GlobalHookList<GlobalNPC>.Create(e => ((IGlobal)e).PreHitEffect));
+        }
+        public void Unload()
+        {
+            _hook = null;
+        }
+    }
+
+    //This is purely a convenience. I don't feel like overriding item hit and proj hit and checking respective info every time
+    //Used currently for melee hitstun
+    public class OnAnyPlayerHit : ILoadable
+    {
+        public interface INPC
+        {
+            /// <summary>
+            /// Shared method for any hits done to this NPC by a player
+            /// </summary>
+            /// <param name="attacker">Player attacking NPC</param>
+            /// <param name="hit">Info about hit</param>
+            /// <param name="damage">Damage dealt</param>
+            void OnAnyPlayerHit(Player attacker, NPC.HitInfo hit, int damage);
+        }
+        public interface IGlobal
+        {
+            ///<inheritdoc cref="INPC.OnAnyPlayerHit(Player, NPC.HitInfo, int)"/>
+            ///<param name="npc">The NPC this is being run on</param>
+            void OnAnyPlayerHit(NPC npc, Player attacker, NPC.HitInfo hit, int damage);
+        }
+        private static GlobalHookList<GlobalNPC> _hook;
+        internal static void Invoke(NPC npc, Player attacker, NPC.HitInfo hit, int damage)
+        {
+            if (npc.ModNPC is INPC n)
+            {
+                n.OnAnyPlayerHit(attacker, hit, damage);
+            }
+
+            foreach (GlobalNPC g in _hook.Enumerate(npc))
+            {
+                if (g is not IGlobal ig)
+                    continue;
+
+                ig.OnAnyPlayerHit(npc, attacker, hit, damage);
+            }
+        }
+
+        public void Load(Mod mod)
+        {
+            _hook = NPCLoader.AddModHook(GlobalHookList<GlobalNPC>.Create(e => ((IGlobal)e).OnAnyPlayerHit));
         }
         public void Unload()
         {
@@ -230,6 +278,18 @@ namespace TerrariaCells.Common.GlobalNPCs
         {
             if (PreHitEffect.Invoke(self, hitDirection, dmg, instantKill))
                 orig.Invoke(self, hitDirection, dmg, instantKill);
+        }
+
+        public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
+        {
+            OnAnyPlayerHit.Invoke(npc, player, hit, damageDone);
+        }
+        public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
+        {
+            if (!projectile.hostile && !projectile.trap && projectile.TryGetOwner(out Player? attacker))
+            {
+                OnAnyPlayerHit.Invoke(npc, attacker!, hit, damageDone);
+            }
         }
     }
 }

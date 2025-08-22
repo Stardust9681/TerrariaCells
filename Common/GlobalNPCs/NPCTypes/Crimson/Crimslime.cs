@@ -13,7 +13,7 @@ using static TerrariaCells.Common.Utilities.NumberHelpers;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 {
-	public class Crimslime : Terraria.ModLoader.GlobalNPC, Common.GlobalNPCs.PreFindFrame.IGlobal
+	public class Crimslime : Terraria.ModLoader.GlobalNPC, Common.GlobalNPCs.PreFindFrame.IGlobal, OnAnyPlayerHit.IGlobal
 	{
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
         {
@@ -296,5 +296,19 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 
 			return base.PreDraw(npc, spritebatch, screenPos, lightColor);
 		}
-	}
+
+        public void OnAnyPlayerHit(NPC npc, Player attacker, NPC.HitInfo info, int damage)
+        {
+            if (info.DamageType.CountsAsClass(DamageClass.Melee))
+            {
+                switch ((int)npc.ai[1])
+                {
+                    case Lunge:
+                        npc.ai[0] = MathF.Max(npc.ai[0]-8, 0);
+                        npc.velocity.X *= 0.5f;
+                        break;
+                }
+            }
+        }
+    }
 }
