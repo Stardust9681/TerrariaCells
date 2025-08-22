@@ -30,6 +30,14 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
         public float Acceleration = 0.1f;
         public float JumpSpeed = 8;
 
+        public override void Load()
+        {
+            if (!Main.dedServ)
+            {
+                Fighters.BloodCrawler_Pounce = ModContent.Request<Texture2D>("TerrariaCells/Common/Assets/BloodcrawlerPounce");
+            }
+        }
+
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
         {
             return Mummies.Contains(entity.type)

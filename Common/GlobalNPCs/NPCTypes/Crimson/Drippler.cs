@@ -9,7 +9,6 @@ using Terraria.ID;
 using Microsoft.Xna.Framework;
 
 using TerrariaCells.Common.Utilities;
-using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 using static TerrariaCells.Common.Utilities.NumberHelpers;
@@ -17,7 +16,7 @@ using Terraria.DataStructures;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 {
-    public class Drippler : GlobalNPC, Shared.PreHitEffect.IGlobal
+    public class Drippler : GlobalNPC, Common.GlobalNPCs.PreHitEffect.IGlobal
     {
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == NPCID.Drippler;
 

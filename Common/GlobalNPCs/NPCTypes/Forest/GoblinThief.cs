@@ -1,12 +1,14 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+
 using System;
+
 using Terraria;
-using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
+
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 {
-	public class GoblinThief : Terraria.ModLoader.GlobalNPC, Shared.PreFindFrame.IGlobal
+	public class GoblinThief : Terraria.ModLoader.GlobalNPC, Common.GlobalNPCs.PreFindFrame.IGlobal
 	{
         private static ReLogic.Content.Asset<Texture2D> goblin_StabSprite;
         public override void Load()
@@ -15,7 +17,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             {
                 goblin_StabSprite = Terraria.ModLoader.ModContent.Request<Texture2D>("TerrariaCells/Common/Assets/GoblinStab");
             }
-            base.Load();
         }
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == Terraria.ID.NPCID.GoblinThief;
         //public override bool AppliesToNPC(int npcType)
@@ -81,6 +82,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
                 npc.ai[1] = ApproachTarget;
 				return;
 			}
+
+            CombatNPC.ToggleContactDamage(npc, false);
 
 			npc.direction = MathF.Sign(npc.ai[3]);
 			float newVel = npc.velocity.X + npc.direction * Accel;
@@ -151,7 +154,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
                 return;
 			}
 
-			npc.direction = npc.velocity.X < 0 ? -1 : 1;
+            CombatNPC.ToggleContactDamage(npc, false);
+
+            npc.direction = npc.velocity.X < 0 ? -1 : 1;
 			Vector2 distance = new Vector2(MathF.Abs(target.position.X - npc.position.X), MathF.Abs(target.position.Y - npc.position.Y));
 			if (
 				npc.IsFacingTarget(target)
@@ -324,6 +329,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
             if (npc.ai[1] >= Stab)
             {
                 Vector2 size = goblin_StabSprite.Size();
+                lightColor = npc.GetNPCColorTintedByBuffs(lightColor);
                 spritebatch.Draw(goblin_StabSprite.Value, npc.Top - screenPos, npc.frame with { Width = (int)size.X, Height = (int)(size.Y / 6) } , lightColor, 0, new Vector2(size.X*0.5f, 8), npc.scale, npc.spriteDirection != 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
                 return false;
             }

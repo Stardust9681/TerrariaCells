@@ -57,6 +57,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Hive
                 return;
             }
 
+            CombatNPC.ToggleContactDamage(npc, false);
+
             Vector2 movePos = new Vector2(npc.ai[2], npc.ai[3]);
 
             if (movePos.X == 0 || movePos.Y == 0)

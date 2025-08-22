@@ -18,7 +18,7 @@ using Terraria.DataStructures;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Dungeon
 {
-    public class SkeletonSniper : GlobalNPC, Shared.PreFindFrame.IGlobal
+    public class SkeletonSniper : GlobalNPC, Common.GlobalNPCs.PreFindFrame.IGlobal
     {
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == NPCID.SkeletonSniper;
 

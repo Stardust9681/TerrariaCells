@@ -13,15 +13,13 @@ using System.Reflection;
 using Terraria.DataStructures;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
-
-using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 using TerrariaCells.Common.GlobalItems;
 using Terraria.ModLoader.IO;
 using System.IO;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 {
-	public class BrainOfCthulhu : GlobalNPC, Shared.PreFindFrame.IGlobal
+	public class BrainOfCthulhu : GlobalNPC, Common.GlobalNPCs.PreFindFrame.IGlobal
 	{
         public static Vector2? SpawnPos { get; internal set; } = null;
 

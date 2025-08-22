@@ -1,7 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+
 using ReLogic.Content;
+
 using System;
 using System.IO;
+
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -9,14 +12,13 @@ using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using TerrariaCells.Common.GlobalNPCs;
-using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
+
 using TerrariaCells.Common.Utilities;
 using TerrariaCells.Content.Projectiles;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Hive;
 
-public class QueenBee : GlobalNPC, Shared.PreFindFrame.IGlobal
+public class QueenBee : GlobalNPC, Common.GlobalNPCs.PreFindFrame.IGlobal
 {
     public static Vector2 SpawnPosition = Vector2.Zero;
     

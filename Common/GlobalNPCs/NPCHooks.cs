@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
+namespace TerrariaCells.Common.GlobalNPCs
 {
     //Took a little bit to wrap my head around how adding custom hooks works
     //Basically, if you want an NPC to have 'PreFindFrame,' have the respective class inherit 'PreFindFrame.INPC' or 'PreFindFrame.IGlobal'
@@ -35,9 +35,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
         internal static bool Invoke(NPC npc, int frameHeight)
         {
             if (npc.ModNPC is INPC n)
-            {
                 if(!n.PreFindFrame(frameHeight)) return false;
-            }
 
             foreach (GlobalNPC g in _hook.Enumerate(npc))
             {
@@ -139,7 +137,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                     log.Error($"Couldn't match IL Patch: {context.Method.Name} @ {cursor.Index}");
                     return;
                 }
-                ILLabel? IL_0161 = cursor.MarkLabel(); //IL Instruction 0161 (by ilSpy)
+                ILLabel IL_0161 = cursor.MarkLabel(); //IL Instruction 0161 (by ilSpy)
 
                 if (!cursor.TryGotoNext(MoveType.Before,
                         i => i.MatchLdarg0(), //NPC self
@@ -150,12 +148,12 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                     log.Error($"Couldn't match IL Patch: {context.Method.Name} @ {cursor.Index}");
                     return;
                 }
-                ILLabel? IL_04A1 = cursor.MarkLabel(); //IL Instruction 04A1 (by ilSpy)
+                ILLabel IL_04A1 = cursor.MarkLabel(); //IL Instruction 04A1 (by ilSpy)
 
                 cursor.GotoLabel(IL_0161, MoveType.Before);
                 cursor.Emit(OpCodes.Br, IL_04A1);
 
-                ILLabel? exitCritKbBonus = default;
+                ILLabel exitCritKbBonus = default;
                 if (!cursor.TryGotoNext(
                     MoveType.Before,
                     i => i.Match(OpCodes.Ldloc_2),
@@ -209,7 +207,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
         {
             bool isLikeTownNPC = npc.isLikeATownNPC;
             int? num = npc.ModNPC?.AnimationType;
-            int animationType = (num.HasValue && num.GetValueOrDefault() > 0) ? num.Value : npc.type;
+            int animationType = num.HasValue && num.GetValueOrDefault() > 0 ? num.Value : npc.type;
             bool shouldRunVanillAFrame = PreFindFrame.Invoke(npc, frameHeight);
             if (shouldRunVanillAFrame)
             {
