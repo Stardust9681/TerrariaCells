@@ -10,6 +10,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 {
     public partial class Fighters
     {
+        private static Asset<Texture2D> BloodCrawler_Pounce;
         const float bloodCrawlerAttackMaxBlockDistanceX = 20f;
         const float bloodCrawlerAttackMaxBlockDistanceY = 4f;
         const int bloodCrawlerChargeUpTime = 70;
@@ -23,7 +24,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             {
                 Asset<Texture2D> pounce = ModContent.Request<Texture2D>("TerrariaCells/Common/Assets/BloodcrawlerPounce");
                 spriteBatch.Draw(
-                    pounce.Value,
+                    BloodCrawler_Pounce.Value,
                     npc.position - screenPos,
                     new Rectangle(0, (int)CustomFrameY * 40 + 2, 66, 38),
                     drawColor,

@@ -7,11 +7,10 @@ using Microsoft.Xna.Framework;
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent;
-using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 {
-	public class RockGolem : Terraria.ModLoader.GlobalNPC, Shared.PreFindFrame.IGlobal
+	public class RockGolem : Terraria.ModLoader.GlobalNPC, Common.GlobalNPCs.PreFindFrame.IGlobal
 	{
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type == NPCID.RockGolem;
         //public override bool AppliesToNPC(int npcType)
@@ -76,7 +75,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Caverns
 				return;
 			}
 
-			if (!npc.dontTakeDamage)
+            CombatNPC.ToggleContactDamage(npc, false);
+
+            if (!npc.dontTakeDamage)
 			{
 				npc.dontTakeDamage = true;
 				npc.netUpdate = true;

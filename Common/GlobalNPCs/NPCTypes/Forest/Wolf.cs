@@ -59,6 +59,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
                 npc.ai[1] = IdleTarget;
                 return;
             }
+
+            CombatNPC.ToggleContactDamage(npc, false);
+
             if (MathF.Abs(npc.ai[3]) == 0)
                 npc.ai[3] = 1;
             npc.direction = (int)npc.ai[3];

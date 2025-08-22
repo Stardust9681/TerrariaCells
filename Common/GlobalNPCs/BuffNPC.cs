@@ -395,6 +395,9 @@ namespace TerrariaCells.Common.GlobalNPCs
 		//Handles debuff icons for enemies
 		public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
+            //Hide buffs when NPC can't display them (as with colour tinting)
+            if (!npc.canDisplayBuffs)
+                return;
 			//Don't do this draw step if you have debuff icons disabled
 			Configs.TerrariaCellsConfig.DebuffIndicators indicator = Configs.TerrariaCellsConfig.Instance.IndicatorType;
 			if ((indicator & Configs.TerrariaCellsConfig.DebuffIndicators.Icon) == Configs.TerrariaCellsConfig.DebuffIndicators.None)

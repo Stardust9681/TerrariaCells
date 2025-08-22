@@ -12,7 +12,39 @@ namespace TerrariaCells.Common.GlobalNPCs
 {
 	public class CombatNPC : GlobalNPC
 	{
-		public override bool InstancePerEntity => true;
+        public override void DrawEffects(NPC npc, ref Color drawColor)
+        {
+            if(allowContactDamage && npc.lifeMax > 1)
+            {
+                byte b;
+                byte b2;
+                byte b3;
+                if (!(npc.friendly || npc.catchItem > 0 || (npc.damage == 0 && npc.lifeMax == 5)))
+                {
+                    b = byte.MaxValue;
+                    b2 = 50;
+                    b3 = 50;
+                }
+                else
+                {
+                    return;
+                }
+                if (drawColor.R < b)
+                {
+                    drawColor.R = b;
+                }
+                if (drawColor.G < b2)
+                {
+                    drawColor.G = b2;
+                }
+                if (drawColor.B < b3)
+                {
+                    drawColor.B = b3;
+                }
+            }
+        }
+
+        public override bool InstancePerEntity => true;
 		public bool allowContactDamage = true;
 
 		public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
@@ -21,13 +53,13 @@ namespace TerrariaCells.Common.GlobalNPCs
 			return base.CanHitPlayer(npc, target, ref cooldownSlot);
 		}
 
-		public override Color? GetAlpha(NPC npc, Color drawColor)
-		{
-			Color? returnVal = base.GetAlpha(npc, drawColor);
-			if (npc.dontTakeDamage) returnVal = Color.Lerp(drawColor, Color.DarkSlateGray * 0.67f, 0.5f);
-			if (npc.GetGlobalNPC<CombatNPC>().allowContactDamage) returnVal = Color.Lerp(drawColor, Color.IndianRed * (drawColor.A / 255f), 0.3f);
-			return returnVal;
-		}
+		//public override Color? GetAlpha(NPC npc, Color drawColor)
+		//{
+		//	Color? returnVal = base.GetAlpha(npc, drawColor);
+		//	if (npc.dontTakeDamage) returnVal = Color.Lerp(drawColor, Color.DarkSlateGray * 0.67f, 0.5f);
+		//	if (npc.GetGlobalNPC<CombatNPC>().allowContactDamage) returnVal = Color.Lerp(drawColor, Color.IndianRed * (drawColor.A / 255f), 0.3f);
+		//	return returnVal;
+		//}
 
 		public static void ToggleContactDamage(NPC npc, bool value) => npc.GetGlobalNPC<CombatNPC>().allowContactDamage = value;
 

@@ -7,14 +7,13 @@ using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using TerrariaCells.Common.Utilities;
-using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 using static TerrariaCells.Common.Utilities.NumberHelpers;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 {
-	public class Crimslime : Terraria.ModLoader.GlobalNPC, Shared.PreFindFrame.IGlobal
+	public class Crimslime : Terraria.ModLoader.GlobalNPC, Common.GlobalNPCs.PreFindFrame.IGlobal
 	{
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
         {
@@ -110,7 +109,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 				return;
 			}
 
-			if (npc.ai[0] == 0)
+            CombatNPC.ToggleContactDamage(npc, false);
+
+            if (npc.ai[0] == 0)
 			{
 				npc.ai[2] = Main.rand.NextDirection();
 				npc.netUpdate = true;

@@ -1,12 +1,11 @@
 ﻿using System;
 using Terraria;
-using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 using static TerrariaCells.Common.Utilities.NPCHelpers;
 using TerrariaCells.Common.Utilities;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 {
-	public class GoblinArcher : Terraria.ModLoader.GlobalNPC, Shared.PreFindFrame.IGlobal
+	public class GoblinArcher : Terraria.ModLoader.GlobalNPC, Common.GlobalNPCs.PreFindFrame.IGlobal
 	{
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
         {
@@ -71,7 +70,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 				return;
 			}
 
-			npc.direction = MathF.Sign(npc.ai[2]);
+            CombatNPC.ToggleContactDamage(npc, false);
+
+            npc.direction = MathF.Sign(npc.ai[2]);
 
 			float newVel = npc.velocity.X + npc.direction * Accel;
 			if (npc.direction == 0)

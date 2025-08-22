@@ -64,7 +64,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 				return;
 			}
 
-			npc.dontTakeDamage = true;
+            CombatNPC.ToggleContactDamage(npc, false);
+
+            npc.dontTakeDamage = true;
 			npc.velocity.Y += 0.14f;
 
 			if (Main.rand.NextBool(3))
