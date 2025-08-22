@@ -304,6 +304,11 @@ Items: {
 		DisplayName: Spawn Info Wand
 		Tooltip: ""
 	}
+
+	DungeonPylon: {
+		DisplayName: Dungeon Pylon
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -388,6 +393,7 @@ Buffs: {
 Tiles: {
 	CrimsonPylon.MapEntry: Crimson Pylon
 	HivePylon.MapEntry: Hive Pylon
+	DungeonPylon.MapEntry: Dungeon Pylon
 }
 
 NPCs.SWATHornet.DisplayName: SWAT Hornet
