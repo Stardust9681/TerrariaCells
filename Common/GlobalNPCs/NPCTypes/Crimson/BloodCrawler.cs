@@ -61,12 +61,12 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
         public void BloodCrawlerAI(NPC npc, Player target)
         {
-            /*if (ExtraAI[1] == 1 && npc.NPCCanStickToWalls())
+            if (ExtraAI[1] == 1 && npc.NPCCanStickToWalls())
             {
                 npc.Transform(NPCID.BloodCrawlerWall);
                 ExtraAI[1] = 0;
                 return;
-            }*/
+            }
             ExtraAI[1] = 0;
 
             if (target == null)
