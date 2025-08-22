@@ -7,14 +7,29 @@ using Microsoft.Xna.Framework.Graphics;
 using TerrariaCells.Common.Utilities;
 
 using static TerrariaCells.Common.Utilities.NPCHelpers;
+using System.Linq;
 
 namespace TerrariaCells.Common.GlobalNPCs
 {
 	public class CombatNPC : GlobalNPC
 	{
+        public override bool InstancePerEntity => true;
+		public bool allowContactDamage = true;
+        private bool? canDrawActiveHitbox = null;
+        public bool CanDrawActiveHitbox(NPC npc) => !Main.npc.Where(x => x.active).Any(x => x.realLife == npc.whoAmI && !x.GetGlobalNPC<CombatNPC>().allowContactDamage);
+
+		public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
+		{
+			if (!allowContactDamage) return false;
+			return base.CanHitPlayer(npc, target, ref cooldownSlot);
+		}
+
+		public static void ToggleContactDamage(NPC npc, bool value) => npc.GetGlobalNPC<CombatNPC>().allowContactDamage = value;
         public override void DrawEffects(NPC npc, ref Color drawColor)
         {
-            if(allowContactDamage && npc.lifeMax > 1)
+            if (canDrawActiveHitbox is null)
+                canDrawActiveHitbox = CanDrawActiveHitbox(npc);
+            if (allowContactDamage && canDrawActiveHitbox == true && npc.lifeMax > 1)
             {
                 byte b;
                 byte b2;
@@ -44,26 +59,7 @@ namespace TerrariaCells.Common.GlobalNPCs
             }
         }
 
-        public override bool InstancePerEntity => true;
-		public bool allowContactDamage = true;
-
-		public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
-		{
-			if (!allowContactDamage) return false;
-			return base.CanHitPlayer(npc, target, ref cooldownSlot);
-		}
-
-		//public override Color? GetAlpha(NPC npc, Color drawColor)
-		//{
-		//	Color? returnVal = base.GetAlpha(npc, drawColor);
-		//	if (npc.dontTakeDamage) returnVal = Color.Lerp(drawColor, Color.DarkSlateGray * 0.67f, 0.5f);
-		//	if (npc.GetGlobalNPC<CombatNPC>().allowContactDamage) returnVal = Color.Lerp(drawColor, Color.IndianRed * (drawColor.A / 255f), 0.3f);
-		//	return returnVal;
-		//}
-
-		public static void ToggleContactDamage(NPC npc, bool value) => npc.GetGlobalNPC<CombatNPC>().allowContactDamage = value;
-
-		public override void SetStaticDefaults()
+        public override void SetStaticDefaults()
 		{
 			NPCID.Sets.ProjectileNPC[NPCID.Creeper] = true;
 
