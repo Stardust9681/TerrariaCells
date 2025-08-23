@@ -111,8 +111,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
                 return;
             }
 
-            npc.localAI[1] = SpawnPos.Value.X;
-            npc.localAI[2] = SpawnPos.Value.Y;
+            npc.localAI[1] = npc.Center.X;
+            npc.localAI[2] = npc.Center.Y;
         }
 
         //This is probably not ideal NPC behaviour code
