@@ -45,36 +45,35 @@ namespace TerrariaCells.Content.WeaponAnimations
             item.autoReuse = true;
             StoredSound = item.UseSound;
             item.UseSound = null;
-            if (item.type == ItemID.PulseBow)
+            switch (item.type)
             {
-                ChargedProjectile = ProjectileID.PulseBolt;
-            }
-            if (item.type == ItemID.IceBow)
-            {
-                ChargedProjectile = ModContent.ProjectileType<Projectiles.IceArrowFriendly>();
-            }
-            if (item.type == ItemID.MoltenFury)
-            {
-                ForcedProjectile = ProjectileID.FireArrow;
-                ChargedProjectile = ProjectileID.HellfireArrow;
-            }
-            if (item.type == ItemID.Marrow)
-            {
-                ForcedProjectile = ProjectileID.BoneArrow;
-            }
-            if (item.type == ModContent.ItemType<PhantomPhoenix>())
-            {
-                ForcedProjectile = ProjectileID.FireArrow;
-                ChargedProjectile = ProjectileID.DD2PhoenixBowShot;
-            }
-            if (item.type == ItemID.BeesKnees)
-            {
-                ChargedProjectile = ProjectileID.BeeArrow;
-            }
-            if (item.type == ItemID.HellwingBow)
-            {
-                ForcedProjectile = ProjectileID.Hellwing;
-                ChargedProjectile = ProjectileID.Hellwing;
+                case ItemID.WoodenBow:
+                    ChargedProjectile = ProjectileID.FireArrow;
+                    break;
+                case ItemID.PulseBow:
+                    ChargedProjectile = ProjectileID.PulseBolt;
+                    break;
+                case ItemID.IceBow:
+                    ChargedProjectile = ModContent.ProjectileType<Projectiles.IceArrowFriendly>();
+                    break;
+                case ItemID.MoltenFury:
+                    ForcedProjectile = ProjectileID.FireArrow;
+                    ChargedProjectile = ProjectileID.HellfireArrow;
+                    break;
+                case ItemID.Marrow:
+                    ForcedProjectile = ProjectileID.BoneArrow;
+                    break;
+                case ItemID.DD2PhoenixBow:
+                    ForcedProjectile = ProjectileID.FireArrow;
+                    ChargedProjectile = ProjectileID.DD2PhoenixBowShot;
+                    break;
+                case ItemID.BeesKnees:
+                    ChargedProjectile = ProjectileID.BeeArrow;
+                    break;
+                case ItemID.HellwingBow:
+                    ForcedProjectile = ProjectileID.Hellwing;
+                    ChargedProjectile = ProjectileID.Hellwing;
+                    break;
             }
             base.SetDefaults(item);
         }
