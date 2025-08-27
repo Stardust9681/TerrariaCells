@@ -288,6 +288,7 @@ namespace TerrariaCells.Common.Systems
                 NPCRespawnHandler.HandleSpecialSpawn(info.SpawnedNPC, Left + info.X, Top + info.Y);
                 info.SpawnedNPC = Main.npc[whoAmI];
 
+                Main.npc[whoAmI].EncourageDespawn(-1);
                 Main.npc[whoAmI].CheckActive();
 
                 if (Main.npc[whoAmI].active && Main.netMode == NetmodeID.Server)

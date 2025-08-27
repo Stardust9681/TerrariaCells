@@ -74,7 +74,6 @@ namespace TerrariaCells.Common.GlobalNPCs
             npc.GetGlobalNPC<CombatNPC>().allowContactDamage = bitReader.ReadBit();
         }
 
-
         public override void SetStaticDefaults()
 		{
 			NPCID.Sets.ProjectileNPC[NPCID.Creeper] = true;
