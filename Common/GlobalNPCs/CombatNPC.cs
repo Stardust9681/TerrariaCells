@@ -10,6 +10,7 @@ using static TerrariaCells.Common.Utilities.NPCHelpers;
 using System.Linq;
 using Terraria.ModLoader.IO;
 using System.IO;
+using TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared;
 
 namespace TerrariaCells.Common.GlobalNPCs
 {
@@ -18,7 +19,9 @@ namespace TerrariaCells.Common.GlobalNPCs
         public override bool InstancePerEntity => true;
 		public bool allowContactDamage = true;
         private bool? canDrawActiveHitbox = null;
-        public bool CanDrawActiveHitbox(NPC npc) => !Main.npc.Where(x => x.active).Any(x => x.realLife == npc.whoAmI && !x.GetGlobalNPC<CombatNPC>().allowContactDamage);
+        public bool CanDrawActiveHitbox(NPC npc) => !Main.npc.Where(x => x.active).Any(x => x.realLife == npc.whoAmI && !x.GetGlobalNPC<CombatNPC>().allowContactDamage)
+            && _canDrawActiveHitbox_DisableWorms(npc);
+        private bool _canDrawActiveHitbox_DisableWorms(NPC npc) => !new HashSet<int>([NPCID.DevourerHead, NPCID.GiantWormHead, NPCID.StardustWormHead, NPCID.DiggerHead]).Contains(npc.type);
 
 		public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
 		{
