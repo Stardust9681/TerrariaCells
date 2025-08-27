@@ -107,6 +107,21 @@
             "Surface": false
         },
         {
+            "Name": "Corruption",
+            "Structures": [
+                {
+                    "Name": "corruption_1",
+                    "Path": "Content/Structures/corruption_1.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -60,
+                    "SpawnX": 473,
+                    "SpawnY": 43,
+                    "SpawnInfoPath": "Content/SpawnInfo/corruption_1.json"
+                }
+            ],
+            "Surface": false
+        },
+        {
             "Name": "FrozenCity",
             "Structures": [
                 {
@@ -184,7 +199,7 @@
                     "OffsetX": 0,
                     "OffsetY": 300,
                     "SpawnX": 195,
-                    "SpawnY": 46,
+                    "SpawnY": 44,
                     "SpawnInfoPath": "Content/SpawnInfo/dungeon_1.json"
                 }
             ],
