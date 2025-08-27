@@ -7,6 +7,7 @@ using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.Achievements;
 using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -285,6 +286,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
         {
             float rotation = wormSegment.rotation - MathF.PI / 2;
             return new Vector2(MathF.Cos(rotation), MathF.Sin(rotation));
+        }
+
+        public override void SetStaticDefaults()
+        {
+            NPCID.Sets.NeverDropsResourcePickups[NPCID.EaterofWorldsHead] = true;
+            NPCID.Sets.NeverDropsResourcePickups[NPCID.EaterofWorldsBody] = true;
+            NPCID.Sets.NeverDropsResourcePickups[NPCID.EaterofWorldsTail] = true;
         }
 
         public override void SetDefaults(NPC npc)
@@ -873,6 +881,43 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             segmentCountBehind = 0;
             spawnedTail.GetGlobalNPC<CombatNPC>().allowContactDamage = false;
             wormEntity.realLife = -1;
+        }
+
+        public override bool SpecialOnKill(NPC self)
+        {
+            var eaterOfWorlds = new HashSet<int>([NPCID.EaterofWorldsHead, NPCID.EaterofWorldsBody, NPCID.EaterofWorldsTail]);
+            if (eaterOfWorlds.Contains(self.type))
+            {
+                bool frontEnd = true;
+                bool flag = false;
+                foreach (NPC npc in Main.ActiveNPCs)
+                {
+                    if (npc.whoAmI != self.whoAmI && eaterOfWorlds.Contains(npc.type))
+                    {
+                        if (flag)
+                        {
+                            NPCLoader.OnKill(self);
+                            return true;
+                        }
+                        if (npc.type < self.type)
+                            frontEnd = false;
+                        flag = true;
+                    }
+                }
+
+                if (flag && frontEnd)
+                {
+                    self.boss = true;
+                    self.NPCLoot();
+                }
+                else
+                {
+                    NPCLoader.OnKill(self);
+                }
+                return true;
+            }
+
+            return base.SpecialOnKill(self);
         }
 
         bool IsWormHead(NPC npc) => WormHeads.Contains(npc.type);

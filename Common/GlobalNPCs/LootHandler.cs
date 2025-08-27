@@ -38,7 +38,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 
         private void ModifyDropHeals(On_NPC.orig_NPCLoot_DropHeals orig, NPC self, Player closestPlayer)
         {
-            if (self.lifeMax > 5 && !self.friendly && self.CanBeChasedBy() && !NPCID.Sets.ProjectileNPC[self.type])
+            if (!NPCID.Sets.NeverDropsResourcePickups[self.type] && self.lifeMax > 5 && !self.friendly && self.CanBeChasedBy() && !NPCID.Sets.ProjectileNPC[self.type])
                 DropFoodHeals.TryDroppingHeal(self, closestPlayer);
             return;
         }
@@ -97,6 +97,9 @@ namespace TerrariaCells.Common.GlobalNPCs
                     break;
                 case NPCID.EyeofCthulhu:
                 case NPCID.KingSlime:
+                case NPCID.EaterofWorldsHead:
+                case NPCID.EaterofWorldsBody:
+                case NPCID.EaterofWorldsTail:
                     npcLoot.Add(commonLesserHealthPotion);
                     break;
                 case NPCID.SkeletronHead:
