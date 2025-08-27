@@ -329,7 +329,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Dungeon
                 {
                     case Shoot:
                     case Reload:
-                        npc.ai[0] -= damage / 6f;
+                        if(npc.ai[0] > 10)
+                            npc.ai[0] = MathF.Max(10, npc.ai[0] - Math.Min(18, 6 + (damage/6)));
                         break;
                 }
             }
