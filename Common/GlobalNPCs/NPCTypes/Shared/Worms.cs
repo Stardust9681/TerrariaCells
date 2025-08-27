@@ -371,6 +371,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
         public void WormHeadAI(NPC wormEntity)
         {
+            wormEntity.GetGlobalNPC<CombatNPC>().allowContactDamage = true;
             wormEntity.TargetClosest();
 
             Player player = Main.player[wormEntity.target];
