@@ -72,7 +72,7 @@ public class TeleportTracker : ModSystem
             Mod.Logger.Info($"Teleporting to next level: {nextLevel}:");
             GoToNextLevel();
             //RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Restart);
-            RewardTrackerSystem.targetTime += TimeSpan.FromMinutes(6);
+            RewardTrackerSystem.targetTime += TimeSpan.FromMinutes(3);
             return;
         }
 

@@ -33,7 +33,7 @@ namespace TerrariaCells.Common.Systems
         internal static void UpdateTracker_EnterNewWorld()
         {
             UpdateTracker(TrackerAction.ResetAll);
-            targetTime = TimeSpan.FromMinutes(6);
+            targetTime = TimeSpan.FromMinutes(3);
             targetKillCount = 50;
         }
         public static void UpdateTracker(TrackerAction action)
@@ -95,18 +95,18 @@ namespace TerrariaCells.Common.Systems
 
             int rewardsCount = (LevelTime.TotalSeconds / targetTime.TotalSeconds) switch
             {
-                < 0.4 => 1, //Platinum
-                < 0.7 => 1, //Gold
-                < 1 => 0, //Silver
+                < 0.5 => 1, //Platinum
+                < 1 => 1, //Gold
+                < 1.5 => 0, //Silver
                 _ => 0 //Copper
             };
             //If we intend to add bonuses for kill counter as well:
             /*float allKills = (float)killCount / (float)targetKillCount;
             rewardsCount += allKills switch
             {
-                < 0.3f => 0,
-                < 0.6f => 0,
-                < .9f => 1,
+                < 0.25f => 0,
+                < 0.5f => 0,
+                < .75f => 1,
                 _ => 1
             };*/
 
@@ -135,18 +135,18 @@ namespace TerrariaCells.Common.Systems
 
             int rewardsCount = (LevelTime.TotalSeconds / targetTime.TotalSeconds) switch
             {
-                < 0.4 => 1, //Platinum
-                < 0.7 => 1, //Gold
-                < 1 => 0, //Silver
+                < 0.5 => 1, //Platinum
+                < 1 => 1, //Gold
+                < 1.5 => 0, //Silver
                 _ => 0 //Copper
             };
             //If we intend to add bonuses for kill counter as well:
             /*float allKills = (float)killCount / (float)targetKillCount;
             rewardsCount += allKills switch
             {
-                < 0.3f => 0,
-                < 0.6f => 0,
-                < .9f => 1,
+                < 0.25f => 0,
+                < 0.5f => 0,
+                < .75f => 1,
                 _ => 1
             };*/
 

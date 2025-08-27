@@ -105,9 +105,9 @@ namespace TerrariaCells.Content.UI
             TimeSpan targetTime = RewardTrackerSystem.targetTime;
             int watchType = (currentTime.TotalSeconds / (float)targetTime.TotalSeconds) switch
             {
-                < 0.4 => Terraria.ID.ItemID.PlatinumWatch,
-                < 0.7 => Terraria.ID.ItemID.GoldWatch,
-                < 1 => Terraria.ID.ItemID.SilverWatch,
+                < 0.5 => Terraria.ID.ItemID.PlatinumWatch,
+                < 1 => Terraria.ID.ItemID.GoldWatch,
+                < 1.5 => Terraria.ID.ItemID.SilverWatch,
                 _ => Terraria.ID.ItemID.CopperWatch,
             };
             Main.instance.LoadItem(watchType);
@@ -180,9 +180,9 @@ namespace TerrariaCells.Content.UI
             float allKills = (float)killCount / (float)targetKillCount;
             ReLogic.Content.Asset<Texture2D> drawSprite = allKills switch
             {
-                < 0.3f => JourneyBunny,
-                < 0.6f => ClassicBunny,
-                < .9f => ExpertBunny,
+                < 0.25f => JourneyBunny,
+                < 0.5f => ClassicBunny,
+                < .75f => ExpertBunny,
                 _ => MasterBunny
             };
             drawPos = panelPos + new Vector2(Padding);
