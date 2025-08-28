@@ -70,7 +70,7 @@ namespace TerrariaCells.Common.GlobalNPCs
         {
             bitWriter.WriteBit(npc.GetGlobalNPC<CombatNPC>().allowContactDamage);
 
-            bitWriter.Flush(binaryWriter);
+            //bitWriter.Flush(binaryWriter);
         }
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
