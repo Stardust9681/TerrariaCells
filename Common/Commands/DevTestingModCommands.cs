@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text;
 using Terraria;
 using Terraria.Chat;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -548,7 +549,7 @@ namespace TerrariaCells.Common.Commands
     {
         public override string Command => "resetspawns";
         public override string Usage => "/resetspawns";
-        public override string Description => "Command used to reset spawns (Multiplayer only)";
+        public override string Description => "Command used to reset spawns";
 
         public override CommandType Type => CommandType.World;
 
@@ -559,6 +560,25 @@ namespace TerrariaCells.Common.Commands
 
             NPCRoomSpawner.ResetSpawns();
             NPCRespawnHandler.ResetRespawnMarkers();
+        }
+    }
+    public class UnstuckCommand : ModCommand
+    {
+        public override string Command => "unstuck";
+        public override string Usage => "/unstuck";
+        public override string Description => "Use this to attempt to \"unstuck\" yourself...if you get stuck.\nNOT FOR USE IN THE INN.";
+
+        public override CommandType Type => CommandType.Chat;
+
+        public override void Action(CommandCaller caller, string input, string[] args)
+        {
+            if (args.Length != 0)
+                caller.Reply("No arguments necessary. They have been discarded");
+
+            var tele = ModContent.GetInstance<TeleportTracker>();
+
+            Point16 telePos = tele.GetTelePos(tele.NextLevel); //Input: "going to" location
+            Main.LocalPlayer.Teleport(telePos.ToWorldCoordinates(), TeleportationStyleID.Portal);
         }
     }
 }
