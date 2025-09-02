@@ -15,7 +15,7 @@ public class ClickcableHeartsGlobalTile : GlobalTile
     {
         if (type == TileID.Heart)
         {
-            Mod.GetContent<ClickedHeartsTracker>().First().ClickedHeart(i, j);
+            ModContent.GetInstance<ClickedHeartsTracker>().ClickedHeart(i, j);
         }
         else
         {

@@ -1,9 +1,12 @@
 using System.Collections.Generic;
+using System.IO;
+
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrariaCells.Common.ModPlayers;
+using TerrariaCells.Common.Utilities;
 
 namespace TerrariaCells.Common.Systems;
 
@@ -83,7 +86,46 @@ public class ClickedHeartsTracker : ModSystem
 
             // SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Item_4"));
             SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Shatter"));
+
+            if (Main.netMode == 1)
+            {
+                var packet = ModNetHandler.GetPacket(Mod, TCPacketType.HeartPacket);
+                packet.Write((byte)Content.Packets.HeartPacketHandler.HeartPacketType.ClientUse);
+                packet.Write((ushort)i);
+                packet.Write((ushort)j);
+                packet.Send();
+            }
         }
+    }
+
+    public override void NetSend(BinaryWriter writer)
+    {
+        writer.Write((ushort)collectedHearts.Count);
+        for (int i = 0; i < collectedHearts.Count; i++)
+        {
+            writer.Write((ushort)collectedHearts[i].Item1);
+            writer.Write((ushort)collectedHearts[i].Item2);
+        }
+    }
+    public override void NetReceive(BinaryReader reader)
+    {
+        int count = (int)reader.ReadUInt16();
+        List<(int, int)> collected = new List<(int, int)>();
+        for (int i = 0; i < count; i++)
+        {
+            collected.Add(((int)reader.ReadUInt16(), (int)reader.ReadUInt16()));
+            //Prefer Framing.GetTileSafely(..) but I'm tired and running on caffeine so /whatever/
+            (int x, int y) = collected[i];
+            Tile tile = Main.tile[x, y];
+            tile.IsActuated = true;
+            tile = Main.tile[x + 1, y];
+            tile.IsActuated = true;
+            tile = Main.tile[x, y + 1];
+            tile.IsActuated = true;
+            tile = Main.tile[x + 1, y + 1];
+            tile.IsActuated = true;
+        }
+        collectedHearts = collected;
     }
 
     public override void PreUpdateWorld()
