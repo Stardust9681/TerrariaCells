@@ -115,7 +115,16 @@ public class DeathReset : ModPlayer, IEntitySource
 	{
         if (Main.netMode == NetmodeID.SinglePlayer)
         {
-            WorldGen.SaveAndQuit();
+            var UID = Main.ActiveWorldFileData.UniqueId;
+            WorldGen.SaveAndQuit(delegate {
+                if(!Configs.DevConfig.Instance.EnableCustomWorldGen) return;
+                Main.LoadWorlds();
+                for (int i = 0; i < Main.WorldList.Count; i++)
+                {
+                    if (Main.WorldList[i].UniqueId.Equals(UID))
+                        typeof(Main).GetMethod("EraseWorld", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).Invoke(null, [i]);
+                }
+            });
         }
         return;
 
@@ -278,7 +287,7 @@ public class DeathBoot : ModSystem
 
     private void On_Main_DrawPrettyStarSparkle(On_Main.orig_DrawPrettyStarSparkle orig, float opacity, Microsoft.Xna.Framework.Graphics.SpriteEffects dir, Vector2 drawpos, Color drawColor, Color shineColor, float flareCounter, float fadeInStart, float fadeInEnd, float fadeOutStart, float fadeOutEnd, float rotation, Vector2 scale, Vector2 fatness)
     {
-        if (Main.netMode != NetmodeID.SinglePlayer)
+        if (Main.netMode == NetmodeID.Server)
             return;
         if (!Main.LocalPlayer.DeadOrGhost)
         {
@@ -288,7 +297,7 @@ public class DeathBoot : ModSystem
 
     private void On_Main_DrawStarsInBackground(On_Main.orig_DrawStarsInBackground orig, Main self, Main.SceneArea sceneArea, bool artificial)
     {
-        if (Main.netMode != NetmodeID.SinglePlayer)
+        if (Main.netMode == NetmodeID.Server)
             return;
         if (!Main.LocalPlayer.DeadOrGhost)
         {
