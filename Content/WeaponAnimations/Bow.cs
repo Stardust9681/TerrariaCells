@@ -144,7 +144,7 @@ namespace TerrariaCells.Content.WeaponAnimations
                     player.altFunctionUse = 0;
                     SoundEngine.PlaySound(item.UseSound, player.Center);
                     MethodInfo PlayerItemCheck_Shoot = typeof(Player).GetMethod("ItemCheck_Shoot", BindingFlags.NonPublic | BindingFlags.Instance);
-                    PlayerItemCheck_Shoot.Invoke(player, [player.whoAmI, item, item.damage]);
+                    PlayerItemCheck_Shoot.Invoke(player, [player.whoAmI, item, player.GetWeaponDamage(item)]);
                 }
             }else if (player.itemTime == player.itemTimeMax - 1 && StoredSound != null)
             {
