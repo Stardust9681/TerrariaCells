@@ -181,6 +181,11 @@ namespace TerrariaCells.Common.GlobalProjectiles
 
         public override void ModifyHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
         {
+            if (!projectile.DamageType.CountsAsClass(DamageClass.Melee))
+            {
+                modifiers.Knockback *= 0;
+            }
+
             switch (projectile.type)
             {
                 case ProjectileID.Stake:
@@ -269,6 +274,9 @@ namespace TerrariaCells.Common.GlobalProjectiles
 
         public override void OnSpawn(Projectile projectile, IEntitySource source)
         {
+            if (!projectile.DamageType.CountsAsClass(DamageClass.Melee))
+                projectile.knockBack = 0f;
+
             if (projectile.type == ProjectileID.Volcano && projectile.ai[1] != 1)
             {
                 projectile.Kill();
