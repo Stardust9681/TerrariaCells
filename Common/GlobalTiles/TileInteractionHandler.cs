@@ -91,7 +91,7 @@ namespace TerrariaCells.Common.GlobalTiles
                         i--;
                     if (tile.TileFrameY % 38 != 0)
                         j--;
-                    return instance.lootedChests.Any(c => (Main.chest[c].x == i && Main.chest[c].y == j) && Main.chest[c].frame > 0);
+                    return instance?.lootedChests?.Any(c => (Main.chest[c].x == i && Main.chest[c].y == j) && Main.chest[c].frame > 0) == true;
                 case TileID.Heart:
                 case TileID.ManaCrystal:
                     return tile.IsActuated;

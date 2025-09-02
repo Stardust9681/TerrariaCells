@@ -30,7 +30,10 @@ namespace TerrariaCells.Common.Systems
             Stop = Pause | ResetAll,
             Restart = Start | ResetAll,
         }
-        public override void ClearWorld() => UpdateTracker_EnterNewWorld();
+        public override void ClearWorld()
+        {
+            Mod.Logger.Info($"Clear World: {trackerState}");
+        }
         internal static void UpdateTracker_EnterNewWorld()
         {
             UpdateTracker(TrackerAction.ResetAll);
@@ -59,7 +62,7 @@ namespace TerrariaCells.Common.Systems
             }
             trackerState = action;
         }
-        public static TrackerAction trackerState = TrackerAction.Start;
+        public static TrackerAction trackerState = TrackerAction.Pause;
         public static TimeSpan targetTime;
         public static byte targetKillCount;
         internal static void UpdateChests_OnTeleport(Point16 tilePos)
@@ -214,6 +217,8 @@ namespace TerrariaCells.Common.Systems
             levelTimer = tag.Get<uint>(nameof(levelTimer));
             killCount = tag.Get<byte>(nameof(killCount));
             trackerState = (TrackerAction)tag.Get<byte>(nameof(trackerState));
+
+            Mod.Logger.Info($"Load World: {trackerState}");
         }
 
         public static uint _LevelTime => levelTimer;

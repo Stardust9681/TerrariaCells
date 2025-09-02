@@ -7,8 +7,11 @@ using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
+using TerrariaCells.Common.GlobalNPCs;
 using TerrariaCells.Common.GlobalProjectiles;
 using TerrariaCells.Common.Items;
+
+using static Terraria.GameContent.Animations.IL_Actions.NPCs;
 
 namespace TerrariaCells.Common.GlobalItems;
 
@@ -22,7 +25,7 @@ public partial class FunkyModifierItemModifier : GlobalItem
 {
     public override bool InstancePerEntity => true;
 
-    internal FunkyModifier[] modifiers;
+    internal FunkyModifier[] modifiers = Array.Empty<FunkyModifier>();
 
     // ranges given here are used inclusively, ie 0..1 is a range from 0..1, as opposed to exclusive ranges that Main.rand takes
     public static readonly (int, int)[] modifierQuantityRangesPerTier =
@@ -325,72 +328,95 @@ public partial class FunkyModifierItemModifier : GlobalItem
 
     public override void NetSend(Item item, BinaryWriter writer)
     {
-        var modItem = item.GetGlobalItem(this);
-        var modifiers = modItem.modifiers;
-        writer.Write((byte)modifiers.Length);
-        foreach (var modifier in modifiers)
+        byte len = (byte)this.modifiers.Length;
+        writer.Write(len);
+        if (len > 0)
         {
-            writer.Write(modifier.id);
-            writer.Write((ushort)modifier.modifierType);
-            writer.Write(modifier.intModifier);
-            writer.Write(modifier.modifier);
-            writer.Write(modifier.secondaryModifier);
+            FunkyModifier[] modPool = FunkyModifierItemModifier.GetModPool(item.type);
+            for (int j = 0; j < len; j++)
+            {
+                FunkyModifier itemMod = modPool[j];
+                //Most significant bit used to indicate valid or invalid modifier
+                //If received value has that flag set, the result will be discarded
+                byte modIndex = 0b1_0000000;
+                for (int k = 0; k < modPool.Length; k++)
+                {
+                    if (modPool[k].Equals(itemMod))
+                    {
+                        modIndex = (byte)k;
+                        break;
+                    }
+                }
+                writer.Write(modIndex);
+            }
         }
     }
     public override void NetReceive(Item item, BinaryReader reader)
     {
-        var modItem = item.GetGlobalItem(this);
-        int count = reader.ReadByte();
-        modItem.modifiers = new FunkyModifier[count];
-        for (int i = 0; i < count; i++)
+        byte modCount = reader.ReadByte();
+        if (modCount > 0)
         {
-            modItem.modifiers[i] = new FunkyModifier()
+            List<FunkyModifier> mods = new List<FunkyModifier>();
+            FunkyModifier[] modPool = FunkyModifierItemModifier.GetModPool(item.type);
+            for (int j = 0; j < modCount; j++)
             {
-                id = reader.ReadInt32(),
-                modifierType = (FunkyModifierType)reader.ReadUInt16(),
-                intModifier = reader.ReadInt32(),
-                modifier = reader.ReadSingle(),
-                secondaryModifier = reader.ReadSingle(),
-            };
+                byte flagAndModType = reader.ReadByte();
+                if ((flagAndModType & 0b1_0000000) == 0)
+                {
+                    mods.Add(modPool[flagAndModType]);
+                }
+            }
+            modifiers = mods.ToArray();
+        }
+        else
+        {
+            modifiers = Array.Empty<FunkyModifier>();
         }
     }
     public override void SaveData(Item item, TagCompound tag)
     {
-        try
+        tag.Add("modCount", (int)modifiers.Length);
+        if (modifiers.Length > 0)
         {
-            if (modifiers is not null)
+            List<byte> modIds = new List<byte>();
+            FunkyModifier[] modifiers = FunkyModifierItemModifier.GetModPool(item.type);
+            for (int j = 0; j < modifiers.Length; j++)
             {
-                tag.Add("modifiers.count", modifiers.Length);
-                for (int i = 0; i < modifiers.Length; i++)
+                FunkyModifier itemMod = modifiers[j];
+                //Most significant bit used to indicate valid or invalid modifier
+                //If received value has that flag set, the result will be discarded
+                byte modIndex = 0b1_0000000;
+                for (int k = 0; k < modifiers.Length; k++)
                 {
-                    tag.Add($"id{i}", modifiers[i].id);
-                    tag.Add($"type{i}", (ushort)modifiers[i].modifierType);
-                    tag.Add($"imod{i}", modifiers[i].intModifier);
-                    tag.Add($"mod{i}", modifiers[i].modifier);
-                    tag.Add($"smod{i}", modifiers[i].secondaryModifier);
+                    if (modifiers[k].Equals(itemMod))
+                    {
+                        modIndex = (byte)k;
+                        break;
+                    }
                 }
+                modIds.Add(modIndex);
             }
+            tag["modIds"] = modIds;
         }
-        catch (System.Exception x) { }
     }
     public override void LoadData(Item item, TagCompound tag)
     {
-        try
+        int modCount = tag.Get<int>("modCount");
+        if (modCount > 0)
         {
-            modifiers = new FunkyModifier[tag.Get<int>("modifiers.count")];
-            for (int i = 0; i < modifiers.Length; i++)
+            List<byte> modIds = (List<byte>)tag.GetList<byte>("modIds");
+            List<FunkyModifier> mods = new List<FunkyModifier>();
+            FunkyModifier[] modPool = FunkyModifierItemModifier.GetModPool(item.type);
+            for (int j = 0; j < modCount; j++)
             {
-                modifiers[i] = new FunkyModifier()
-                {
-                    id = tag.Get<int>($"id{i}"),
-                    modifierType = (FunkyModifierType)tag.Get<ushort>($"type{i}"),
-                    intModifier = tag.Get<int>($"imod{i}"),
-                    modifier = tag.Get<float>($"mod{i}"),
-                    secondaryModifier = tag.Get<float>($"smod{i}"),
-                };
+                byte flagAndModType = modIds[j];
+                if ((flagAndModType & 0b1_0000000) != 0)
+                    continue;
+                mods.Add(modPool[flagAndModType]);
             }
+            modifiers = mods.ToArray();
         }
-        catch (System.Exception x)
+        else
         {
             modifiers = Array.Empty<FunkyModifier>();
         }
