@@ -18,6 +18,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+      <Folder Include="Common\Assets\World\" />
       <Folder Include="Common\GlobalNPCs\NPCTypes\Corruption\" />
     </ItemGroup>
 </Project>
