@@ -34,6 +34,8 @@ namespace TerrariaCells.Content.Projectiles
             Projectile.penetrate = -1;
             Projectile.friendly = true;
             Projectile.frame = Main.rand.Next(6);
+            Projectile.usesIDStaticNPCImmunity = true;
+            Projectile.idStaticNPCHitCooldown = 12;
             //Projectile.Hitbox = Projectile.Hitbox with { Height = 4 * Projectile.Hitbox.Height };
 
             originalTimeLeft = Projectile.timeLeft;

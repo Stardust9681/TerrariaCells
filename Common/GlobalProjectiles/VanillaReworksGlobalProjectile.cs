@@ -52,9 +52,21 @@ namespace TerrariaCells.Common.GlobalProjectiles
 					break;
                 case ProjectileID.BabySpider:
                     projectile.usesIDStaticNPCImmunity = true;
-                    projectile.idStaticNPCHitCooldown = 5;
+                    projectile.idStaticNPCHitCooldown = 8;
                     break;
-			}
+                case ProjectileID.ToxicCloud:
+                case ProjectileID.ToxicCloud2:
+                case ProjectileID.ToxicCloud3:
+                    projectile.usesIDStaticNPCImmunity = true;
+                    projectile.idStaticNPCHitCooldown = 8;
+                    break;
+                case ProjectileID.MolotovFire:
+                case ProjectileID.MolotovFire2:
+                case ProjectileID.MolotovFire3:
+                    projectile.usesIDStaticNPCImmunity = true;
+                    projectile.idStaticNPCHitCooldown = 10;
+                    break;
+            }
 		}
 
         //This had to be either detour-no-orig or IL
