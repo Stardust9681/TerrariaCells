@@ -345,7 +345,11 @@ namespace TerrariaCells.Common.ModPlayers
         {
             if (stalkerQuiver)
             {
-                if (proj.arrow && proj.type != ProjectileID.PhantasmArrow && stalkerQuiverTimer == 0)
+                bool projArrow = proj.arrow ||
+                    new int[] { ModContent.ProjectileType<Content.Projectiles.IceArrowFriendly>(),
+                        ProjectileID.PulseBolt
+                    }.Contains(proj.type);
+                if (projArrow && proj.type != ProjectileID.PhantasmArrow && stalkerQuiverTimer == 0)
                 {
                     Vector2 pos = target.Center + (Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi) * 320f);
                     Projectile newProj = Projectile.NewProjectileDirect(proj.GetSource_OnHit(target), pos, pos.DirectionTo(target.Center) * 4f, ProjectileID.PhantasmArrow, damageDone / 2, 0f, proj.owner, target.whoAmI);
