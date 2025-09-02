@@ -67,8 +67,34 @@ namespace TerrariaCells.Content.Packets
     }
     public enum PylonPacketType
     {
+        ///<summary>
+        ///Syncs found pylons from client to server, and from server to client
+        ///</summary>
+        ///<remarks>
+        ///<b>Send/Receive:</b>
+        ///<para><i>To Client:</i> <c> <see langword="short"/> pylonX, <see langword="short"/> pylonY </c></para>
+        ///<para><i>To Server:</i> <c> <see langword="short"/> pylonX, <see langword="short"/> pylonY </c></para>
+        ///</remarks>
         PylonDiscovery,
+
+        ///<summary>
+        ///Sent from client to server, requests updated <see cref="PylonSystem"/>/<see cref="WorldPylonSystem"/> data.
+        ///</summary>
+        ///<remarks>
+        ///<b>Send/Receive:</b>
+        ///<para><i>To Client:</i> <c> N/A </c></para>
+        ///<para><i>To Server:</i> <c> <see langword="int"/> whoAmI </c></para>
+        ///</remarks>
         ServerPlayerEnter,
+
+        ///<summary>
+        ///Sent from server to client, in response to <see cref="ServerPlayerEnter"/>
+        ///</summary>
+        ///<remarks>
+        ///<b>Send/Receive:</b>
+        ///<para><i>To Client:</i> <c> <see langword="int"/> foundPylonCount, <see langword="params"/> (<see langword="short"/>, <see langword="short"/>)[] foundPylons </c></para>
+        ///<para><i>To Server:</i> <c> N/A </c></para>
+        ///</remarks>
         ClientPlayerEnter,
     }
 }

@@ -19,7 +19,24 @@ namespace TerrariaCells.Content.Packets
     {
         public enum BuffPacketType : byte
         {
+            ///<summary>
+            ///Syncs adding buff to NPC
+            ///</summary>
+            ///<remarks>
+            ///<b>Send/Receive:</b>
+            ///<para><i>To Client:</i> <c> <see langword="byte"/> NPC.whoAmI, <see langword="byte"/> buffIndex, 7bit <see langword="int"/> buffOrigTime, 7bit <see langword="int"/> buffStacks </c></para>
+            ///<para><i>To Server:</i> <c> <see langword="byte"/> NPC.whoAmI, <see langword="byte"/> buffIndex, 7bit <see langword="int"/> buffOrigTime, 7bit <see langword="int"/> buffStacks </c></para>
+            ///</remarks>
             AddBuff,
+
+            ///<summary>
+            ///Syncs buff orig time and stack count.
+            ///</summary>
+            ///<remarks>
+            ///<b>Send/Receive:</b>
+            ///<para><i>To Client:</i> <c> <see cref="Tuple{int, int}"/>[<see cref="NPC.maxBuffs"/>] data </c></para>
+            ///<para><i>To Server:</i> <c> ? </c></para>
+            ///</remarks>
             Buffs
         }
         public override void HandlePacket(Mod mod, BinaryReader reader, int fromWho)

@@ -14,12 +14,36 @@ using TerrariaCells.Common.Utilities;
 
 namespace TerrariaCells.Content.Packets
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class TrackerPacketHandler() : PacketHandler(Common.Utilities.TCPacketType.TrackerPacket)
     {
         public enum ClientNetMsg
         {
+            /// <summary>
+            /// Unused
+            /// </summary>
             NewPlayer,
+
+            /// <summary>
+            /// Sent from Client to Server to request <see cref="RewardTrackerSystem"/> data.
+            /// </summary>
+            /// <remarks>
+            ///<b>Send/Receive</b>:
+            /// <para><i>To Client:</i> <c>N/A</c> </para>
+            /// <para><i>To Server:</i> <c>No Params</c></para>
+            /// </remarks>
             RequestSync,
+
+            /// <summary>
+            /// Sent from Client to Server to inform of an enemy being killed.
+            /// </summary>
+            /// <remarks>
+            ///<b>Send/Receive</b>:
+            /// <para><i>To Client:</i> <c>N/A</c> </para>
+            /// <para><i>To Server:</i> <c>No Params</c></para>
+            /// </remarks>
             NewKills,
         }
         public override void HandlePacket(Mod mod, BinaryReader reader, int fromWho)

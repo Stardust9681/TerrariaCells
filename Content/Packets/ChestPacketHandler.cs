@@ -81,6 +81,14 @@ namespace TerrariaCells.Content.Packets
 	}
     public enum ChestPacketType : byte
     {
+        ///<summary>
+        ///Sent from server to client, tells client to consider a chest to be opened
+        ///</summary>
+        ///<remarks>
+        ///<b>Send/Receive:</b>
+        ///<para><i>To Client:</i> <c> <see langword="int"/> chestIndex </c></para>
+        ///<para><i>To Server:</i> <c> N/A </c></para>
+        ///</remarks>
         ClientOpenChest,
 
         ///<summary>
@@ -93,8 +101,34 @@ namespace TerrariaCells.Content.Packets
         ///</remarks>
         ClientCloseChests,
 
+        ///<summary>
+        ///Sent from client to server, tells server to consider a chest to be opened
+        ///</summary>
+        ///<remarks>
+        ///<b>Send/Receive:</b>
+        ///<para><i>To Client:</i> <c> N/A </c></para>
+        ///<para><i>To Server:</i> <c> <see langword="int"/> chestIndex </c></para>
+        ///</remarks>
         ServerOpenChest,
+
+        ///<summary>
+        ///Sent from client to server, requests updated <see cref="ChestLootSpawner"/> data
+        ///</summary>
+        ///<remarks>
+        ///<b>Send/Receive:</b>
+        ///<para><i>To Client:</i> <c> N/A </c></para>
+        ///<para><i>To Server:</i> <c> <see langword="int"/> whoAmI </c></para>
+        ///</remarks>
         ServerJoin,
+
+        ///<summary>
+        ///Sent from server to client, in response to <see cref="ServerJoin"/>
+        ///</summary>
+        ///<remarks>
+        ///<b>Send/Receive:</b>
+        ///<para><i>To Client:</i> <c> <see langword="int"/> count, <see langword="params"/> <see langword="int"/>[] chestIndeces </c></para>
+        ///<para><i>To Server:</i> <c> N/A </c></para>
+        ///</remarks>
         ClientJoin,
     }
 }

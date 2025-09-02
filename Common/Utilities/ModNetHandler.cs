@@ -46,14 +46,57 @@ namespace TerrariaCells.Common.Utilities
     }
     public enum TCPacketType : byte
     {
+        /// <summary>
+        /// See <see cref="SpawnPacketType"/> for more details
+        /// </summary>
         SpawnPacket,
+        /// <summary>
+        /// See <see cref="ChestPacketType"/> for more details
+        /// </summary>
         ChestPacket,
+        /// <summary>
+        /// See <see cref="PylonPacketType"/> for more details
+        /// </summary>
         PylonPacket,
+        ///<summary>
+        ///Update level info on teleport
+        ///</summary>
+        ///<remarks>
+        ///<b>Send/Receive:</b>
+        ///<para><i>To Client:</i> <c> <see langword="short"/> X, <see langword="short"/> Y, <see langword="byte"/> level, <see langword="string"/> nextDestination </c></para>
+        ///<para><i>To Server:</i> <c> <see langword="string"/> destination </c></para>
+        ///</remarks>
         LevelPacket,
+        /// <summary>
+        /// See <see cref="PlayerPacketHandler.PlayerSyncType"/> for more details
+        /// </summary>
         PlayerPacket,
+        /// <summary>
+        /// Use <see cref="VanillaNPCShop.NetSendShop(NPC, ModPacket, int, int)"/> and <see cref="VanillaNPCShop.NetReceiveShop(NPC, BinaryReader)"/>
+        /// </summary>
         ShopPacket,
+        /// <summary>
+        /// See <see cref="BuffPacketHandler.BuffPacketType"/> for more details
+        /// </summary>
         BuffPacket,
+        /// <summary>
+        /// See <see cref="TrackerPacketHandler.ClientNetMsg"/> for more details
+        /// </summary>
         TrackerPacket,
+        /// <summary>
+        /// See <see cref="HeartPacketHandler.HeartPacketType"/> for more details
+        /// </summary>
         HeartPacket,
     }
+
+    //Template XML docs for specific message types:
+
+    ///<summary>
+    ///?
+    ///</summary>
+    ///<remarks>
+    ///<b>Send/Receive:</b>
+    ///<para><i>To Client:</i> <c> ? </c></para>
+    ///<para><i>To Server:</i> <c> ? </c></para>
+    ///</remarks>
 }

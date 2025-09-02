@@ -66,8 +66,32 @@ namespace TerrariaCells.Content.Packets
 	}
 	public enum SpawnPacketType : byte
 	{
+        /// <summary>
+        /// Sent by client, respawns all players if all players are dead
+        /// </summary>
+        /// <remarks>
+        /// <b>Send/Receive:</b>
+        /// <para><i>To Client:</i> <c>No Params</c></para>
+        /// <para><i>To Server:</i> <c>No Params</c></para>
+        /// </remarks>
 		SpawnDead,
+        /// <summary>
+        /// Sent by client, attempts to respawn all players (including living ones..?)
+        /// </summary>
+        /// <remarks>
+        /// <b>Send/Receive:</b>
+        /// <para><i>To Client:</i> <c>No Params</c></para>
+        /// <para><i>To Server:</i> <c>No Params</c></para>
+        /// </remarks>
 		SpawnAll,
+        /// <summary>
+        /// Sent by client to respawn a specific player
+        /// </summary>
+        /// <remarks>
+        /// <b>Send/Receive:</b>
+        /// <para><i>To Client:</i> <c>No Params</c></para>
+        /// <para><i>To Server:</i> <c><see langword="byte"/> targetPlayer</c></para>
+        /// </remarks>
 		SpawnTarget,
 	}
 }

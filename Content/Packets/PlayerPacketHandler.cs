@@ -19,8 +19,29 @@ namespace TerrariaCells.Content.Packets
     {
         public enum PlayerSyncType : byte
         {
+            ///<summary>
+            ///Syncs player meta-progression (see also: <see cref="Common.ModPlayers.MetaPlayer"/>)
+            ///</summary>
+            ///<remarks>
+            ///<b>Send/Receive:</b>
+            ///<para><i>To Client:</i> <c> <see langword="params"/> <see langword="byte"/>[] indeces </c></para>
+            ///<para><i>To Server:</i> <c> <see langword="params"/> <see langword="byte"/>[] indeces </c></para>
+            ///</remarks>
             MetaProgress, //{ byte, byte, .. }
+
+            ///<summary>
+            ///Unused
+            ///</summary>
             StatSync, //byte (short?)
+
+            ///<summary>
+            ///Sent from client to server on join, server responds telling player to either teleport to a living player, or to enter "spectate mode"
+            ///</summary>
+            ///<remarks>
+            ///<b>Send/Receive:</b>
+            ///<para><i>To Client:</i> <c> <see langword="bool"/> doSpectate </c></para>
+            ///<para><i>To Server:</i> <c> No Params </c></para>
+            ///</remarks>
             NewPlayerJoin,
         }
         public override void HandlePacket(Mod mod, BinaryReader reader, int fromWho)
