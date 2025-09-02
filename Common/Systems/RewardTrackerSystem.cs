@@ -30,6 +30,7 @@ namespace TerrariaCells.Common.Systems
             Stop = Pause | ResetAll,
             Restart = Start | ResetAll,
         }
+        public override void ClearWorld() => UpdateTracker_EnterNewWorld();
         internal static void UpdateTracker_EnterNewWorld()
         {
             UpdateTracker(TrackerAction.ResetAll);

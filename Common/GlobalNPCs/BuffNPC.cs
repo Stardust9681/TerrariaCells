@@ -58,7 +58,8 @@ namespace TerrariaCells.Common.GlobalNPCs
 			int buffIndex = self.FindBuffIndex(type);
             if (buffIndex != -1 && buffIndex < NPC.maxBuffs)
 			{
-                BuffNPC buffNPC = self.GetGlobalNPC<BuffNPC>();
+                if (!self.TryGetGlobalNPC<BuffNPC>(out BuffNPC buffNPC))
+                    return;
                 if (buffNPC.buffOrigTimes[buffIndex] < time)
 					buffNPC.buffOrigTimes[buffIndex] = time;
 				if (buffNPC.buffStacks[buffIndex] < 1)

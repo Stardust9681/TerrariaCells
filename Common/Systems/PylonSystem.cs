@@ -61,6 +61,7 @@ namespace TerrariaCells.Common.Systems
 				d.velocity = -Vector2.UnitY.RotatedByRandom(MathHelper.ToRadians(30)) * Main.rand.NextFloat(3, 6);
 			}
             //Start count if not already started
+            //ModContent.GetInstance<TerrariaCells>().Logger.Info($"{RewardTrackerSystem.trackerState}\n{RewardTrackerSystem._LevelTime}");
             RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Start);
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item29, worldCoords);
 		}

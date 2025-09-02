@@ -25,6 +25,12 @@ namespace TerrariaCells.Common.Systems
 {
     public class Detours : ModSystem
     {
+        public override void ClearWorld()
+        {
+            Mod.Logger.Debug("Action: " + RewardTrackerSystem.trackerState + "\n" + RewardTrackerSystem.LevelTime.ToString());
+            RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Stop);
+        }
+
         private static bool isNewWorld = false;
         public override void Load()
         {
