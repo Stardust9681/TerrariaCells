@@ -52,7 +52,7 @@ public class DeathReset : ModPlayer, IEntitySource
         {
             return;
         }
-        if (isNewWorld)
+        if (isNewWorld && !Configs.DevConfig.Instance.BuilderMode)
         {
             ResetInventory(ResetInventoryContext.NewWorld);
             Common.GlobalNPCs.NPCTypes.Crimson.BrainOfCthulhu.SpawnPos = null;
@@ -173,6 +173,11 @@ public class DeathReset : ModPlayer, IEntitySource
             equips[3].TurnToAir(true);
             equips[4].TurnToAir(true);
             equips[5].TurnToAir(true);
+
+            for (int i = 0; i < 58; i++)
+            {
+                inventory[i].TurnToAir(true);
+            }
         }
         else if (context == ResetInventoryContext.Death && Main.netMode != NetmodeID.Server)
         {
@@ -193,6 +198,11 @@ public class DeathReset : ModPlayer, IEntitySource
             equips[3].shimmered =       true; Player.TryDroppingSingleItem(playerDeath, equips[3]);
             equips[4].shimmered =       true; Player.TryDroppingSingleItem(playerDeath, equips[4]);
             equips[5].shimmered =       true; Player.TryDroppingSingleItem(playerDeath, equips[5]);
+
+            for (int i = 0; i < 58; i++)
+            {
+                inventory[i].TurnToAir(true);
+            }
         }
         #endregion
 
