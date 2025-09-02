@@ -7,6 +7,8 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
+
 using TerrariaCells.Common.Configs;
 using TerrariaCells.Common.GlobalItems;
 
@@ -190,6 +192,21 @@ public class ChestLootSpawner : ModSystem, IEntitySource
 
                 lootedChests.Add(newChest);
             }
+        }
+    }
+    public override void SaveWorldData(TagCompound tag)
+    {
+        tag.Add(nameof(lootedChests), lootedChests);
+    }
+    public override void LoadWorldData(TagCompound tag)
+    {
+        try
+        {
+            lootedChests = (List<int>)tag.GetList<int>(nameof(lootedChests)) ?? new List<int>();
+        }
+        catch (System.Exception x)
+        {
+            lootedChests = new List<int>();
         }
     }
 }

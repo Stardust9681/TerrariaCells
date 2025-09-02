@@ -1,8 +1,12 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
+
 using TerrariaCells.Common.GlobalProjectiles;
 using TerrariaCells.Common.Items;
 
@@ -21,7 +25,7 @@ public partial class FunkyModifierItemModifier : GlobalItem
     internal FunkyModifier[] modifiers;
 
     // ranges given here are used inclusively, ie 0..1 is a range from 0..1, as opposed to exclusive ranges that Main.rand takes
-    public static (int, int)[] modifierQuantityRangesPerTier =
+    public static readonly (int, int)[] modifierQuantityRangesPerTier =
     [
         (0, 0), // tier 0 isnt possible?
         (0, 1),
@@ -316,6 +320,79 @@ public partial class FunkyModifierItemModifier : GlobalItem
                     break;
                 }
             }
+        }
+    }
+
+    public override void NetSend(Item item, BinaryWriter writer)
+    {
+        var modItem = item.GetGlobalItem(this);
+        var modifiers = modItem.modifiers;
+        writer.Write((byte)modifiers.Length);
+        foreach (var modifier in modifiers)
+        {
+            writer.Write(modifier.id);
+            writer.Write((ushort)modifier.modifierType);
+            writer.Write(modifier.intModifier);
+            writer.Write(modifier.modifier);
+            writer.Write(modifier.secondaryModifier);
+        }
+    }
+    public override void NetReceive(Item item, BinaryReader reader)
+    {
+        var modItem = item.GetGlobalItem(this);
+        int count = reader.ReadByte();
+        modItem.modifiers = new FunkyModifier[count];
+        for (int i = 0; i < count; i++)
+        {
+            modItem.modifiers[i] = new FunkyModifier()
+            {
+                id = reader.ReadInt32(),
+                modifierType = (FunkyModifierType)reader.ReadUInt16(),
+                intModifier = reader.ReadInt32(),
+                modifier = reader.ReadSingle(),
+                secondaryModifier = reader.ReadSingle(),
+            };
+        }
+    }
+    public override void SaveData(Item item, TagCompound tag)
+    {
+        try
+        {
+            if (modifiers is not null)
+            {
+                tag.Add("modifiers.count", modifiers.Length);
+                for (int i = 0; i < modifiers.Length; i++)
+                {
+                    tag.Add($"id{i}", modifiers[i].id);
+                    tag.Add($"type{i}", (ushort)modifiers[i].modifierType);
+                    tag.Add($"imod{i}", modifiers[i].intModifier);
+                    tag.Add($"mod{i}", modifiers[i].modifier);
+                    tag.Add($"smod{i}", modifiers[i].secondaryModifier);
+                }
+            }
+        }
+        catch (System.Exception x) { }
+    }
+    public override void LoadData(Item item, TagCompound tag)
+    {
+        try
+        {
+            modifiers = new FunkyModifier[tag.Get<int>("modifiers.count")];
+            for (int i = 0; i < modifiers.Length; i++)
+            {
+                modifiers[i] = new FunkyModifier()
+                {
+                    id = tag.Get<int>($"id{i}"),
+                    modifierType = (FunkyModifierType)tag.Get<ushort>($"type{i}"),
+                    intModifier = tag.Get<int>($"imod{i}"),
+                    modifier = tag.Get<float>($"mod{i}"),
+                    secondaryModifier = tag.Get<float>($"smod{i}"),
+                };
+            }
+        }
+        catch (System.Exception x)
+        {
+            modifiers = Array.Empty<FunkyModifier>();
         }
     }
 }

@@ -1,10 +1,13 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
+
 using TerrariaCells.Common.ModPlayers;
 using TerrariaCells.Common.Utilities;
 
@@ -126,6 +129,23 @@ public class ClickedHeartsTracker : ModSystem
             tile.IsActuated = true;
         }
         collectedHearts = collected;
+    }
+
+    public override void SaveWorldData(TagCompound tag)
+    {
+        tag.Add(nameof(collectedHearts)+"a", collectedHearts.Select(x=>x.Item1).ToList<int>());
+        tag.Add(nameof(collectedHearts) + "b", collectedHearts.Select(x => x.Item2).ToList<int>());
+    }
+    public override void LoadWorldData(TagCompound tag)
+    {
+        try
+        {
+            collectedHearts = (List<(int, int)>)tag.GetList<int>(nameof(collectedHearts) + "a")?.Zip(tag.GetList<int>(nameof(collectedHearts) + "b")).ToList() ?? new List<(int, int)>();
+        }
+        catch (System.Exception x)
+        {
+            collectedHearts = new List<(int, int)>();
+        }
     }
 
     public override void PreUpdateWorld()
