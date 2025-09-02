@@ -268,9 +268,6 @@ namespace TerrariaCells.Common.GlobalProjectiles
 				case ProjectileID.EmeraldBolt:
 					GlobalNPCs.BuffNPC.AddBuff(target, BuffID.Poisoned, 60 * 5, damageDone);
 					break;
-                case ProjectileID.GladiusStab:
-                    target.immune[projectile.owner] = 7;
-                    break;
 
 				case ProjectileID.ToxicCloud:
 				case ProjectileID.ToxicCloud2:
