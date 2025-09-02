@@ -215,7 +215,8 @@ namespace TerrariaCells.Common.GlobalProjectiles
 			if (projectile.TryGetGlobalProjectile(out SourceGlobalProjectile gProj) && gProj.itemSource != null)
 			{
 				Item source = gProj.itemSource;
-				if (source.type == ItemID.SniperRifle && target.boss)
+                bool honouraryBoss = target.type >= NPCID.EaterofWorldsHead && target.type <= NPCID.EaterofWorldsTail;
+				if (source.type == ItemID.SniperRifle && (target.boss || honouraryBoss))
 					ForceCrit = true;
 				else if (source.type == ItemID.PhoenixBlaster && Content.WeaponAnimations.Gun.TryGetGlobalItem(source, out Content.WeaponAnimations.Gun gun))
 				{
