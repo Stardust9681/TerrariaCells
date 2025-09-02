@@ -139,9 +139,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 
 			CombatNPC globalNPC = npc.GetGlobalNPC<CombatNPC>();
 
-			Systems.CameraManipulation.SetZoom(45, new Vector2(95, 55) * 16, null);
-			Systems.CameraManipulation.SetCamera(45, centre - Main.ScreenSize.ToVector2() * 0.5f);
-
 			void Entrance()
 			{
 				const int Start = 0;
@@ -963,7 +960,40 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			}
 			return false;
 		}
-	}
+
+        public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
+        {
+            bitWriter.WriteBit(SpawnPos.HasValue);
+            if (SpawnPos != null)
+            {
+                binaryWriter.Write(SpawnPos.Value.X);
+                binaryWriter.Write(SpawnPos.Value.Y);
+            }
+        }
+        public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
+        {
+            if (bitReader.ReadBit())
+            {
+                SpawnPos = new Vector2(binaryReader.ReadSingle(), binaryReader.ReadSingle());
+            }
+        }
+    }
+
+    internal class BrainCamera : ModPlayer
+    {
+        private bool nearBoC = false;
+        public override void PreUpdate()
+        {
+            if(Main.netMode == 2) return;
+            nearBoC = false;
+            foreach(NPC npc in Main.ActiveNPCs) if(npc.type == NPCID.BrainofCthulhu) { nearBoC = true; break; }
+            if (nearBoC && BrainOfCthulhu.SpawnPos.HasValue)
+            {
+                Systems.CameraManipulation.SetZoom(45, new Vector2(95, 55) * 16, null);
+                Systems.CameraManipulation.SetCamera(45, (BrainOfCthulhu.SpawnPos.Value - (ContentSamples.NpcsByNetId[NPCID.BrainofCthulhu].Size*0.5f)) - Main.ScreenSize.ToVector2() * 0.5f);
+            }
+        }
+    }
 
 	/// <summary>
 	/// <para><c><see cref="Projectile.ai"/>[0]</c> --> Target position X</para>
