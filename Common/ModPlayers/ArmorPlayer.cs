@@ -185,23 +185,14 @@ namespace TerrariaCells.Common.ModPlayers
                     leftMultiPressCount = 0;
                 }
             }
-
-            if (moltenArmorSet)
-            {
-                foreach (NPC npc in Main.ActiveNPCs)
-                {
-                    if (npc.HasBuff(BuffID.OnFire))
-                    {
-                        int onFireBuffIfx = npc.FindBuffIndex(BuffID.OnFire);
-                        npc.AddBuff(BuffID.OnFire3, (int)(npc.buffTime[onFireBuffIfx] * 1.5f));
-                        npc.buffTime[onFireBuffIfx] = 0;
-                    }
-                }
-            }
         }
 
         public override void PostUpdate()
         {
+            if (moltenArmorSet)
+            {
+                Player.GetModPlayer<BuffPlayer>().ReplaceBuffWith[BuffID.OnFire] = BuffID.OnFire3;
+            }
             if (moltenGreaves && Player.velocity.Y == 0)
             {
                 float horizontalSpeed = Math.Abs(Player.velocity.X);

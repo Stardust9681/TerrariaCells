@@ -240,9 +240,9 @@ namespace TerrariaCells.Common.ModPlayers
 		private int damageTime;
 		private float antiRegen;
 
-		private float TimeAmplitude => damageBuffer * INV_STAGGER_POTENCY; //Used for calculations, opposite of MaxTime
-		private float MaxTime => damageBuffer * STAGGER_POTENCY; //Time it will take for damage to stop ticking.
-		private float DamageLeft => -MathF.Sqrt(TimeAmplitude * damageTime) + damageBuffer; //Remaining amount of damage for the player to take
+		public float TimeAmplitude => damageBuffer * INV_STAGGER_POTENCY; //Used for calculations, opposite of MaxTime
+		public float MaxTime => damageBuffer * STAGGER_POTENCY; //Time it will take for damage to stop ticking.
+		public float DamageLeft => -MathF.Sqrt(TimeAmplitude * damageTime) + damageBuffer; //Remaining amount of damage for the player to take
 
 		//Mathematics used for Damage Staggering:
 			//Damage Left = -sqrt(TimeAmplitude * damageTime) + damageBuffer

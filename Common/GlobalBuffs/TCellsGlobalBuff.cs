@@ -4,6 +4,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
+using TerrariaCells.Common.ModPlayers;
 
 namespace TerrariaCells.Common.GlobalBuffs
 {

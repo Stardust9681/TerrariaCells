@@ -16,6 +16,7 @@ using MonoMod.Cil;
 using TerrariaCells.Common.Utilities;
 using static TerrariaCells.Common.Utilities.NumberHelpers;
 using static TerrariaCells.Common.Systems.AbilityConditions;
+using TerrariaCells.Common.ModPlayers;
 
 //Genuinely, I'm just using this for anything that I deem sufficiently complex
 //Involving multiple parts working together to form one collective piece (a "system of parts" if you will)
@@ -39,7 +40,7 @@ namespace TerrariaCells.Common.Systems
 	{
 		public static void LoadAbilities()
 		{
-			RegisterAbility(ItemID.ClingerStaff, new Ability(NumberHelpers.SecToFrames(45), 10.SecToFrames(), new LineOfSight(), new InSolidTile().Invert()));
+			RegisterAbility(ItemID.ClingerStaff, new Ability(NumberHelpers.SecToFrames(45), 20.SecToFrames(), new LineOfSight(), new InSolidTile().Invert()));
 			//Doesn't actually get used due to -1 duration (never gets started)...
 			//But here's an example of adding extra functionality on ability end.
 			RegisterAbility(ItemID.ToxicFlask, new Ability(NumberHelpers.SecToFrames(30)))
@@ -55,9 +56,9 @@ namespace TerrariaCells.Common.Systems
 			//RegisterAbility(ItemID.BouncingShield, new Ability(NumberHelpers.SecToFrames(6)));
 			RegisterAbility(ItemID.MedusaHead, new Ability(NumberHelpers.SecToFrames(30)));
 			RegisterAbility(ItemID.SnowballLauncher, new Ability(NumberHelpers.SecToFrames(20), 8.SecToFrames()));
-			RegisterAbility(ItemID.ManaPotion, new Ability(NumberHelpers.SecToFrames(30)));
+			//RegisterAbility(ItemID.ManaPotion, new Ability(NumberHelpers.SecToFrames(30)));
 			RegisterAbility(ItemID.WrathPotion, new Ability(NumberHelpers.SecToFrames(60), 20.SecToFrames()));
-			RegisterAbility(ItemID.MagicPowerPotion, new Ability(NumberHelpers.SecToFrames(60), 5.SecToFrames()));
+			RegisterAbility(ItemID.MagicPowerPotion, new Ability(NumberHelpers.SecToFrames(100), 10.SecToFrames()));
 			RegisterAbility(ItemID.SwiftnessPotion, new Ability(NumberHelpers.SecToFrames(60), 20.SecToFrames()));
             //RegisterAbility(ItemID.LifeCrystal, new Ability(0));
 		}
@@ -438,8 +439,11 @@ namespace TerrariaCells.Common.Systems
 					item.damage = 10;
 					break;
 				case ItemID.ToxicFlask:
-					item.damage = 3;
+					item.damage = 5;
 					break;
+                case ItemID.MolotovCocktail:
+                    item.damage = 30;
+                    break;
 				case ItemID.StaffoftheFrostHydra:
 					item.knockBack = 0;
 					break;
@@ -501,9 +505,17 @@ namespace TerrariaCells.Common.Systems
             tooltips.Find(x => x.Name.Equals("EtherianManaWarning"))?.Hide();
             tooltips.Find(x => x.Name.Equals("BuffTime"))?.Hide();
 		}
-		#endregion
 
-		public override void Load()
+        public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
+        {
+            if (player.GetModPlayer<AccessoryPlayer>().heracles)
+            {
+                damage += 0.5f;
+            }
+        }
+        #endregion
+
+        public override void Load()
 		{
 			//IL_ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color += IL_ItemSlot_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color;
 

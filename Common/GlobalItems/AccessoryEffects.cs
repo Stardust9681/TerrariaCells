@@ -6,6 +6,7 @@ using Terraria.ID;
 using Terraria.DataStructures;
 using Terraria.Localization;
 using System.Collections.Generic;
+using TerrariaCells.Common.ModPlayers;
 
 namespace TerrariaCells.Common.GlobalItems
 {
@@ -51,8 +52,14 @@ namespace TerrariaCells.Common.GlobalItems
 					item.defense = 0;
 					break;
 				case ItemID.ObsidianShield:
-					item.defense = 6;
+					item.defense = 0;
 					break;
+                case ItemID.FlaskofVenom:
+                    item.consumable = false;
+                    item.maxStack = 1;
+                    item.accessory = true;
+                    item.useStyle = 0;
+                    break;
 			}
 			if (item.type == ItemID.ChlorophyteDye)
 			{
@@ -87,6 +94,7 @@ namespace TerrariaCells.Common.GlobalItems
 					break;
 				case ItemID.ObsidianShield:
 					player.noKnockback = true;
+                    player.endurance += 0.2f;
 					break;
 				case ItemID.ThePlan:
 					modPlayer.thePlan = true;
@@ -102,7 +110,8 @@ namespace TerrariaCells.Common.GlobalItems
 					modPlayer.nazar = true;
 					break;
 				case ItemID.BerserkerGlove:
-					modPlayer.bersGlove = true;
+                    if (player.GetModPlayer<Regenerator>().DamageLeft > 0)
+                        player.GetDamage(DamageClass.Melee) += 0.3f;
 					break;
 
 				case ItemID.ReconScope:
@@ -134,6 +143,12 @@ namespace TerrariaCells.Common.GlobalItems
 				case ItemID.MagicCuffs:
 					modPlayer.magicCuffs = true;
 					break;
+                case ItemID.FlaskofVenom:
+                    player.GetModPlayer<BuffPlayer>().ReplaceBuffWith[BuffID.Poisoned] = BuffID.Venom;
+                    break;
+                case ItemID.HerculesBeetle:
+                    modPlayer.heracles = true;
+                    break;
 				default:
 					orig.Invoke(player, item, hideVisual);
 					break;

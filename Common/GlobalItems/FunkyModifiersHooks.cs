@@ -10,6 +10,7 @@ using Terraria.ModLoader.IO;
 using TerrariaCells.Common.GlobalNPCs;
 using TerrariaCells.Common.GlobalProjectiles;
 using TerrariaCells.Common.Items;
+using TerrariaCells.Common.ModPlayers;
 
 using static Terraria.GameContent.Animations.IL_Actions.NPCs;
 
@@ -282,7 +283,11 @@ public partial class FunkyModifierItemModifier : GlobalItem
             {
                 case FunkyModifierType.DamageOnDebuff:
                 {
-                    if (target.HasBuff(modifier.id))
+                    if (
+                        //Target has target buff type
+                        target.HasBuff(modifier.id)
+                        //Or if target has buff type that player automatically converts to
+                        || (player.GetModPlayer<BuffPlayer>().ReplaceBuffWith.TryGetValue(modifier.id, out int? newID) && newID.HasValue && target.HasBuff(newID.Value)))
                     {
                         modifiers.SourceDamage *= modifier.modifier;
                     }

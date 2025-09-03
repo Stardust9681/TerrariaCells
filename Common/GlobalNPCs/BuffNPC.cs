@@ -12,6 +12,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
+using TerrariaCells.Common.ModPlayers;
 using TerrariaCells.Common.Utilities;
 using TerrariaCells.Content.Packets;
 
@@ -53,6 +54,11 @@ namespace TerrariaCells.Common.GlobalNPCs
 
 		private static void On_NPC_AddBuff(On_NPC.orig_AddBuff orig, NPC self, int type, int time, bool quiet)
 		{
+            int stacksToAdd = 1;
+            if (self.AnyInteractions())
+            {
+                type = Main.player[self.lastInteraction].GetModPlayer<BuffPlayer>().GetBuffToApply(type, ref time, ref stacksToAdd);
+            }
 			orig.Invoke(self, type, time, quiet);
 
 			int buffIndex = self.FindBuffIndex(type);
@@ -63,9 +69,9 @@ namespace TerrariaCells.Common.GlobalNPCs
                 if (buffNPC.buffOrigTimes[buffIndex] < time)
 					buffNPC.buffOrigTimes[buffIndex] = time;
 				if (buffNPC.buffStacks[buffIndex] < 1)
-					buffNPC.buffStacks[buffIndex] = 1;
+					buffNPC.buffStacks[buffIndex] = stacksToAdd;
 				else
-					buffNPC.buffStacks[buffIndex]++;
+					buffNPC.buffStacks[buffIndex] += stacksToAdd;
 
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
@@ -336,14 +342,13 @@ namespace TerrariaCells.Common.GlobalNPCs
 				{
 					//Linear-Scaling DPS
 					case BuffID.OnFire:
-						if (!npc.HasBuff(BuffID.Oiled))
+                        npc.onFire = true;
+                        if (!npc.HasBuff(BuffID.Oiled))
 						{
-							npc.onFire = true;
 							npc.lifeRegen -= Adjust(LinearScale(buffStacks, 1, 3));
 						}
 						else //Double efficacy with Oiled debuff
 						{
-							npc.onFire3 = true;
 							npc.lifeRegen -= 2 * Adjust(LinearScale(buffStacks, 1, 3));
 							damage++;
 						}
@@ -366,7 +371,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 						break;
 					case BuffID.Venom:
 						npc.venom = true;
-						npc.lifeRegen -= Adjust(GeometricScale(buffStacks * 0.167f, 5f, 0.8125f));
+						npc.lifeRegen -= Adjust(GeometricScale(buffStacks * 0.167f, 5.5f, 0.8125f));
 						if (damage > 4)
 							damage = damage * 3 / 4; //Tick slightly more frequently
 						break;
@@ -450,6 +455,12 @@ namespace TerrariaCells.Common.GlobalNPCs
 
             int stacksToAdd = (damage/9) + addStacks;
 			stacksToAdd = Math.Max(stacksToAdd, 1);
+
+            if (npc.AnyInteractions())
+            {
+                buffType = Main.player[npc.lastInteraction].GetModPlayer<BuffPlayer>().GetBuffToApply(buffType, ref time, ref stacksToAdd);
+            }
+
 			int buffIndex = npc.FindBuffIndex(buffType);
 			if (buffIndex != -1 && buffIndex < NPC.maxBuffs)
 			{
