@@ -59,6 +59,8 @@ namespace TerrariaCells.Common.GlobalItems
                     item.maxStack = 1;
                     item.accessory = true;
                     item.useStyle = 0;
+                    item.buffType = 0;
+                    item.buffTime = 0;
                     break;
 			}
 			if (item.type == ItemID.ChlorophyteDye)
@@ -290,6 +292,8 @@ namespace TerrariaCells.Common.GlobalItems
                 [
                     new(Mod, "Tooltip0", "Immunity to knockback and fiery hot tiles"),
                 ],
+                ItemID.FlaskofVenom => [ new(Mod, "Tooltip0", "Poison replaced with Venom")],
+                ItemID.HerculesBeetle => [new(Mod, "Tooltip0", "50% increased damage to Abilities")],
                 _ => [],
             };
         }
