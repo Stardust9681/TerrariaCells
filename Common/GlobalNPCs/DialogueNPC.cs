@@ -21,12 +21,16 @@ namespace TerrariaCells.Common.GlobalNPCs
             On_NPC.AI_000_TransformBoundNPC += On_NPC_AI_000_TransformBoundNPC;
         }
 
-        
-
         public override void Unload()
         {
             On_Main.HelpText -= On_Main_HelpText;
             On_Main.DrawNPCChatButtons -= On_Main_DrawNPCChatButtons;
+        }
+
+        public override void SetDefaults(NPC entity)
+        {
+            if (entity.friendly)
+                entity.dontTakeDamageFromHostiles = true;
         }
 
         private static readonly string[] HelpText = new string[] {

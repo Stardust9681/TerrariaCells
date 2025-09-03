@@ -29,7 +29,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 			return base.CanHitPlayer(npc, target, ref cooldownSlot);
 		}
 
-		public static void ToggleContactDamage(NPC npc, bool value) => npc.GetGlobalNPC<CombatNPC>().allowContactDamage = value;
+        public static void ToggleContactDamage(NPC npc, bool value) => npc.GetGlobalNPC<CombatNPC>().allowContactDamage = value;
         public override void DrawEffects(NPC npc, ref Color drawColor)
         {
             if (canDrawActiveHitbox is null)
