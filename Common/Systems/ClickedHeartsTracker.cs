@@ -56,7 +56,6 @@ public class ClickedHeartsTracker : ModSystem
             resettingHearts.Add((i, j));
         }
         collectedHearts.Clear();
-        Main.LocalPlayer.GetModPlayer<LifeModPlayer>().extraHealth = 0;
     }
 
     public void ClickedHeart(int i, int j)

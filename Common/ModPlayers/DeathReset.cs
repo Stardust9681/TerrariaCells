@@ -62,6 +62,7 @@ public class DeathReset : ModPlayer, IEntitySource
                 RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Stop);
             }
             ResetInventory(ResetInventoryContext.NewWorld);
+            Player.GetModPlayer<LifeModPlayer>().extraHealth = 0;
             Common.GlobalNPCs.NPCTypes.Crimson.BrainOfCthulhu.SpawnPos = null;
         }
 
