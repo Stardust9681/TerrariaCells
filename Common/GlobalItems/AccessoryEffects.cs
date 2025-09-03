@@ -290,7 +290,8 @@ namespace TerrariaCells.Common.GlobalItems
                 ItemID.MagicCuffs => [new(Mod, "Tooltip0", "Gain mana when taking damage")],
                 ItemID.ObsidianShield =>
                 [
-                    new(Mod, "Tooltip0", "Immunity to knockback and fiery hot tiles"),
+                    new(Mod, "Tooltip0", "Immunity to knockback"),
+                    new(Mod, "Tooltip1", "+20% damage reduction"),
                 ],
                 ItemID.FlaskofVenom => [ new(Mod, "Tooltip0", "Poison replaced with Venom")],
                 ItemID.HerculesBeetle => [new(Mod, "Tooltip0", "50% increased damage to Abilities")],
