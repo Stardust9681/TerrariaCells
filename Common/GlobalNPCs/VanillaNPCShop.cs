@@ -138,7 +138,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                     UpdateNPCShop(npc, (int[])[.. Armors, .. Skills], level, 2);
                     break;
                 case NPCID.GoblinTinkerer:
-                    UpdateNPCShop(npc, Accessories, level, 2);
+                    UpdateNPCShop(npc, Accessories, Accessories.Length, Accessories.Length);
                     break;
 
                 case NPCID.Nurse:
@@ -157,7 +157,7 @@ namespace TerrariaCells.Common.GlobalNPCs
         }
         private void UpdateNPCShop(NPC npc, int[] itemTypes, int itemLevel, int min = 1, int max = 40)
         {
-            if (Configs.DevConfig.Instance.PlaytesterShops || min > itemTypes.Length)
+            if (Configs.DevConfig.Instance.PlaytesterShops || min >= itemTypes.Length)
             {
                 selectedItems = itemTypes.Select(x => new ItemDef(x, itemLevel)).ToArray();
                 return;
