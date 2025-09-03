@@ -8,18 +8,18 @@ namespace TerrariaCells.Common.ModPlayers;
 
 public class PowerupEffects : ModPlayer
 {
+    private static LocalizedText UnlockCloud;
+    public override void Load()
+    {
+        UnlockCloud = Mod.GetLocalization("unlocks.cloud", () => "Unlocked double jump!");
+    }
     public override bool OnPickup(Item item)
     {
         switch (item.type) {
             case ItemID.CloudinaBottle:
-                //Utils.Swap(ref Player.armor[5], ref item);
-                ChatHelper.DisplayMessageOnClient(
-                    NetworkText.FromLiteral("Unlocked double jump!"),
-                    Color.CornflowerBlue,
-                    Player.whoAmI
-                );
-                Player.chatOverhead.NewMessage("Unlocked double jump!", 360);
-                Player.GetModPlayer<MetaPlayer>().CloudJump = true;
+                MetaPlayer meta = Player.GetModPlayer<MetaPlayer>();
+                meta.CloudJump = true;
+                meta.DoUnlockText(UnlockCloud, Color.CornflowerBlue);
                 return false;
             default:
                 return true;

@@ -402,3 +402,8 @@ levelInputEmptyContextText: Forest
 structureInputEmptyContextText: forest_1
 idInputEmptyContextText: Forest
 blankInputEmptyContextText: _
+
+unlocks: {
+	goblin: Unlocked the Goblin Tinkerer!
+	cloud: Unlocked double jump!
+}

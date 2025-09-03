@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections;
 using System.Reflection;
+using Terraria.Chat;
+using Terraria.Localization;
 
 namespace TerrariaCells.Common.ModPlayers
 {
@@ -21,6 +23,15 @@ namespace TerrariaCells.Common.ModPlayers
 
         //-1 because this is also a property
         internal static int ProgressionCount => typeof(MetaPlayer).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Length - 1;
+
+        public void DoUnlockText(LocalizedText text, Color? colour = null, int overheadTime = 360)
+        {
+            if (Player.whoAmI == Main.myPlayer)
+            {
+                Main.NewText(text.Value, colour);
+                Player.chatOverhead.NewMessage(text.Value, overheadTime);
+            }
+        }
 
         #region Backing Functionality
         private BitArray metaProgression = new BitArray(ProgressionCount);

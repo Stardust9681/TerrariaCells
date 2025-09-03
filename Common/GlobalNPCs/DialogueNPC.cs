@@ -4,16 +4,25 @@ using System.Linq;
 using Terraria.ModLoader;
 using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace TerrariaCells.Common.GlobalNPCs
 {
     public class DialogueNPC : GlobalNPC
     {
+        internal static LocalizedText GoblinUnlock;
+
         public override void Load()
         {
+            GoblinUnlock = Mod.GetLocalization("unlocks.goblin", () => "Unlocked the Goblin Tinkerer!");
+
             On_Main.HelpText += On_Main_HelpText;
             On_Main.DrawNPCChatButtons += On_Main_DrawNPCChatButtons;
+            On_NPC.AI_000_TransformBoundNPC += On_NPC_AI_000_TransformBoundNPC;
         }
+
+        
+
         public override void Unload()
         {
             On_Main.HelpText -= On_Main_HelpText;
@@ -81,14 +90,38 @@ namespace TerrariaCells.Common.GlobalNPCs
             }
             orig.Invoke(superColor, chatColor, numLines, focusText, focusText3);
         }
-
-        public override bool? CanChat(NPC npc)
+        
+        private void On_NPC_AI_000_TransformBoundNPC(On_NPC.orig_AI_000_TransformBoundNPC orig, NPC self, int playerID, int npcType)
         {
-            if (npc.type == NPCID.BoundGoblin)
+            if (self.type == NPCID.BoundGoblin)
             {
-                Main.LocalPlayer.GetModPlayer<Common.ModPlayers.MetaPlayer>().Goblin = true;
+                var meta = Main.player[playerID].GetModPlayer<Common.ModPlayers.MetaPlayer>();
+                if (!meta.Goblin)
+                {
+                    meta.Goblin = true;
+                    meta.DoUnlockText(GoblinUnlock, Color.CornflowerBlue);
+                }
+                self.active = false;
+                self.netSkip = 0;
+                self.netUpdate = true;
+                self.netUpdate2 = true;
+
+                if (Main.netMode != 2)
+                {
+                    for (int i = 0; i < 16; i++)
+                    {
+                        Dust dust = Dust.NewDustDirect(new Vector2(self.position.X, self.position.Y), self.width, self.height, DustID.Cloud, 0f, 0f, 100, default(Color), 2f);
+                        dust.velocity *= 1.4f;
+                        dust.noLight = true;
+                        dust.noGravity = true;
+                    }
+                    for (int i = 0; i < 4 + Main.rand.Next(4); i++)
+                    {
+                        Gore.NewGoreDirect(self.GetSource_FromAI(), self.Center, Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi) * new Vector2(2, 0.67f).SafeNormalize(Vector2.UnitX),
+                            Main.rand.Next([11, 12, 13]), Main.rand.NextFloat(0.9f, 1.1f));
+                    }
+                }
             }
-            return base.CanChat(npc);
         }
     }
 }
