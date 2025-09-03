@@ -262,7 +262,7 @@ namespace TerrariaCells.Common.GlobalItems
                 ],
                 ItemID.FastClock =>
                 [
-                    new(Mod, "Tooltip0", "Killing an enemy increases your speed briefly"),
+                    new(Mod, "Tooltip0", "Killing an enemy briefly increases your speed"),
                 ],
                 ItemID.ChlorophyteDye =>
                 [
@@ -271,7 +271,7 @@ namespace TerrariaCells.Common.GlobalItems
                 ItemID.NaturesGift => [new(Mod, "Tooltip0", "25% reduced mana cost")],
                 ItemID.BerserkerGlove =>
                 [
-                    new(Mod, "Tooltip0", "4% increased damage on successive melee attacks"),
+                    new(Mod, "Tooltip0", "Taking damage briefly increases melee damage by 30%"),
                 ],
                 ItemID.FeralClaws => [new(Mod, "Tooltip0", "40% increased melee attack speed")],
                 ItemID.ThePlan =>
