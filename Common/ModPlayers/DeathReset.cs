@@ -54,6 +54,13 @@ public class DeathReset : ModPlayer, IEntitySource
         }
         if (isNewWorld && !Configs.DevConfig.Instance.BuilderMode)
         {
+            if (Main.netMode == 0)
+            {
+                ModContent.GetInstance<ClickedHeartsTracker>().Reset();
+                ModContent.GetInstance<ChestLootSpawner>().Reset();
+                WorldPylonSystem.ResetPylons();
+                RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Stop);
+            }
             ResetInventory(ResetInventoryContext.NewWorld);
             Common.GlobalNPCs.NPCTypes.Crimson.BrainOfCthulhu.SpawnPos = null;
         }

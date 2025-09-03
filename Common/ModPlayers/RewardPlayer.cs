@@ -35,7 +35,10 @@ namespace TerrariaCells.Common.ModPlayers
         }
         public override void OnEnterWorld()
         {
-            RewardTrackerSystem.UpdateTracker_EnterNewWorld();
+            if (Player.IsNewWorld())
+            {
+                RewardTrackerSystem.UpdateTracker_EnterNewWorld();
+            }
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
                 ModPacket packet = ModNetHandler.GetPacket(Mod, TCPacketType.TrackerPacket);
