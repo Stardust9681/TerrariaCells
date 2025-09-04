@@ -91,8 +91,7 @@ namespace TerrariaCells.Common.GlobalNPCs
             switch (npc.type)
             {
                 case NPCID.BrainofCthulhu:
-                    npcLoot.Add(commonLesserHealthPotion);
-                    //npcLoot.Add(new CommonDrop(ItemID.CloudinaBottle, 1));
+                    npcLoot.Add(commonHealthPotion);
                     npcLoot.Add(new DropPerPlayerOnThePlayer(ItemID.CloudinaBottle, 1, 1, 1, new PowerDropRuleCondition(static mplayer => !mplayer.CloudJump)));
                     break;
                 case NPCID.EyeofCthulhu:
@@ -100,8 +99,6 @@ namespace TerrariaCells.Common.GlobalNPCs
                 case NPCID.EaterofWorldsHead:
                 case NPCID.EaterofWorldsBody:
                 case NPCID.EaterofWorldsTail:
-                    npcLoot.Add(commonLesserHealthPotion);
-                    break;
                 case NPCID.SkeletronHead:
                 case NPCID.QueenBee:
                 case NPCID.Deerclops:
