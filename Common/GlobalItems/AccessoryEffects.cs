@@ -151,6 +151,9 @@ namespace TerrariaCells.Common.GlobalItems
                 case ItemID.HerculesBeetle:
                     modPlayer.heracles = true;
                     break;
+                case ItemID.PhilosophersStone:
+                    modPlayer.philoStone = true;
+                    break;
 				default:
 					orig.Invoke(player, item, hideVisual);
 					break;
@@ -295,6 +298,7 @@ namespace TerrariaCells.Common.GlobalItems
                 ],
                 ItemID.FlaskofVenom => [ new(Mod, "Tooltip0", "Poison replaced with Venom")],
                 ItemID.HerculesBeetle => [new(Mod, "Tooltip0", "50% increased damage to Abilities")],
+                ItemID.PhilosophersStone => [new(Mod, "Tooltip0", "Health Potions restore 2x as much health")],
                 _ => [],
             };
         }
