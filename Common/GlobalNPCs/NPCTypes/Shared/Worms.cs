@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
@@ -11,6 +12,8 @@ using Terraria.GameContent.Achievements;
 using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
+
 using TerrariaCells.Common.Commands;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
@@ -337,8 +340,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                     DistanceBetweenSegments = 2f;
                     HasOneHPPool = false;
                     SegmentCount = 100;
-                    npc.defense = 0;
-                    npc.lifeMax = npc.life = 150;
                     break;
             }
         }

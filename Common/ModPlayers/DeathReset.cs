@@ -64,6 +64,7 @@ public class DeathReset : ModPlayer, IEntitySource
             ResetInventory(ResetInventoryContext.NewWorld);
             Player.GetModPlayer<LifeModPlayer>().extraHealth = 0;
             Common.GlobalNPCs.NPCTypes.Crimson.BrainOfCthulhu.SpawnPos = null;
+            GlobalNPCs.NPCTypes.Corruption.EaterOfWorlds.SpawnPos = null;
         }
 
         if (Main.netMode == NetmodeID.MultiplayerClient)
