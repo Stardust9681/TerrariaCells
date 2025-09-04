@@ -32,11 +32,6 @@ namespace TerrariaCells.Content.UI
         internal override string InsertionIndex => "Vanilla: Resource Bars";
         GunAmmoIndicator? ammoDrawer;
 
-        public override void OnInitialize()
-        {
-            base.OnInitialize();
-        }
-
         protected override void OnOpened()
         {
             if (!WeaponAnimations.Gun.TryGetGlobalItem(Main.LocalPlayer.HeldItem, out var gun))
@@ -46,6 +41,7 @@ namespace TerrariaCells.Content.UI
             }
             ammoDrawer = new GunAmmoIndicator(Main.LocalPlayer.HeldItem, gun);
             AddElement(ammoDrawer, Padding, Padding, 8, 8);
+            WindowSize = Vector2.One;
         }
         protected override void OnClosed()
         {
@@ -55,10 +51,9 @@ namespace TerrariaCells.Content.UI
         protected override bool PreUpdate(GameTime time)
         {
             if (!WeaponAnimations.Gun.TryGetGlobalItem(Main.LocalPlayer.HeldItem, out var gun)
-                || !ammoDrawer.GunAmmo.Equals(gun)
-                || Main.playerInventory)
+                || !ammoDrawer.GunAmmo.Equals(gun))
             {
-                Common.Systems.DeadCellsUISystem.ToggleActive<Reload>(false);
+                DeadCellsUISystem.ToggleActive<Reload>(false);
                 return false;
             }
 
