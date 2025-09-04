@@ -407,3 +407,5 @@ unlocks: {
 	goblin: Unlocked the Goblin Tinkerer!
 	cloud: Unlocked double jump!
 }
+
+dialogue.guide.progress: Progress

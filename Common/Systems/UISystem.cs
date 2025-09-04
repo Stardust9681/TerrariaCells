@@ -61,6 +61,7 @@ namespace TerrariaCells.Common.Systems
             Add<Content.UI.RewardTracker>();
             //ToggleActive<Content.UI.RewardTracker>(true);
             Add<Content.UI.Reload>();
+            Add<Content.UI.ProgressTracker>();
         }
         public override void Unload()
         {
