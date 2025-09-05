@@ -20,12 +20,14 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.UI;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
 using Terraria.UI.Chat;
 
 using TerrariaCells.Common.ModPlayers;
 using TerrariaCells.Common.Systems;
+using TerrariaCells.Common.UI.Components;
 using TerrariaCells.Common.UI.Components.Windows;
 using TerrariaCells.Common.Utilities;
 
@@ -40,12 +42,20 @@ namespace TerrariaCells.Content.UI
     {
         internal override string Name => "ProgressTracker";
 
+        Button Button;
         ProgressTabs Tabs;
         DisplayPanel Display;
 
         internal RasterizerState Terraria_UI_UIElement_OverflowHiddenRasterizerState;
         public override void OnInitialize()
         {
+            Button = new Button();
+            Button.buttonColor = Color.Red;
+            Button.hoverColor = Color.Pink;
+            Button.hoverText = "Close";
+            Button.OnLeftClick += (x, y) => DeadCellsUISystem.ToggleActive<ProgressTracker>(false);
+            Append(Button);
+
             Tabs = new ProgressTabs();
             Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.Starfury}", () => Common.GlobalNPCs.VanillaNPCShop.Weapons));
             Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.MolotovCocktail}", () => Common.GlobalNPCs.VanillaNPCShop.Skills));
@@ -136,7 +146,12 @@ namespace TerrariaCells.Content.UI
 
             const int TAB_HEIGHT = 36;
 
-            Tabs?.Width.Set(0, 0.7f);
+            if(Button is not null)
+                Button.HAlign = 1;
+            Button?.Width.Set(TAB_HEIGHT, 0);
+            Button?.Height.Set(TAB_HEIGHT, 0);
+
+            Tabs?.Width.Set(-TAB_HEIGHT, 1f);
             Tabs?.Height.Set(TAB_HEIGHT, 0);
 
             Display?.Width.Set(0, 1);
