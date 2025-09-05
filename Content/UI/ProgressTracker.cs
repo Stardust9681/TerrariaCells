@@ -74,7 +74,6 @@ namespace TerrariaCells.Content.UI
                 self.MousePosition = Main.MouseScreen * 0.5f;
             }
         }
-
         private UIElement On_UIElement_GetElementAt(On_UIElement.orig_GetElementAt orig, UIElement self, Vector2 point)
         {
             if(self is ProgressTracker)
@@ -156,7 +155,7 @@ namespace TerrariaCells.Content.UI
             base.PostDraw(spriteBatch);
             Main.UIScale = uiScaleForDrawing;
             spriteBatch.End();
-            spriteBatch.Begin((SpriteSortMode)0, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, Terraria_UI_UIElement_OverflowHiddenRasterizerState, (Effect)null, Main.UIScaleMatrix);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, Terraria_UI_UIElement_OverflowHiddenRasterizerState, (Effect)null, Main.UIScaleMatrix);
         }
 
         private void SetViewport(UIElement element)

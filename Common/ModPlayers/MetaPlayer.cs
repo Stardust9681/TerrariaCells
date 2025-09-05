@@ -17,12 +17,16 @@ namespace TerrariaCells.Common.ModPlayers
     public class MetaPlayer : ModPlayer
     {
         //Flags for progression. Literally just add whatever and it should work <3
-        //Net Sync supports up to 255 flags. If you need more than that, update netcode below
         public bool CloudJump { get => this[0]; set => this[0] = value; }
         public bool Goblin { get => this[1]; set => this[1] = value; }
+        public bool DownedBoC { get => this[2]; set => this[2] = value; }
+        public bool DownedEoW { get => this[3]; set => this[3] = value; }
+        public bool DownedQB { get => this[4]; set => this[4] = value; }
+        public bool DownedSkele { get => this[5]; set => this[5] = value; }
+        public bool DownedWoF { get => this[6]; set => this[6] = value; }
 
-        //-1 because this is also a property
-        internal static int ProgressionCount => typeof(MetaPlayer).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Length - 1;
+        //-2 because this has 2 properties, -3 more because ModPlayer and ModType properties
+        internal static int ProgressionCount => typeof(MetaPlayer).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Length - 5;
 
         public void DoUnlockText(LocalizedText text, Color? colour = null, int overheadTime = 360)
         {
@@ -34,13 +38,22 @@ namespace TerrariaCells.Common.ModPlayers
         }
 
         #region Backing Functionality
+        private BitArray overrideMeta = new BitArray(ProgressionCount);
         private BitArray metaProgression = new BitArray(ProgressionCount);
         internal bool this[int index]
         {
-            get => metaProgression[index];
+            get => metaProgression[index] && overrideMeta[index];
             set
             {
-                metaProgression[index] = value;
+                if(value && !metaProgression[index])
+                {
+                    metaProgression[index] = value;
+                    overrideMeta[index] = value;
+                }
+                else
+                {
+                    overrideMeta[index] = value;
+                }
                 if (Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient)
                     SyncPlayer(-1, Main.myPlayer, false);
             }
@@ -69,6 +82,7 @@ namespace TerrariaCells.Common.ModPlayers
             {
                 metaProgression = new BitArray(expectedLength);
             }
+            overrideMeta = new BitArray(metaProgression);
         }
 
         public override void OnEnterWorld()
@@ -83,38 +97,31 @@ namespace TerrariaCells.Common.ModPlayers
             //Common.Utilities.ModNetHandler.Handlers[Utilities.TCPacketType.PlayerPacket]
             ModPacket packet = Common.Utilities.ModNetHandler.GetPacket(Mod, Utilities.TCPacketType.PlayerPacket);
             packet.Write((byte)Content.Packets.PlayerPacketHandler.PlayerSyncType.MetaProgress);
-            byte len = 0;
-            for (byte i = 0; i < ProgressionCount; i++)
-            {
-                if (metaProgression[i])
-                    len++;
-            }
-            packet.Write(len);
-            for (byte i = 0; i < ProgressionCount; i++)
-            {
-                if (metaProgression[i])
-                    packet.Write(i);
-            }
+            byte[] arr = new byte[1 + (ProgressionCount/sizeof(byte))];
+            overrideMeta.CopyTo(arr, 0);
+            packet.Write(arr, 0, arr.Length);
             packet.Send(toWho, fromWho);
         }
         public void GetSyncPlayer(System.IO.BinaryReader reader)
         {
-            byte len = reader.ReadByte();
-            for (int i = 0; i < len; i++)
+            byte[] arr = new byte[1 + (ProgressionCount/sizeof(byte))];
+            reader.Read(arr, 0, arr.Length);
+            BitArray temp = new BitArray(arr);
+            for(int i = 0; i < temp.Length; i++)
             {
-                byte index = reader.ReadByte();
-                this.metaProgression[index] = true;
+                this[i] = temp[i];
             }
         }
         public override void CopyClientState(ModPlayer targetCopy)
         {
             MetaPlayer copy = (MetaPlayer)targetCopy;
             copy.metaProgression = this.metaProgression;
+            copy.overrideMeta = this.overrideMeta;
         }
         public override void SendClientChanges(ModPlayer clientPlayer)
         {
             MetaPlayer client = (MetaPlayer)clientPlayer;
-            if (!metaProgression.Equals(client.metaProgression))
+            if (!metaProgression.Equals(client.metaProgression) || !overrideMeta.Equals(client.overrideMeta))
             {
                 SyncPlayer(-1, Main.myPlayer, false);
             }
