@@ -181,9 +181,11 @@ namespace TerrariaCells.Common.UI.Components.Windows
         ///<summary>Only return false if you know what you are doing. Called before <see cref="Draw(SpriteBatch)"/></summary>
         /// <returns><b>True</b> by default.</returns>
         protected virtual bool PreDraw(SpriteBatch spriteBatch) { return true; }
+        protected virtual void PostDraw(SpriteBatch spriteBatch) { }
         public sealed override void Draw(SpriteBatch spriteBatch)
         {
             if (PreDraw(spriteBatch)) _draw(spriteBatch);
+            PostDraw(spriteBatch);
         }
         internal void _draw(SpriteBatch spriteBatch) => base.Draw(spriteBatch);
         /// <summary>Only return false if you know what you are doing. Called before <see cref="DrawSelf(SpriteBatch)"/></summary>

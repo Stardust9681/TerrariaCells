@@ -5,23 +5,33 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
+using Humanizer.Bytes;
+
 using Microsoft.Xna.Framework.Graphics;
 
 using ReLogic.Content;
+using ReLogic.Graphics;
 
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
+using Terraria.UI.Chat;
 
 using TerrariaCells.Common.Systems;
 using TerrariaCells.Common.UI.Components.Windows;
 using TerrariaCells.Common.Utilities;
 
+using static AssGen.Assets;
 using static TerrariaCells.Content.UI.ProgressTracker;
+
+using FixedUIScrollbar = Terraria.GameContent.UI.Elements.FixedUIScrollbar;
 
 namespace TerrariaCells.Content.UI
 {
@@ -32,18 +42,48 @@ namespace TerrariaCells.Content.UI
         ProgressTabs Tabs;
         DisplayPanel Display;
 
+        internal RasterizerState Terraria_UI_UIElement_OverflowHiddenRasterizerState;
         public override void OnInitialize()
         {
             Tabs = new ProgressTabs();
-            Tabs.Append(new Weapons());
-            Tabs.Append(new Abilities());
-            Tabs.Append(new Accessories());
+            Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.SilverBroadsword}", () => Common.GlobalNPCs.VanillaNPCShop.Weapons));
+            Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.MolotovCocktail}", () => Common.GlobalNPCs.VanillaNPCShop.Skills));
+            Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.HermesBoots}", () => Common.GlobalNPCs.VanillaNPCShop.Accessories));
+
+            Tabs.OnUpdate += (x) => { if(x.IsMouseHovering) Main.LocalPlayer.mouseInterface = true; };
             Append(Tabs);
 
             Display = new DisplayPanel();
+            Display.OnUpdate += (x) => { if(x.IsMouseHovering) Main.LocalPlayer.mouseInterface = true; };
             Append(Display);
 
             Recalculate();
+
+            Terraria_UI_UIElement_OverflowHiddenRasterizerState = (RasterizerState)typeof(UIElement).GetField("OverflowHiddenRasterizerState", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).GetValue(null);
+
+            //On_UIElement.ContainsPoint += On_UIElement_ContainsPoint;
+            //On_UIElement.GetElementAt += On_UIElement_GetElementAt;
+            On_UserInterface.GetMousePosition += On_UserInterface_GetMousePosition;
+        }
+
+        private void On_UserInterface_GetMousePosition(On_UserInterface.orig_GetMousePosition orig, UserInterface self)
+        {
+            orig.Invoke(self);
+            if(self.CurrentState is ProgressTracker)
+            {
+                self.MousePosition = Main.MouseScreen * 0.5f;
+            }
+        }
+
+        private UIElement On_UIElement_GetElementAt(On_UIElement.orig_GetElementAt orig, UIElement self, Vector2 point)
+        {
+            if(self is ProgressTracker)
+            {
+                point *= 0.5f;
+                Main.NewText(Main.MouseScreen + " : " + Main.MouseScreen * 0.5f + " : " + point);
+            }
+
+            return orig.Invoke(self, point);
         }
 
         bool isOpen = false;
@@ -56,26 +96,35 @@ namespace TerrariaCells.Content.UI
             isOpen = false;
         }
 
+        protected override bool PreUpdate(GameTime time)
+        {
+            uiScaleForUpdating = Main.UIScale;
+            Main.UIScale = 2;
 
+            return base.PreUpdate(time);
+        }
         protected override void WindowUpdate(GameTime time)
         {
             Recalculate();
+
+            Main.UIScale = uiScaleForUpdating;
         }
         protected override bool PreDrawSelf(SpriteBatch spriteBatch)
         {
             PostDrawSelf(spriteBatch);
             return false;
         }
+        private float uiScaleForUpdating;
         public override void Recalculate()
         {
             base.Recalculate();
 
             if(!isOpen) return;
 
-            Top.Set(0, 0.2f);
-            Left.Set(0, 0.2f);
-            Width.Set(0, 0.6f);
-            Height.Set(0, 0.6f);
+            Left.Set(0, 0.3f);
+            Top.Set(0, 0.25f);
+            Width.Set(0, 0.4f);
+            Height.Set(0, 0.5f);
         }
         public override void RecalculateChildren()
         {
@@ -83,7 +132,7 @@ namespace TerrariaCells.Content.UI
 
             if(!isOpen) return;
 
-            const int TAB_HEIGHT = 48;
+            const int TAB_HEIGHT = 36;
 
             Tabs?.Width.Set(0, 0.6f);
             Tabs?.Height.Set(TAB_HEIGHT, 0);
@@ -91,6 +140,23 @@ namespace TerrariaCells.Content.UI
             Display?.Width.Set(0, 1);
             Display?.Height.Set(WindowSize.Y - TAB_HEIGHT, 0);
             Display?.Top.Set(TAB_HEIGHT, 0);
+        }
+
+        private float uiScaleForDrawing;
+        protected override bool PreDraw(SpriteBatch spriteBatch)
+        {
+            uiScaleForDrawing = Main.UIScale;
+            Main.UIScale = 2;
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, (this.OverrideSamplerState != null) ? this.OverrideSamplerState : SamplerState.AnisotropicClamp, DepthStencilState.None, Terraria_UI_UIElement_OverflowHiddenRasterizerState, (Effect)null, Main.UIScaleMatrix);
+            return base.PreDraw(spriteBatch);
+        }
+        protected override void PostDraw(SpriteBatch spriteBatch)
+        {
+            base.PostDraw(spriteBatch);
+            Main.UIScale = uiScaleForDrawing;
+            spriteBatch.End();
+            spriteBatch.Begin((SpriteSortMode)0, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, Terraria_UI_UIElement_OverflowHiddenRasterizerState, (Effect)null, Main.UIScaleMatrix);
         }
 
         private void SetViewport(UIElement element)
@@ -122,17 +188,17 @@ namespace TerrariaCells.Content.UI
                     base.DrawSelf(spriteBatch);
 
                     Rectangle bounds = GetDimensions().ToRectangle();
-                    bool isMouseHover = bounds.Contains(Main.MouseScreen.ToPoint());
+                    bool isMouseHover = IsMouseHovering;
                     Color drawColor = UIHelper.InventoryColour;
                     if (Selected)
                         drawColor = Main.OurFavoriteColor;
                     else if (isMouseHover)
-                        drawColor = Color.AliceBlue;
+                        drawColor = Color.MediumSlateBlue;
 
                     UIHelper.PANEL.Draw(spriteBatch, bounds, drawColor);
                     if (Icon?.IsLoaded == true)
                     {
-                        spriteBatch.Draw(Icon.Value, bounds.Center(), null, Color.Black, 0f, Icon.Size() * 0.5f, 1f, SpriteEffects.None, 0f);
+                        spriteBatch.Draw(Icon.Value, bounds.Center(), null, Color.Black, 0f, Icon.Size() * 0.5f, MathF.Min(1f, (float)(bounds.Height-4) / Icon.Height()), SpriteEffects.None, 0f);
                     }
 
                     if (hasHoverText && isMouseHover)
@@ -182,46 +248,6 @@ namespace TerrariaCells.Content.UI
             }
         }
     }
-    internal class Weapons : ProgressTabs.Tab
-    {
-        internal class WeaponsViewport : UIElement
-        {
-            protected override void DrawSelf(SpriteBatch spriteBatch)
-            {
-                base.DrawSelf(spriteBatch);
-                UIHelper.PANEL.Draw(spriteBatch, GetDimensions().ToRectangle(), Color.DarkSlateBlue);
-            }
-        }
-        public override string IconTexture => "Terraria/Images/Item_" + Terraria.ID.ItemID.SilverBroadsword;
-        public override UIElement GetViewport() => new WeaponsViewport();
-    }
-    internal class Abilities : ProgressTabs.Tab
-    {
-        internal class AbilitiesViewport : UIElement
-        {
-            protected override void DrawSelf(SpriteBatch spriteBatch)
-            {
-                base.DrawSelf(spriteBatch);
-                UIHelper.PANEL.Draw(spriteBatch, GetDimensions().ToRectangle(), Color.DarkSlateBlue);
-            }
-        }
-        public override string IconTexture => "Terraria/Images/Item_" + Terraria.ID.ItemID.MolotovCocktail;
-        public override UIElement GetViewport() => new AbilitiesViewport();
-    }
-    internal class Accessories : ProgressTabs.Tab
-    {
-        internal class AccessoriesViewport : UIElement
-        {
-            protected override void DrawSelf(SpriteBatch spriteBatch)
-            {
-                base.DrawSelf(spriteBatch);
-                UIHelper.PANEL.Draw(spriteBatch, GetDimensions().ToRectangle(), Color.DarkSlateBlue);
-            }
-        }
-        public override string IconTexture => "Terraria/Images/Item_" + Terraria.ID.ItemID.HermesBoots;
-        public override UIElement GetViewport() => new AccessoriesViewport();
-    }
-
     public class DisplayPanel : UIElement
     {
         public override void OnInitialize()
@@ -250,15 +276,158 @@ namespace TerrariaCells.Content.UI
             UIHelper.PANEL.Draw(spriteBatch, GetDimensions().ToRectangle(), UIHelper.InventoryColour);
         }
     }
-
     public class UICloser : ModPlayer
     {
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
-            if (triggersSet.Inventory)
+            if(triggersSet.Inventory)
             {
                 DeadCellsUISystem.ToggleActive<ProgressTracker>(false);
             }
+        }
+    }
+
+    enum UnlockState
+    {
+        Locked,
+        Unlocked,
+        Found,
+    }
+    internal class ItemProgress : ProgressTabs.Tab
+    {
+        private class ItemViewport : UIElement
+        {
+            private class ItemDisplaySlot : UIElement
+            {
+                public ItemDisplaySlot(int type, int size = 48)
+                {
+                    itemType = type;
+                    this.Width.Set(-16, 0.5f);
+                    this.Height.Set(size, 0);
+                }
+                internal int itemType;
+                private Item Item
+                {
+                    get
+                    {
+                        Item result = new Item(itemType, 1, 0);
+                        if(result.TryGetGlobalItem<Common.GlobalItems.FunkyModifierItemModifier>(out var gItem))
+                        {
+                            gItem.modifiers = Array.Empty<Common.GlobalItems.FunkyModifier>();
+                        }
+                        if(result.TryGetGlobalItem<Common.GlobalItems.TierSystemGlobalItem>(out var tItem))
+                        {
+                            tItem.SetLevel(result, ModContent.GetInstance<Common.Systems.TeleportTracker>().level);
+                        }
+                        return result;
+                    }
+                }
+                public override int CompareTo(object obj)
+                {
+                    if(obj is not ItemDisplaySlot other)
+                        return base.CompareTo(obj);
+                    return this.itemType.CompareTo(other.itemType);
+                }
+                protected override void DrawSelf(SpriteBatch spriteBatch)
+                {
+                    base.DrawSelf(spriteBatch);
+                    Rectangle bounds = GetDimensions().ToRectangle();
+                    bool isMouseHover = IsMouseHovering;
+
+                    Color panelColor = !isMouseHover ? UIHelper.InventoryColour : Color.MediumSlateBlue;
+                    UIHelper.PANEL.Draw(spriteBatch, bounds, panelColor);
+                    Item drawItem = Item;
+                    if(isMouseHover)
+                    {
+                        Main.HoverItem = drawItem;
+                        Main.hoverItemName = drawItem.HoverName;
+                    }
+
+                    int itemSize = bounds.Height;
+
+                    //Modify Item Draw Here
+                    ItemSlot.DrawItemIcon(drawItem, 0, spriteBatch, bounds.TopLeft() + new Vector2(bounds.Height * 0.5f), (float)itemSize / 64f, itemSize - 8, Color.White);
+
+                    //Modify Text Draw Here
+                    DynamicSpriteFont font = FontAssets.MouseText.Value;
+                    string localizedName = drawItem.Name;
+                    Vector2 size = font.MeasureString(localizedName);
+                    ChatManager.DrawColorCodedStringWithShadow(
+                        spriteBatch,
+                        FontAssets.MouseText.Value,
+                        drawItem.Name,
+                        bounds.TopRight() + new Vector2(-8, 8),
+                        Drawing.GetRarityColor(drawItem.rare),
+                        0f,
+                        new Vector2(size.X, 0),
+                        new Vector2(MathF.Min(1, ((bounds.Width - bounds.Height - 8)/size.X)))
+                    );
+                }
+            }
+            public ItemViewport(IEnumerable<int> collection) : base()
+            {
+                const int SCROLL_WIDTH = 20;
+                const int PANEL_SIZE = 52;
+                const int GRID_PADDING = 8;
+
+                Scroller = new BetterFixedUIScrollbar(static () => DeadCellsUISystem.GetWindow<ProgressTracker>().UserInterface);
+                //Scroller.SetView(100, 1000);
+                Scroller.HAlign = 1;
+                Scroller.Width.Set(SCROLL_WIDTH, 0);
+                Scroller.Height.Set(0, 1);
+                Append(Scroller);
+
+                Unlocks = new UIGrid();
+                Unlocks.Width.Set(-Scroller.Width.Pixels, 1);
+                Unlocks.Height.Set(0, 1);
+                foreach(int type in collection)
+                {
+                    ItemDisplaySlot slot = new ItemDisplaySlot(type, PANEL_SIZE);
+                    Unlocks.Add(slot);
+                }
+                Unlocks.SetScrollbar(Scroller);
+                Unlocks.ListPadding = GRID_PADDING;
+                Append(Unlocks);
+            }
+            private UIGrid Unlocks;
+            private UIScrollbar Scroller;
+        }
+        private string iconTexture;
+        public override string IconTexture => iconTexture;
+        public ItemProgress(string texPath, Func<IEnumerable<int>> fetchItemCollection) : base()
+        {
+            iconTexture = texPath;
+            fetchCollection = fetchItemCollection;
+        }
+        Func<IEnumerable<int>> fetchCollection;
+        public override UIElement GetViewport() => new ItemViewport(fetchCollection.Invoke());
+    }
+
+    internal class BetterFixedUIScrollbar : UIScrollbar
+    {
+        private Func<UserInterface> fetch;
+        private UserInterface? @interface;
+        public BetterFixedUIScrollbar(Func<UserInterface> getInterface)
+        {
+            fetch = getInterface;
+        }
+
+        protected override void DrawSelf(SpriteBatch spriteBatch)
+        {
+            @interface ??= fetch();
+            UserInterface temp = UserInterface.ActiveInstance;
+            UserInterface.ActiveInstance = @interface;
+            base.DrawSelf(spriteBatch);
+            UserInterface.ActiveInstance = temp;
+        }
+
+        public override void LeftMouseDown(UIMouseEvent evt)
+        {
+            @interface ??= fetch();
+            UserInterface temp = UserInterface.ActiveInstance;
+            UserInterface.ActiveInstance = @interface;
+            base.LeftMouseDown(evt);
+            UserInterface.ActiveInstance = temp;
         }
     }
 }
