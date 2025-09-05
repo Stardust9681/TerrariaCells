@@ -17,6 +17,14 @@ namespace TerrariaCells.Common.ModPlayers
 {
     public class MetaPlayer : ModPlayer
     {
+        public override void Load()
+        {
+            for(int i = 0; i < ProgressionCount; i++)
+            {
+                _ = Mod.GetLocalization("ui.metaprogress.entry_"+i, () => "Undefined");
+            }
+        }
+
         //Flags for progression. Literally just add whatever and it should work <3
         public bool CloudJump { get => this[0]; set => this[0] = value; }
         public bool Goblin { get => this[1]; set => this[1] = value; }
@@ -26,8 +34,7 @@ namespace TerrariaCells.Common.ModPlayers
         public bool DownedSkele { get => this[5]; set => this[5] = value; }
         public bool DownedWoF { get => this[6]; set => this[6] = value; }
 
-        //-2 because this has 2 properties, -3 more because ModPlayer and ModType properties
-        internal static int ProgressionCount => typeof(MetaPlayer).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Length - 5;
+        internal static int ProgressionCount => typeof(MetaPlayer).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Length - 9;
 
         public void DoUnlockText(LocalizedText text, Color? colour = null, int overheadTime = 360)
         {
@@ -53,6 +60,18 @@ namespace TerrariaCells.Common.ModPlayers
 
         #region Backing Functionality
         internal bool[] foundTypes = new bool[ItemLoader.ItemCount];
+        public bool GetCanToggle(int index)
+        {
+            if(index < 0 || index > ProgressionCount)
+            {
+#if DEBUG
+                throw new InvalidOperationException();
+#else
+                return false;
+#endif
+            }
+            return metaProgression[index];
+        }
         private BitArray overrideMeta = new BitArray(ProgressionCount);
         private BitArray metaProgression = new BitArray(ProgressionCount);
         internal bool this[int index]
