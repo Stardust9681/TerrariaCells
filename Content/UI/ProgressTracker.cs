@@ -51,7 +51,7 @@ namespace TerrariaCells.Content.UI
         {
             Button = new Button();
             Button.buttonColor = Color.Red;
-            Button.hoverColor = Color.Pink;
+            Button.hoverColor = Color.PaleVioletRed;
             Button.hoverText = "Close";
             Button.OnLeftClick += (x, y) => DeadCellsUISystem.ToggleActive<ProgressTracker>(false);
             Append(Button);
@@ -61,6 +61,7 @@ namespace TerrariaCells.Content.UI
             Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.MolotovCocktail}", () => Common.GlobalNPCs.VanillaNPCShop.Skills));
             Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.BandofRegeneration}", () => Common.GlobalNPCs.VanillaNPCShop.Accessories));
             Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.WizardHat}", () => Common.GlobalNPCs.VanillaNPCShop.Armors));
+            Tabs.Append(new MetaProgress());
 
             Tabs.OnUpdate += (x) => { if(x.IsMouseHovering) Main.LocalPlayer.mouseInterface = true; };
             Append(Tabs);
@@ -466,6 +467,115 @@ namespace TerrariaCells.Content.UI
         }
         Func<IEnumerable<int>> fetchCollection;
         public override UIElement GetViewport() => new ItemViewport(fetchCollection.Invoke());
+    }
+    internal class MetaProgress : ProgressTabs.Tab
+    {
+        private class MetaViewport : UIElement
+        {
+            private class MetaToggleSlot : UIElement
+            {
+                LocalizedText DisplayText;
+                int whoAmI;
+                public MetaToggleSlot(int index)
+                {
+                    whoAmI = index;
+                    DisplayText = TerrariaCells.Instance.GetLocalization($"ui.metaprogress.entry_{whoAmI}", () => whoAmI.ToString());
+                }
+
+                public override int CompareTo(object obj)
+                {
+                    if(obj is MetaToggleSlot slot)
+                        return this.whoAmI.CompareTo(slot.whoAmI);
+                    return base.CompareTo(obj);
+                }
+                protected override void DrawSelf(SpriteBatch spriteBatch)
+                {
+                    base.DrawSelf(spriteBatch);
+                    Rectangle bounds = GetDimensions().ToRectangle();
+
+                    var meta = Main.LocalPlayer.GetModPlayer<MetaPlayer>();
+                    bool unlocked = meta.GetCanToggle(whoAmI);
+                    Color drawColor;
+                    if(!unlocked)
+                    {
+                        drawColor = Color.DarkSlateBlue;
+                    }
+                    else
+                    {
+                        if(meta[whoAmI])
+                        {
+                            drawColor = IsMouseHovering ? Color.LightGreen : Color.Green;
+                        }
+                        else
+                        {
+                            drawColor = IsMouseHovering ? Color.PaleVioletRed : Color.Red;
+                        }
+                    }
+                    UIHelper.PANEL.Draw(spriteBatch, bounds, drawColor);
+
+                    DynamicSpriteFont font = FontAssets.MouseText.Value;
+                    string text = "Click to toggle " + DisplayText.Value;
+                    if(!unlocked)
+                        text = "???";
+                    Vector2 size = font.MeasureString(text);
+                    ChatManager.DrawColorCodedStringWithShadow(
+                        spriteBatch,
+                        FontAssets.MouseText.Value,
+                        text,
+                        bounds.Left() + new Vector2(8, 0),
+                        Color.White,
+                        0f,
+                        new Vector2(0, size.Y*0.5f),
+                        new Vector2(MathF.Min(0.8f, (bounds.Width-16)/(size.X!=0?size.X:1)))
+                    );
+                }
+                public override void LeftClick(UIMouseEvent evt)
+                {
+                    var meta = Main.LocalPlayer.GetModPlayer<MetaPlayer>();
+                    if(meta.GetCanToggle(whoAmI))
+                    {
+                        SoundEngine.PlaySound(SoundID.MenuTick);
+                        meta[whoAmI] = !meta[whoAmI];
+                    }
+                    else
+                    {
+                        SoundEngine.PlaySound(SoundID.Tink);
+                    }
+                }
+            }
+
+            public MetaViewport()
+            {
+                const int SCROLL_WIDTH = 20;
+                const int PANEL_SIZE = 32;
+                const int GRID_PADDING = 8;
+
+                Scroller = new BetterFixedUIScrollbar(() => DeadCellsUISystem.GetWindow<ProgressTracker>().UserInterface);
+                Scroller.HAlign = 1;
+                Scroller.Width.Set(SCROLL_WIDTH, 0);
+                Scroller.Height.Set(0, 1);
+                Append(Scroller);
+
+                List = new UIList();
+                List.Width.Set(-Scroller.Width.Pixels, 1);
+                List.Height.Set(0, 1);
+                var metaPlayer = Main.LocalPlayer.GetModPlayer<MetaPlayer>();
+                for(int i = 0; i < MetaPlayer.ProgressionCount; i++)
+                {
+                    MetaToggleSlot slot = new MetaToggleSlot(i);
+                    slot.Width.Set(-GRID_PADDING, 1);
+                    slot.Height.Set(PANEL_SIZE, 0);
+                    List.Add(slot);
+                }
+                List.SetScrollbar(Scroller);
+                List.ListPadding = GRID_PADDING;
+                Append(List);
+            }
+            UIList List;
+            BetterFixedUIScrollbar Scroller;
+        }
+        public override UIElement GetViewport() => new MetaViewport();
+        public override string IconTexture => $"Terraria/Images/Item_{ItemID.TrifoldMap}";
     }
 
     internal class BetterFixedUIScrollbar : UIScrollbar

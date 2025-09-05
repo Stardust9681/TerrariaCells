@@ -408,4 +408,16 @@ unlocks: {
 	cloud: Unlocked double jump!
 }
 
-dialogue.guide.progress: Progress
+dialogue.guide.progress: Unlocks
+
+ui: {
+	metaprogress: {
+		entry_6: Wall of Flesh unlocks
+		entry_5: Skeletron unlocks
+		entry_4: Queen Bee unlocks
+		entry_3: Eater of World unlocks
+		entry_2: Brain of Cthulhu unlocks
+		entry_1: Goblin Tinkerer in Inn
+		entry_0: Double Jump
+	}
+}
