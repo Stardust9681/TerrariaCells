@@ -13,6 +13,7 @@ using TerrariaCells.Common.Utilities;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using TerrariaCells.Common.GlobalItems;
+using TerrariaCells.Common.Items;
 //using static TerrariaCells.Common.Utilities.JsonUtil;
 
 namespace TerrariaCells.Common.GlobalNPCs
@@ -32,6 +33,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 
         public override void Load()
 		{
+            /*
 			const string PATH = "chest loot tables.json";
 			using (StreamReader stream = new StreamReader(Mod.GetFileStream(PATH)))
 			{
@@ -42,6 +44,26 @@ namespace TerrariaCells.Common.GlobalNPCs
 				Accessories = Root.GetItem<int[]>("20");
 				Skills = Root.GetItem<int[]>("19");
 			}
+            */
+            using(StreamReader stream2 = new StreamReader(Mod.GetFileStream("categorizations.json")))
+            {
+                string json = stream2.ReadToEnd();
+                JObject Root = (JObject)JsonConvert.DeserializeObject(json); //Get json contents in whole
+                Dictionary<string, List<int>> results = new Dictionary<string, List<int>>();
+                foreach(var kvp in Root)
+                {
+                    string key = kvp.Value.ToString();
+                    if(!results.ContainsKey(key))
+                    {
+                        results.Add(key, new List<int>());
+                    }
+                    results[key].Add(ItemID.Search.GetId(kvp.Key));
+                }
+                Weapons = results["Weapon"].ToArray();
+                Accessories = results["Accessory"].ToArray();
+                Skills = results["Skill"].ToArray();
+                Armors = results["Armor"].ToArray();
+            }
 			//Will be replaced with chest loot table entry like the other buyable items
 			Armors = new int[]{
                 ItemID.NinjaHood,

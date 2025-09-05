@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.IO;
 using Terraria.ModLoader.IO;
@@ -37,7 +38,21 @@ namespace TerrariaCells.Common.ModPlayers
             }
         }
 
+        public Content.UI.UnlockState CheckUnlocks(Item item)
+        {
+            switch(item.type)
+            {
+                case ItemID.HornetStaff:
+                case ItemID.Beenade:
+                    if(!DownedQB)
+                        return Content.UI.UnlockState.Locked;
+                    break;
+            }
+            return foundTypes[item.type] ? Content.UI.UnlockState.Found : Content.UI.UnlockState.Unlocked;
+        }
+
         #region Backing Functionality
+        internal bool[] foundTypes = new bool[ItemLoader.ItemCount];
         private BitArray overrideMeta = new BitArray(ProgressionCount);
         private BitArray metaProgression = new BitArray(ProgressionCount);
         internal bool this[int index]
@@ -62,6 +77,17 @@ namespace TerrariaCells.Common.ModPlayers
         {
             if(metaProgression?.HasAnySet() == true)
                 tag.Add("TerraCells:MetaProgress", metaProgression);
+
+            if(foundTypes.Any(b => b == true))
+            {
+                List<int> foundItemIndeces = new List<int>();
+                for(int i = 0; i < foundTypes.Length; i++)
+                {
+                    if(foundTypes[i])
+                        foundItemIndeces.Add(i);
+                }
+                tag.Add(nameof(foundTypes), foundItemIndeces);
+            }
         }
         public override void LoadData(TagCompound tag)
         {
@@ -83,6 +109,13 @@ namespace TerrariaCells.Common.ModPlayers
                 metaProgression = new BitArray(expectedLength);
             }
             overrideMeta = new BitArray(metaProgression);
+
+            foundTypes = new bool[ItemLoader.ItemCount];
+            IEnumerable<int> foundIndeces = tag.GetList<int>(nameof(foundTypes));
+            foreach(int index in foundIndeces)
+            {
+                foundTypes[index] = true;
+            }
         }
 
         public override void OnEnterWorld()
@@ -147,6 +180,17 @@ namespace TerrariaCells.Common.ModPlayers
             {
                 ["m_array"] = (int[])BitArray_ArrayINT_m_array.GetValue(value)
             };
+        }
+    }
+
+    public class UnlockItem : GlobalItem
+    {
+        public override void UpdateInventory(Item item, Player player)
+        {
+            if(player.whoAmI == Main.myPlayer)
+            {
+                player.GetModPlayer<MetaPlayer>().foundTypes[item.type] = true;
+            }
         }
     }
 }

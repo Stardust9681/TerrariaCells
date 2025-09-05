@@ -24,6 +24,7 @@ using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
 using Terraria.UI.Chat;
 
+using TerrariaCells.Common.ModPlayers;
 using TerrariaCells.Common.Systems;
 using TerrariaCells.Common.UI.Components.Windows;
 using TerrariaCells.Common.Utilities;
@@ -46,9 +47,10 @@ namespace TerrariaCells.Content.UI
         public override void OnInitialize()
         {
             Tabs = new ProgressTabs();
-            Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.SilverBroadsword}", () => Common.GlobalNPCs.VanillaNPCShop.Weapons));
+            Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.Starfury}", () => Common.GlobalNPCs.VanillaNPCShop.Weapons));
             Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.MolotovCocktail}", () => Common.GlobalNPCs.VanillaNPCShop.Skills));
-            Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.HermesBoots}", () => Common.GlobalNPCs.VanillaNPCShop.Accessories));
+            Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.BandofRegeneration}", () => Common.GlobalNPCs.VanillaNPCShop.Accessories));
+            Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.WizardHat}", () => Common.GlobalNPCs.VanillaNPCShop.Armors));
 
             Tabs.OnUpdate += (x) => { if(x.IsMouseHovering) Main.LocalPlayer.mouseInterface = true; };
             Append(Tabs);
@@ -133,7 +135,7 @@ namespace TerrariaCells.Content.UI
 
             const int TAB_HEIGHT = 36;
 
-            Tabs?.Width.Set(0, 0.6f);
+            Tabs?.Width.Set(0, 0.7f);
             Tabs?.Height.Set(TAB_HEIGHT, 0);
 
             Display?.Width.Set(0, 1);
@@ -197,7 +199,7 @@ namespace TerrariaCells.Content.UI
                     UIHelper.PANEL.Draw(spriteBatch, bounds, drawColor);
                     if (Icon?.IsLoaded == true)
                     {
-                        spriteBatch.Draw(Icon.Value, bounds.Center(), null, Color.Black, 0f, Icon.Size() * 0.5f, MathF.Min(1f, (float)(bounds.Height-4) / Icon.Height()), SpriteEffects.None, 0f);
+                        spriteBatch.Draw(Icon.Value, bounds.Center(), null, Color.Black, 0f, Icon.Size() * 0.5f, MathF.Min(1f, (float)(bounds.Height-8) / Icon.Height()), SpriteEffects.None, 0f);
                     }
 
                     if (hasHoverText && isMouseHover)
@@ -286,7 +288,7 @@ namespace TerrariaCells.Content.UI
         }
     }
 
-    enum UnlockState
+    public enum UnlockState
     {
         Locked,
         Unlocked,
@@ -301,7 +303,7 @@ namespace TerrariaCells.Content.UI
                 public ItemDisplaySlot(int type, int size = 48)
                 {
                     itemType = type;
-                    this.Width.Set(-16, 0.5f);
+                    this.Width.Set(-8, 0.5f);
                     this.Height.Set(size, 0);
                 }
                 internal int itemType;
@@ -336,7 +338,20 @@ namespace TerrariaCells.Content.UI
                     Color panelColor = !isMouseHover ? UIHelper.InventoryColour : Color.MediumSlateBlue;
                     UIHelper.PANEL.Draw(spriteBatch, bounds, panelColor);
                     Item drawItem = Item;
-                    if(isMouseHover)
+
+                    UnlockState unlocked = UnlockState.Locked;
+                    UIElement findParent = this;
+                    while(findParent is not null and not UIState)
+                    {
+                        findParent = findParent.Parent;
+                        if(findParent is ItemViewport viewPort)
+                        {
+                            unlocked = Main.LocalPlayer.GetModPlayer<MetaPlayer>().CheckUnlocks(drawItem);
+                            break;
+                        }
+                    }
+
+                    if(isMouseHover && unlocked == UnlockState.Found)
                     {
                         Main.HoverItem = drawItem;
                         Main.hoverItemName = drawItem.HoverName;
@@ -345,21 +360,56 @@ namespace TerrariaCells.Content.UI
                     int itemSize = bounds.Height;
 
                     //Modify Item Draw Here
-                    ItemSlot.DrawItemIcon(drawItem, 0, spriteBatch, bounds.TopLeft() + new Vector2(bounds.Height * 0.5f), (float)itemSize / 64f, itemSize - 8, Color.White);
+                    Main.instance.LoadItem(drawItem.type);
+                    Texture2D value = TextureAssets.Item[drawItem.type].Value;
+                    Rectangle frame = ((Main.itemAnimations[drawItem.type] == null) ? value.Frame() : Main.itemAnimations[drawItem.type].GetFrame(value));
+                    Vector2 origin = frame.Size() * 0.5f;
+                    Color itemUnlockColour = unlocked switch { UnlockState.Locked => Color.Black, UnlockState.Unlocked => Color.Black, UnlockState.Found => Color.White, _ => Color.Transparent };
+                    ItemSlot.DrawItem_GetColorAndScale(drawItem, 1, ref itemUnlockColour, bounds.Height - 8 ,ref frame, out Color drawColor, out float scale);
+                    spriteBatch.Draw(value, bounds.TopLeft() + new Vector2(bounds.Height * 0.5f), frame, drawColor, 0f, origin, scale, SpriteEffects.None, 0f);
+
+                    if(unlocked == UnlockState.Locked)
+                    {
+                        Main.instance.LoadItem(ItemID.ChestLock);
+                        value = TextureAssets.Item[ItemID.ChestLock].Value;
+                        frame = ((Main.itemAnimations[ItemID.ChestLock] == null) ? value.Frame() : Main.itemAnimations[ItemID.ChestLock].GetFrame(value));
+                        origin = frame.Size() * 0.5f;
+                        itemUnlockColour = Color.White;
+                        ItemSlot.DrawItem_GetColorAndScale(drawItem, 1, ref itemUnlockColour, bounds.Height - 8, ref frame, out drawColor, out scale);
+                        spriteBatch.Draw(value, bounds.TopLeft() + new Vector2(bounds.Height * 0.5f), frame, Color.White, 0f, origin, scale, SpriteEffects.None, 0f);
+                    }
+                    //ItemSlot.DrawItemIcon(drawItem, 0, spriteBatch, bounds.TopLeft() + new Vector2(bounds.Height * 0.5f), (float)itemSize / 64f, itemSize - 8, itemUnlockColour);
 
                     //Modify Text Draw Here
                     DynamicSpriteFont font = FontAssets.MouseText.Value;
-                    string localizedName = drawItem.Name;
+                    string localizedName = unlocked switch { UnlockState.Locked => "???", UnlockState.Unlocked => drawItem.Name, UnlockState.Found => drawItem.Name, _ => string.Empty };
+                    Color textColour = unlocked switch { UnlockState.Locked => Color.Gray, UnlockState.Unlocked => Color.Lerp(Drawing.GetRarityColor(drawItem.rare), Color.DarkGray, 0.67f), UnlockState.Found => Drawing.GetRarityColor(drawItem.rare), _ => Color.Transparent };
                     Vector2 size = font.MeasureString(localizedName);
+                    Vector2 position = bounds.TopRight() + new Vector2(-8, 8);
                     ChatManager.DrawColorCodedStringWithShadow(
                         spriteBatch,
                         FontAssets.MouseText.Value,
-                        drawItem.Name,
-                        bounds.TopRight() + new Vector2(-8, 8),
-                        Drawing.GetRarityColor(drawItem.rare),
+                        localizedName,
+                        position,
+                        textColour,
                         0f,
                         new Vector2(size.X, 0),
                         new Vector2(MathF.Min(1, ((bounds.Width - bounds.Height - 8)/size.X)))
+                    );
+
+                    position.Y += size.Y + 1;
+                    textColour = unlocked switch { UnlockState.Locked => Color.PaleVioletRed, UnlockState.Unlocked => Color.DarkGray, UnlockState.Found => Color.LightGreen, _ => Color.Transparent };
+                    localizedName = unlocked.ToString();
+                    size = font.MeasureString(localizedName);
+                    ChatManager.DrawColorCodedStringWithShadow(
+                        spriteBatch,
+                        FontAssets.MouseText.Value,
+                        localizedName,
+                        position,
+                        textColour,
+                        0f,
+                        new Vector2(size.X, 0),
+                        new Vector2(0.5f)
                     );
                 }
             }
