@@ -107,6 +107,7 @@ namespace TerrariaCells.Content.UI
         protected override void WindowUpdate(GameTime time)
         {
             Recalculate();
+            Main.LocalPlayer.mouseInterface = true;
 
             Main.UIScale = uiScaleForUpdating;
         }
@@ -382,7 +383,7 @@ namespace TerrariaCells.Content.UI
 
                     //Modify Text Draw Here
                     DynamicSpriteFont font = FontAssets.MouseText.Value;
-                    string localizedName = unlocked switch { UnlockState.Locked => "???", UnlockState.Unlocked => drawItem.Name, UnlockState.Found => drawItem.Name, _ => string.Empty };
+                    string localizedName = unlocked switch { UnlockState.Locked => "???", UnlockState.Unlocked => "???", UnlockState.Found => drawItem.Name, _ => string.Empty };
                     Color textColour = unlocked switch { UnlockState.Locked => Color.Gray, UnlockState.Unlocked => Color.Lerp(Drawing.GetRarityColor(drawItem.rare), Color.DarkGray, 0.67f), UnlockState.Found => Drawing.GetRarityColor(drawItem.rare), _ => Color.Transparent };
                     Vector2 size = font.MeasureString(localizedName);
                     Vector2 position = bounds.TopRight() + new Vector2(-8, 8);
