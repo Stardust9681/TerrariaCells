@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace TerrariaCells.Common.Utilities
 {
@@ -31,6 +33,51 @@ namespace TerrariaCells.Common.Utilities
 				drawRect.Y += (int)(direction.Y * segmentDist);
 			}
 		}
+
+        public static Color GetRarityColor(int rare)
+        {
+            //Basically just copy-pasted this block from Terra Source
+            float num2 = (float)(int)Main.mouseTextColor / 255f;
+            return rare switch
+            {
+                ItemRarityID.Master =>
+                    new Color((int)(byte)(255f * num2), (int)(byte)(Main.masterColor * 200f * num2), 0, (int)Main.mouseTextColor),
+                ItemRarityID.Expert =>
+                    new Color((int)(byte)((float)Main.DiscoR * num2), (int)(byte)((float)Main.DiscoG * num2), (int)(byte)((float)Main.DiscoB * num2), (int)Main.mouseTextColor),
+                ItemRarityID.Quest =>
+                    new Color((int)(byte)(255f * num2), (int)(byte)(175f * num2), (int)(byte)(0f * num2), (int)Main.mouseTextColor),
+                -10 => //No ID???
+                    new Color((int)(byte)(65f * num2), (int)(byte)(255f * num2), (int)(byte)(110f * num2), (int)Main.mouseTextColor),
+                ItemRarityID.Gray =>
+                    new Color((int)(byte)(130f * num2), (int)(byte)(130f * num2), (int)(byte)(130f * num2), (int)Main.mouseTextColor),
+                ItemRarityID.White =>
+                    new Color((int)Main.mouseTextColor, (int)Main.mouseTextColor, (int)Main.mouseTextColor, (int)Main.mouseTextColor),
+                ItemRarityID.Blue =>
+                    new Color((int)(byte)(150f * num2), (int)(byte)(150f * num2), (int)(byte)(255f * num2), (int)Main.mouseTextColor),
+                ItemRarityID.Green =>
+                    new Color((int)(byte)(150f * num2), (int)(byte)(255f * num2), (int)(byte)(150f * num2), (int)Main.mouseTextColor),
+                ItemRarityID.Orange =>
+                    new Color((int)(byte)(255f * num2), (int)(byte)(200f * num2), (int)(byte)(150f * num2), (int)Main.mouseTextColor),
+                ItemRarityID.LightRed =>
+                    new Color((int)(byte)(255f * num2), (int)(byte)(150f * num2), (int)(byte)(150f * num2), (int)Main.mouseTextColor),
+                ItemRarityID.Pink =>
+                    new Color((int)(byte)(255f * num2), (int)(byte)(150f * num2), (int)(byte)(255f * num2), (int)Main.mouseTextColor),
+                ItemRarityID.LightPurple =>
+                    new Color((int)(byte)(210f * num2), (int)(byte)(160f * num2), (int)(byte)(255f * num2), (int)Main.mouseTextColor),
+                ItemRarityID.Lime =>
+                    new Color((int)(byte)(150f * num2), (int)(byte)(255f * num2), (int)(byte)(10f * num2), (int)Main.mouseTextColor),
+                ItemRarityID.Yellow =>
+                    new Color((int)(byte)(255f * num2), (int)(byte)(255f * num2), (int)(byte)(10f * num2), (int)Main.mouseTextColor),
+                ItemRarityID.Cyan =>
+                    new Color((int)(byte)(5f * num2), (int)(byte)(200f * num2), (int)(byte)(255f * num2), (int)Main.mouseTextColor),
+                ItemRarityID.Red =>
+                    new Color((int)(byte)(255f * num2), (int)(byte)(40f * num2), (int)(byte)(100f * num2), (int)Main.mouseTextColor),
+                ItemRarityID.Purple =>
+                    new Color((int)(byte)(180f * num2), (int)(byte)(40f * num2), (int)(byte)(255f * num2), (int)Main.mouseTextColor),
+                _ =>
+                    RarityLoader.GetRarity(rare)?.RarityColor * num2 ?? Color.White,
+            };
+        }
 
         static readonly Vector2 normaliseVector = new(1, 0.001f);
 
