@@ -99,7 +99,7 @@ namespace TerrariaCells.Common.GlobalNPCs
         }
         public override bool PreChatButtonClicked(NPC npc, bool firstButton)
         {
-            if (firstButton || npc.type == NPCID.Guide)
+            if (!firstButton && npc.type == NPCID.Guide)
             {
                 Player player = Main.LocalPlayer; //Runs on the Client, so this is fine
                 player.SetTalkNPC(-1);
