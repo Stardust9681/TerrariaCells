@@ -78,7 +78,7 @@ namespace TerrariaCells.Common.GlobalNPCs
         private static GlobalHookList<GlobalNPC> _hook;
         internal static bool Invoke(NPC npc, int hitDirection, double dmg, bool instant)
         {
-            if (npc.ModNPC is INPC n)
+            if (npc?.ModNPC is INPC n and not null)
             {
                 if (!n.PreHitEffect(hitDirection, dmg, instant))
                     return false;

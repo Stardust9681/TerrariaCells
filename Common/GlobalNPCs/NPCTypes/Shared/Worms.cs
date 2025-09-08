@@ -15,6 +15,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 using TerrariaCells.Common.Commands;
+using TerrariaCells.Common.Utilities;
 
 namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 {
@@ -317,14 +318,13 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 behindSegmentIndex = 1000;
             }
 
-
+            npc.defense = 0;
             switch (npc.type)
             {
                 case NPCID.GiantWormHead:
                 case NPCID.GiantWormBody:
                 case NPCID.GiantWormTail:
                     HasOneHPPool = false;
-                    npc.defense = 0;
                     break;
                 case NPCID.SeekerHead:
                 case NPCID.SeekerBody:
@@ -332,7 +332,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 case NPCID.DevourerHead:
                 case NPCID.DevourerBody:
                 case NPCID.DevourerTail:
-                    npc.defense = 0;
+                    AttackSpeedVertical = 25;
+                    AttackSpeedHorizontal = 60;
                     break;
                 case NPCID.EaterofWorldsHead:
                 case NPCID.EaterofWorldsBody:
@@ -380,6 +381,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
         public void WormHeadAI(NPC wormEntity)
         {
+            const int DustType = DustID.Sand;
+
             wormEntity.GetGlobalNPC<CombatNPC>().allowContactDamage = true;
             wormEntity.TargetClosest();
 
@@ -477,22 +480,41 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
                     #region worm attack warning
 
+                    const int TelegraphSize = 2;
                     if (wormState is WormState.GoingToAttackSpotHorizontalLeft or WormState.GoingToAttackSpotHorizontalRight) //horizontal attack
                     {
-                        Dust.NewDustDirect(attackSpot, 0, 0, DustID.Sand, 0, 0).noGravity = true;
-                        for (int i = 1; i < 5; i++)
+                        for (int i = -TelegraphSize; i <= TelegraphSize; i++)
                         {
-                            Dust.NewDustDirect(attackSpot + new Vector2(0, 8f) * i, 0, 0, DustID.Sand, 0, 0).noGravity = true;
-                            Dust.NewDustDirect(attackSpot + new Vector2(0, -8f) * i, 0, 0, DustID.Sand, 0, 0).noGravity = true;
+                            Dust dust = Dust.NewDustDirect(attackSpot + new Vector2(0, 8f) * i, 0, 0, DustType, 0, 0);
+                            dust.noGravity = true;
+                            dust.velocity *= new Vector2(2, 1);
+                        }
+                        if(ticksUntilAttack == 30)
+                        {
+                            Projectile proj = Projectile.NewProjectileDirect(wormEntity.GetSource_FromAI(), attackSpot, Vector2.Zero, ModContent.ProjectileType<Crimson.TelegraphWarning>(), 0, 0, Main.myPlayer);
+                            proj.ai[0] = attackSpot.X + ((wormState == WormState.GoingToAttackSpotHorizontalRight ? -1 : 1) * 64);
+                            proj.ai[1] = attackSpot.Y;
+                            proj.ai[2] = Crimson.TelegraphWarning.Red;
+                            proj.localAI[0] = 2;
+                            proj.timeLeft = 30;
                         }
                     }
                     else //vertical attacks
                     {
-                        Dust.NewDustDirect(attackSpot, 0, 0, DustID.Sand, 0, 0).noGravity = true;
-                        for (int i = 1; i < 5; i++)
+                        for (int i = -TelegraphSize; i <= TelegraphSize; i++)
                         {
-                            Dust.NewDustDirect(attackSpot + new Vector2(8f, 0) * i, 0, 0, DustID.Sand, 0, 0).noGravity = true;
-                            Dust.NewDustDirect(attackSpot + new Vector2(-8f, 0) * i, 0, 0, DustID.Sand, 0, 0).noGravity = true;
+                            Dust dust = Dust.NewDustDirect(attackSpot + new Vector2(8f, 0) * i, 0, 0, DustType, 0, 0);
+                            dust.noGravity = true;
+                            dust.velocity *= new Vector2(1, 2);
+                        }
+                        if(ticksUntilAttack == 30)
+                        {
+                            Projectile proj = Projectile.NewProjectileDirect(wormEntity.GetSource_FromAI(), attackSpot, Vector2.Zero, ModContent.ProjectileType<Crimson.TelegraphWarning>(), 0, 0, Main.myPlayer);
+                            proj.ai[0] = attackSpot.X;
+                            proj.ai[1] = attackSpot.Y - 48;
+                            proj.ai[2] = Crimson.TelegraphWarning.Red;
+                            proj.localAI[0] = 2;
+                            proj.timeLeft = 30;
                         }
                     }
 
@@ -519,7 +541,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                                 break;
                         }
                         wormState = WormState.Attacking;
-                        speed = AttackSpeedHorizontal * 16f / 60f;
+                        if(wormState == WormState.GoingToAttackSpotVertical)
+                            speed = AttackSpeedVertical * 16f / 60f;
+                        else
+                            speed = AttackSpeedHorizontal * 16f / 60f;
                     }
 
                     #endregion
@@ -528,12 +553,43 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                     break;
                 case WormState.Attacking:
                     //Falls down and slightly stears towards player until beneath and far enough
-                    velocity = Vector2.Lerp(velocity, 15f * (dirToPlayer - new Vector2(0, dirToPlayer.Y)) / dirToPlayer.Length(), 0.5f / 60f);
-                    velocity = new Vector2(velocity.X, velocity.Y + 10f / 60f);
+                    //Vector2 targetVelocity = new Vector2(Vector2.Lerp(velocity, 15 * dirToPlayer.SafeNormalize(Vector2.Zero), 0.5f/60f).X, velocity.Y + 0.12f);
+                    velocity = Vector2.Lerp(velocity, new Vector2(dirToPlayer.SafeNormalize(Vector2.Zero).X, 0) * 15f, 0.00475f);
+                    if(Collision.CanHit(wormEntity, player) || MathF.Abs(wormEntity.position.Y - player.position.Y) > NumberHelpers.ToTileDist(18))
+                        velocity = new Vector2(velocity.X, velocity.Y + 0.14f);
+                    else
+                        velocity = new Vector2(velocity.X, velocity.Y + 0.05f);
+
+                    # region Falling Position Indicator
+                    if(wormEntity.position.Y < player.position.Y - 64 && velocity.Y > 0)
+                    {
+                        Point result = player.position.ToTileCoordinates();
+                        for(int i = 0; i < 10; i++)
+                        {
+                            result += new Point(0, -1);
+                            if(!WorldGen.InWorld(result.X, result.Y, 1))
+                                break;
+                            Tile tile = Framing.GetTileSafely(result);
+                            if(tile.HasTile && !tile.IsActuated && Main.tileSolid[tile.TileType])
+                            {
+                                Vector2 basePos = new Vector2(wormEntity.Center.X, result.ToWorldCoordinates().Y);
+                                for(int j = -1; j < 1; j++)
+                                {
+                                    Dust dust = Dust.NewDustDirect(basePos + new Vector2(8, 0) * j, 1, 1, DustType);
+                                    dust.noGravity = true;
+                                    dust.velocity *= new Vector2(1, 2);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    #endregion
+
+
 
                     #region worm state transition
 
-                    if (Vector2.Dot(direction, dirToPlayer) < 0 &&
+                    if(Vector2.Dot(direction, dirToPlayer) < 0 &&
                         (player.position - wormEntity.position).Length() > 16f * AttackEndDistance &&
                         player.position.Y < wormEntity.position.Y)
                     {
