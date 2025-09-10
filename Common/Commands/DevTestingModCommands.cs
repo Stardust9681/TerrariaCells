@@ -568,7 +568,7 @@ namespace TerrariaCells.Common.Commands
         public override string Usage => "/unstuck";
         public override string Description => "Use this to attempt to \"unstuck\" yourself...if you get stuck.\nNOT FOR USE IN THE INN.";
 
-        public override CommandType Type => CommandType.Chat;
+        public override CommandType Type => CommandType.World;
 
         public override void Action(CommandCaller caller, string input, string[] args)
         {
@@ -578,7 +578,15 @@ namespace TerrariaCells.Common.Commands
             var tele = ModContent.GetInstance<TeleportTracker>();
 
             Point16 telePos = tele.GetTelePos(tele.NextLevel); //Input: "going to" location
-            Main.LocalPlayer.Teleport(telePos.ToWorldCoordinates(), TeleportationStyleID.Portal);
+
+            if(Main.netMode == 0)
+            {
+                caller.Player.Teleport(telePos.ToWorldCoordinates(), TeleportationStyleID.QueenSlimeHook);
+            }
+            else
+            {
+                NetMessage.SendData(MessageID.TeleportEntity, -1, -1, null, 0, caller.Player.whoAmI, telePos.X * 16 + 8, telePos.Y * 16 + 8, TeleportationStyleID.QueenSlimeHook);
+            }
         }
     }
 }
