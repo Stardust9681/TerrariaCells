@@ -55,9 +55,20 @@ namespace TerrariaCells.Common.GlobalNPCs
 		private static void On_NPC_AddBuff(On_NPC.orig_AddBuff orig, NPC self, int type, int time, bool quiet)
 		{
             int stacksToAdd = 1;
+
+            //Interactions aren't tracked on MP client. So you would hit an enemy, it wouldn't see you as having interacted with it, and then it wouldn't replace the buff
+            //Stupid ass game
             if (self.AnyInteractions())
             {
+                //int oldType = type;
                 type = Main.player[self.lastInteraction].GetModPlayer<BuffPlayer>().GetBuffToApply(type, ref time, ref stacksToAdd);
+                //ModContent.GetInstance<TerrariaCells>().Logger.Info($"(BUFF) Replaced {oldType} with {type}");
+            }
+            else if(Main.netMode != 2)
+            {
+                //int oldType = type;
+                type = Main.LocalPlayer.GetModPlayer<BuffPlayer>().GetBuffToApply(type, ref time, ref stacksToAdd);
+                //ModContent.GetInstance<TerrariaCells>().Logger.Info($"(BUFF) Replaced {oldType} with {type}");
             }
 			orig.Invoke(self, type, time, quiet);
 
@@ -73,9 +84,17 @@ namespace TerrariaCells.Common.GlobalNPCs
 				else
 					buffNPC.buffStacks[buffIndex] += stacksToAdd;
 
-                if (Main.netMode == NetmodeID.MultiplayerClient)
+                if(!quiet)
                 {
-                    buffNPC.NetSend_NewBuff(self, buffIndex);
+                    //ModContent.GetInstance<TerrariaCells>().Logger.Info($"(BUFF) Applied {type} to {self.TypeName} for {time} ({buffNPC.buffOrigTimes[buffIndex]}) with {stacksToAdd}");
+                    if (Main.netMode == NetmodeID.MultiplayerClient)
+                    {
+                        buffNPC.NetSend_NewBuff(self, buffIndex);
+                    }
+                    else if(Main.netMode == NetmodeID.Server)
+                    {
+                        buffNPC.NetSend_BuffVars(self);
+                    }
                 }
             }
 		}
@@ -140,7 +159,7 @@ namespace TerrariaCells.Common.GlobalNPCs
 				orig.Invoke(self, buffIndex);
 			}
 
-            if (Main.netMode == NetmodeID.MultiplayerClient)
+            if (Main.netMode == NetmodeID.Server)
             {
                 buffNPC.NetSend_BuffVars(self);
             }
