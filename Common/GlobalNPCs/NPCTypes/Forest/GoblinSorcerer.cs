@@ -31,9 +31,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 
 		public override bool PreAI(NPC npc)
 		{
-			if (!npc.HasValidTarget)
-				npc.TargetClosest();
-
             float oldAI = npc.ai[1];
             switch (npc.Phase())
 			{
@@ -57,6 +54,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
         }
         private void IdleAI(NPC npc)
 		{
+            npc.TargetClosest(false);
+
 			if (
 				npc.TryGetTarget(out Entity target)
 				&& npc.TargetInAggroRange(target, 480, false))
@@ -205,6 +204,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Forest
 					npc.ai[2] = 0;
 					npc.ai[3] = 0;
                     npc.netUpdate = true;
+                    npc.TargetClosest(false);
                 }
 				npc.velocity.Y += 0.14f;
 				if (timer > 255)
