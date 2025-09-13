@@ -7,10 +7,12 @@ using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
+using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent.Achievements;
 using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -347,6 +349,47 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
         public override bool PreAI(NPC npc)
         {
+            targetWormEntity = npc;
+            bool isHead = IsWormHead(npc);
+            bool isBody = IsWormBody(npc);
+            bool isTail = IsWormTail(npc);
+
+            if(aheadSegmentIndex >= 0 && aheadSegmentIndex < Main.maxNPCs && behindSegmentIndex >= 0 && behindSegmentIndex < Main.maxNPCs)
+            {
+                NPC ahead = isHead ? npc : Main.npc[aheadSegmentIndex];
+                NPC behind = isTail ? npc : Main.npc[behindSegmentIndex];
+                if(Main.netMode != 1)
+                {
+                    if(isHead && !behind.active) npc.StrikeInstantKill();
+                    if(isBody && !behind.active && !ahead.active) npc.StrikeInstantKill();
+                    if(isTail && !ahead.active) npc.StrikeInstantKill();
+                }
+                else
+                {
+                    if(isHead && !behind.active) npc.active = false;
+                    if(isBody && !behind.active && !ahead.active) npc.active = false;
+                    if(isTail && !ahead.active) npc.active = false;
+                }
+                if(npc.realLife == -1)
+                {
+                    if(isBody && (!ahead.active || !behind.active))
+                    {
+                        float[] arr = new float[4];
+                        npc.ai.CopyTo(arr, 0);
+                        npc.Transform(npc.type + (ahead.active ? 1 : -1));
+                        arr.CopyTo(npc.ai, 0);
+                        if(!ahead.active)
+                        {
+                            npc.velocity = Vector2.Zero;
+                            velocity = Vector2.Zero;
+                            wormState = WormState.Idle;
+                        }
+                        npc.GetGlobalNPC<CombatNPC>().allowContactDamage = !ahead.active;
+                        npc.netUpdate = true;
+                    }
+                }
+            }
+
             if (WormHeads.Contains(npc.type))
             {
                 TrySpawnBody(npc);
@@ -358,7 +401,12 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 WormSegmentAndTailAI(npc);
             }
 
-            return base.PreAI(npc);
+            if(Main.netMode == 2 && !npc.active)
+            {
+                NetMessage.SendData(28, -1, -1, null, npc.whoAmI, -1f);
+            }
+
+            return false;
         }
 
         public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -703,8 +751,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             Worms.targetWormEntity = targetWormEntity;
 
             Vector2 toSegmentAhead = segmentAhead.Center - wormEntity.Center;
-            float distanceToSegmentAhead = MathF.Sqrt(toSegmentAhead.X * toSegmentAhead.X + toSegmentAhead.Y * toSegmentAhead.Y);
-            toSegmentAhead.Normalize();
+            float distanceToSegmentAhead = toSegmentAhead.Length();
+            toSegmentAhead = toSegmentAhead.SafeNormalize(Vector2.Zero);
 
             if (distanceToSegmentAhead > 16f || true)
             {
@@ -728,68 +776,74 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             segment.HitEffect();
             segment.checkDead();
             segment.active = false;
-            NetMessage.SendData(MessageID.DamageNPC, -1, -1, null, segment.whoAmI, -1f);
+
+            if(Main.netMode != 1)
+            {
+                segment.StrikeInstantKill();
+                //NetMessage.SendData(MessageID.DamageNPC, -1, -1, null, segment.whoAmI, -1f);
+            }
         }
 
         public override void OnKill(NPC npc)
         {
+            if(npc.realLife == -1) return;
+
             targetWormEntity = npc;
+
+            bool isHead = IsWormHead(npc);
+            bool isBody = IsWormBody(npc);
+            bool isTail = IsWormTail(npc);
+            NPC ahead = isHead ? npc : Main.npc[(int)MathHelper.Clamp(aheadSegmentIndex, 0, Main.maxNPCs)];
+            NPC behind = isTail ? npc : Main.npc[(int)MathHelper.Clamp(behindSegmentIndex, 0, Main.maxNPCs)];
 
             if (npc.realLife == -1)
             {
                 #region split worm / kill head / kill tail
-
-                if (IsWormHead(npc) && Main.npc[behindSegmentIndex].realLife == -1)
+                if(isHead && behind.realLife == -1)
                 {
-                    NPC behindSegment = Main.npc[behindSegmentIndex];
-
-                    if (IsWormBody(behindSegment))
+                    if(IsWormBody(behind))
                     {
-                        TurnBehindSegmentIntoHead(behindSegment, npc.type);
+                        TurnBehindSegmentIntoHead(behind, npc.type);
+                    }
+                    else if(IsWormTail(behind))
+                    {
+                        behind.realLife = -2; //don't trigger this worm splitting logic again
+                        KillSegment(behind);
+                    }
+                    return;
+                }
+                else if (isBody && ahead.realLife == -1 && behind.realLife == -1)
+                {
+                    if (IsWormBody(ahead))
+                    {
+                        TurnAheadSegmentIntoTail(ahead, npc.type + 1);
                     }
                     else
                     {
-                        behindSegment.realLife = -2; //don't trigger this worm splitting logic again
-                        KillSegment(behindSegment);
+                        ahead.realLife = -2; //don't trigger this worm splitting logic again
+                        KillSegment(ahead);
+                    }
+
+                    if (IsWormBody(behind))
+                    {
+                        TurnBehindSegmentIntoHead(behind, npc.type - 1);
+                    }
+                    else
+                    {
+                        behind.realLife = -2; //don't trigger this worm splitting logic again
+                        KillSegment(behind);
                     }
                 }
-                else if (IsWormBody(npc))
+                else if (isTail && ahead.realLife == -1)
                 {
-                    NPC aheadSegment = Main.npc[aheadSegmentIndex];
-                    NPC behindSegment = Main.npc[behindSegmentIndex];
-
-                    if (IsWormBody(aheadSegment))
+                    if (IsWormBody(ahead))
                     {
-                        TurnAheadSegmentIntoTail(aheadSegment, npc.type + 1);
+                        TurnAheadSegmentIntoTail(ahead, npc.type);
                     }
                     else
                     {
-                        aheadSegment.realLife = -2; //don't trigger this worm splitting logic again
-                        KillSegment(aheadSegment);
-                    }
-
-                    if (IsWormBody(behindSegment))
-                    {
-                        TurnBehindSegmentIntoHead(behindSegment, npc.type - 1);
-                    }
-                    else
-                    {
-                        behindSegment.realLife = -2; //don't trigger this worm splitting logic again
-                        KillSegment(behindSegment);
-                    }
-                }
-                else if (IsWormTail(npc))
-                {
-                    NPC aheadSegment = Main.npc[aheadSegmentIndex];
-
-                    if (IsWormBody(aheadSegment))
-                    {
-                        TurnAheadSegmentIntoTail(aheadSegment, npc.type);
-                    }
-                    else
-                    {
-                        aheadSegment.realLife = -2; //don't trigger this worm splitting logic again
-                        KillSegment(aheadSegment);
+                        ahead.realLife = -2; //don't trigger this worm splitting logic again
+                        KillSegment(ahead);
                     }
                 }
 
@@ -799,7 +853,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             void TurnBehindSegmentIntoHead(NPC behindSegment, int headType)
             {
                 targetWormEntity = behindSegment;
-                behindSegment.type = headType;
+                //behindSegment.Transform(headType);
+                behindSegment.SetDefaultsKeepPlayerInteraction(headType);
+                behindSegment.netUpdate = true;
                 wormState = WormState.Attacking;
                 velocity = Vector2.Zero;
 
@@ -809,7 +865,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             void TurnAheadSegmentIntoTail(NPC aheadSegment, int tailType)
             {
                 targetWormEntity = aheadSegment;
-                aheadSegment.type = tailType;
+                //aheadSegment.Transform(tailType);
+                aheadSegment.SetDefaultsKeepPlayerInteraction(tailType);
+                aheadSegment.netUpdate = true;
 
                 targetWormEntity = npc;
             }
@@ -964,8 +1022,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
                 if (flag && frontEnd)
                 {
-                    self.boss = true;
-                    self.NPCLoot();
+                    return false;
                 }
                 else
                 {

@@ -68,13 +68,13 @@ namespace TerrariaCells.Common.GlobalNPCs
         //I'm not sending AI here, as it turns out. ]:/
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
-            bitWriter.WriteBit(npc.GetGlobalNPC<CombatNPC>().allowContactDamage);
+            bitWriter.WriteBit(allowContactDamage);
 
             //bitWriter.Flush(binaryWriter);
         }
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
-            npc.GetGlobalNPC<CombatNPC>().allowContactDamage = bitReader.ReadBit();
+            allowContactDamage = bitReader.ReadBit();
         }
 
         public override void SetStaticDefaults()

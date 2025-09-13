@@ -22,7 +22,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Corruption
 
         public override void OnSpawn(NPC npc, IEntitySource source)
         {
-            SpawnPos = npc.Center + new Vector2(0, -64);
+            SpawnPos ??= npc.Center + new Vector2(0, -64);
         }
         public override void SetDefaults(NPC entity)
         {
