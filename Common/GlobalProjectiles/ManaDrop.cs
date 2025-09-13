@@ -45,12 +45,16 @@ namespace TerrariaCells.Common.GlobalProjectiles
 
             if (projectile.DamageType.CountsAsClass(DamageClass.Magic))
             {
-                if (Main.netMode != NetmodeID.MultiplayerClient && !SpawnedMana)
+                if (!SpawnedMana)
                 {
                     SpawnedMana = true;
                     for (int i = 0; i < starsSpawned; i++)
                     {
-                        Item.NewItem(projectile.GetSource_OnHit(target), target.Hitbox, new Item(ItemID.Star));
+                        int whoAmI = Item.NewItem(projectile.GetSource_OnHit(target), target.getRect(), ItemID.Star, noGrabDelay:true);
+                        if(Main.netMode == 1)
+                        {
+                            NetMessage.SendData(MessageID.SyncItem, -1, -1, null, whoAmI, -1);
+                        }
                     }
                 }
             }
