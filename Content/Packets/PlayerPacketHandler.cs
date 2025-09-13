@@ -37,7 +37,7 @@ namespace TerrariaCells.Content.Packets
             ///<para><i>To Client:</i> <c> <see cref="ushort"/> health </c></para>
             ///<para><i>To Server:</i> <c> <see cref="ushort"/> health </c></para>
             ///</remarks>
-            StatSync, //byte (short?)
+            StatSync, //ushort
 
             ///<summary>
             ///Sent from client to server on join, server responds telling player to either teleport to a living player, or to enter "spectate mode"
@@ -74,10 +74,17 @@ namespace TerrariaCells.Content.Packets
                 player = Main.player[fromWho];
             Common.ModPlayers.MetaPlayer modPlayer = player.GetModPlayer<Common.ModPlayers.MetaPlayer>();
             modPlayer.GetSyncPlayer(reader);
+
+            if(Main.netMode == 2)
+            {
+                modPlayer.SyncPlayer(-1, fromWho, false);
+            }
         }
         private void HandleStat(Mod mod, BinaryReader reader, int fromWho)
         {
-            Common.ModPlayers.LifeModPlayer modPlayer = Main.player[reader.ReadByte()].GetModPlayer<Common.ModPlayers.LifeModPlayer>();
+            byte whoAmI = reader.ReadByte();
+            Player sender = Main.player[whoAmI];
+            Common.ModPlayers.LifeModPlayer modPlayer = sender.GetModPlayer<Common.ModPlayers.LifeModPlayer>();
             modPlayer.extraHealth = reader.ReadUInt16();
 
             if(Main.netMode == 2)

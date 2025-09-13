@@ -72,7 +72,6 @@ public class TeleportTracker : ModSystem
             Mod.Logger.Info($"Teleporting to next level: {nextLevel}:");
             GoToNextLevel();
             //RewardTrackerSystem.UpdateTracker(RewardTrackerSystem.TrackerAction.Restart);
-            RewardTrackerSystem.targetTime += TimeSpan.FromMinutes(3);
             return;
         }
 
@@ -282,6 +281,7 @@ public class TeleportTracker : ModSystem
         //Moving from Inn
 
         Mod.Logger.Info($"Updating variables in {destination}. Moving to: {actualDestination}");
+        RewardTrackerSystem.targetTime += TimeSpan.FromMinutes(3);
         BasicWorldGenData worldLevelData = ModContent.GetInstance<BasicWorldGeneration>().BasicWorldGenData;
         if (!worldLevelData.LevelVariations.TryGetValue(actualDestination, out nextLevelVariation))
         {
@@ -402,7 +402,6 @@ public class TeleportTracker : ModSystem
         }
 
         GlobalNPCs.VanillaNPCShop.UpdateTeleport(level, nextLevel, (Main.netMode == NetmodeID.Server));
-
         return;
     }
 

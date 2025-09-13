@@ -11,6 +11,7 @@ using Terraria.ModLoader.IO;
 using Terraria.DataStructures;
 using TerrariaCells.Common.Utilities;
 using TerrariaCells.Content.Packets;
+using System.IO;
 
 namespace TerrariaCells.Common.Systems
 {
@@ -195,6 +196,23 @@ namespace TerrariaCells.Common.Systems
             {
                 levelTimer++;
             }
+        }
+
+        public override void NetSend(BinaryWriter writer)
+        {
+            writer.Write(trackerEnabled);
+            writer.Write(levelTimer);
+            writer.Write(killCount);
+            writer.Write(targetTime.Ticks);
+            writer.Write(targetKillCount);
+        }
+        public override void NetReceive(BinaryReader reader)
+        {
+            trackerEnabled = reader.ReadBoolean();
+            levelTimer = reader.ReadUInt32();
+            killCount = reader.ReadByte();
+            targetTime = TimeSpan.FromTicks(reader.ReadInt64());
+            targetKillCount = reader.ReadByte();
         }
 
         public override void SaveWorldData(TagCompound tag)

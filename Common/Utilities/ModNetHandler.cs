@@ -30,16 +30,28 @@ namespace TerrariaCells.Common.Utilities
             };
         }
         internal static Dictionary<TCPacketType, PacketHandler> Handlers;
-        public static void HandlePacket(Terraria.ModLoader.Mod mod, BinaryReader reader, int fromWho)
+        public static void HandlePacket(Mod mod, BinaryReader reader, int fromWho)
         {
             // Switch on TCPacketType, when sending a packet, this should always be written first
             TCPacketType type = (TCPacketType)reader.ReadByte();
-            if (Handlers.TryGetValue(type, out var handler))
-                handler.HandlePacket(mod, reader, fromWho);
+            try
+            {
+                if (Handlers.TryGetValue(type, out var handler))
+                    handler.HandlePacket(mod, reader, fromWho);
+            }
+            catch(Exception x)
+            {
+                mod.Logger.Warn($"Exception thrown for Packet Type: {type}\n{x}");
+            }
+            finally
+            {
+                if(reader.BaseStream.Position != reader.BaseStream.Length)
+                    mod.Logger.Warn($"Invalid packet reading for Packet Type: {type}");
+            }
         }
-        internal static Terraria.ModLoader.ModPacket GetPacket(Terraria.ModLoader.Mod mod, TCPacketType type, ushort len = 256)
+        internal static ModPacket GetPacket(Mod mod, TCPacketType type, ushort len = 256)
         {
-            Terraria.ModLoader.ModPacket packet = mod.GetPacket(len);
+            ModPacket packet = mod.GetPacket(len);
             packet.Write((byte)type);
             return packet;
         }

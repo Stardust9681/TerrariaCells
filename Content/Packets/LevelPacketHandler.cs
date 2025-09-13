@@ -52,11 +52,12 @@ namespace TerrariaCells.Content.Packets
 
                 tele.Update_PostTeleport(tele.GetActualDestination(destination));
 
-                packet = ModNetHandler.GetPacket(mod, TCPacketType.TrackerPacket);
-                packet.Write(RewardTrackerSystem.levelTimer);
-                packet.Write(RewardTrackerSystem.killCount);
-                packet.Write((byte)RewardTrackerSystem.trackerState);
-                packet.Send();
+                NetMessage.SendData(MessageID.WorldData);
+                //packet = ModNetHandler.GetPacket(mod, TCPacketType.TrackerPacket);
+                //packet.Write(RewardTrackerSystem.levelTimer);
+                //packet.Write(RewardTrackerSystem.killCount);
+                //packet.Write((byte)RewardTrackerSystem.trackerState);
+                //packet.Send();
             }
             else //Received by client (from Server)
             {

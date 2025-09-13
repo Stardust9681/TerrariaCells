@@ -7,6 +7,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 using TerrariaCells.Common.Utilities;
+using TerrariaCells.Content.Packets;
 
 namespace TerrariaCells.Common.ModPlayers
 {
@@ -55,6 +56,7 @@ namespace TerrariaCells.Common.ModPlayers
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
         {
             var packet = ModNetHandler.GetPacket(Mod, TCPacketType.PlayerPacket);
+            packet.Write((byte)PlayerPacketHandler.PlayerSyncType.StatSync);
             packet.Write((byte)Player.whoAmI);
             packet.Write((ushort)extraHealth);
             packet.Send(toWho, fromWho);
