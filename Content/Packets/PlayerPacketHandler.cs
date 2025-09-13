@@ -30,8 +30,13 @@ namespace TerrariaCells.Content.Packets
             MetaProgress, //{ byte, byte, .. }
 
             ///<summary>
-            ///Unused
+            ///Syncs player states (see also: <see cref="Common.ModPlayers.LifeModPlayer"/>)
             ///</summary>
+            ///<remarks>
+            ///<b>Send/Receive:</b>
+            ///<para><i>To Client:</i> <c> <see cref="ushort"/> health </c></para>
+            ///<para><i>To Server:</i> <c> <see cref="ushort"/> health </c></para>
+            ///</remarks>
             StatSync, //byte (short?)
 
             ///<summary>
@@ -72,7 +77,13 @@ namespace TerrariaCells.Content.Packets
         }
         private void HandleStat(Mod mod, BinaryReader reader, int fromWho)
         {
+            Common.ModPlayers.LifeModPlayer modPlayer = Main.player[reader.ReadByte()].GetModPlayer<Common.ModPlayers.LifeModPlayer>();
+            modPlayer.extraHealth = reader.ReadUInt16();
 
+            if(Main.netMode == 2)
+            {
+                modPlayer.SyncPlayer(-1, fromWho, false);
+            }
         }
         private void HandleNewPlayerJoin(Mod mod, BinaryReader reader, int fromWho)
         {

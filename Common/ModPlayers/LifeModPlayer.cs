@@ -6,6 +6,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
+using TerrariaCells.Common.Utilities;
+
 namespace TerrariaCells.Common.ModPlayers
 {
     public class LifeModPlayer : ModPlayer
@@ -48,6 +50,14 @@ namespace TerrariaCells.Common.ModPlayers
             mana = mod;
             mod.Flat = (float)extraHealth;
             health = mod;
+        }
+
+        public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
+        {
+            var packet = ModNetHandler.GetPacket(Mod, TCPacketType.PlayerPacket);
+            packet.Write((byte)Player.whoAmI);
+            packet.Write((ushort)extraHealth);
+            packet.Send(toWho, fromWho);
         }
 
         public override void SaveData(TagCompound tag)
