@@ -17,22 +17,37 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 {
     public partial class Fliers
     {
+        const int VultureAggroRange = 30;
+
         public bool DrawVulture(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             return true;
         }
-        
+
         public void VultureAI(NPC npc)
         {
             npc.ai[0] = 1;
             npc.noGravity = true;
             Vector2 targetPos = npc.Center;
 
-			//movement
-			if (npc.TryGetTarget(out Entity target))
-			{
-				targetPos = target.Center + new Vector2(0, -200);
-			}
+            //movement
+            if (npc.TryGetTarget(out Entity target))
+            {
+                targetPos = target.Center + new Vector2(0, -200);
+
+                //start aggro when close to target
+                if (Vector2.DistanceSquared(npc.Center, target.Center) < 256 * VultureAggroRange * VultureAggroRange)
+                {
+                    //npc.ai[1] is 1 when aggroed and 0 otherwise
+                    npc.ai[1] = 1;
+                }
+            }
+
+            //skip any logic in case of no aggro
+            if (npc.ai[1] != 1)
+            {
+                return;
+            }
 
             if (npc.Center.Y > targetPos.Y && npc.velocity.Y > -5)
             {
@@ -43,8 +58,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 }
             }
 
-			//projectile
-			bool validTarget = npc.TargetInAggroRange(target, 500);
+            //projectile
+            bool validTarget = npc.TargetInAggroRange(target, 500);
             if (validTarget)
             {
                 npc.ai[2]++;
@@ -52,11 +67,11 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             if (npc.ai[2] >= 120 && npc.HasValidTarget)
             {
                 Vector2 pos = npc.Center + new Vector2(5 * npc.direction, -20);
-                Vector2 vec = (target.Center - pos).SafeNormalize(Vector2.Zero) ;
+                Vector2 vec = (target.Center - pos).SafeNormalize(Vector2.Zero);
                 Projectile proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), pos, vec * 5 + target.velocity * 0.2f, ModContent.ProjectileType<VultureBone>(), TCellsUtils.ScaledHostileDamage(npc.damage), 1);
                 for (int i = 0; i < 5; i++)
                 {
-                    Dust.NewDustDirect(pos, 0, 0, DustID.Bone, vec.X*2, vec.Y*2).noGravity = true;
+                    Dust.NewDustDirect(pos, 0, 0, DustID.Bone, vec.X * 2, vec.Y * 2).noGravity = true;
                 }
                 SoundEngine.PlaySound(SoundID.NPCDeath9, npc.Center);
                 npc.velocity += -vec * 3;
@@ -75,21 +90,21 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             if ((npc.Center.X > targetPos.X && npc.velocity.X > -4 && Math.Abs(npc.Center.X - targetPos.X) > 100) || (npc.velocity.X < 0 && npc.velocity.X > -4 && npc.Center.X > targetPos.X))
             {
                 npc.velocity.X -= 0.2f;
-                
+
             }
-            
+
             if ((npc.Center.X < targetPos.X && npc.velocity.X < 4 && Math.Abs(npc.Center.X - targetPos.X) > 100) || (npc.velocity.X > 0 && npc.velocity.X < 4 && npc.Center.X < targetPos.X))
             {
                 npc.velocity.X += 0.2f;
-                
+
             }
             for (int i = 0; i < Main.maxNPCs; i++)
             {
                 NPC n = Main.npc[i];
                 if (n.active && n.type == NPCID.Vulture && n.Hitbox.Intersects(npc.Hitbox))
                 {
-					npc.velocity -= (n.Center - npc.Center).SafeNormalize(Vector2.Zero) * 0.1f;
-				}
+                    npc.velocity -= (n.Center - npc.Center).SafeNormalize(Vector2.Zero) * 0.1f;
+                }
             }
         }
     }
