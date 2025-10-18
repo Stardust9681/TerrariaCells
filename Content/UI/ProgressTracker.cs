@@ -357,23 +357,22 @@ namespace TerrariaCells.Content.UI
                     Rectangle bounds = GetDimensions().ToRectangle();
                     bool isMouseHover = IsMouseHovering;
 
-                    Color panelColor = !isMouseHover ? UIHelper.InventoryColour : Color.MediumSlateBlue;
+                    Color panelColor = (!isMouseHover || unlockState == UnlockState.Locked) ? UIHelper.InventoryColour : Color.MediumSlateBlue;
                     UIHelper.PANEL.Draw(spriteBatch, bounds, panelColor);
                     Item drawItem = Item;
 
-                    UnlockState unlocked = UnlockState.Locked;
-                    UIElement findParent = this;
+                    /*UIElement findParent = this;
                     while(findParent is not null and not UIState)
                     {
                         findParent = findParent.Parent;
                         if(findParent is ItemViewport viewPort)
                         {
-                            unlocked = Main.LocalPlayer.GetModPlayer<MetaPlayer>().CheckUnlocks(drawItem);
+                            unlockState = Main.LocalPlayer.GetModPlayer<MetaPlayer>().CheckUnlocks(drawItem);
                             break;
                         }
-                    }
+                    }*/
 
-                    if(isMouseHover && unlocked == UnlockState.Found)
+                    if(isMouseHover && unlockState == UnlockState.Found)
                     {
                         Main.HoverItem = drawItem;
                         Main.hoverItemName = drawItem.HoverName;
@@ -384,11 +383,11 @@ namespace TerrariaCells.Content.UI
                     Texture2D value = TextureAssets.Item[drawItem.type].Value;
                     Rectangle frame = ((Main.itemAnimations[drawItem.type] == null) ? value.Frame() : Main.itemAnimations[drawItem.type].GetFrame(value));
                     Vector2 origin = frame.Size() * 0.5f;
-                    Color itemUnlockColour = unlocked switch { UnlockState.Locked => Color.Black, UnlockState.Unlocked => Color.Black, UnlockState.Found => Color.White, _ => Color.Transparent };
+                    Color itemUnlockColour = unlockState switch { UnlockState.Locked => Color.Black, UnlockState.Unlocked => Color.Black, UnlockState.Found => Color.White, _ => Color.Transparent };
                     ItemSlot.DrawItem_GetColorAndScale(drawItem, MAX_SCALE, ref itemUnlockColour, bounds.Height/2 - 8, ref frame, out Color drawColor, out float scale);
                     spriteBatch.Draw(value, bounds.TopLeft() + new Vector2(bounds.Height * 0.5f), frame, drawColor, 0f, origin, scale, SpriteEffects.None, 0f);
 
-                    if(unlocked == UnlockState.Locked)
+                    if(unlockState == UnlockState.Locked)
                     {
                         Main.instance.LoadItem(ItemID.ChestLock);
                         value = TextureAssets.Item[ItemID.ChestLock].Value;
@@ -402,8 +401,8 @@ namespace TerrariaCells.Content.UI
 
                     //Modify Text Draw Here
                     DynamicSpriteFont font = FontAssets.MouseText.Value;
-                    string localizedName = unlocked switch { UnlockState.Locked => "???", UnlockState.Unlocked => "???", UnlockState.Found => drawItem.Name, _ => string.Empty };
-                    Color textColour = unlocked switch { UnlockState.Locked => Color.Gray, UnlockState.Unlocked => Color.Lerp(Drawing.GetRarityColor(drawItem.rare), Color.DarkGray, 0.67f), UnlockState.Found => Drawing.GetRarityColor(drawItem.rare), _ => Color.Transparent };
+                    string localizedName = unlockState switch { UnlockState.Locked => "???", UnlockState.Unlocked => "???", UnlockState.Found => drawItem.Name, _ => string.Empty };
+                    Color textColour = unlockState switch { UnlockState.Locked => Color.Gray, UnlockState.Unlocked => Color.Lerp(Drawing.GetRarityColor(drawItem.rare), Color.DarkGray, 0.67f), UnlockState.Found => Drawing.GetRarityColor(drawItem.rare), _ => Color.Transparent };
                     Vector2 size = font.MeasureString(localizedName);
                     Vector2 position = bounds.TopRight() + new Vector2(-8, 8);
                     ChatManager.DrawColorCodedStringWithShadow(
@@ -418,8 +417,8 @@ namespace TerrariaCells.Content.UI
                     );
 
                     position.Y += size.Y + 1;
-                    textColour = unlocked switch { UnlockState.Locked => Color.PaleVioletRed, UnlockState.Unlocked => Color.DarkGray, UnlockState.Found => Color.LightGreen, _ => Color.Transparent };
-                    localizedName = unlocked.ToString();
+                    textColour = unlockState switch { UnlockState.Locked => Color.PaleVioletRed, UnlockState.Unlocked => Color.DarkGray, UnlockState.Found => Color.LightGreen, _ => Color.Transparent };
+                    localizedName = unlockState.ToString();
                     size = font.MeasureString(localizedName);
                     ChatManager.DrawColorCodedStringWithShadow(
                         spriteBatch,
@@ -451,7 +450,7 @@ namespace TerrariaCells.Content.UI
                 Unlocks.Height.Set(0, 1);
                 foreach(int type in collection)
                 {
-                    ItemDisplaySlot slot = new ItemDisplaySlot(type, PANEL_SIZE);
+                    ItemDisplaySlot slot = new ItemDisplaySlot(type, PANEL_SIZE, Main.LocalPlayer.GetModPlayer<MetaPlayer>().CheckUnlocks(type));
                     Unlocks.Add(slot);
                 }
                 Unlocks.SetScrollbar(Scroller);
@@ -498,14 +497,10 @@ namespace TerrariaCells.Content.UI
 
                     var meta = Main.LocalPlayer.GetModPlayer<MetaPlayer>();
                     bool unlocked = meta.HasFlag(whoAmI);
-                    Color drawColor = Color.DarkSlateBlue;
-                    if(unlocked)
+                    Color drawColor = UIHelper.InventoryColour;
+                    if(unlocked && IsMouseHovering)
                     {
-                        drawColor = UIHelper.InventoryColour;
-                        if(IsMouseHovering)
-                        {
-                            drawColor = Color.MediumSlateBlue;
-                        }
+                        drawColor = Color.MediumSlateBlue;
                     }
                     UIHelper.PANEL.Draw(spriteBatch, bounds, drawColor);
 
