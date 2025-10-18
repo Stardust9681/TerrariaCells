@@ -13,6 +13,7 @@ using System.Reflection;
 using Terraria.Chat;
 using Terraria.Localization;
 using TerrariaCells.Common.GlobalNPCs;
+using TerrariaCells.Content.UI;
 
 namespace TerrariaCells.Common.ModPlayers
 {
@@ -38,6 +39,19 @@ namespace TerrariaCells.Common.ModPlayers
         public bool DownedWoF { get => this[6]; set => this[6] = value; }
 
         internal const int ProgressionCount = 7;
+        
+        public bool HasFlag(int index)
+        {
+            if(index < 0 || index > ProgressionCount)
+            {
+#if DEBUG
+                throw new InvalidOperationException();
+#else
+                return false;
+#endif
+            }
+            return metaProgression[index];
+        }
         
         private void SaveFlags(TagCompound tag)
         {
@@ -93,6 +107,15 @@ namespace TerrariaCells.Common.ModPlayers
             List<bool> itemVals = tag.Get<List<bool>>(_ITEM_VALS);
             ItemUnlocks = itemKeys.Zip(itemVals, (k, v) => new KeyValuePair<int, bool>(k, v)).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
+        
+        public void UpdateItemStatus(int itemType, Content.UI.UnlockState state)
+        {
+            if (state == UnlockState.Locked) return;
+            bool val = state == UnlockState.Found;
+            Content.UI.UnlockState checkState = CheckUnlocks(itemType);
+            if (checkState == UnlockState.Locked) ItemUnlocks.Add(itemType, val);
+            else if (checkState == UnlockState.Unlocked) ItemUnlocks[itemType] = val;
+        }
 
         #endregion
 
@@ -108,18 +131,7 @@ namespace TerrariaCells.Common.ModPlayers
         }
 
         #region Backing Functionality
-        public bool HasFlag(int index)
-        {
-            if(index < 0 || index > ProgressionCount)
-            {
-#if DEBUG
-                throw new InvalidOperationException();
-#else
-                return false;
-#endif
-            }
-            return metaProgression[index];
-        }
+        
         //private BitArray overrideMeta = new BitArray(ProgressionCount);
         private BitArray metaProgression = new BitArray(ProgressionCount);
         internal bool this[int index]
@@ -130,14 +142,8 @@ namespace TerrariaCells.Common.ModPlayers
                 if(value && !metaProgression[index])
                 {
                     metaProgression[index] = value;
-                    //overrideMeta[index] = value;
-                }
-                else
-                {
-                    //overrideMeta[index] = value;
-                }
-                if (Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient)
                     SyncPlayer(-1, Main.myPlayer, false);
+                }
             }
         }
         public override void SaveData(TagCompound tag)
@@ -253,7 +259,45 @@ namespace TerrariaCells.Common.ModPlayers
 
         public override void UpdateInventory(Item item, Player player)
         {
-            player.GetModPlayer<MetaPlayer>().ItemUnlocks[item.type] = true;
+            player.GetModPlayer<MetaPlayer>().UpdateItemStatus(item.type, UnlockState.Found);
+        }
+    }
+    
+    public class UnlockNPC : GlobalNPC
+    {
+        public override void OnKill(NPC npc)
+        {
+            foreach(Player player in Main.ActivePlayers)
+            {
+                MetaPlayer modPlayer = player.GetModPlayer<MetaPlayer>();
+                switch(npc.type)
+                {
+                    case NPCID.SkeletonSniper:
+                        modPlayer.UpdateItemStatus(ItemID.SniperRifle, UnlockState.Unlocked);
+                        break;
+                    
+                    case NPCID.BrainofCthulhu:
+                        modPlayer.DownedBoC = true;
+                        break;
+                    case NPCID.EaterofWorldsHead:
+                    case NPCID.EaterofWorldsBody:
+                    case NPCID.EaterofWorldsTail:
+                        if(!NPC.AnyNPCs(NPCID.EaterofWorldsHead) && !NPC.AnyNPCs(NPCID.EaterofWorldsBody) && !NPC.AnyNPCs(NPCID.EaterofWorldsTail))
+                            modPlayer.DownedEoW = true;
+                        break;
+                    case NPCID.QueenBee:
+                        modPlayer.DownedQB = true;
+                        modPlayer.UpdateItemStatus(ItemID.Beenade, UnlockState.Unlocked);
+                        modPlayer.UpdateItemStatus(ItemID.HornetStaff, UnlockState.Unlocked);
+                        break;
+                    case NPCID.SkeletronHead:
+                        modPlayer.DownedSkele = true;
+                        break;
+                    case NPCID.WallofFlesh:
+                        modPlayer.DownedWoF = true;
+                        break;
+                }
+            }
         }
     }
 }
