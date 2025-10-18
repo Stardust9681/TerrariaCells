@@ -46,13 +46,15 @@ namespace TerrariaCells.Content.UI
         ProgressTabs Tabs;
         DisplayPanel Display;
 
-        internal RasterizerState Terraria_UI_UIElement_OverflowHiddenRasterizerState;
+        //internal RasterizerState Terraria_UI_UIElement_OverflowHiddenRasterizerState;
         public override void OnInitialize()
         {
             Button = new Button();
             Button.buttonColor = Color.Red;
             Button.hoverColor = Color.PaleVioletRed;
             Button.hoverText = "Close";
+            Button.img = Terraria.GameContent.TextureAssets.Cd;
+            Button.imgColor = Color.Black;
             Button.OnLeftClick += (x, y) => DeadCellsUISystem.ToggleActive<ProgressTracker>(false);
             Append(Button);
 
@@ -72,11 +74,11 @@ namespace TerrariaCells.Content.UI
 
             Recalculate();
 
-            Terraria_UI_UIElement_OverflowHiddenRasterizerState = (RasterizerState)typeof(UIElement).GetField("OverflowHiddenRasterizerState", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).GetValue(null);
+            //Terraria_UI_UIElement_OverflowHiddenRasterizerState = (RasterizerState)typeof(UIElement).GetField("OverflowHiddenRasterizerState", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).GetValue(null);
 
             //On_UIElement.ContainsPoint += On_UIElement_ContainsPoint;
             //On_UIElement.GetElementAt += On_UIElement_GetElementAt;
-            On_UserInterface.GetMousePosition += On_UserInterface_GetMousePosition;
+            //On_UserInterface.GetMousePosition += On_UserInterface_GetMousePosition;
         }
 
         private void On_UserInterface_GetMousePosition(On_UserInterface.orig_GetMousePosition orig, UserInterface self)
@@ -111,7 +113,7 @@ namespace TerrariaCells.Content.UI
         protected override bool PreUpdate(GameTime time)
         {
             uiScaleForUpdating = Main.UIScale;
-            Main.UIScale = 2;
+            //Main.UIScale = 2;
 
             return base.PreUpdate(time);
         }
@@ -120,7 +122,7 @@ namespace TerrariaCells.Content.UI
             Recalculate();
             Main.LocalPlayer.mouseInterface = true;
 
-            Main.UIScale = uiScaleForUpdating;
+            //Main.UIScale = uiScaleForUpdating;
         }
         protected override bool PreDrawSelf(SpriteBatch spriteBatch)
         {
@@ -145,7 +147,7 @@ namespace TerrariaCells.Content.UI
 
             if(!isOpen) return;
 
-            const int TAB_HEIGHT = 36;
+            const int TAB_HEIGHT = 52;
 
             if(Button is not null)
                 Button.HAlign = 1;
@@ -161,7 +163,7 @@ namespace TerrariaCells.Content.UI
         }
 
         private float uiScaleForDrawing;
-        protected override bool PreDraw(SpriteBatch spriteBatch)
+        /*protected override bool PreDraw(SpriteBatch spriteBatch)
         {
             uiScaleForDrawing = Main.UIScale;
             Main.UIScale = 2;
@@ -175,7 +177,7 @@ namespace TerrariaCells.Content.UI
             Main.UIScale = uiScaleForDrawing;
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, Terraria_UI_UIElement_OverflowHiddenRasterizerState, (Effect)null, Main.UIScaleMatrix);
-        }
+        }*/
 
         private void SetViewport(UIElement element)
         {
@@ -216,7 +218,7 @@ namespace TerrariaCells.Content.UI
                     UIHelper.PANEL.Draw(spriteBatch, bounds, drawColor);
                     if (Icon?.IsLoaded == true)
                     {
-                        spriteBatch.Draw(Icon.Value, bounds.Center(), null, Color.Black, 0f, Icon.Size() * 0.5f, MathF.Min(1f, (float)(bounds.Height-8) / Icon.Height()), SpriteEffects.None, 0f);
+                        spriteBatch.Draw(Icon.Value, bounds.Center(), null, Color.Black, 0f, Icon.Size() * 0.5f, MathF.Min(1.25f, (float)(bounds.Height-8) / Icon.Height()), SpriteEffects.None, 0f);
                     }
 
                     if (hasHoverText && isMouseHover)
@@ -317,13 +319,16 @@ namespace TerrariaCells.Content.UI
         {
             private class ItemDisplaySlot : UIElement
             {
-                public ItemDisplaySlot(int type, int size = 48)
+                const float MAX_SCALE = 1.5f;
+                public ItemDisplaySlot(int type, int size = 48, UnlockState unlocked = UnlockState.Locked)
                 {
                     itemType = type;
                     this.Width.Set(-8, 0.5f);
-                    this.Height.Set(size, 0);
+                    this.Height.Set(size * MAX_SCALE, 0);
+                    unlockState = unlocked;
                 }
                 internal int itemType;
+                internal UnlockState unlockState;
                 private Item Item
                 {
                     get
@@ -374,15 +379,13 @@ namespace TerrariaCells.Content.UI
                         Main.hoverItemName = drawItem.HoverName;
                     }
 
-                    int itemSize = bounds.Height;
-
                     //Modify Item Draw Here
                     Main.instance.LoadItem(drawItem.type);
                     Texture2D value = TextureAssets.Item[drawItem.type].Value;
                     Rectangle frame = ((Main.itemAnimations[drawItem.type] == null) ? value.Frame() : Main.itemAnimations[drawItem.type].GetFrame(value));
                     Vector2 origin = frame.Size() * 0.5f;
                     Color itemUnlockColour = unlocked switch { UnlockState.Locked => Color.Black, UnlockState.Unlocked => Color.Black, UnlockState.Found => Color.White, _ => Color.Transparent };
-                    ItemSlot.DrawItem_GetColorAndScale(drawItem, 1, ref itemUnlockColour, bounds.Height - 8 ,ref frame, out Color drawColor, out float scale);
+                    ItemSlot.DrawItem_GetColorAndScale(drawItem, MAX_SCALE, ref itemUnlockColour, bounds.Height/2 - 8, ref frame, out Color drawColor, out float scale);
                     spriteBatch.Draw(value, bounds.TopLeft() + new Vector2(bounds.Height * 0.5f), frame, drawColor, 0f, origin, scale, SpriteEffects.None, 0f);
 
                     if(unlocked == UnlockState.Locked)
@@ -411,7 +414,7 @@ namespace TerrariaCells.Content.UI
                         textColour,
                         0f,
                         new Vector2(size.X, 0),
-                        new Vector2(MathF.Min(1, ((bounds.Width - bounds.Height - 8)/size.X)))
+                        new Vector2(MathF.Min(MAX_SCALE, ((bounds.Width - bounds.Height - 8)/size.X)))
                     );
 
                     position.Y += size.Y + 1;
@@ -426,14 +429,14 @@ namespace TerrariaCells.Content.UI
                         textColour,
                         0f,
                         new Vector2(size.X, 0),
-                        new Vector2(0.5f)
+                        new Vector2(0.5f * MAX_SCALE)
                     );
                 }
             }
             public ItemViewport(IEnumerable<int> collection) : base()
             {
                 const int SCROLL_WIDTH = 20;
-                const int PANEL_SIZE = 52;
+                const int PANEL_SIZE = 48;
                 const int GRID_PADDING = 8;
 
                 Scroller = new BetterFixedUIScrollbar(static () => DeadCellsUISystem.GetWindow<ProgressTracker>().UserInterface);

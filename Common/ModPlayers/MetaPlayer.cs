@@ -12,6 +12,7 @@ using System.Collections;
 using System.Reflection;
 using Terraria.Chat;
 using Terraria.Localization;
+using TerrariaCells.Common.GlobalNPCs;
 
 namespace TerrariaCells.Common.ModPlayers
 {
@@ -25,6 +26,8 @@ namespace TerrariaCells.Common.ModPlayers
             }
         }
 
+        #region Major Flags
+        
         //Flags for progression. Literally just add whatever and it should work <3
         public bool CloudJump { get => this[0]; set => this[0] = value; }
         public bool Goblin { get => this[1]; set => this[1] = value; }
@@ -34,7 +37,36 @@ namespace TerrariaCells.Common.ModPlayers
         public bool DownedSkele { get => this[5]; set => this[5] = value; }
         public bool DownedWoF { get => this[6]; set => this[6] = value; }
 
-        internal static int ProgressionCount => typeof(MetaPlayer).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Length - 9;
+        internal const int ProgressionCount = 7;
+        
+        private void SaveFlags(TagCompound tag)
+        {
+            if(metaProgression?.HasAnySet() == true)
+                tag.Add("TerraCells:MetaProgress", metaProgression);
+        }
+        
+        private void LoadFlags(TagCompound tag)
+        {
+            if (tag.TryGet<BitArray>("TerraCells:MetaProgress", out metaProgression))
+            {
+                if (metaProgression.Length < ProgressionCount)
+                {
+                    BitArray oldBits = new BitArray(metaProgression);
+                    metaProgression = new BitArray(ProgressionCount);
+                    for (int i = 0; i < oldBits.Length; i++)
+                    {
+                        metaProgression[i] = oldBits[i];
+                    }
+                }
+            }
+            else
+            {
+                metaProgression = new BitArray(ProgressionCount);
+            }
+            overrideMeta = new BitArray(metaProgression);
+        }
+        
+        #endregion
 
         public void DoUnlockText(LocalizedText text, Color? colour = null, int overheadTime = 360)
         {
@@ -44,22 +76,38 @@ namespace TerrariaCells.Common.ModPlayers
                 Player.chatOverhead.NewMessage(text.Value, overheadTime);
             }
         }
+        
+        #region Item Unlocks
+
+        private const string _ITEM_KEYS = "Keys:Item";
+        private const string _ITEM_VALS = "Vals:Item";
+        public Dictionary<int, bool> ItemUnlocks { get; private set; } = new Dictionary<int, bool>();
+        private void SaveItems(TagCompound tag)
+        {
+            tag[_ITEM_KEYS] = ItemUnlocks.Keys.ToList();
+            tag[_ITEM_VALS] = ItemUnlocks.Values.ToList();
+        }
+        private void LoadItems(TagCompound tag)
+        {
+            List<int> itemKeys = tag.Get<List<int>>(_ITEM_KEYS);
+            List<bool> itemVals = tag.Get<List<bool>>(_ITEM_VALS);
+            ItemUnlocks = itemKeys.Zip(itemVals, (k, v) => new KeyValuePair<int, bool>(k, v)).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        }
+
+        #endregion
 
         public Content.UI.UnlockState CheckUnlocks(Item item)
         {
-            switch(item.type)
-            {
-                case ItemID.HornetStaff:
-                case ItemID.Beenade:
-                    if(!DownedQB)
-                        return Content.UI.UnlockState.Locked;
-                    break;
-            }
-            return foundTypes[item.type] ? Content.UI.UnlockState.Found : Content.UI.UnlockState.Unlocked;
+            return CheckUnlocks(item.type);
+        }
+        public Content.UI.UnlockState CheckUnlocks(int itemType)
+        {
+            if(!ItemUnlocks.TryGetValue(itemType, out bool result))
+                return Content.UI.UnlockState.Locked;
+            return result ? Content.UI.UnlockState.Found : Content.UI.UnlockState.Unlocked;
         }
 
         #region Backing Functionality
-        internal bool[] foundTypes = new bool[ItemLoader.ItemCount];
         public bool GetCanToggle(int index)
         {
             if(index < 0 || index > ProgressionCount)
@@ -94,47 +142,15 @@ namespace TerrariaCells.Common.ModPlayers
         }
         public override void SaveData(TagCompound tag)
         {
-            if(metaProgression?.HasAnySet() == true)
-                tag.Add("TerraCells:MetaProgress", metaProgression);
+            SaveFlags(tag);
 
-            if(foundTypes.Any(b => b == true))
-            {
-                List<int> foundItemIndeces = new List<int>();
-                for(int i = 0; i < foundTypes.Length; i++)
-                {
-                    if(foundTypes[i])
-                        foundItemIndeces.Add(i);
-                }
-                tag.Add(nameof(foundTypes), foundItemIndeces);
-            }
+            SaveItems(tag);
         }
         public override void LoadData(TagCompound tag)
         {
-            int expectedLength = ProgressionCount;
-            if (tag.TryGet<BitArray>("TerraCells:MetaProgress", out metaProgression))
-            {
-                if (metaProgression.Length < expectedLength)
-                {
-                    BitArray oldBits = new BitArray(metaProgression);
-                    metaProgression = new BitArray(expectedLength);
-                    for (int i = 0; i < oldBits.Length; i++)
-                    {
-                        metaProgression[i] = oldBits[i];
-                    }
-                }
-            }
-            else
-            {
-                metaProgression = new BitArray(expectedLength);
-            }
-            overrideMeta = new BitArray(metaProgression);
+            SaveFlags(tag);
 
-            foundTypes = new bool[ItemLoader.ItemCount];
-            IEnumerable<int> foundIndeces = tag.GetList<int>(nameof(foundTypes));
-            foreach(int index in foundIndeces)
-            {
-                foundTypes[index] = true;
-            }
+            LoadItems(tag);
         }
 
         public override void OnEnterWorld()
@@ -152,6 +168,17 @@ namespace TerrariaCells.Common.ModPlayers
             byte[] arr = new byte[1 + (ProgressionCount/sizeof(byte))];
             overrideMeta.CopyTo(arr, 0);
             packet.Write(arr, 0, arr.Length);
+
+            packet.Write(newPlayer);
+            if(newPlayer)
+            {
+                packet.Write((ushort)ItemUnlocks.Count);
+                foreach(int key in ItemUnlocks.Keys)
+                {
+                    packet.Write7BitEncodedInt(key);
+                }
+            }
+            
             packet.Send(toWho, fromWho);
         }
         public void GetSyncPlayer(System.IO.BinaryReader reader)
@@ -162,6 +189,16 @@ namespace TerrariaCells.Common.ModPlayers
             for(int i = 0; i < temp.Length; i++)
             {
                 this[i] = temp[i];
+            }
+
+            if(reader.ReadBoolean())
+            {
+                ItemUnlocks = new Dictionary<int, bool>();
+                ushort len = reader.ReadUInt16();
+                for(ushort i = 0; i < len; i++)
+                {
+                    ItemUnlocks[reader.Read7BitEncodedInt()] = false;
+                }
             }
         }
         public override void CopyClientState(ModPlayer targetCopy)
@@ -204,12 +241,19 @@ namespace TerrariaCells.Common.ModPlayers
 
     public class UnlockItem : GlobalItem
     {
-        public override void UpdateInventory(Item item, Player player)
+        public override bool AppliesToEntity(Item entity, bool lateInstantiation)
         {
-            if(player.whoAmI == Main.myPlayer)
-            {
-                player.GetModPlayer<MetaPlayer>().foundTypes[item.type] = true;
-            }
+            return
+                VanillaNPCShop.Weapons.Contains(entity.type)
+                || VanillaNPCShop.Accessories.Contains(entity.type)
+                || VanillaNPCShop.Armors.Contains(entity.type)
+                || VanillaNPCShop.Skills.Contains(entity.type);
+        }
+
+        public override bool OnPickup(Item item, Player player)
+        {
+            player.GetModPlayer<MetaPlayer>().ItemUnlocks[item.type] = true;
+            return base.OnPickup(item, player);
         }
     }
 }
