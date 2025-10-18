@@ -88,7 +88,8 @@ public class BasicWorldGeneration : ModSystem
             {
                 if (Mod.SourceFolder != "")
                 {
-                    string path = Mod.SourceFolder + "\\" + structure.SpawnInfoPath;
+                    string path = Mod.SourceFolder + "/" + structure.SpawnInfoPath;
+                    path = ReLogic.Content.AssetPathHelper.CleanPath(path);
 
                     if (!File.Exists(path))
                     {
