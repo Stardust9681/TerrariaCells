@@ -11,6 +11,7 @@ using Terraria.ModLoader.IO;
 
 using TerrariaCells.Common.Configs;
 using TerrariaCells.Common.GlobalItems;
+using TerrariaCells.Common.ModPlayers;
 
 namespace TerrariaCells.Common.Systems;
 
@@ -70,7 +71,7 @@ public class ChestLootSpawner : ModSystem, IEntitySource
         }
     }
     // MULTIPLAYER ONLY
-    public void OpenChest(int x, int y, int newChest)
+    public void OpenChest(int x, int y, int newChest, int fromWho)
     {
         bool isNewChest = !lootedChests.Contains(newChest);
 
@@ -96,6 +97,7 @@ public class ChestLootSpawner : ModSystem, IEntitySource
             {
                 if (ChestLootTables.TryGetValue(tileFrame, out int[] loot_ids)) 
                 {
+                    loot_ids = Main.player[fromWho].GetModPlayer<MetaPlayer>().GetDropOptions(loot_ids).ToArray();
                     if (loot_ids.Length > 0)
                     {
                         int i = Item.NewItem(
@@ -103,7 +105,7 @@ public class ChestLootSpawner : ModSystem, IEntitySource
                             new Point16(x, y).ToWorldCoordinates(),
                             0,
                             0,
-                            loot_ids[Main.rand.Next(loot_ids.Length)]
+                            Main.rand.Next(loot_ids)
                         );
                         Item item = Main.item[i];
 
@@ -162,8 +164,9 @@ public class ChestLootSpawner : ModSystem, IEntitySource
 
             if (isNewChest)
             {
-                if (ChestLootTables.TryGetValue(tileFrame, out int[] loot_ids)) 
+                if (ChestLootTables.TryGetValue(tileFrame, out int[] loot_ids))
                 {
+                    loot_ids = self.GetModPlayer<MetaPlayer>().GetDropOptions(loot_ids).ToArray();
                     if (loot_ids.Length > 0)
                     {
                         Item item = Main.item[
@@ -172,7 +175,7 @@ public class ChestLootSpawner : ModSystem, IEntitySource
                             new Point16(x, y).ToWorldCoordinates(),
                             0,
                             0,
-                            loot_ids[Main.rand.Next(loot_ids.Length)]
+                            Main.rand.Next(loot_ids)
                             )
                         ];
 

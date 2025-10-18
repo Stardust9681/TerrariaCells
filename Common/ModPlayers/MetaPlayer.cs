@@ -116,6 +116,14 @@ namespace TerrariaCells.Common.ModPlayers
             if (checkState == UnlockState.Locked) ItemUnlocks.Add(itemType, val);
             else if (checkState == UnlockState.Unlocked) ItemUnlocks[itemType] = val;
         }
+        
+        public IEnumerable<int> GetDropOptions(IEnumerable<int> fromAllItems)
+        {
+            var result = fromAllItems.Intersect(ItemUnlocks.Keys);
+            if (!result.Any())
+                return [ItemID.Bass];
+            return result;
+        }
 
         #endregion
 
