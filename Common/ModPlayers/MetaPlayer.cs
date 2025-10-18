@@ -250,10 +250,9 @@ namespace TerrariaCells.Common.ModPlayers
                 || VanillaNPCShop.Skills.Contains(entity.type);
         }
 
-        public override bool OnPickup(Item item, Player player)
+        public override void UpdateInventory(Item item, Player player)
         {
             player.GetModPlayer<MetaPlayer>().ItemUnlocks[item.type] = true;
-            return base.OnPickup(item, player);
         }
     }
 }
