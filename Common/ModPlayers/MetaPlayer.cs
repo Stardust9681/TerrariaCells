@@ -148,7 +148,7 @@ namespace TerrariaCells.Common.ModPlayers
         }
         public override void LoadData(TagCompound tag)
         {
-            SaveFlags(tag);
+            LoadFlags(tag);
 
             LoadItems(tag);
         }
