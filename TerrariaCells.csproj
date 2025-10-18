@@ -8,13 +8,13 @@
     <!-- General -->
     <ItemGroup>
         <Reference Include="StructureHelper">
-            <HintPath>..\ModAssemblies\StructureHelper_v3.0.1.dll</HintPath>
+            <HintPath>..\ModAssemblies\StructureHelper_v3.1.0.dll</HintPath>
         </Reference>
     </ItemGroup>
     <!-- References -->
     <ItemGroup>
         <Reference Include="StructureHelper">
-            <HintPath>..\ModAssemblies\StructureHelper_v3.0.1.dll</HintPath>
+            <HintPath>..\ModAssemblies\StructureHelper_v3.1.0.dll</HintPath>
         </Reference>
     </ItemGroup>
     <ItemGroup>
