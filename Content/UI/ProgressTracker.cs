@@ -497,27 +497,20 @@ namespace TerrariaCells.Content.UI
                     Rectangle bounds = GetDimensions().ToRectangle();
 
                     var meta = Main.LocalPlayer.GetModPlayer<MetaPlayer>();
-                    bool unlocked = meta.GetCanToggle(whoAmI);
-                    Color drawColor;
-                    if(!unlocked)
+                    bool unlocked = meta.HasFlag(whoAmI);
+                    Color drawColor = Color.DarkSlateBlue;
+                    if(unlocked)
                     {
-                        drawColor = Color.DarkSlateBlue;
-                    }
-                    else
-                    {
-                        if(meta[whoAmI])
+                        drawColor = UIHelper.InventoryColour;
+                        if(IsMouseHovering)
                         {
-                            drawColor = IsMouseHovering ? Color.LightGreen : Color.Green;
-                        }
-                        else
-                        {
-                            drawColor = IsMouseHovering ? Color.PaleVioletRed : Color.Red;
+                            drawColor = Color.MediumSlateBlue;
                         }
                     }
                     UIHelper.PANEL.Draw(spriteBatch, bounds, drawColor);
 
                     DynamicSpriteFont font = FontAssets.MouseText.Value;
-                    string text = "Click to toggle " + DisplayText.Value;
+                    string text = DisplayText.Value;
                     if(!unlocked)
                         text = "???";
                     Vector2 size = font.MeasureString(text);
@@ -535,12 +528,7 @@ namespace TerrariaCells.Content.UI
                 public override void LeftClick(UIMouseEvent evt)
                 {
                     var meta = Main.LocalPlayer.GetModPlayer<MetaPlayer>();
-                    if(meta.GetCanToggle(whoAmI))
-                    {
-                        SoundEngine.PlaySound(SoundID.MenuTick);
-                        meta[whoAmI] = !meta[whoAmI];
-                    }
-                    else
+                    if(!meta.HasFlag(whoAmI))
                     {
                         SoundEngine.PlaySound(SoundID.Tink);
                     }

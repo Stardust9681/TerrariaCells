@@ -63,7 +63,7 @@ namespace TerrariaCells.Common.ModPlayers
             {
                 metaProgression = new BitArray(ProgressionCount);
             }
-            overrideMeta = new BitArray(metaProgression);
+            //overrideMeta = new BitArray(metaProgression);
         }
         
         #endregion
@@ -108,7 +108,7 @@ namespace TerrariaCells.Common.ModPlayers
         }
 
         #region Backing Functionality
-        public bool GetCanToggle(int index)
+        public bool HasFlag(int index)
         {
             if(index < 0 || index > ProgressionCount)
             {
@@ -120,21 +120,21 @@ namespace TerrariaCells.Common.ModPlayers
             }
             return metaProgression[index];
         }
-        private BitArray overrideMeta = new BitArray(ProgressionCount);
+        //private BitArray overrideMeta = new BitArray(ProgressionCount);
         private BitArray metaProgression = new BitArray(ProgressionCount);
         internal bool this[int index]
         {
-            get => metaProgression[index] && overrideMeta[index];
+            get => metaProgression[index] /*&& overrideMeta[index]*/;
             set
             {
                 if(value && !metaProgression[index])
                 {
                     metaProgression[index] = value;
-                    overrideMeta[index] = value;
+                    //overrideMeta[index] = value;
                 }
                 else
                 {
-                    overrideMeta[index] = value;
+                    //overrideMeta[index] = value;
                 }
                 if (Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient)
                     SyncPlayer(-1, Main.myPlayer, false);
@@ -166,7 +166,8 @@ namespace TerrariaCells.Common.ModPlayers
             ModPacket packet = Common.Utilities.ModNetHandler.GetPacket(Mod, Utilities.TCPacketType.PlayerPacket);
             packet.Write((byte)Content.Packets.PlayerPacketHandler.PlayerSyncType.MetaProgress);
             byte[] arr = new byte[1 + (ProgressionCount/sizeof(byte))];
-            overrideMeta.CopyTo(arr, 0);
+            //overrideMeta.CopyTo(arr, 0);
+            metaProgression.CopyTo(arr, 0);
             packet.Write(arr, 0, arr.Length);
 
             packet.Write(newPlayer);
@@ -205,12 +206,12 @@ namespace TerrariaCells.Common.ModPlayers
         {
             MetaPlayer copy = (MetaPlayer)targetCopy;
             copy.metaProgression = this.metaProgression;
-            copy.overrideMeta = this.overrideMeta;
+            //copy.overrideMeta = this.overrideMeta;
         }
         public override void SendClientChanges(ModPlayer clientPlayer)
         {
             MetaPlayer client = (MetaPlayer)clientPlayer;
-            if (!metaProgression.Equals(client.metaProgression) || !overrideMeta.Equals(client.overrideMeta))
+            if (!metaProgression.Equals(client.metaProgression) /*|| !overrideMeta.Equals(client.overrideMeta)*/)
             {
                 SyncPlayer(-1, Main.myPlayer, false);
             }
