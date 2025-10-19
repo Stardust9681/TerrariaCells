@@ -1,3 +1,4 @@
+/*
 namespace TerrariaCells.Common.Items;
 
 public enum TerraCellsItemCategory
@@ -79,3 +80,4 @@ public enum StorageItemSubcategorization
     /// </summary>
     Coin = 3,
 }
+*/

@@ -1,0 +1,131 @@
+{
+  "_": "Using \"_\" for comments here, these will be discarded during parsing.",
+  
+  "Loot" : {
+    "_": "Used for shops and can be referenced by chests. Items here will be automatically provided categories based on placement.",
+    
+    "Weapons" : [
+      "PhoenixBlaster",
+      "SniperRifle",
+      "OnyxBlaster",
+      "PulseBow",
+      "IceBow",
+      "Minishark",
+      "FieryGreatsword",
+      "VenomStaff",
+      "InfernoFork",
+      "EmeraldStaff",
+      "RubyStaff",
+      "LaserRifle",
+      "BookofSkulls",
+      "PlatinumBow",
+      "AleThrowingGlove",
+      "PlatinumBroadsword",
+      "Gladius",
+      "Katana",
+      "SawtoothShark",
+      "StaffofEarth"
+    ],
+    "Skills" : [
+      "MolotovCocktail",
+      "ClingerStaff",
+      "ToxicFlask",
+      "DD2ExplosiveTrapT1Popper",
+      "BouncyDynamite",
+      "SwiftnessPotion",
+      "MagicPowerPotion",
+      "WrathPotion",
+      "HornetStaff",
+      "Beenade"
+    ],
+    "Accessories" : [
+      "CelestialMagnet",
+      "NaturesGift",
+      "ArcaneFlower",
+      "ManaRegenerationBand",
+      "MagicCuffs",
+      "StalkersQuiver",
+      "ChlorophyteDye",
+      "SniperScope",
+      "ReconScope",
+      "BerserkerGlove",
+      "SharkToothNecklace",
+      "Nazar",
+      "FeralClaws",
+      "ThePlan",
+      "ObsidianShield",
+      "FrozenTurtleShell",
+      "BandofRegeneration",
+      "FastClock",
+      "CelestialStone",
+      "FlaskofVenom",
+      "HerculesBeetle" ,
+      "PhilosophersStone" ,
+      "AvengerEmblem",
+      "EyeoftheGolem"
+    ],
+    "Armor" : [
+      "NinjaHood",
+      "NinjaShirt",
+      "NinjaPants",
+      "GoldHelmet",
+      "GoldChainmail",
+      "GoldGreaves",
+      "JungleHat",
+      "JungleShirt",
+      "JunglePants",
+      "NecroHelmet",
+      "NecroBreastplate",
+      "NecroGreaves",
+      "MoltenHelmet",
+      "MoltenBreastplate",
+      "MoltenGreaves"
+      ],
+    "Potions" : []
+  },
+  
+  "Category" : {
+    "_" : "Not used for loot or shops. Used to determine where items can go in the inventory. Takes priority over Loot for categorisation.",
+    
+    "Weapons" : [
+      "CopperShortsword",
+      "WoodenBow"
+    ],
+    "Skills" : [],
+    "Accessories" : [],
+    "Armor" : [],
+    "Potions" : [
+      "LifeCrystal",
+      "LesserHealingPotion",
+      "HealingPotion",
+      "GreaterHealingPotion",
+      "SuperHealingPotion"
+    ]
+  },
+  
+  "ChestOverrides" : {
+    "_" : "Defines chest loot. Chests that use existing Loot tables can be denoted as \"ID\": \"Name of Table\". Otherwise include the list of drops, \"ID\": [ 1, 2, 3 ].",
+    
+    "1": "Weapons",
+    "19": "Skills",
+    
+    "43": [
+      28
+    ],
+    "44": [
+      1523
+    ],
+    "22": [
+      1524
+    ],
+    "49": [
+      327
+    ],
+    "47": [
+      1526
+    ],
+    "7": [
+      1522
+    ]
+  }
+}

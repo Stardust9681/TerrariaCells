@@ -193,29 +193,20 @@ namespace TerrariaCells.Common.GlobalItems
                     break;
             }
 
-            Dictionary<string, int[]> chestLootTables = ModContent.GetContent<ChestLootSpawner>().First().ChestLootTables;
-            foreach (var key in chestLootTables.Keys)
+            switch(ItemsJson.Instance.Category.GetValueOrDefault(item.type))
             {
-                if (chestLootTables[key].Contains(item.type))
-                {
-                    switch (key)
-                    {
-                        case "1":
-                            // multiplied by 5 so that I can input sell price instead of buy price
-                            item.value = 5 * 500;
-                            break;
-                        case "19":
-                            item.value = 5 * 5000;
-                            break;
-                        case "20":
-                            item.value = 5 * 10000;
-                            break;
-                        case "43":
-                            item.value = 5 * 4000;
-                            break;
-                    }
+                case ItemsJson.ItemCategory.Weapons:
+                    item.value = 5 * 5_00;
                     break;
-                }
+                case ItemsJson.ItemCategory.Abilities:
+                    item.value = 5 * 50_00;
+                    break;
+                case ItemsJson.ItemCategory.Accessories:
+                    item.value = 5 * 1_00_00;
+                    break;
+                case ItemsJson.ItemCategory.Armor:
+                    item.value = 5 * 40_00;
+                    break;
             }
 
             item.useAnimation = item.useTime;
@@ -234,34 +225,22 @@ namespace TerrariaCells.Common.GlobalItems
             {
                 switch (InventoryManager.GetItemCategorization(item.type))
                 {
-                    case TerraCellsItemCategory.Weapon:
+                    case ItemsJson.ItemCategory.Weapons:
                         item.rare = ItemRarityID.Red; // or custom rarity ID
                         break;
-                    case TerraCellsItemCategory.Skill:
+                    case ItemsJson.ItemCategory.Abilities:
                         item.rare = ItemRarityID.Green;
                         break;
-                    case TerraCellsItemCategory.Potion:
+                    case ItemsJson.ItemCategory.Armor:
+                        item.rare = ItemRarityID.Blue;
+                        break;
+                    case ItemsJson.ItemCategory.Potions:
                         item.rare = ItemRarityID.Quest; // Amber-like
                         break;
-                    case TerraCellsItemCategory.Storage:
-                        switch (InventoryManager.GetStorageItemSubcategorization(item.type))
-                        {
-                            case StorageItemSubcategorization.Accessory:
-                                item.rare = ItemRarityID.Yellow;
-                                break;
-                            case StorageItemSubcategorization.Armor:
-                                item.rare = ItemRarityID.Blue;
-                                break;
-                            case StorageItemSubcategorization.Coin:
-                                item.rare = ItemRarityID.White;
-                                break;
-                            default:
-                                item.rare = ItemRarityID.LightPurple;
-                                break;
-                                //default:
-                                //    item.rare = ItemRarityID.LightRed; // Large gems or other Storage items
-                                //    break;
-                        }
+                    default:
+                        if(item.accessory) item.rare = ItemRarityID.Yellow;
+                        else if (item.IsACoin) item.rare = ItemRarityID.LightPurple;
+                        else item.rare = ItemRarityID.White;
                         break;
                 }
             }
@@ -382,7 +361,7 @@ namespace TerrariaCells.Common.GlobalItems
                     case "UseMana":
                         switch (InventoryManager.GetItemCategorization(item.netID))
                         {
-                            case TerraCellsItemCategory.Weapon:
+                            case ItemsJson.ItemCategory.Weapons:
                                 break;
                             default:
                                 tooltip.Hide();
@@ -395,31 +374,17 @@ namespace TerrariaCells.Common.GlobalItems
             TooltipLine itemCategorizationTooltip = new(Mod, "ItemCategorization", "");
             switch (InventoryManager.GetItemCategorization(item.netID))
             {
-                case TerraCellsItemCategory.Default:
-                    itemCategorizationTooltip.OverrideColor = LimitedStorageUI.defaultSlotColor;
-                    itemCategorizationTooltip.Text = "???";
-                    break;
-                case TerraCellsItemCategory.Weapon:
+                case ItemsJson.ItemCategory.Weapons:
                     itemCategorizationTooltip.OverrideColor = LimitedStorageUI.weaponSlotColor;
                     itemCategorizationTooltip.Text = "Weapon";
                     break;
-                case TerraCellsItemCategory.Skill:
+                case ItemsJson.ItemCategory.Abilities:
                     itemCategorizationTooltip.OverrideColor = LimitedStorageUI.skillSlotColor;
                     itemCategorizationTooltip.Text = "Skill";
                     break;
-                case TerraCellsItemCategory.Potion:
+                case ItemsJson.ItemCategory.Potions:
                     itemCategorizationTooltip.OverrideColor = LimitedStorageUI.potionSlotColor;
                     itemCategorizationTooltip.Text = "Potion";
-                    break;
-                case TerraCellsItemCategory.Storage:
-                    // itemCategorizationTooltip.OverrideColor = LimitedStorageUI.storageSlotColor;
-                    // itemCategorizationTooltip.Text = "Storage";
-                    break;
-                case TerraCellsItemCategory.Pickup:
-                    itemCategorizationTooltip.OverrideColor = LimitedStorageUI.defaultSlotColor;
-                    itemCategorizationTooltip.Text = "Potion";
-                    break;
-                default:
                     break;
             }
 
@@ -475,31 +440,17 @@ namespace TerrariaCells.Common.GlobalItems
                 TooltipLine itemCategorizationTooltip = new(Mod, "ItemCategorization", "");
                 switch (InventoryManager.GetItemCategorization(item.netID))
                 {
-                    case TerraCellsItemCategory.Default:
-                        itemCategorizationTooltip.OverrideColor = LimitedStorageUI.defaultSlotColor;
-                        itemCategorizationTooltip.Text = "???";
-                        break;
-                    case TerraCellsItemCategory.Weapon:
+                    case ItemsJson.ItemCategory.Weapons:
                         itemCategorizationTooltip.OverrideColor = LimitedStorageUI.weaponSlotColor;
                         itemCategorizationTooltip.Text = "Weapon";
                         break;
-                    case TerraCellsItemCategory.Skill:
+                    case ItemsJson.ItemCategory.Abilities:
                         itemCategorizationTooltip.OverrideColor = LimitedStorageUI.skillSlotColor;
                         itemCategorizationTooltip.Text = "Skill";
                         break;
-                    case TerraCellsItemCategory.Potion:
+                    case ItemsJson.ItemCategory.Potions:
                         itemCategorizationTooltip.OverrideColor = LimitedStorageUI.potionSlotColor;
                         itemCategorizationTooltip.Text = "Potion";
-                        break;
-                    case TerraCellsItemCategory.Storage:
-                        // itemCategorizationTooltip.OverrideColor = LimitedStorageUI.storageSlotColor;
-                        // itemCategorizationTooltip.Text = "Storage";
-                        break;
-                    case TerraCellsItemCategory.Pickup:
-                        itemCategorizationTooltip.OverrideColor = LimitedStorageUI.defaultSlotColor;
-                        itemCategorizationTooltip.Text = "Potion";
-                        break;
-                    default:
                         break;
                 }
                 tooltips.Add(itemCategorizationTooltip);

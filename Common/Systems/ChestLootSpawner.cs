@@ -17,7 +17,7 @@ namespace TerrariaCells.Common.Systems;
 
 public class ChestLootSpawner : ModSystem, IEntitySource
 {
-    public Dictionary<string, int[]> ChestLootTables;
+    //public Dictionary<string, int[]> ChestLootTables;
 
     public List<int> lootedChests = [];
 
@@ -25,11 +25,6 @@ public class ChestLootSpawner : ModSystem, IEntitySource
 
     public override void Load()
     {
-        using Stream stream = Mod.GetFileStream("chest loot tables.json");
-        var buf = new byte[stream.Length];
-        stream.Read(buf);
-        ChestLootTables = JsonSerializer.Deserialize<Dictionary<string, int[]>>(buf);
-
         ///See <see cref="ModPlayers.RewardPlayer."/>
         On_Player.OpenChest += OnChestOpen;
     }
@@ -95,8 +90,9 @@ public class ChestLootSpawner : ModSystem, IEntitySource
         {
             if (isNewChest)
             {
-                if (ChestLootTables.TryGetValue(tileFrame, out int[] loot_ids)) 
+                if (ItemsJson.Instance.ChestOverrides.TryGetValue(tileFrame, out var func))
                 {
+                    int[] loot_ids = func.Invoke().ToArray();
                     loot_ids = Main.player[fromWho].GetModPlayer<MetaPlayer>().GetDropOptions(loot_ids).ToArray();
                     if (loot_ids.Length > 0)
                     {
@@ -164,8 +160,9 @@ public class ChestLootSpawner : ModSystem, IEntitySource
 
             if (isNewChest)
             {
-                if (ChestLootTables.TryGetValue(tileFrame, out int[] loot_ids))
+                if (ItemsJson.Instance.ChestOverrides.TryGetValue(tileFrame, out var func))
                 {
+                    int[] loot_ids = func.Invoke().ToArray();
                     loot_ids = self.GetModPlayer<MetaPlayer>().GetDropOptions(loot_ids).ToArray();
                     if (loot_ids.Length > 0)
                     {

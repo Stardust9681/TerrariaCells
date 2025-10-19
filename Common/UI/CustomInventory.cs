@@ -41,7 +41,7 @@ public class CustomAccessorySlot2 : ModAccessorySlot
 public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
 {
     internal override string Name => "TerraCells: InventoryUI";
-    static TerraCellsItemCategory currentSlotCategory = TerraCellsItemCategory.Default;
+    static ItemsJson.ItemCategory currentSlotCategory = ItemsJson.ItemCategory.Undefined;
 
     protected override bool PreDraw(SpriteBatch spriteBatch)
     {
@@ -62,17 +62,17 @@ public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
         return false;
     }
 
-    static readonly (Vector2, int, TerraCellsItemCategory)[] inventorySlots =
+    static readonly (Vector2, int, ItemsJson.ItemCategory)[] inventorySlots =
     [
-        (new Vector2(56f * 0, 0f), 0, TerraCellsItemCategory.Weapon),
-        (new Vector2(56f * 1, 0f), 1, TerraCellsItemCategory.Weapon),
-        (new Vector2(56f * 2, 0f), 2, TerraCellsItemCategory.Skill),
-        (new Vector2(56f * 3, 0f), 3, TerraCellsItemCategory.Skill),
-        (new Vector2(56f * 4, 0f), 4, TerraCellsItemCategory.Potion),
-        (new Vector2(56f * 0, 60f), 10, TerraCellsItemCategory.Storage),
-        (new Vector2(56f * 1, 60f), 11, TerraCellsItemCategory.Storage),
-        (new Vector2(56f * 2, 60f), 12, TerraCellsItemCategory.Storage),
-        (new Vector2(56f * 3, 60f), 13, TerraCellsItemCategory.Storage),
+        (new Vector2(56f * 0, 0f), 0, ItemsJson.ItemCategory.Weapons),
+        (new Vector2(56f * 1, 0f), 1, ItemsJson.ItemCategory.Weapons),
+        (new Vector2(56f * 2, 0f), 2, ItemsJson.ItemCategory.Abilities),
+        (new Vector2(56f * 3, 0f), 3, ItemsJson.ItemCategory.Abilities),
+        (new Vector2(56f * 4, 0f), 4, ItemsJson.ItemCategory.Potions),
+        (new Vector2(56f * 0, 60f), 10, ItemsJson.ItemCategory.Undefined),
+        (new Vector2(56f * 1, 60f), 11, ItemsJson.ItemCategory.Undefined),
+        (new Vector2(56f * 2, 60f), 12, ItemsJson.ItemCategory.Undefined),
+        (new Vector2(56f * 3, 60f), 13, ItemsJson.ItemCategory.Undefined),
     ];
 
     public static readonly Color defaultSlotColor = new(12, 245, 103);
@@ -103,12 +103,8 @@ public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
             return;
 
         string text = Lang.inter[37].Value;
-        if (
-            Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem].Name != null
-            && Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem].Name != ""
-        )
-            text =
-                Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem].AffixName() ;
+        if (!string.IsNullOrEmpty(Main.LocalPlayer.HeldItem.Name))
+            text = Main.LocalPlayer.HeldItem.AffixName();
 
         DynamicSpriteFontExtensionMethods.DrawString(
             position: new Vector2(
@@ -137,20 +133,14 @@ public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
 			bool isSelectedItem = Main.LocalPlayer.selectedItem == i;
             switch (inventorySlots[i].Item3)
             {
-                case TerraCellsItemCategory.Default:
-                    Main.inventoryBack = defaultSlotColor;
-                    break;
-                case TerraCellsItemCategory.Weapon:
+                case ItemsJson.ItemCategory.Weapons:
                     Main.inventoryBack = weaponSlotColor;
                     break;
-                case TerraCellsItemCategory.Skill:
+                case ItemsJson.ItemCategory.Abilities:
                     Main.inventoryBack = skillSlotColor;
                     break;
-                case TerraCellsItemCategory.Potion:
+                case ItemsJson.ItemCategory.Potions:
                     Main.inventoryBack = potionSlotColor;
-                    break;
-                case TerraCellsItemCategory.Storage:
-                    Main.inventoryBack = storageSlotColor;
                     break;
             }
 
@@ -373,20 +363,14 @@ public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
             currentSlotCategory = slot.Item3;
             switch (currentSlotCategory)
             {
-                case TerraCellsItemCategory.Default:
-                    Main.inventoryBack = defaultSlotColor;
-                    break;
-                case TerraCellsItemCategory.Weapon:
+                case ItemsJson.ItemCategory.Weapons:
                     Main.inventoryBack = weaponSlotColor;
                     break;
-                case TerraCellsItemCategory.Skill:
+                case ItemsJson.ItemCategory.Abilities:
                     Main.inventoryBack = skillSlotColor;
                     break;
-                case TerraCellsItemCategory.Potion:
+                case ItemsJson.ItemCategory.Potions:
                     Main.inventoryBack = potionSlotColor;
-                    break;
-                case TerraCellsItemCategory.Storage:
-                    Main.inventoryBack = storageSlotColor;
                     break;
             }
             if (
@@ -1405,7 +1389,7 @@ public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
                             && ItemLoader.CanReforge(Main.reforgeItem)
                         )
                         {
-                            if (InventoryManager.GetItemCategorization(Main.reforgeItem.type) == TerraCellsItemCategory.Weapon
+                            if (InventoryManager.GetItemCategorization(Main.reforgeItem.type) == ItemsJson.ItemCategory.Weapons
                                 && Main.reforgeItem.TryGetGlobalItem(out FunkyModifierItemModifier modifier)) 
                             {
 
@@ -2125,6 +2109,9 @@ public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
             )
                 Main.player[Main.myPlayer].mouseInterface = true;
 
+            //Main.inventoryBack is a different value coming into this because ??? so we reset it.
+            Color invBack = Main.inventoryBack;
+            Main.inventoryBack = Color.White;
             for (int num104 = 0; num104 < 10; num104++)
             {
                 for (int num105 = 0; num105 < 4; num105++)
@@ -2132,7 +2119,6 @@ public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
                     int num106 = (int)(73f + num104 * 56 * Main.inventoryScale);
                     int num107 = (int)(Main.instance.invBottom + num105 * 56 * Main.inventoryScale);
                     int slot3 = num104 + num105 * 10;
-                    new Color(100, 100, 100, 100);
                     if (
                         Main.mouseX >= num106
                         && Main.mouseX
@@ -2159,6 +2145,8 @@ public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
                     );
                 }
             }
+
+            Main.inventoryBack = invBack;
         }
 
         // var tilemapReflection = typeof(Tilemap);
@@ -3113,7 +3101,7 @@ public class LimitedStorageUI : Common.UI.Components.Windows.WindowState
     {
         if (
             !Main.mouseItem.IsAir
-            && currentSlotCategory != TerraCellsItemCategory.Storage
+            && currentSlotCategory != ItemsJson.ItemCategory.Undefined
             && InventoryManager.GetItemCategorization(Main.LocalPlayer.inventory[58])
                 != currentSlotCategory
         )

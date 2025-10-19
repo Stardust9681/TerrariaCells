@@ -232,7 +232,7 @@ namespace TerrariaCells.Common.ModPlayers
                 for(ushort i = 0; i < len; i++)
                 {
                     //Server and other clients don't actually need to know beyond locked/unlocked
-                    _itemUnlocks[reader.Read7BitEncodedInt()] = UnlockState.Unlocked;
+                    UpdateItemStatus(reader.Read7BitEncodedInt(), UnlockState.Unlocked);
                 }
             }
         }
@@ -278,11 +278,7 @@ namespace TerrariaCells.Common.ModPlayers
     {
         public override bool AppliesToEntity(Item entity, bool lateInstantiation)
         {
-            return
-                VanillaNPCShop.Weapons.Contains(entity.type)
-                || VanillaNPCShop.Accessories.Contains(entity.type)
-                || VanillaNPCShop.Armors.Contains(entity.type)
-                || VanillaNPCShop.Skills.Contains(entity.type);
+            return ItemsJson.Instance.Category.ContainsKey(entity.type);
         }
 
         public override void UpdateInventory(Item item, Player player)

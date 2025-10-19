@@ -59,10 +59,10 @@ namespace TerrariaCells.Content.UI
             Append(Button);
 
             Tabs = new ProgressTabs();
-            Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.Starfury}", () => Common.GlobalNPCs.VanillaNPCShop.Weapons));
-            Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.MolotovCocktail}", () => Common.GlobalNPCs.VanillaNPCShop.Skills));
-            Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.BandofRegeneration}", () => Common.GlobalNPCs.VanillaNPCShop.Accessories));
-            Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.WizardHat}", () => Common.GlobalNPCs.VanillaNPCShop.Armors));
+            Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.Starfury}", () => ItemsJson.Instance.Loot[ItemsJson.ItemCategory.Weapons]));
+            Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.MolotovCocktail}", () => ItemsJson.Instance.Loot[ItemsJson.ItemCategory.Abilities]));
+            Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.BandofRegeneration}", () => ItemsJson.Instance.Loot[ItemsJson.ItemCategory.Accessories]));
+            Tabs.Append(new ItemProgress($"Terraria/Images/Item_{ItemID.WizardHat}", () => ItemsJson.Instance.Loot[ItemsJson.ItemCategory.Armor]));
             Tabs.Append(new MetaProgress());
 
             Tabs.OnUpdate += (x) => { if(x.IsMouseHovering) Main.LocalPlayer.mouseInterface = true; };

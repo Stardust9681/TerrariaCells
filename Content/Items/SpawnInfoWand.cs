@@ -16,10 +16,8 @@ using TerrariaCells.Common.Utilities;
 
 namespace TerrariaCells.Content.Items;
 
-public class SpawnInfoWand : ModItem, ITerraCellsCategorization
+public class SpawnInfoWand : ModItem
 {
-    public TerraCellsItemCategory Category { get => TerraCellsItemCategory.Skill; }
-
     public Level currentLevel;
     public LevelStructure currentStructure;
     public Point structurePosition = new(319, 150);
