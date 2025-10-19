@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections;
 using System.Reflection;
+using MonoMod.Utils;
 using Terraria.Chat;
 using Terraria.Localization;
 using TerrariaCells.Common.GlobalNPCs;
@@ -95,36 +96,49 @@ namespace TerrariaCells.Common.ModPlayers
 
         private const string _ITEM_KEYS = "Keys:Item";
         private const string _ITEM_VALS = "Vals:Item";
-        public Dictionary<int, bool> ItemUnlocks { get; private set; } = new Dictionary<int, bool>();
+        private Dictionary<int, UnlockState> _itemUnlocks = new Dictionary<int, UnlockState>();
         private void SaveItems(TagCompound tag)
         {
-            tag[_ITEM_KEYS] = ItemUnlocks.Keys.ToList();
-            tag[_ITEM_VALS] = ItemUnlocks.Values.ToList();
+            tag[_ITEM_KEYS] = _itemUnlocks.Keys.ToList();
+            tag[_ITEM_VALS] = _itemUnlocks.Values.Select(v => (byte)v).ToList();
         }
         private void LoadItems(TagCompound tag)
         {
             List<int> itemKeys = tag.Get<List<int>>(_ITEM_KEYS);
-            List<bool> itemVals = tag.Get<List<bool>>(_ITEM_VALS);
-            ItemUnlocks = itemKeys.Zip(itemVals, (k, v) => new KeyValuePair<int, bool>(k, v)).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            List<byte> itemVals = tag.Get<List<byte>>(_ITEM_VALS);
+            _itemUnlocks = itemKeys.Zip(itemVals, (int k, byte v) => new KeyValuePair<int, UnlockState>(k, (UnlockState)v)).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
         
+        private UnlockState SetDefaultItemUnlockStatus(int itemType)
+        {
+            //Replace with json reading later? Maybe?
+            switch(itemType)
+            {
+                case ItemID.Beenade:
+                case ItemID.HornetStaff:
+                    
+                case ItemID.SniperRifle:
+                case ItemID.ReconScope:
+                    return UnlockState.Locked;
+            }
+
+            return UnlockState.Unlocked;
+        }
         public void UpdateItemStatus(int itemType, Content.UI.UnlockState state)
         {
             if (state == UnlockState.Locked) return;
-            bool val = state == UnlockState.Found;
-            Content.UI.UnlockState checkState = CheckUnlocks(itemType);
-            if (checkState == UnlockState.Locked) ItemUnlocks.Add(itemType, val);
-            else if (checkState == UnlockState.Unlocked) ItemUnlocks[itemType] = val;
+            UnlockState unlocked = CheckUnlocks(itemType);
+            if (unlocked == UnlockState.Unlocked) _itemUnlocks[itemType] = state;
         }
         
         public IEnumerable<int> GetDropOptions(IEnumerable<int> fromAllItems)
         {
-            var result = fromAllItems.Intersect(ItemUnlocks.Keys);
+            var result = fromAllItems.Where(i => CheckUnlocks(i) != UnlockState.Locked);
             if (!result.Any())
             {
                 Mod.Logger.Error($"[{typeof(MetaPlayer).FullName}].{nameof(GetDropOptions)}(...) found no valid items."
                     + $"\n\tQuery: {string.Join(", ", fromAllItems)}"
-                    + $"\n\tUnlocks: {string.Join(", ", ItemUnlocks.Keys)}");
+                    + $"\n\tUnlocks: {string.Join(", ", _itemUnlocks.Keys)}");
                 return [ItemID.Bass];
             }
             return result;
@@ -138,9 +152,9 @@ namespace TerrariaCells.Common.ModPlayers
         }
         public Content.UI.UnlockState CheckUnlocks(int itemType)
         {
-            if(!ItemUnlocks.TryGetValue(itemType, out bool result))
-                return Content.UI.UnlockState.Locked;
-            return result ? Content.UI.UnlockState.Found : Content.UI.UnlockState.Unlocked;
+            if (_itemUnlocks.TryGetValue(itemType, out UnlockState result))
+                return result;
+            return (_itemUnlocks[itemType] = SetDefaultItemUnlockStatus(itemType));
         }
 
         #region Backing Functionality
@@ -192,8 +206,8 @@ namespace TerrariaCells.Common.ModPlayers
             packet.Write(newPlayer);
             if(newPlayer)
             {
-                packet.Write((ushort)ItemUnlocks.Count);
-                foreach(int key in ItemUnlocks.Keys)
+                packet.Write((ushort)_itemUnlocks.Count);
+                foreach(int key in _itemUnlocks.Keys)
                 {
                     packet.Write7BitEncodedInt(key);
                 }
@@ -213,11 +227,12 @@ namespace TerrariaCells.Common.ModPlayers
 
             if(reader.ReadBoolean())
             {
-                ItemUnlocks = new Dictionary<int, bool>();
+                _itemUnlocks = new Dictionary<int, UnlockState>();
                 ushort len = reader.ReadUInt16();
                 for(ushort i = 0; i < len; i++)
                 {
-                    ItemUnlocks[reader.Read7BitEncodedInt()] = false;
+                    //Server and other clients don't actually need to know beyond locked/unlocked
+                    _itemUnlocks[reader.Read7BitEncodedInt()] = UnlockState.Unlocked;
                 }
             }
         }
@@ -287,6 +302,7 @@ namespace TerrariaCells.Common.ModPlayers
                 {
                     case NPCID.SkeletonSniper:
                         modPlayer.UpdateItemStatus(ItemID.SniperRifle, UnlockState.Unlocked);
+                        modPlayer.UpdateItemStatus(ItemID.ReconScope, UnlockState.Unlocked);
                         break;
                     
                     case NPCID.BrainofCthulhu:
