@@ -184,6 +184,14 @@ namespace TerrariaCells.Common.GlobalNPCs
                 selectedItems = itemTypes.Select(x => new ItemDef(x, itemLevel)).ToArray();
                 return;
             }
+            else
+            {
+                foreach(Player player in Main.ActivePlayers)
+                {
+                    Common.ModPlayers.MetaPlayer metaPlayer = player.GetModPlayer<ModPlayers.MetaPlayer>();
+                    itemTypes = metaPlayer.GetDropOptions(itemTypes).ToArray();
+                }
+            }
             List<int> items = new List<int>();
             for (int i = 0; i < itemTypes.Length; i++)
             {
