@@ -121,7 +121,12 @@ namespace TerrariaCells.Common.ModPlayers
         {
             var result = fromAllItems.Intersect(ItemUnlocks.Keys);
             if (!result.Any())
+            {
+                Mod.Logger.Error($"[{typeof(MetaPlayer).FullName}].{nameof(GetDropOptions)}(...) found no valid items."
+                    + $"\n\tQuery: {string.Join(", ", fromAllItems)}"
+                    + $"\n\tUnlocks: {string.Join(", ", ItemUnlocks.Keys)}");
                 return [ItemID.Bass];
+            }
             return result;
         }
 
