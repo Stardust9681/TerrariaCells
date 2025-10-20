@@ -46,10 +46,8 @@
       "MagicCuffs",
       "StalkersQuiver",
       "ChlorophyteDye",
-      "SniperScope",
       "ReconScope",
       "BerserkerGlove",
-      "SharkToothNecklace",
       "Nazar",
       "FeralClaws",
       "ThePlan",
@@ -60,9 +58,7 @@
       "CelestialStone",
       "FlaskofVenom",
       "HerculesBeetle" ,
-      "PhilosophersStone" ,
-      "AvengerEmblem",
-      "EyeoftheGolem"
+      "PhilosophersStone"
     ],
     "Armor" : [
       "NinjaHood",
