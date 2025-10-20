@@ -86,10 +86,12 @@ namespace TerrariaCells
                     if(kvp.Value is string s)
                     {
                         jsonChestOverrides.Add(kvp.Key, () => Loot[Enum.TryParse<ItemCategory>(s, out ItemCategory cat) ? cat : ItemCategory.Weapons]);
+                        mod.Logger.Info($"Added chest-to-loot-table reference");
                     }
-                    else if(kvp.Value is IEnumerable<string> e)
+                    else if(kvp.Value is IEnumerable<dynamic> e)
                     {
-                        jsonChestOverrides.Add(kvp.Key, () => e.Select(x => int.TryParse(x, out int id) ? id : ItemID.Search.GetId(x)).ToList());
+                        jsonChestOverrides.Add(kvp.Key, () => e.Select(x => int.TryParse($"{x}", out int id) ? id : ItemID.Search.GetId($"{x}")).ToList<int>());
+                        mod.Logger.Info($"Added unique chest loot override");
                     }
                 }
                 ChestOverrides = jsonChestOverrides;

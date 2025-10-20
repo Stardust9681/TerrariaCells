@@ -92,8 +92,7 @@ public class ChestLootSpawner : ModSystem, IEntitySource
             {
                 if (ItemsJson.Instance.ChestOverrides.TryGetValue(tileFrame, out var func))
                 {
-                    int[] loot_ids = func.Invoke().ToArray();
-                    loot_ids = Main.player[fromWho].GetModPlayer<MetaPlayer>().GetDropOptions(loot_ids).ToArray();
+                    int[] loot_ids = Main.player[fromWho].GetModPlayer<MetaPlayer>().GetDropOptions(func.Invoke()).ToArray();
                     if (loot_ids.Length > 0)
                     {
                         int i = Item.NewItem(
@@ -162,8 +161,7 @@ public class ChestLootSpawner : ModSystem, IEntitySource
             {
                 if (ItemsJson.Instance.ChestOverrides.TryGetValue(tileFrame, out var func))
                 {
-                    int[] loot_ids = func.Invoke().ToArray();
-                    loot_ids = self.GetModPlayer<MetaPlayer>().GetDropOptions(loot_ids).ToArray();
+                    int[] loot_ids = self.GetModPlayer<MetaPlayer>().GetDropOptions(func.Invoke()).ToArray();
                     if (loot_ids.Length > 0)
                     {
                         Item item = Main.item[
