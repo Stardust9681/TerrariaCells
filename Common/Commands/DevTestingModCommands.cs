@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using Terraria;
@@ -542,6 +543,23 @@ namespace TerrariaCells.Common.Commands
                     ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("First argument must be 'kill', 'hurt', 'type', 'ai' or 'pos'"), Color.Yellow);
                     return;
             }
+        }
+    }
+    [Autoload(false)]
+    public class LootCommand : ModCommand
+    {
+        public override string Command => "loot";
+        public override string Usage => "/loot < id1, .. >";
+        public override string Description => "Check loot available from selection";
+
+        public override CommandType Type => CommandType.Chat;
+        
+        public override void Action(CommandCaller caller, string input, string[] args)
+        {
+            if (args.Length < 1) return;
+            System.Collections.Generic.IEnumerable<int> ids = args.Where(i => int.TryParse(i, out _)).Select(i => int.Parse(i));
+            ids = caller.Player.GetModPlayer<Common.ModPlayers.MetaPlayer>().GetDropOptions(ids);
+            caller.Reply(string.Join(", ", ids));
         }
     }
 
