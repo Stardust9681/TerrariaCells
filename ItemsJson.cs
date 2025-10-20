@@ -23,6 +23,8 @@ namespace TerrariaCells
             Accessories,
             Armor,
             Potions,
+            
+            Skills = Abilities, //For parsing
         }
         
         public static ItemsJson Instance { get; private set; }
