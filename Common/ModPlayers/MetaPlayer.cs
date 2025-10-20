@@ -169,7 +169,10 @@ namespace TerrariaCells.Common.ModPlayers
                 if(value && !metaProgression[index])
                 {
                     metaProgression[index] = value;
-                    SyncPlayer(-1, Main.myPlayer, false);
+                    if(Main.netMode != 0)
+                    {
+                        SyncPlayer(-1, Main.myPlayer, false);
+                    }
                 }
             }
         }
