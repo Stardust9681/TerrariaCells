@@ -88,15 +88,6 @@ namespace TerrariaCells.Common.GlobalNPCs
                     entry.Disable();
                 }
             }
-            
-            if(shop.NpcType == NPCID.GoblinTinkerer)
-            {
-                var items = ItemsJson.Instance.Loot[ItemsJson.ItemCategory.Accessories];
-                foreach(var type in items)
-                {
-                    shop.Add(type, new Condition(LocalizedText.Empty, () => Main.LocalPlayer.GetModPlayer<ModPlayers.MetaPlayer>().CheckUnlocks(type) != UnlockState.Locked));
-                }
-            }
         }
 
         public static void UpdateTeleport(int level, string? levelName = null, bool net = false)
@@ -117,6 +108,9 @@ namespace TerrariaCells.Common.GlobalNPCs
                 case NPCID.Merchant:
                     UpdateNPCShop(npc, (int[])[.. ItemsJson.Instance.Loot[ItemsJson.ItemCategory.Armor], .. ItemsJson.Instance.Loot[ItemsJson.ItemCategory.Abilities]], level, 2);
                     break;
+                case NPCID.GoblinTinkerer:
+                    UpdateNPCShop(npc, ItemsJson.Instance.Loot[ItemsJson.ItemCategory.Accessories], level, -1);
+                    break;
 
                 case NPCID.Nurse:
                     nurse_HasHealed = false;
@@ -135,7 +129,7 @@ namespace TerrariaCells.Common.GlobalNPCs
         private void UpdateNPCShop(NPC npc, IReadOnlyList<int> itemTypes, int itemLevel, int min = 1, int max = 40)
         {
             IReadOnlyList<int> selection = new List<int>(itemTypes);
-            if (Configs.DevConfig.Instance.PlaytesterShops || min >= itemTypes.Count)
+            if (Configs.DevConfig.Instance.PlaytesterShops || min >= itemTypes.Count || min == -1)
             {
                 selectedItems = selection.Select(x => new ItemDef(x, itemLevel)).ToArray();
                 return;
