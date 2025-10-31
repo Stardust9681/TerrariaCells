@@ -49,6 +49,9 @@ namespace TerrariaCells.Common.ModPlayers
         public bool moltenGreaves; //Leave a trail of flames that ignites enemies (hellfire treads, but functional) <- WORKS
         float distanceUntilFlameSpawn = 0;
 
+        public int goldArmorCount;
+        public bool GoldSetBonus => goldArmorCount == 3;
+
         public override void ResetEffects()
         {
             ninjaHood = false;
@@ -63,6 +66,7 @@ namespace TerrariaCells.Common.ModPlayers
             moltenHelmet = false;
             moltenBreastplate = false;
             moltenGreaves = false;
+            goldArmorCount = 0;
         }
 
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -74,6 +78,30 @@ namespace TerrariaCells.Common.ModPlayers
                 Player.AddBuff(ModContent.BuffType<ShadowDodgeBuff>(), 1200);
                 //isShadowDodgeActive = true;
                 ticksUntilShadowDodgeAvailable = 1800;
+            }
+            
+            if(Main.netMode != 2 && Player.whoAmI == Main.myPlayer)
+            {
+                if(goldArmorCount > 0)
+                {
+                    int amountToDrop = Main.rand.Next(1_50 * goldArmorCount, 3_33 * goldArmorCount);
+                    int copper = amountToDrop % 100;
+                    int silver = (amountToDrop / 100) % 100;
+                    int gold = (amountToDrop / 10000) % 100;
+                    int platinum = (amountToDrop / 1000000) % 100;
+                    int[] coinAmounts = [ copper, silver, gold, platinum];
+                    for(int i = 0; i < 4; i++)
+                    {
+                        int type = ItemID.CopperCoin + i;
+                        if(coinAmounts[i] > 0)
+                        {
+                            int whoAmI = Item.NewItem(Player.GetSource_OnHit(target), target.Center, Vector2.Zero, type, coinAmounts[i], noBroadcast: true, noGrabDelay: true);
+                            Main.item[whoAmI].TryCombiningIntoNearbyItems(whoAmI);
+                            if(Main.netMode == 1)
+                                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, whoAmI, true.ToInt());
+                        }
+                    }
+                }
             }
         }
 
@@ -207,6 +235,18 @@ namespace TerrariaCells.Common.ModPlayers
                     Projectile projectile = Projectile.NewProjectileDirect(Player.GetSource_FromThis(), Player.Center + new Vector2(0f, 16f), Vector2.Zero, ModContent.ProjectileType<TrailOfFlames>(), 1, 0);
                     ((TrailOfFlames)projectile.ModProjectile).scaleFactor = Math.Min(0.8f, (0.75f + Main.rand.NextFloat() * 0.5f) * 0.65f * Math.Abs(horizontalSpeed / Player.maxRunSpeed));
                 }
+            }
+        }
+
+        public override void PostUpdateEquips()
+        {
+            if(GoldSetBonus)
+            {
+                long coinsCount = Utils.CoinsCount(out _, Player.inventory, 58, 57, 56, 55, 54);
+                float dmgIncrease = coinsCount / 1_00_00f; //1 Gold Coin = 1%
+                dmgIncrease *= 0.01f; //Change to decimal representation
+
+                Player.GetDamage(DamageClass.Generic) += dmgIncrease;
             }
         }
     }

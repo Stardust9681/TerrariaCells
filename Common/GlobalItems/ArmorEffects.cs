@@ -40,6 +40,9 @@ namespace TerrariaCells.Common.GlobalItems
                 case ItemID.MoltenHelmet:
                 case ItemID.MoltenBreastplate:
                 case ItemID.MoltenGreaves:
+                case ItemID.GoldHelmet:
+                case ItemID.GoldChainmail:
+                case ItemID.GoldGreaves:
                     item.defense = 0;
                     break;
             }
@@ -108,6 +111,13 @@ namespace TerrariaCells.Common.GlobalItems
                     player.moveSpeed += 0.1f;
                     //leave a trail of flames that ignites enemies (hellfire treads, but functional)
                     break;
+                
+                case ItemID.GoldHelmet:
+                case ItemID.GoldChainmail:
+                case ItemID.GoldGreaves:
+                    modPlayer.goldArmorCount++;
+                    break;
+                    
 
                 default:
                     orig.Invoke(player, item);
@@ -239,7 +249,7 @@ namespace TerrariaCells.Common.GlobalItems
                 _ => [],
             };
         }
-
+        
         public override bool OnPickup(Item item, Player player)
         {
             if (player.GetModPlayer<ArmorPlayer>().jungleShirt)
@@ -255,6 +265,15 @@ namespace TerrariaCells.Common.GlobalItems
                 }
             }
             return base.OnPickup(item, player);
+        }
+
+        public override void GrabRange(Item item, Player player, ref int grabRange)
+        {
+            var modPlayer = player.GetModPlayer<ArmorPlayer>();
+            if(modPlayer.goldArmorCount > 0 && item.IsACoin)
+            {
+                grabRange += modPlayer.goldArmorCount * 3;
+            }
         }
     }
 }
