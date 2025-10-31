@@ -83,6 +83,7 @@ public class TooltipReorganization : ModSystem
         // "SpecialSpeedScaling",
         // "Knockback",
         // "Equipable",
+        "SetBonus",
         "Defense",
         "HealLife",
         "HealMana",

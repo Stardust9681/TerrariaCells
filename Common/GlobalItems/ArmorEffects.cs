@@ -139,6 +139,8 @@ namespace TerrariaCells.Common.GlobalItems
         public IEnumerable<TooltipLine> GetTooltips(Item item)
         {
             ArmorPlayer modPlayer = Main.LocalPlayer.GetModPlayer<ArmorPlayer>();
+            
+            /*
             if (modPlayer.ninjaArmorSet)
             {
                 return item.type switch
@@ -219,6 +221,23 @@ namespace TerrariaCells.Common.GlobalItems
                     _ => []
                 };
             }
+            */
+
+            switch (item.type)
+            {
+                case ItemID.GoldHelmet:
+                    return new TooltipLine[]
+                    {
+                        new TooltipLine(Mod, "Tooltip0", "10% increased damage"),
+                        new TooltipLine(Mod, "Tooltip1", "Enemies drop money on hit"),
+                    };
+                case ItemID.GoldChainmail:
+                case ItemID.GoldGreaves:
+                    return new TooltipLine[]
+                    {
+                        new TooltipLine(Mod, "Tooltip0", "Enemies drop money on hit"),
+                    };
+            }
 
             return item.type switch
             {
@@ -270,9 +289,9 @@ namespace TerrariaCells.Common.GlobalItems
         public override void GrabRange(Item item, Player player, ref int grabRange)
         {
             var modPlayer = player.GetModPlayer<ArmorPlayer>();
-            if(modPlayer.goldArmorCount > 0 && item.IsACoin)
+            if (modPlayer.goldArmorCount > 0 && item.IsACoin)
             {
-                grabRange += modPlayer.goldArmorCount * 3;
+                grabRange += modPlayer.goldArmorCount * 2 * 16;
             }
         }
     }

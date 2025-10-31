@@ -235,19 +235,35 @@ namespace TerrariaCells.Common.ModPlayers
                     Projectile projectile = Projectile.NewProjectileDirect(Player.GetSource_FromThis(), Player.Center + new Vector2(0f, 16f), Vector2.Zero, ModContent.ProjectileType<TrailOfFlames>(), 1, 0);
                     ((TrailOfFlames)projectile.ModProjectile).scaleFactor = Math.Min(0.8f, (0.75f + Main.rand.NextFloat() * 0.5f) * 0.65f * Math.Abs(horizontalSpeed / Player.maxRunSpeed));
                 }
+
+                // if (GoldSetBonus)
+                // {
+                //     Player.setBonus = "1% increased damage for every Gold Coin you have\n100% increased damage for every Platinum Coin you have";
+                // }
             }
         }
 
         public override void PostUpdateEquips()
         {
-            if(GoldSetBonus)
+            if (GoldSetBonus)
             {
                 long coinsCount = Utils.CoinsCount(out _, Player.inventory, 58, 57, 56, 55, 54);
                 float dmgIncrease = coinsCount / 1_00_00f; //1 Gold Coin = 1%
                 dmgIncrease *= 0.01f; //Change to decimal representation
 
                 Player.GetDamage(DamageClass.Generic) += dmgIncrease;
+
+                Player.setBonus = "1% increased damage for every Gold Coin you have\n100% increased damage for every Platinum Coin you have";
             }
+
+            if (moltenArmorSet)
+                Player.setBonus = "Your Fire effects are replaced with Hellfire";
+            if (jungleArmorSet)
+                Player.setBonus = "Killing an enemy makes your spells free for a short period";
+            if (necroArmorSet)
+                Player.setBonus = "Bows charge twice as fast\nGuns reload twice as fast";
+            if (ninjaArmorSet)
+                Player.setBonus = "Become immune after striking an enemy";
         }
     }
 }
