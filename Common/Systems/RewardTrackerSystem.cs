@@ -152,7 +152,7 @@ namespace TerrariaCells.Common.Systems
                 _ => 1
             };*/
 
-            int weaponType = Main.rand.Next(GlobalNPCs.VanillaNPCShop.Weapons);
+            int weaponType = Main.rand.Next(ItemsJson.Instance.Loot[ItemsJson.ItemCategory.Weapons].ToArray());
             if (player is null)
             {
                 float distance = -1;

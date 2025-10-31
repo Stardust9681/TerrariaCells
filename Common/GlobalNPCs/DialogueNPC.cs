@@ -5,16 +5,19 @@ using Terraria.ModLoader;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
+using TerrariaCells.Common.Systems;
 
 namespace TerrariaCells.Common.GlobalNPCs
 {
     public class DialogueNPC : GlobalNPC
     {
         internal static LocalizedText GoblinUnlock;
+        internal static LocalizedText Guide_Progress;
 
         public override void Load()
         {
             GoblinUnlock = Mod.GetLocalization("unlocks.goblin", () => "Unlocked the Goblin Tinkerer!");
+            Guide_Progress = Mod.GetLocalization("dialogue.guide.progress", () => "Progress");
 
             On_Main.HelpText += On_Main_HelpText;
             On_Main.DrawNPCChatButtons += On_Main_DrawNPCChatButtons;
@@ -86,7 +89,7 @@ namespace TerrariaCells.Common.GlobalNPCs
         {
             if (Main.LocalPlayer.TalkNPC?.type == NPCID.Guide)
             {
-                focusText3 = string.Empty;
+                focusText3 = Guide_Progress.Value;
             }
             if (Main.LocalPlayer.talkNPC != -1)
             {
@@ -94,7 +97,18 @@ namespace TerrariaCells.Common.GlobalNPCs
             }
             orig.Invoke(superColor, chatColor, numLines, focusText, focusText3);
         }
-        
+        public override bool PreChatButtonClicked(NPC npc, bool firstButton)
+        {
+            if (!firstButton && npc.type == NPCID.Guide)
+            {
+                Player player = Main.LocalPlayer; //Runs on the Client, so this is fine
+                player.SetTalkNPC(-1);
+                DeadCellsUISystem.ToggleActive<Content.UI.ProgressTracker>(true);
+                return false;
+            }
+            return base.PreChatButtonClicked(npc, firstButton);
+        }
+
         private void On_NPC_AI_000_TransformBoundNPC(On_NPC.orig_AI_000_TransformBoundNPC orig, NPC self, int playerID, int npcType)
         {
             if (self.type == NPCID.BoundGoblin)

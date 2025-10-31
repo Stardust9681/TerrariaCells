@@ -166,7 +166,7 @@ public class DeathReset : ModPlayer, IEntitySource
         IEntitySource playerDeath = Player.GetSource_Death();
         if (context == ResetInventoryContext.NewWorld)
         {
-            foreach ((int itemslot, TerraCellsItemCategory _) in InventoryManager.slotCategorizations)
+            foreach ((int itemslot, var _) in InventoryManager.slotCategorizations)
             {
                 inventory[itemslot].TurnToAir();
             }
@@ -190,7 +190,7 @@ public class DeathReset : ModPlayer, IEntitySource
         }
         else if (context == ResetInventoryContext.Death && Main.netMode != NetmodeID.Server)
         {
-            foreach ((int itemslot, TerraCellsItemCategory _) in InventoryManager.slotCategorizations)
+            foreach ((int itemslot, var _) in InventoryManager.slotCategorizations)
             {
                 inventory[itemslot].shimmered = true;
                 Player.TryDroppingSingleItem(playerDeath, inventory[itemslot]);

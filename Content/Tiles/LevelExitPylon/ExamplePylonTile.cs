@@ -27,12 +27,8 @@ namespace TerrariaCells.Content.Tiles.LevelExitPylon;
 /// override in order to streamline that process.)
 /// </br>
 /// </summary>
-public class ForestExitPylon : ModTile, ITerraCellsCategorization
+public class ForestExitPylon : ModTile
 {
-
-    public TerraCellsItemCategory Category => TerraCellsItemCategory.Storage;
-
-
     public override string Texture =>
         (GetType().Namespace + "." + "ExamplePylonTile").Replace('.', '/');
 

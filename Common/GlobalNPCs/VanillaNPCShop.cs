@@ -12,7 +12,11 @@ using Terraria.ModLoader;
 using TerrariaCells.Common.Utilities;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.Localization;
 using TerrariaCells.Common.GlobalItems;
+using TerrariaCells.Common.Items;
+using TerrariaCells.Content.UI;
+
 //using static TerrariaCells.Common.Utilities.JsonUtil;
 
 namespace TerrariaCells.Common.GlobalNPCs
@@ -21,43 +25,10 @@ namespace TerrariaCells.Common.GlobalNPCs
     {
 		public override bool InstancePerEntity => true;
 
-		internal static int[] Weapons; //Arms Dealer
-        internal static int[] Accessories; //Goblin Tinkerer
-        internal static int[] Skills; //Merchant
-        internal static int[] Armors; //Merchant
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
         {
             return entity.townNPC;
         }
-
-        public override void Load()
-		{
-			const string PATH = "chest loot tables.json";
-			using (StreamReader stream = new StreamReader(Mod.GetFileStream(PATH)))
-			{
-				string json = stream.ReadToEnd();
-				JObject Root = (JObject)JsonConvert.DeserializeObject(json); //Get json contents in whole
-
-				Weapons = Root.GetItem<int[]>("1");
-				Accessories = Root.GetItem<int[]>("20");
-				Skills = Root.GetItem<int[]>("19");
-			}
-			//Will be replaced with chest loot table entry like the other buyable items
-			Armors = new int[]{
-                ItemID.NinjaHood,
-				ItemID.NinjaShirt,
-				ItemID.NinjaPants,
-				ItemID.JungleHat,
-				ItemID.JungleShirt,
-				ItemID.JunglePants,
-				ItemID.NecroHelmet,
-				ItemID.NecroBreastplate,
-				ItemID.NecroGreaves,
-				ItemID.MoltenHelmet,
-				ItemID.MoltenBreastplate,
-				ItemID.MoltenGreaves
-			};
-		}
 
         private ItemDef[] selectedItems = Array.Empty<ItemDef>();
         public bool nurse_HasHealed = false;
@@ -132,13 +103,13 @@ namespace TerrariaCells.Common.GlobalNPCs
             switch (npc.type)
             {
                 case NPCID.ArmsDealer:
-                    UpdateNPCShop(npc, Weapons, level, 3);
+                    UpdateNPCShop(npc, ItemsJson.Instance.Loot[ItemsJson.ItemCategory.Weapons], level, 3);
                     break;
                 case NPCID.Merchant:
-                    UpdateNPCShop(npc, (int[])[.. Armors, .. Skills], level, 2);
+                    UpdateNPCShop(npc, (int[])[.. ItemsJson.Instance.Loot[ItemsJson.ItemCategory.Armor], .. ItemsJson.Instance.Loot[ItemsJson.ItemCategory.Abilities]], level, 2);
                     break;
                 case NPCID.GoblinTinkerer:
-                    UpdateNPCShop(npc, Accessories, Accessories.Length, Accessories.Length);
+                    UpdateNPCShop(npc, ItemsJson.Instance.Loot[ItemsJson.ItemCategory.Accessories], level, -1);
                     break;
 
                 case NPCID.Nurse:
@@ -155,19 +126,28 @@ namespace TerrariaCells.Common.GlobalNPCs
                 Mod.Logger.Info($"Send shop for NPC: {npc.FullName}");
             }
         }
-        private void UpdateNPCShop(NPC npc, int[] itemTypes, int itemLevel, int min = 1, int max = 40)
+        private void UpdateNPCShop(NPC npc, IReadOnlyList<int> itemTypes, int itemLevel, int min = 1, int max = 40)
         {
-            if (Configs.DevConfig.Instance.PlaytesterShops || min >= itemTypes.Length)
+            IReadOnlyList<int> selection = new List<int>(itemTypes);
+            if (Configs.DevConfig.Instance.PlaytesterShops || min >= itemTypes.Count || min == -1)
             {
-                selectedItems = itemTypes.Select(x => new ItemDef(x, itemLevel)).ToArray();
+                selectedItems = selection.Select(x => new ItemDef(x, itemLevel)).ToArray();
                 return;
             }
+            else
+            {
+                foreach(Player player in Main.ActivePlayers)
+                {
+                    Common.ModPlayers.MetaPlayer metaPlayer = player.GetModPlayer<ModPlayers.MetaPlayer>();
+                    selection = metaPlayer.GetDropOptions(selection).ToArray();
+                }
+            }
             List<int> items = new List<int>();
-            for (int i = 0; i < itemTypes.Length; i++)
+            for (int i = 0; i < selection.Count; i++)
             {
                 if (items.Count > min && !Main.rand.NextBool(items.Count - min)) continue;
 
-                items.Add(Main.rand.Next(itemTypes.Where(x => !items.Contains(x)).ToArray()));
+                items.Add(Main.rand.Next(selection.Where(x => !items.Contains(x)).ToArray()));
 
                 if (items.Count > max) break;
             }

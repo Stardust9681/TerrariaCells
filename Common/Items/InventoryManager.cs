@@ -32,17 +32,13 @@ public class InventoryManager : ModSystem, IEntitySource
     const int STORAGE_SLOT_3 = 12;
     const int STORAGE_SLOT_4 = 13;
 
-    internal static readonly (int, TerraCellsItemCategory)[] slotCategorizations =
+    internal static readonly (int, ItemsJson.ItemCategory)[] slotCategorizations =
     [
-        (0, TerraCellsItemCategory.Weapon),
-        (1, TerraCellsItemCategory.Weapon),
-        (2, TerraCellsItemCategory.Skill),
-        (3, TerraCellsItemCategory.Skill),
-        (4, TerraCellsItemCategory.Potion),
-        (10, TerraCellsItemCategory.Storage),
-        (11, TerraCellsItemCategory.Storage),
-        (12, TerraCellsItemCategory.Storage),
-        (13, TerraCellsItemCategory.Storage),
+        (0, ItemsJson.ItemCategory.Weapons),
+        (1, ItemsJson.ItemCategory.Weapons),
+        (2, ItemsJson.ItemCategory.Abilities),
+        (3, ItemsJson.ItemCategory.Abilities),
+        (4, ItemsJson.ItemCategory.Potions),
     ];
 
     /// <summary>
@@ -50,51 +46,12 @@ public class InventoryManager : ModSystem, IEntitySource
     /// If the item implements ITerraCellsCategorization, it uses that.
     /// Otherwise, it checks the list of categorizations for vanilla items.
     /// If nothing is found, it returns TerraCellsItemCategory.Default
-    /// <summary>
-    public static TerraCellsItemCategory GetItemCategorization(Item item) =>
-        item.ModItem is ITerraCellsCategorization categorization
-            ? categorization.Category
-            : VanillaItemCategorizations.GetValueOrDefault(
-                (short)item.netID,
-                TerraCellsItemCategory.Default
-            );
+    /// </summary>
+    public static ItemsJson.ItemCategory GetItemCategorization(Item item) =>
+        ItemsJson.Instance.Category.GetValueOrDefault(item.type, ItemsJson.ItemCategory.Undefined);
 
-    public static TerraCellsItemCategory GetItemCategorization(int type) =>
-        ModContent.GetModItem(type) is ITerraCellsCategorization categorization
-            ? categorization.Category
-            : VanillaItemCategorizations.GetValueOrDefault(
-                (short)type,
-                TerraCellsItemCategory.Default
-            );
-
-    public static StorageItemSubcategorization GetStorageItemSubcategorization(Item item) =>
-        GetItemCategorization(item) is TerraCellsItemCategory.Storage
-            ? StorageSubcategorizations.GetValueOrDefault(
-                (short)item.netID,
-                StorageItemSubcategorization.None
-            )
-            : StorageItemSubcategorization.None;
-
-    public static StorageItemSubcategorization GetStorageItemSubcategorization(int type) =>
-        GetItemCategorization(type) is TerraCellsItemCategory.Storage
-            ? StorageSubcategorizations.GetValueOrDefault(
-                (short)type,
-                StorageItemSubcategorization.None
-            )
-            : StorageItemSubcategorization.None;
-
-    public static int GetRandomItem(TerraCellsItemCategory category)
-    {
-        while (true)
-        {
-            int id = (int)(Main.rand.NextFloat() * 3400);
-            if (GetItemCategorization(id) == category)
-            {
-                return id;
-            }
-        }
-        ;
-    }
+    public static ItemsJson.ItemCategory GetItemCategorization(int type) =>
+        ItemsJson.Instance.Category.GetValueOrDefault(type, ItemsJson.ItemCategory.Undefined);
 
     public static readonly Dictionary<string, short> ItemIDNames = typeof(ItemID)
         .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
@@ -107,56 +64,8 @@ public class InventoryManager : ModSystem, IEntitySource
         .Select(x => KeyValuePair.Create(x.Value, x.Key))
         .ToDictionary();
 
-    /// <summary>
-    /// A list of all of categorizations for vanilla items, including those that get reworked.
-    ///
-    /// DOES NOT CONTAIN MODDED ITEMS. It only contains categorizations for items with a vanilla ItemID.
-    /// Categorization for modded items are contained within their own classes, using ITerraCellsCategorization
-    /// <summary>
-    private static Dictionary<short, TerraCellsItemCategory> VanillaItemCategorizations = [];
-
-    private static Dictionary<short, StorageItemSubcategorization> StorageSubcategorizations = [];
-
     public override void Load()
     {
-        Dictionary<string, string> deserialized;
-
-        deserialized = JsonSerializer.Deserialize<Dictionary<string, string>>(
-            Mod.GetFileBytes("categorizations.json")
-        );
-
-        foreach (
-            KeyValuePair<string, string> item in deserialized.Where(x =>
-                !ItemIDNames.ContainsKey(x.Key)
-            )
-        )
-        {
-            deserialized.Remove(item.Key);
-            Mod.Logger.Error(
-                "Could not find the "
-                    + item.Value
-                    + " with the ID of "
-                    + item.Key
-                    + " among the vanilla ItemID's."
-            );
-        }
-
-        VanillaItemCategorizations = deserialized
-            .Select(x =>
-                KeyValuePair.Create(ItemIDNames[x.Key], Categorization.FromString(x.Value))
-            )
-            .ToDictionary();
-
-        StorageSubcategorizations = VanillaItemCategorizations
-            .Where(x => x.Value == TerraCellsItemCategory.Storage)
-            .Select(x =>
-                KeyValuePair.Create(
-                    x.Key,
-                    Categorization.SubcategorizationFromString(deserialized[ItemNameIDs[x.Key]])
-                )
-            )
-            .ToDictionary();
-
         On_Player.CanAcceptItemIntoInventory += FilterPickups;
         On_Player.GetItem_FillIntoOccupiedSlot += On_Player_GetItem_FillIntoOccupiedSlot;
         On_Player.GetItem_FillEmptyInventorySlot += On_Player_GetItem_FillEmptyInventorySlot;
@@ -231,9 +140,7 @@ public class InventoryManager : ModSystem, IEntitySource
                 continue;
             }
             if (
-                DoesStorageItemGoIntoRegularInventory(
-                    GetStorageItemSubcategorization(player.inventory[i])
-                )
+                false
             )
             {
                 for (int i2 = 10; i2 < 14; i2++)
@@ -267,13 +174,11 @@ public class InventoryManager : ModSystem, IEntitySource
             // }
         }
 
-        foreach ((int, TerraCellsItemCategory) slotCategory in slotCategorizations)
+        foreach ((int, ItemsJson.ItemCategory) slotCategory in slotCategorizations)
         {
             Item item = player.inventory[slotCategory.Item1];
-            if (slotCategory.Item2 == TerraCellsItemCategory.Storage && item.IsAir) { }
-            else if (
+            if (
                 GetItemCategorization(item) != slotCategory.Item2
-                && slotCategory.Item2 != TerraCellsItemCategory.Storage
             )
             {
                 MoveItemToItsDedicatedCategory(player, item, slotCategory.Item1);
@@ -289,7 +194,7 @@ public class InventoryManager : ModSystem, IEntitySource
     {
         switch (GetItemCategorization(item))
         {
-            case TerraCellsItemCategory.Default:
+            case ItemsJson.ItemCategory.Undefined:
                 for (int i = 14; i <= 49; i++)
                 {
                     if (player.inventory[i].IsAir)
@@ -303,7 +208,7 @@ public class InventoryManager : ModSystem, IEntitySource
                 player.DropItem(this, new Vector2(), ref item);
                 return false;
 
-            case TerraCellsItemCategory.Weapon:
+            case ItemsJson.ItemCategory.Weapons:
                 if (WeaponsSlotsFull(player, item))
                 {
                     for (int i = 10; true; i++)
@@ -330,7 +235,7 @@ public class InventoryManager : ModSystem, IEntitySource
                 }
                 player.inventory[previousInventorySlot].TurnToAir();
                 return true;
-            case TerraCellsItemCategory.Skill:
+            case ItemsJson.ItemCategory.Abilities:
                 if (SkillsSlotsFull(player, item))
                 {
                     for (int i = 10; true; i++)
@@ -357,7 +262,7 @@ public class InventoryManager : ModSystem, IEntitySource
                 }
                 player.inventory[previousInventorySlot].TurnToAir();
                 return true;
-            case TerraCellsItemCategory.Potion:
+            case ItemsJson.ItemCategory.Potions:
                 if (PotionSlotFull(player, item))
                 {
                     for (int i = 10; true; i++)
@@ -376,7 +281,7 @@ public class InventoryManager : ModSystem, IEntitySource
                 player.inventory[POTION_SLOT] = item.Clone();
                 player.inventory[previousInventorySlot].TurnToAir();
                 return true;
-            case TerraCellsItemCategory.Storage:
+            /*case TerraCellsItemCategory.Storage:
                 // if (GetStorageItemSubcategorization(item) == StorageItemSubcategorization.Coin)
                 // {
                 //     return true;
@@ -393,7 +298,7 @@ public class InventoryManager : ModSystem, IEntitySource
                         player.DropItem(this, new Vector2(), ref item);
                         return false;
                     }
-                }
+                }*/
             default:
                 for (int i = 6; i <= 49; i++)
                 {
@@ -424,36 +329,17 @@ public class InventoryManager : ModSystem, IEntitySource
         bool origResult = orig.Invoke(player, item);
         if (!origResult)
             return origResult;
-        if (!DevConfig.Instance.EnableInventoryLock)
+        if (!DevConfig.Instance.EnableInventoryLock || item.IsACoin)
         {
             return origResult;
         }
-
+        
         return GetItemCategorization(item) switch
         {
-            TerraCellsItemCategory.Default => true,
-            TerraCellsItemCategory.Pickup => true,
-            TerraCellsItemCategory.Weapon => !WeaponsSlotsFull(player, item) | !StorageSlotsFull(player, item),
-            TerraCellsItemCategory.Skill => !SkillsSlotsFull(player, item) | !StorageSlotsFull(player, item),
-            TerraCellsItemCategory.Potion => !PotionSlotFull(player, item) | !StorageSlotsFull(player, item),
-            TerraCellsItemCategory.Storage => !StorageSlotsFull(player, item)
-                | !DoesStorageItemGoIntoRegularInventory(GetStorageItemSubcategorization(item)),
-            _ => throw new System.Exception(
-                "Missing Item category check (I hate runtime exceptions but i cant think of a better solution atm)"
-            ),
-        };
-    }
-
-    public static bool DoesStorageItemGoIntoRegularInventory(
-        StorageItemSubcategorization subcategorization
-    )
-    {
-        return subcategorization switch
-        {
-            // StorageItemSubcategorization.Armor => true,
-            // StorageItemSubcategorization.Accessory => true,
-            StorageItemSubcategorization.Coin => false,
-            _ => true,
+            ItemsJson.ItemCategory.Weapons => !WeaponsSlotsFull(player, item) | !StorageSlotsFull(player, item),
+            ItemsJson.ItemCategory.Abilities => !SkillsSlotsFull(player, item) | !StorageSlotsFull(player, item),
+            ItemsJson.ItemCategory.Potions => !PotionSlotFull(player, item) | !StorageSlotsFull(player, item),
+            _ => !StorageSlotsFull(player, item) || ItemID.Sets.IgnoresEncumberingStone[item.type]
         };
     }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.IO;
 using Terraria.ModLoader.IO;
@@ -9,20 +10,78 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections;
 using System.Reflection;
+using MonoMod.Utils;
 using Terraria.Chat;
 using Terraria.Localization;
+using TerrariaCells.Common.GlobalNPCs;
+using TerrariaCells.Content.UI;
 
 namespace TerrariaCells.Common.ModPlayers
 {
     public class MetaPlayer : ModPlayer
     {
+        public override void Load()
+        {
+            for(int i = 0; i < ProgressionCount; i++)
+            {
+                _ = Mod.GetLocalization("ui.metaprogress.entry_"+i, () => "Undefined");
+            }
+        }
+
+        #region Major Flags
+        
         //Flags for progression. Literally just add whatever and it should work <3
-        //Net Sync supports up to 255 flags. If you need more than that, update netcode below
         public bool CloudJump { get => this[0]; set => this[0] = value; }
         public bool Goblin { get => this[1]; set => this[1] = value; }
+        public bool DownedBoC { get => this[2]; set => this[2] = value; }
+        public bool DownedEoW { get => this[3]; set => this[3] = value; }
+        public bool DownedQB { get => this[4]; set => this[4] = value; }
+        public bool DownedSkele { get => this[5]; set => this[5] = value; }
+        public bool DownedWoF { get => this[6]; set => this[6] = value; }
 
-        //-1 because this is also a property
-        internal static int ProgressionCount => typeof(MetaPlayer).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Length - 1;
+        internal const int ProgressionCount = 7;
+        
+        public bool HasFlag(int index)
+        {
+            if(index < 0 || index > ProgressionCount)
+            {
+#if DEBUG
+                throw new InvalidOperationException();
+#else
+                return false;
+#endif
+            }
+            return metaProgression[index];
+        }
+        
+        private void SaveFlags(TagCompound tag)
+        {
+            if(metaProgression?.HasAnySet() == true)
+                tag.Add("TerraCells:MetaProgress", metaProgression);
+        }
+        
+        private void LoadFlags(TagCompound tag)
+        {
+            if (tag.TryGet<BitArray>("TerraCells:MetaProgress", out metaProgression))
+            {
+                if (metaProgression.Length < ProgressionCount)
+                {
+                    BitArray oldBits = new BitArray(metaProgression);
+                    metaProgression = new BitArray(ProgressionCount);
+                    for (int i = 0; i < oldBits.Length; i++)
+                    {
+                        metaProgression[i] = oldBits[i];
+                    }
+                }
+            }
+            else
+            {
+                metaProgression = new BitArray(ProgressionCount);
+            }
+            //overrideMeta = new BitArray(metaProgression);
+        }
+        
+        #endregion
 
         public void DoUnlockText(LocalizedText text, Color? colour = null, int overheadTime = 360)
         {
@@ -32,43 +91,102 @@ namespace TerrariaCells.Common.ModPlayers
                 Player.chatOverhead.NewMessage(text.Value, overheadTime);
             }
         }
+        
+        #region Item Unlocks
+
+        private const string _ITEM_KEYS = "Keys:Item";
+        private const string _ITEM_VALS = "Vals:Item";
+        private Dictionary<int, UnlockState> _itemUnlocks = new Dictionary<int, UnlockState>();
+        private void SaveItems(TagCompound tag)
+        {
+            tag[_ITEM_KEYS] = _itemUnlocks.Keys.ToList();
+            tag[_ITEM_VALS] = _itemUnlocks.Values.Select(v => (byte)v).ToList();
+        }
+        private void LoadItems(TagCompound tag)
+        {
+            List<int> itemKeys = tag.Get<List<int>>(_ITEM_KEYS);
+            List<byte> itemVals = tag.Get<List<byte>>(_ITEM_VALS);
+            _itemUnlocks = itemKeys.Zip(itemVals, (int k, byte v) => new KeyValuePair<int, UnlockState>(k, (UnlockState)v)).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        }
+        
+        private UnlockState SetDefaultItemUnlockStatus(int itemType)
+        {
+            //Replace with json reading later? Maybe?
+            switch(itemType)
+            {
+                case ItemID.Beenade:
+                case ItemID.HornetStaff:
+                    
+                case ItemID.SniperRifle:
+                case ItemID.ReconScope:
+                    return UnlockState.Locked;
+            }
+
+            return UnlockState.Unlocked;
+        }
+        public void UpdateItemStatus(int itemType, Content.UI.UnlockState state)
+        {
+            if (state == UnlockState.Locked) return;
+            UnlockState unlocked = CheckUnlocks(itemType);
+            if (unlocked != UnlockState.Unlocked) _itemUnlocks[itemType] = state;
+        }
+        
+        public IEnumerable<int> GetDropOptions(IEnumerable<int> fromAllItems)
+        {
+            var result = fromAllItems.Where(i => CheckUnlocks(i) != UnlockState.Locked);
+            if (!result.Any())
+            {
+                Mod.Logger.Error($"[{typeof(MetaPlayer).FullName}].{nameof(GetDropOptions)}(...) found no valid items."
+                    + $"\n\tQuery: {string.Join(", ", fromAllItems)}"
+                    + $"\n\tUnlocks: {string.Join(", ", _itemUnlocks.Keys)}");
+                return [ItemID.Bass];
+            }
+            return result;
+        }
+
+        #endregion
+
+        public Content.UI.UnlockState CheckUnlocks(Item item)
+        {
+            return CheckUnlocks(item.type);
+        }
+        public Content.UI.UnlockState CheckUnlocks(int itemType)
+        {
+            if (_itemUnlocks.TryGetValue(itemType, out UnlockState result))
+                return result;
+            return (_itemUnlocks[itemType] = SetDefaultItemUnlockStatus(itemType));
+        }
 
         #region Backing Functionality
+        
+        //private BitArray overrideMeta = new BitArray(ProgressionCount);
         private BitArray metaProgression = new BitArray(ProgressionCount);
         internal bool this[int index]
         {
-            get => metaProgression[index];
+            get => metaProgression[index] /*&& overrideMeta[index]*/;
             set
             {
-                metaProgression[index] = value;
-                if (Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient)
-                    SyncPlayer(-1, Main.myPlayer, false);
+                if(value && !metaProgression[index])
+                {
+                    metaProgression[index] = value;
+                    if(Main.netMode != 0)
+                    {
+                        SyncPlayer(-1, Main.myPlayer, false);
+                    }
+                }
             }
         }
         public override void SaveData(TagCompound tag)
         {
-            if(metaProgression?.HasAnySet() == true)
-                tag.Add("TerraCells:MetaProgress", metaProgression);
+            SaveFlags(tag);
+
+            SaveItems(tag);
         }
         public override void LoadData(TagCompound tag)
         {
-            int expectedLength = ProgressionCount;
-            if (tag.TryGet<BitArray>("TerraCells:MetaProgress", out metaProgression))
-            {
-                if (metaProgression.Length < expectedLength)
-                {
-                    BitArray oldBits = new BitArray(metaProgression);
-                    metaProgression = new BitArray(expectedLength);
-                    for (int i = 0; i < oldBits.Length; i++)
-                    {
-                        metaProgression[i] = oldBits[i];
-                    }
-                }
-            }
-            else
-            {
-                metaProgression = new BitArray(expectedLength);
-            }
+            LoadFlags(tag);
+
+            LoadItems(tag);
         }
 
         public override void OnEnterWorld()
@@ -83,38 +201,54 @@ namespace TerrariaCells.Common.ModPlayers
             //Common.Utilities.ModNetHandler.Handlers[Utilities.TCPacketType.PlayerPacket]
             ModPacket packet = Common.Utilities.ModNetHandler.GetPacket(Mod, Utilities.TCPacketType.PlayerPacket);
             packet.Write((byte)Content.Packets.PlayerPacketHandler.PlayerSyncType.MetaProgress);
-            byte len = 0;
-            for (byte i = 0; i < ProgressionCount; i++)
+            byte[] arr = new byte[1 + (ProgressionCount/sizeof(byte))];
+            //overrideMeta.CopyTo(arr, 0);
+            metaProgression.CopyTo(arr, 0);
+            packet.Write(arr, 0, arr.Length);
+
+            packet.Write(newPlayer);
+            if(newPlayer)
             {
-                if (metaProgression[i])
-                    len++;
+                packet.Write((ushort)_itemUnlocks.Count);
+                foreach(int key in _itemUnlocks.Keys)
+                {
+                    packet.Write7BitEncodedInt(key);
+                }
             }
-            packet.Write(len);
-            for (byte i = 0; i < ProgressionCount; i++)
-            {
-                if (metaProgression[i])
-                    packet.Write(i);
-            }
+            
             packet.Send(toWho, fromWho);
         }
         public void GetSyncPlayer(System.IO.BinaryReader reader)
         {
-            byte len = reader.ReadByte();
-            for (int i = 0; i < len; i++)
+            byte[] arr = new byte[1 + (ProgressionCount/sizeof(byte))];
+            reader.Read(arr, 0, arr.Length);
+            BitArray temp = new BitArray(arr);
+            for(int i = 0; i < temp.Length; i++)
             {
-                byte index = reader.ReadByte();
-                this.metaProgression[index] = true;
+                this[i] = temp[i];
+            }
+
+            if(reader.ReadBoolean())
+            {
+                _itemUnlocks = new Dictionary<int, UnlockState>();
+                ushort len = reader.ReadUInt16();
+                for(ushort i = 0; i < len; i++)
+                {
+                    //Server and other clients don't actually need to know beyond locked/unlocked
+                    UpdateItemStatus(reader.Read7BitEncodedInt(), UnlockState.Unlocked);
+                }
             }
         }
         public override void CopyClientState(ModPlayer targetCopy)
         {
             MetaPlayer copy = (MetaPlayer)targetCopy;
             copy.metaProgression = this.metaProgression;
+            //copy.overrideMeta = this.overrideMeta;
         }
         public override void SendClientChanges(ModPlayer clientPlayer)
         {
             MetaPlayer client = (MetaPlayer)clientPlayer;
-            if (!metaProgression.Equals(client.metaProgression))
+            if (!metaProgression.Equals(client.metaProgression) /*|| !overrideMeta.Equals(client.overrideMeta)*/)
             {
                 SyncPlayer(-1, Main.myPlayer, false);
             }
@@ -140,6 +274,58 @@ namespace TerrariaCells.Common.ModPlayers
             {
                 ["m_array"] = (int[])BitArray_ArrayINT_m_array.GetValue(value)
             };
+        }
+    }
+
+    public class UnlockItem : GlobalItem
+    {
+        public override bool AppliesToEntity(Item entity, bool lateInstantiation)
+        {
+            return ItemsJson.Instance.Category.ContainsKey(entity.type);
+        }
+
+        public override void UpdateInventory(Item item, Player player)
+        {
+            player.GetModPlayer<MetaPlayer>().UpdateItemStatus(item.type, UnlockState.Found);
+        }
+    }
+    
+    public class UnlockNPC : GlobalNPC
+    {
+        public override void OnKill(NPC npc)
+        {
+            foreach(Player player in Main.ActivePlayers)
+            {
+                MetaPlayer modPlayer = player.GetModPlayer<MetaPlayer>();
+                switch(npc.type)
+                {
+                    case NPCID.SkeletonSniper:
+                        modPlayer.UpdateItemStatus(ItemID.SniperRifle, UnlockState.Unlocked);
+                        modPlayer.UpdateItemStatus(ItemID.ReconScope, UnlockState.Unlocked);
+                        break;
+                    
+                    case NPCID.BrainofCthulhu:
+                        modPlayer.DownedBoC = true;
+                        break;
+                    case NPCID.EaterofWorldsHead:
+                    case NPCID.EaterofWorldsBody:
+                    case NPCID.EaterofWorldsTail:
+                        if(!NPC.AnyNPCs(NPCID.EaterofWorldsHead) && !NPC.AnyNPCs(NPCID.EaterofWorldsBody) && !NPC.AnyNPCs(NPCID.EaterofWorldsTail))
+                            modPlayer.DownedEoW = true;
+                        break;
+                    case NPCID.QueenBee:
+                        modPlayer.DownedQB = true;
+                        modPlayer.UpdateItemStatus(ItemID.Beenade, UnlockState.Unlocked);
+                        modPlayer.UpdateItemStatus(ItemID.HornetStaff, UnlockState.Unlocked);
+                        break;
+                    case NPCID.SkeletronHead:
+                        modPlayer.DownedSkele = true;
+                        break;
+                    case NPCID.WallofFlesh:
+                        modPlayer.DownedWoF = true;
+                        break;
+                }
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ namespace TerrariaCells.Content.Packets
                     int chest = reader.ReadInt32();
                     int x = Main.chest[chest].x;
                     int y = Main.chest[chest].y;
-                    spawner.OpenChest(x, y, chest);
+                    spawner.OpenChest(x, y, chest, fromWho);
                     // The only way to sync our custom chest system to clients is to send another packet, so here we go
                     if (Main.netMode == NetmodeID.MultiplayerClient) break;
                     ModPacket packet = mod.GetPacket();

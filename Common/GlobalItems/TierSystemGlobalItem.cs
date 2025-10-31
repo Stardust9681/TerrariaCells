@@ -28,7 +28,7 @@ namespace TerrariaCells.Common.GlobalItems
         public override bool AppliesToEntity(Item entity, bool lateInstantiation)
         {
             return (lateInstantiation && (entity.damage > 0 || entity.shoot != ItemID.None))
-                || InventoryManager.GetItemCategorization(entity.type) == TerraCellsItemCategory.Weapon;
+                || InventoryManager.GetItemCategorization(entity.type) == ItemsJson.ItemCategory.Weapons;
         }
 
         public override void SetDefaults(Item item)
@@ -93,8 +93,8 @@ namespace TerrariaCells.Common.GlobalItems
         }
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
-            TerraCellsItemCategory id = InventoryManager.GetItemCategorization(item.netID);
-            if (!(id == TerraCellsItemCategory.Weapon || id == TerraCellsItemCategory.Skill)) {
+            var id = InventoryManager.GetItemCategorization(item.netID);
+            if (!(id == ItemsJson.ItemCategory.Weapons || id == ItemsJson.ItemCategory.Abilities)) {
                 return;
             }
             // Iterate through the list of tooltips so we can change vanilla tooltips

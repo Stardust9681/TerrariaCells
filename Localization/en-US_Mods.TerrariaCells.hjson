@@ -407,3 +407,17 @@ unlocks: {
 	goblin: Unlocked the Goblin Tinkerer!
 	cloud: Unlocked double jump!
 }
+
+dialogue.guide.progress: Unlocks
+
+ui: {
+	metaprogress: {
+		entry_6: You have defeated the Wall of Flesh
+		entry_5: You have defeated Skeletron
+		entry_4: You have defeated the Queen Bee
+		entry_3: You have defeated the Eater of Worlds
+		entry_2: You have defeated the Brain of Cthulhu
+		entry_1: You unlocked the Goblin Tinkerer in the Inn
+		entry_0: You unlocked the Double Jump!
+	}
+}
