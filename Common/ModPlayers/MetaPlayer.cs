@@ -128,7 +128,7 @@ namespace TerrariaCells.Common.ModPlayers
         {
             if (state == UnlockState.Locked) return;
             UnlockState unlocked = CheckUnlocks(itemType);
-            if (unlocked != UnlockState.Unlocked) _itemUnlocks[itemType] = state;
+            if (unlocked != UnlockState.Found) _itemUnlocks[itemType] = state;
         }
         
         public IEnumerable<int> GetDropOptions(IEnumerable<int> fromAllItems)
