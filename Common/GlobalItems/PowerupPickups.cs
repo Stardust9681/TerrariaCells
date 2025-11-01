@@ -15,7 +15,8 @@ public class PowerupPickups : GlobalItem {
 
     public override void SetStaticDefaults()
     {
-        brainOfCthuluSpawnPoint = null; 
+        brainOfCthuluSpawnPoint = null;
+        ItemID.Sets.IgnoresEncumberingStone[ItemID.CloudinaBottle] = true;
     }
 
     public override void Update(Item item, ref float gravity, ref float maxFallSpeed)

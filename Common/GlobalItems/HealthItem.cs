@@ -6,11 +6,20 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrariaCells.Common.GlobalNPCs;
 
 namespace TerrariaCells.Common.Globals
 {
 	public class HealthItem : GlobalItem
 	{
+        public override void SetStaticDefaults()
+        {
+            foreach(int type in DropFoodHeals.TIER_ONE_FOOD.Concat(DropFoodHeals.TIER_TWO_FOOD).Concat(DropFoodHeals.TIER_THREE_FOOD))
+            {
+				ItemID.Sets.IgnoresEncumberingStone[type] = true;
+            }
+        }
+
 		private const bool _DO_FOOD_HIGHLIGHTS = true;
 		public override bool PreDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 		{
