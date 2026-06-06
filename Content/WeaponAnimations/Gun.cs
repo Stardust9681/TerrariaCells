@@ -8,6 +8,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using TerrariaCells.Common.GlobalItems;
 
 namespace TerrariaCells.Content.WeaponAnimations
 {
@@ -28,7 +29,6 @@ namespace TerrariaCells.Content.WeaponAnimations
         public int OriginalUseTime;
         public int OriginalUseAnimation;
         public int OriginalReuseDelay;
-        
 
         public override void SetDefaults(Item item)
         {
@@ -138,6 +138,24 @@ namespace TerrariaCells.Content.WeaponAnimations
                     break;
                  
             }
+            
+            if (!item.TryGetGlobalItem(out FunkyModifierItemModifier funkyModifiers))
+            {
+                return;
+            }
+        
+            foreach (FunkyModifier modifier in funkyModifiers.modifiers ?? [])
+            {
+                switch (modifier.modifierType)
+                {
+                    case FunkyModifierType.ExtraAmmo:
+                    {
+                        //Scale ammo of the weapon if it has the corresponding modifiers
+                        MaxAmmo = ScaleAmmo(MaxAmmo, modifier.modifier);
+                        break;
+                    }
+                }
+            }
 
             Ammo = MaxAmmo;
         }
@@ -179,5 +197,11 @@ namespace TerrariaCells.Content.WeaponAnimations
 				gun = item.GetGlobalItem<Launcher>();
 			return gun != null;
 		}
+
+        //Method to scale the ammo of the weapon if it has the extra ammo modifier
+        private int ScaleAmmo(int MaxAmmo, float AmmoScale)
+        {
+            return (int)(MaxAmmo * AmmoScale);
+        }
     }
 }

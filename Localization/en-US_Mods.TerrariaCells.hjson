@@ -414,6 +414,7 @@ Tooltips: {
 		ImbuedDamage: "{0}% damage, {1}% mana cost"
 		FrenzyFire: "{0}% damage, {0}% attack speed"
 		DamageOnDebuff: "{0}% damage vs targets afflicted by {2}"
+		ExtraAmmo: "{0}% more ammo"
 		CustomAmmoBullet: Weapon fires {2}s
 		ApplyDebuff: Inflicts {2} for {3} seconds
 		CritsExplode: Critical strikes are explosive

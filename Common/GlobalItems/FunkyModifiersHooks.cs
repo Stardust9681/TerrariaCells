@@ -14,6 +14,7 @@ using TerrariaCells.Common.Items;
 using TerrariaCells.Common.ModPlayers;
 using TerrariaCells.Common.Systems;
 using TerrariaCells.Common.Utilities;
+using TerrariaCells.Content.WeaponAnimations;
 using static Terraria.GameContent.Animations.IL_Actions.NPCs;
 
 namespace TerrariaCells.Common.GlobalItems;
