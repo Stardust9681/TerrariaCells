@@ -12,6 +12,7 @@ using Terraria.ModLoader.IO;
 using TerrariaCells.Common.Configs;
 using TerrariaCells.Common.GlobalItems;
 using TerrariaCells.Common.ModPlayers;
+using TerrariaCells.Content.WeaponAnimations;
 
 namespace TerrariaCells.Common.Systems;
 
@@ -120,6 +121,10 @@ public class ChestLootSpawner : ModSystem, IEntitySource
                         }
 
                         FunkyModifierItemModifier.Reforge(item);
+
+                        //Set defaults again if the item is a gun so that the extra ammo mod can be applied
+                        if(Gun.TryGetGlobalItem(item, out Gun gun))
+                            gun.SetDefaults(item);
                     } else {
                         NPC.NewNPC(this, x * 16, y * 16, NPCID.Firefly);
                     }
@@ -190,6 +195,10 @@ public class ChestLootSpawner : ModSystem, IEntitySource
                         }
 
                         FunkyModifierItemModifier.Reforge(item);
+
+                        //Set defaults again if the item is a gun so that the extra ammo mod can be applied
+                        if(Gun.TryGetGlobalItem(item, out Gun gun))
+                            gun.SetDefaults(item);
                     }
                 } else {
                     NPC.NewNPC(this, (x + 1) * 16, y * 16, NPCID.Firefly);

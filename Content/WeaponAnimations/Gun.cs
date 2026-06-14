@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using TerrariaCells.Common.GlobalItems;
@@ -150,8 +151,8 @@ namespace TerrariaCells.Content.WeaponAnimations
                 {
                     case FunkyModifierType.ExtraAmmo:
                     {
-                        //Scale ammo of the weapon if it has the corresponding modifiers
-                        MaxAmmo = ScaleAmmo(MaxAmmo, modifier.modifier);
+                        //Scale ammo of the weapon if it has the extra ammo modifier
+                        MaxAmmo = (int)(MaxAmmo * modifier.modifier);
                         break;
                     }
                 }
@@ -167,6 +168,11 @@ namespace TerrariaCells.Content.WeaponAnimations
                 Common.Systems.DeadCellsUISystem.ToggleActive<Content.UI.Reload>(true);
             }
         }
+
+        public override void OnCreated(Item item, ItemCreationContext context)
+        {
+            SetDefaults(item); //Literally just set defaults when creating the item so that the extra ammo mod is applied properly
+        }    
 
         public override GlobalItem Clone(Item from, Item to)
         {
@@ -197,11 +203,5 @@ namespace TerrariaCells.Content.WeaponAnimations
 				gun = item.GetGlobalItem<Launcher>();
 			return gun != null;
 		}
-
-        //Method to scale the ammo of the weapon if it has the extra ammo modifier
-        private int ScaleAmmo(int MaxAmmo, float AmmoScale)
-        {
-            return (int)(MaxAmmo * AmmoScale);
-        }
     }
 }

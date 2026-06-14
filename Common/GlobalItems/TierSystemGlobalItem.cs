@@ -8,6 +8,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using TerrariaCells.Common.Items;
+using TerrariaCells.Content.WeaponAnimations;
 
 namespace TerrariaCells.Common.GlobalItems
 {

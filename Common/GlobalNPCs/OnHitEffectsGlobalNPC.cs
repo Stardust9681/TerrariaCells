@@ -92,14 +92,9 @@ namespace TerrariaCells.Common.GlobalNPCs
 
                                 break;
                             }
-
-
                     }
-
                 }
-
             }
-
         }
     }
 }

@@ -16,6 +16,7 @@ using Terraria.Localization;
 using TerrariaCells.Common.GlobalItems;
 using TerrariaCells.Common.Items;
 using TerrariaCells.Content.UI;
+using TerrariaCells.Content.WeaponAnimations;
 
 //using static TerrariaCells.Common.Utilities.JsonUtil;
 
@@ -218,7 +219,6 @@ namespace TerrariaCells.Common.GlobalNPCs
             }
         }
     }
-
 	class NPCShopDetours : ModSystem {
         public override void Load()
         {
