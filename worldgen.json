@@ -162,6 +162,24 @@
                     "SpawnX": 93,
                     "SpawnY": 84,
                     "SpawnInfoPath": "Content/SpawnInfo/hive_1.json"
+                },
+                {
+                    "Name": "hive_2",
+                    "Path": "Content/Structures/hive_2.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": 25,
+                    "SpawnX": 457,
+                    "SpawnY": 84,
+                    "SpawnInfoPath": "Content/SpawnInfo/hive_2.json"
+                },
+                {
+                    "Name": "hive_3",
+                    "Path": "Content/Structures/hive_3.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": 25,
+                    "SpawnX": 187,
+                    "SpawnY": 47,
+                    "SpawnInfoPath": "Content/SpawnInfo/hive_3.json"
                 }
             ],
             "Surface": false

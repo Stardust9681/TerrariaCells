@@ -1,0 +1,275 @@
+[
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 201,
+        "Y" : 92
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 222,
+        "Y" : 89
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 254,
+        "Y" : 130
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 268,
+        "Y" : 121
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 284,
+        "Y" : 129
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 282,
+        "Y" : 150
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 286,
+        "Y" : 150
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 303,
+        "Y" : 128
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 297,
+        "Y" : 87
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 272,
+        "Y" : 74
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 250,
+        "Y" : 60
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 239,
+        "Y" : 31
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 262,
+        "Y" : 22
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 297,
+        "Y" : 33
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 325,
+        "Y" : 23
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 342,
+        "Y" : 76
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 354,
+        "Y" : 60
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 346,
+        "Y" : 105
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 394,
+        "Y" : 101
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 394,
+        "Y" : 71
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 410,
+        "Y" : 34
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 439,
+        "Y" : 45
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 403,
+        "Y" : 23
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 342,
+        "Y" : 72
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 429,
+        "Y" : 47
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2}
+                    ],
+        "X" : 537,
+        "Y" : 101
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 1}
+                    ],
+        "X" : 557,
+        "Y" : 99
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 303,
+        "Y" : 132
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 307,
+        "Y" : 87
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "Hornet", "Weight" : 6 },
+      { "Name" : "TargetDummy", "Weight" : 1 }
+                    ],
+        "X" : 407,
+        "Y" : 96
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "WitchDoctor", "Weight" : 2}
+                    ],
+        "X" : 577,
+        "Y" : 89
+    }
+]
