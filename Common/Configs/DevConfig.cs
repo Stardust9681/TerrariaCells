@@ -9,13 +9,13 @@ using Terraria.ModLoader.Config;
 
 namespace TerrariaCells.Common.Configs
 {
-	public class DevConfig// : ModConfig
+	public class DevConfig : ModConfig
 	{
-		//public override ConfigScope Mode => ConfigScope.ServerSide;
-		//[Newtonsoft.Json.JsonIgnore]
+		public override ConfigScope Mode => ConfigScope.ServerSide;
+		[Newtonsoft.Json.JsonIgnore]
 		private static DevConfig _instance;
-		//[Newtonsoft.Json.JsonIgnore]
-		public static DevConfig Instance => _instance ??= new();//Terraria.ModLoader.ModContent.GetInstance<DevConfig>();
+		[Newtonsoft.Json.JsonIgnore]
+		public static DevConfig Instance => Terraria.ModLoader.ModContent.GetInstance<DevConfig>();
 
 
         [Header("GameplaySettings")]
