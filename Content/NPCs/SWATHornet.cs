@@ -29,7 +29,6 @@ namespace TerrariaCells.Content.NPCs
             NPC.DeathSound = SoundID.NPCDeath1;
         }
         private ref float Timer => ref NPC.ai[0];
-        bool Aggrod = false; //True if the npc has been aggro'd. The npc never unaggros to avoid it flying off after moving behind walls.
         public override void AI()
         {
             Vector2 Speed = new Vector2(4.4f, 3.2f);
@@ -38,7 +37,7 @@ namespace TerrariaCells.Content.NPCs
             if (!NPC.HasValidTarget)
                 NPC.TargetClosest(false);
 
-            if (!NPC.TargetInAggroRange(32 * 16) && Timer < 5 && Aggrod == false)
+            if (!NPC.TargetInAggroRange(32 * 16) && Timer == 0)
             {
                 Common.GlobalNPCs.CombatNPC.ToggleContactDamage(NPC, false);
 
@@ -58,13 +57,11 @@ namespace TerrariaCells.Content.NPCs
                 {
                     NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.velocity.SafeNormalize(Vector2.Zero) * Speed, 0.08f);
                 }
-                Timer = 0;
                 return;
             }
             if (NPC.TryGetTarget(out Entity target))
             {
                 NPC.noTileCollide = true;
-                Aggrod = true;
 
                 //Initial follow to near position
                 if (Timer < 30)
@@ -113,7 +110,7 @@ namespace TerrariaCells.Content.NPCs
                     Vector2 end = target.Center - offset;
 
                     int timer = (int)Timer - 90;
-                    if(timer == 0)
+                    if(timer == 1)
                         NPC.DoAttackWarning();
                     if (timer < 20)
                     {
@@ -185,7 +182,7 @@ namespace TerrariaCells.Content.NPCs
                             proj.netUpdate = true;
                         }
                     }
-                    int timer = (int)Timer - 200;
+                    int timer = (int)Timer - 199;
                     NPC.velocity.X = MathHelper.Lerp(-NPC.ai[1] * Speed.X, 0, MathF.Min(timer / 15f, 1));
                     NPC.velocity.Y = MathHelper.Lerp(1f, 0, MathF.Abs(timer - 30) / 30f);
 
@@ -194,7 +191,7 @@ namespace TerrariaCells.Content.NPCs
                 }
                 else
                 {
-                    Timer = 0;
+                    Timer = 1;
                     NPC.ai[1] = 0;
                     NPC.ai[2] = 0;
                     NPC.ai[3] = 0;
