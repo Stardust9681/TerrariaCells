@@ -208,10 +208,8 @@ public class GraniteElemental : GlobalNPC, PreHitEffect.IGlobal, PreFindFrame.IG
         
             npc.ai[2] = (target.Center - npc.Center).ToRotation();
             npc.ai[3] = Main.rand.NextDirection();
-            Main.NewText(npc.ai[3]);
             if(npc.ai[3] != MathF.Sign(target.position.X - npc.position.X))
                 npc.ai[3] = Main.rand.NextDirection(); //Prefer swiping "down" on top of player
-            Main.NewText(npc.ai[3]);
             float rotationStartSweep = npc.ai[2] - (npc.ai[3] * MaxAngleRAD * AngleAdjustment);
             float rotationEndSweep = npc.ai[2] + (npc.ai[3] * MaxAngleRAD / AngleAdjustment);
             Vector2 spawnPos = Vector2.UnitX.RotatedBy(rotationStartSweep);
