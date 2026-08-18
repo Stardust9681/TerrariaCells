@@ -232,7 +232,7 @@ namespace TerrariaCells.Common.GlobalItems
             }
 
             item.useAnimation = item.useTime;
-            if (item.DamageType.CountsAsClass(DamageClass.Ranged))
+            if (!item.DamageType.CountsAsClass(DamageClass.Melee))
                 item.knockBack = 0;
 
             SetNameOverrides(item);

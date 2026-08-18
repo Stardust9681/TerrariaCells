@@ -5,6 +5,7 @@
     "_": "Used for shops and can be referenced by chests. Items here will be automatically provided categories based on placement.",
     
     "Weapons" : [
+      "WoodenBoomerang",
       "PhoenixBlaster",
       "SniperRifle",
       "OnyxBlaster",
