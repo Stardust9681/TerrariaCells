@@ -396,6 +396,8 @@ Projectiles: {
 	BeeMissileBee.DisplayName: Bee
 	DripplerExplosion.DisplayName: Drippler Explosion
 	InfernoPotionProjectile.DisplayName: Inferno Potion Projectile
+	GeodeBlast.DisplayName: Geode Blast
+	GraniteElementalExplosion.DisplayName: Granite Elemental Explosion
 }
 
 Tooltips: {

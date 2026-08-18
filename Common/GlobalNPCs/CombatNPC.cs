@@ -252,7 +252,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                 #region Caverns
                 case NPCID.GraniteFlyer: //Granite Elemental
                     npc.lifeMax = 200;
-                    npc.damage = 80;
+                    npc.damage = 50;
                     break;
                 case NPCID.Skeleton:
                     npc.lifeMax = 300;
