@@ -42,6 +42,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 entity.ai[1] = entity.Center.X;
                 entity.ai[2] = entity.Center.Y;
             }
+            if (entity.type == NPCID.RaggedCaster || entity.type == NPCID.RaggedCasterOpenCoat)
+            {
+                entity.knockBackResist = 0f;
+            }
         }
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
@@ -52,6 +56,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             if (npc.type == NPCID.CultistDevote)
             {
                 return DrawCultistDevotee(npc, spriteBatch, screenPos, drawColor);
+            }
+            if (npc.type == NPCID.RaggedCaster || npc.type == NPCID.RaggedCasterOpenCoat)
+            {
+                return DrawRaggedCaster(npc, spriteBatch, screenPos, drawColor);
             }
             return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
         }
@@ -64,6 +72,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             if (npc.type == NPCID.CultistDevote)
             {
                 CultistDevoteeFrame(npc);
+            }
+            if (npc.type == NPCID.RaggedCaster || npc.type == NPCID.RaggedCasterOpenCoat)
+            {
+                RaggedCasterFrame(npc);
             }
             base.FindFrame(npc, frameHeight);
         }
@@ -93,10 +105,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
         public override bool PreAI(NPC npc)
         {
-            //for diabolist and ragged caster, use existing AI but limit its aggro range
+            //for diabolist, use existing AI but limit its aggro range
             //so they don't fire from offscreen
-            if (npc.type == NPCID.DiabolistRed || npc.type == NPCID.DiabolistWhite ||
-                npc.type == NPCID.RaggedCaster || npc.type == NPCID.RaggedCasterOpenCoat)
+            if (npc.type == NPCID.DiabolistRed || npc.type == NPCID.DiabolistWhite)
             {
                 npc.TargetClosest();
                 if (npc.HasValidTarget && !npc.TargetInAggroRange(Main.player[npc.target], 640))
@@ -105,7 +116,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 }
             }
 
-            if (npc.type != NPCID.DesertDjinn && npc.type != NPCID.CultistDevote)
+            if (npc.type != NPCID.DesertDjinn 
+             && npc.type != NPCID.CultistDevote 
+             && npc.type != NPCID.RaggedCaster
+             && npc.type != NPCID.RaggedCasterOpenCoat)
                 return base.PreAI(npc);
 
             npc.TargetClosest();
@@ -122,6 +136,11 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
             {
                 return CultistDevoteeAI(npc, target);
             }
+            if (npc.type == NPCID.RaggedCaster || npc.type == NPCID.RaggedCasterOpenCoat)
+            {
+                return RaggedCasterAI(npc, target);
+            }
+
             return base.PreAI(npc);
         }
 

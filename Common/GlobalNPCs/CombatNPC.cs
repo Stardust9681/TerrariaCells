@@ -239,6 +239,10 @@ namespace TerrariaCells.Common.GlobalNPCs
                     npc.lifeMax = 125;
                     npc.damage = 60;
                     break;
+                case NPCID.DungeonSpirit:
+                    npc.lifeMax = 5;
+                    npc.damage = 40;
+                    break;
                 case NPCID.RustyArmoredBonesAxe:
                 case NPCID.RustyArmoredBonesFlail:
                 case NPCID.RustyArmoredBonesSword:
