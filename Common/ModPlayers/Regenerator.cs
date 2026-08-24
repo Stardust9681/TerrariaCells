@@ -32,7 +32,9 @@ namespace TerrariaCells.Common.ModPlayers
 
             IL_HorizontalBarsPlayerResourcesDisplaySet.Draw += IL_HorizontalBarsPlayerResourcesDisplaySet_Draw;
             IL_HorizontalBarsPlayerResourcesDisplaySet.LifeFillingDrawer += IL_HealthbarTextureSelect;
-        }
+
+			On_Player.UpdateLifeRegen += DoCustomRegen;
+		}
 
         public override void Unload()
 		{
@@ -40,6 +42,8 @@ namespace TerrariaCells.Common.ModPlayers
 
 			IL_HorizontalBarsPlayerResourcesDisplaySet.Draw -= IL_HorizontalBarsPlayerResourcesDisplaySet_Draw;
 			IL_HorizontalBarsPlayerResourcesDisplaySet.LifeFillingDrawer -= IL_HealthbarTextureSelect;
+
+			On_Player.UpdateLifeRegen -= DoCustomRegen;
 		}
 
 		#region Healthbar
@@ -278,20 +282,13 @@ namespace TerrariaCells.Common.ModPlayers
 			damageTime = 0;
 		}
 
-		public override void UpdateBadLifeRegen()
-		{
-			if (damageBuffer > 0)
-			{
-				UpdateDamageBuffer();
-			}
-		}
-
 		//Player unlikely to encounter such high amounts of damage that they see issues with this, disabled for now
 		private const bool SET_DECAY_FLOOR = false;
 
 		//Run damage stagger calcs: split into its own function so it can be moved more easily or whatever.
 		private void UpdateDamageBuffer()
 		{
+			if(damageBuffer <= 0) return;
 			damageTime++;
 			float timeAmp = TimeAmplitude;
 			float sqrt = MathF.Sqrt(timeAmp * damageTime);
@@ -416,21 +413,45 @@ namespace TerrariaCells.Common.ModPlayers
 		#endregion
 
 		#region Disable Health Regen
-        //Check 'regen' > 0 before setting to 0 to remove nullification of debuff damage
+		public bool heartLantern = false;
+		public bool campfire = false;
+		public override void ResetEffects()
+		{
+			heartLantern = false;
+			campfire = false;
+		}
+
+		public override void UpdateBadLifeRegen()
+		{
+			
+		}
+		
+		public override void UpdateLifeRegen()
+		{
+			if(Player.whoAmI == Main.myPlayer)
+			{
+				if(Main.SceneMetrics.HasHeartLantern && !heartLantern) Player.lifeRegen -= 2;
+				if(Main.SceneMetrics.HasCampfire && !campfire) Player.lifeRegen -= 1;
+			}
+		}
+
+		//Check 'regen' > 0 before setting to 0 to remove nullification of debuff damage
 		public override void NaturalLifeRegen(ref float regen)
 		{
 			regen = 0;
-			Player.lifeRegenTime = 0;
+			Player.lifeRegenTime -= 1f;
 		}
 
-		public override void UpdateLifeRegen()
+		private static void DoCustomRegen(On_Player.orig_UpdateLifeRegen orig, Player self)
 		{
-			Player.lifeRegen = 0;
+			orig.Invoke(self);
+			var modPlayer = self.GetModPlayer<Regenerator>();
+			modPlayer.UpdateDamageBuffer();
 		}
 		#endregion
 
 		#region Player Death
-		private string? deathReason = null;
+	private string? deathReason = null;
 		//Make sure player dies when they hit <=0 health
 		private void CheckDead()
 		{
