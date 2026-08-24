@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
@@ -18,7 +20,7 @@ using TerrariaCells.Content.Packets;
 
 namespace TerrariaCells.Common.GlobalNPCs
 {
-	public class BuffNPC : GlobalNPC
+	public class BuffNPC : GlobalNPC, Common.GlobalNPCs.ModifyApplyStatus.IGlobal
 	{
 		public override bool InstancePerEntity => true;
 		public override void Load()
@@ -38,6 +40,16 @@ namespace TerrariaCells.Common.GlobalNPCs
 			On_NPC.UpdateNPC_BuffApplyVFX -= On_NPC_UpdateNPC_BuffApplyVFX;
 			On_NPC.Transform -= On_NPC_Transform;
 		}
+
+        #region NPC Statuses
+        bool ModifyApplyStatus.IGlobal.ModifyStatus(NPC npc, ref int buffType, ref int duration)
+        {
+            if(buffType == BuffID.Darkness || buffType == BuffID.Blackout || buffType == BuffID.Slow || buffType == BuffID.Chilled)
+				return false;
+			
+			return true;
+        }
+		#endregion
 
 		private static readonly HashSet<int> BuffsToClear = new HashSet<int>()
 		{
