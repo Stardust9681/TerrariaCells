@@ -398,6 +398,7 @@ Projectiles: {
 	InfernoPotionProjectile.DisplayName: Inferno Potion Projectile
 	GeodeBlast.DisplayName: Geode Blast
 	GraniteElementalExplosion.DisplayName: Granite Elemental Explosion
+	MageHornetLightning.DisplayName: Mage Hornet Lightning
 }
 
 Tooltips: {
@@ -620,7 +621,11 @@ Tiles: {
 	DungeonPylon.MapEntry: Dungeon Pylon
 }
 
-NPCs.SWATHornet.DisplayName: SWAT Hornet
+NPCs: {
+	SWATHornet.DisplayName: SWAT Hornet
+	MageHornet.DisplayName: Mage Hornet
+}
+
 levelInputEmptyContextText: Forest
 structureInputEmptyContextText: forest_1
 idInputEmptyContextText: Forest
