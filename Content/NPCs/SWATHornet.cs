@@ -29,6 +29,7 @@ namespace TerrariaCells.Content.NPCs
             NPC.DeathSound = SoundID.NPCDeath1;
         }
         private ref float Timer => ref NPC.ai[0];
+        bool Aggrod = false; //True if the npc has been aggro'd. The npc never unaggros to avoid it flying off after moving behind walls.
         public override void AI()
         {
             Vector2 Speed = new Vector2(4.4f, 3.2f);
@@ -37,7 +38,7 @@ namespace TerrariaCells.Content.NPCs
             if (!NPC.HasValidTarget)
                 NPC.TargetClosest(false);
 
-            if (!NPC.TargetInAggroRange(32 * 16) && Timer < 5)
+            if (!NPC.TargetInAggroRange(32 * 16) && Timer < 5 && Aggrod == false)
             {
                 Common.GlobalNPCs.CombatNPC.ToggleContactDamage(NPC, false);
 
@@ -62,6 +63,9 @@ namespace TerrariaCells.Content.NPCs
             }
             if (NPC.TryGetTarget(out Entity target))
             {
+                NPC.noTileCollide = true;
+                Aggrod = true;
+
                 //Initial follow to near position
                 if (Timer < 30)
                 {
@@ -177,6 +181,7 @@ namespace TerrariaCells.Content.NPCs
                                 Main.myPlayer);
                             proj.hostile = true;
                             proj.friendly = false;
+                            proj.tileCollide = false;
                             proj.netUpdate = true;
                         }
                     }

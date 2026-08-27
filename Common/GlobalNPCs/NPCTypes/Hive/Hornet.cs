@@ -50,6 +50,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Hive
             npc.TargetClosest(false);
             if (npc.TryGetTarget(out Entity target) && npc.TargetInAggroRange(target, 512))
             {
+                npc.noTileCollide = true;
+
                 npc.ai[0] = 0;
                 npc.ai[1] = 1;
                 npc.ai[2] = -MathF.Sign(npc.position.X - target.position.X);
@@ -123,6 +125,9 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Hive
             npc.TargetClosest(false);
             if (!npc.TryGetTarget(out Entity target) || !npc.TargetInAggroRange(target, 550, false))
             {
+                if (Collision.SolidCollision(npc.position - new Vector2(-20, -20), npc.width + 40, npc.height + 40)) //Start colliding with blocks if not aggro'd but only if it is in a sufficiently large area
+                    npc.noTileCollide = false;
+
                 npc.ai[0] = 0;
                 npc.ai[1] = 0;
                 npc.ai[2] = 0;
@@ -194,7 +199,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Hive
             if (npc.ai[0] < (24 * 3) && (int)(npc.ai[0]) % 24 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
             {
                 Vector2 vel = npc.DirectionTo(target.Center) * 6.75f;
-                Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Bottom, vel, ProjectileID.Stinger, TCellsUtils.ScaledHostileDamage(npc.damage), 1f, Main.myPlayer);
+                Projectile proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Bottom, vel, ProjectileID.Stinger, TCellsUtils.ScaledHostileDamage(npc.damage), 1f, Main.myPlayer);
+                proj.tileCollide = false;
             }
 
             npc.direction = MathF.Sign(target.position.X - npc.position.X);
@@ -217,6 +223,16 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Hive
             if (npc.TryGetTarget(out Entity target))
             {
                 npc.ai[2] = MathF.Sign(target.position.X - npc.position.X) * MathF.Sqrt(MathF.Abs(target.position.X - npc.position.X)) * 0.0425f;
+
+                if (npc.position.Y > target.position.Y + 30) //If npc is below the target, change ai from jab to move
+                {
+                    npc.ai[0] = 0;
+                    npc.ai[1] = 1;
+                    npc.ai[2] = -MathF.Sign(npc.ai[2]);
+                    npc.ai[3] = 0;
+                    CombatNPC.ToggleContactDamage(npc, false);
+                    return;
+                }
             }
 
             if (npc.collideY && npc.oldVelocity.Y > 0 || npc.ai[3] > 0)
