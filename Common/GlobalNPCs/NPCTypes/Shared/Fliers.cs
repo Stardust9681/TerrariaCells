@@ -17,7 +17,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
     {
         public bool ShouldFly = true;
         public override bool InstancePerEntity => true;
-        public static int[] FlyingEnemies = { NPCID.Vulture, NPCID.Raven };
+        public static int[] FlyingEnemies = { NPCID.Vulture };
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
         {
             return FlyingEnemies.Contains(entity.type);
@@ -41,7 +41,6 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
         public override void OnSpawn(NPC npc, IEntitySource source)
         {
-            RavenSpawn(npc, source);
             base.OnSpawn(npc, source);
         }
 
@@ -53,19 +52,10 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 VultureAI(npc);
                 return false;
             }
-            if (npc.type == NPCID.Raven)
-            {
-                RavenAI(npc);
-                return false;
-            }
             return true;
         }
         public override void PostAI(NPC npc)
         {
-            if (npc.type == NPCID.Raven)
-            {
-                RavenPostAI(npc);
-            }
         }
         public override bool? CanFallThroughPlatforms(NPC npc)
         {
