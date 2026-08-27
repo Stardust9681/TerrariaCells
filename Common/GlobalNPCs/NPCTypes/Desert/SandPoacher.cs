@@ -164,7 +164,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
 
             //start stab
             //Conditions: Has a target. Is in walking phase. Is close to target. Is facing target.
-            if (npc.HasValidTarget && npc.ai[3] == 0 && npc.Distance(target.Center) < 80 && npc.IsFacingTarget(target))
+            if (npc.HasValidTarget && npc.ai[3] == 0 && npc.Distance(target.Center) < 10 * 16 && npc.IsFacingTarget(target))
             {
                 npc.ai[3] = 2;
             }
@@ -178,12 +178,12 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Shared
                 }
                 CombatNPC.ToggleContactDamage(npc, true);
                 ShouldWalk = false;
-                npc.velocity.X *= 0.9f;
+                npc.velocity.X *= 0.99f;
                 npc.direction = npc.oldDirection;
                 ExtraAI[0]++;
                 if (ExtraAI[0] == 20)
                 {
-                    npc.velocity.X = 5 * npc.direction;
+                    npc.velocity.X = 7 * npc.direction;
                 }
                 if (ExtraAI[0] == 25)
                 {
