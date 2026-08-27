@@ -285,6 +285,19 @@ public class MageHornet : ModNPC, OnAnyPlayerHit.INPC
         return false;
     }
 
+    public override void HitEffect(NPC.HitInfo hit)
+    {
+        for(int i = 0; i < 20; i++)
+        {
+            Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.CorruptGibs, hit.HitDirection, -2f);
+        }
+        if(NPC.life < 1)
+        {
+            Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, 70, NPC.scale);
+            Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, 71, NPC.scale);
+        }
+    }
+
     public void OnAnyPlayerHit(Player attacker, NPC.HitInfo hit, int damage)
     {
         if(hit.DamageType.CountsAsClass(DamageClass.Melee))

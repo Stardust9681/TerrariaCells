@@ -224,12 +224,14 @@ namespace TerrariaCells.Content.NPCs
 
         public override void HitEffect(NPC.HitInfo hit)
         {
-            if (Main.netMode != NetmodeID.Server && NPC.life < 1)
+            for (int i = 0; i < 20; i++)
             {
-                for (int i = 0; i < Main.rand.Next(1, 3); i++)
-                {
-                    Gore.NewGore(NPC.GetSource_Death(), NPC.position, new Vector2(hit.HitDirection * hit.Knockback, 0).RotatedByRandom(MathHelper.ToRadians(15)), Main.rand.Next(70, 72));
-                }
+                Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.CorruptGibs, hit.HitDirection, -2f);
+            }
+            if (NPC.life < 1)
+            {
+                Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, 70, NPC.scale);
+                Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, 71, NPC.scale);
             }
         }
     }
