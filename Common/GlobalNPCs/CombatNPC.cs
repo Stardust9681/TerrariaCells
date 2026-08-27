@@ -141,7 +141,7 @@ namespace TerrariaCells.Common.GlobalNPCs
                 case NPCID.Crimslime:
                     npc.lifeMax = 140;
                     npc.damage = 30;
-                    npc.knockBackResist = 0f;
+                    npc.knockBackResist = 1f;
                     break;
                 case NPCID.BrainofCthulhu:
                     npc.lifeMax = 2000;

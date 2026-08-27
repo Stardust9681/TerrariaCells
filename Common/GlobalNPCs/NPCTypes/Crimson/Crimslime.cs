@@ -71,7 +71,8 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			int Length = end - start;
 			if (start < npc.ai[0] && npc.ai[0] < end)
 			{
-				npc.velocity.X = TCellsUtils.LerpFloat(0, velocity, timer, Length, TCellsUtils.LerpEasing.Bell, start, true);
+				float targetSpeedX = TCellsUtils.LerpFloat(0, velocity, timer, Length, TCellsUtils.LerpEasing.Bell, start, true);
+				npc.velocity.X = MathHelper.Lerp(npc.velocity.X, targetSpeedX, 0.2f);
 			}
 			else
 			{
@@ -98,7 +99,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			if (npc.TryGetTarget(out Entity target) && npc.TargetInAggroRange(ToTileDist(24)))
 			{
 				ResetAI(npc);
-				if (Distance(target.position.Y, npc.position.Y) > ToTileDist(4) || target.velocity.Y < 0)
+				if (Distance(target.position.Y, npc.position.Y) > ToTileDist(5) || target.velocity.Y < 0)
 				{
 					npc.DoAttackWarning();
 					npc.ai[1] = Jump;
@@ -140,6 +141,7 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
 			}
 			if (npc.ai[0] == 0)
 			{
+				npc.ai[0]++;
 				npc.ai[2] = DirectionFromTo(npc.Center.X, target.Center.X);
 				npc.DoAttackWarning();
 			}
@@ -306,8 +308,14 @@ namespace TerrariaCells.Common.GlobalNPCs.NPCTypes.Crimson
                 switch ((int)npc.ai[1])
                 {
                     case Lunge:
-                        npc.ai[0] = MathF.Max(npc.ai[0]-8, 0);
-                        npc.velocity.X *= 0.5f;
+                        npc.ai[0] += 5;
+						npc.ai[3]++;
+						if(npc.ai[3] > 2)
+						{
+							npc.velocity.X *= 2f;
+							ResetAI(npc);
+							npc.ai[1] = Idle;
+						}
                         break;
                 }
             }
