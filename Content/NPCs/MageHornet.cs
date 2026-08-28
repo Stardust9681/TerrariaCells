@@ -144,12 +144,14 @@ public class MageHornet : ModNPC, OnAnyPlayerHit.INPC
         }
         
         Vector2 movePos;
+        int iterations = 0;
         do
         {
             movePos = target.position + Vector2.UnitX.RotatedBy(NPC.ai[0]) * (12 * 16);
             NPC.ai[0]++;
+            iterations++;
         }
-        while(!Collision.CanHitLine(movePos, NPC.width, NPC.height, target.position, target.width, target.height));
+        while(!Collision.CanHitLine(movePos, NPC.width, NPC.height, target.position, target.width, target.height) && iterations < 30);
         NPC.ai[0]--;
 
         if (movePos.X - NPC.position.X != 0 && MathF.Abs(NPC.velocity.X) < 4f)
