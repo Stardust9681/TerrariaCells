@@ -28,7 +28,6 @@ public class MageHornet : ModNPC, OnAnyPlayerHit.INPC
         NPC.height = 36;
         NPC.HitSound = SoundID.NPCHit1;
         NPC.DeathSound = SoundID.NPCDeath1;
-        NPC.noTileCollide = true;
     }
 
     private const int Idle = 0;
@@ -56,63 +55,53 @@ public class MageHornet : ModNPC, OnAnyPlayerHit.INPC
     private void IdleAI()
     {
         CombatNPC.ToggleContactDamage(NPC, false);
-        int[] followNPCTypes = [ NPCID.Hornet, ModContent.NPCType<NPCs.SWATHornet>() ];
         
-        if(NPC.ai[0] == 0 || !Main.npc[(int)NPC.ai[0]].active)
+        Vector2 movePos = new Vector2(NPC.ai[2], NPC.ai[3]);
+
+        if (movePos.X == 0 || movePos.Y == 0)
         {
-            foreach(NPC npc in Main.ActiveNPCs)
-            {
-                if(followNPCTypes.Contains(npc.type) && Collision.CanHitLine(NPC.Center, 8, 8, npc.Center, 8, 8))
-                {
-                    NPC.ai[0] = npc.whoAmI + 1; //+1 since ai[0] starts at 0, which is a valid NPC index
-                    NPC.ai[2] = 0;
-                    NPC.ai[3] = 0;
-                    break;
-                }    
-            }
-        }
-        
-        Vector2 movePos;
-        if(NPC.ai[0] == 0)
-        {
-            movePos = new Vector2(NPC.ai[2], NPC.ai[3]);
-
-            if (movePos.X == 0 || movePos.Y == 0)
-            {
-                if (Main.netMode == NetmodeID.MultiplayerClient)
-                    return;
-
-                for (int i = 0; i < 15; i++)
-                {
-                    movePos = NPC.position;
-                    Vector2 direction = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi);
-
-                    int iterations = 0;
-                    while (Collision.CanHitLine(NPC.position, NPC.width, NPC.height, movePos, NPC.width, NPC.height) && iterations < 8)
-                    {
-                        movePos += direction * 16;
-                        iterations++;
-                    }
-                    movePos -= direction * 16;
-                    if (iterations > 3)
-                        break;
-                }
-                NPC.ai[2] = movePos.X;
-                NPC.ai[3] = movePos.Y;
-                NPC.netUpdate = true;
+            if (Main.netMode == NetmodeID.MultiplayerClient)
                 return;
+
+            for (int i = 0; i < 15; i++)
+            {
+                movePos = NPC.position;
+                Vector2 direction = Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi);
+
+                int iterations = 0;
+                while (Collision.CanHitLine(NPC.position, NPC.width, NPC.height, movePos, NPC.width, NPC.height) && iterations < 8)
+                {
+                    movePos += direction * 16;
+                    iterations++;
+                }
+                movePos -= direction * 16;
+                if (iterations > 3)
+                    break;
             }
-        }
-        else
-        {
-            movePos = Main.npc[(int)NPC.ai[0]].Center;
-            movePos += (NPC.Center - movePos).SafeNormalize(-Vector2.UnitY) * 24f;
+            NPC.ai[2] = movePos.X;
+            NPC.ai[3] = movePos.Y;
+            NPC.netUpdate = true;
+            return;
         }
 
         if (movePos.X - NPC.position.X != 0)
             NPC.velocity.X += MathF.Sign(movePos.X - NPC.position.X) * MathF.Sqrt(MathF.Abs(movePos.X - NPC.position.X)) * 0.005f;
 
         NPC.velocity.Y += (movePos.Y < NPC.position.Y ? -1 : 1) * 0.024f;
+
+        if(NPC.DistanceSQ(movePos) < 40 * 40)
+        {
+            NPC.velocity *= 0.998f;
+        
+            NPC.ai[0]++;
+            if(NPC.ai[0] > 30)
+            {
+                NPC.ai[2] = 0;
+                NPC.ai[3] = 0;
+                NPC.netUpdate = true;
+                return;
+            }
+        }
 
         Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
 
@@ -134,6 +123,7 @@ public class MageHornet : ModNPC, OnAnyPlayerHit.INPC
     private void MoveAI()
     {
         CombatNPC.ToggleContactDamage(NPC, false);
+        NPC.noTileCollide = true;
         if(!NPC.TryGetTarget(out Entity target))
         {
             NPC.ai[0] = 0;
@@ -195,6 +185,7 @@ public class MageHornet : ModNPC, OnAnyPlayerHit.INPC
     private void AttackAI()
     {
         CombatNPC.ToggleContactDamage(NPC, false);
+        NPC.noTileCollide = true;
         if (!NPC.TryGetTarget(out Entity target))
             target = NPC;
         
