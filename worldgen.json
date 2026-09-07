@@ -89,7 +89,7 @@
                     "Name": "crimson_1",
                     "Path": "Content/Structures/crimson_1.shstruct",
                     "OffsetX": 0,
-                    "OffsetY": 11,
+                    "OffsetY": -10,
                     "SpawnX": 169,
                     "SpawnY": 138,
                     "SpawnInfoPath": "Content/SpawnInfo/crimson_1.json"
@@ -102,6 +102,15 @@
                     "SpawnX": 107,
                     "SpawnY": 75,
                     "SpawnInfoPath": "Content/SpawnInfo/crimson_2.json"
+                },
+                {
+                    "Name": "crimson_3",
+                    "Path": "Content/Structures/crimson_3.shstruct",
+                    "OffsetX": 0,
+                    "OffsetY": -10,
+                    "SpawnX": 268,
+                    "SpawnY": 39,
+                    "SpawnInfoPath": "Content/SpawnInfo/crimson_3.json"
                 }
             ],
             "Surface": false

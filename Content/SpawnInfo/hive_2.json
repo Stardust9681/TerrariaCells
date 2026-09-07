@@ -2,6 +2,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -11,6 +12,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -20,6 +22,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -29,6 +32,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -38,6 +42,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -47,6 +52,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -56,6 +62,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -65,6 +72,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -74,6 +82,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -83,6 +92,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -92,6 +102,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -101,6 +112,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -110,6 +122,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -119,6 +132,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -128,6 +142,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -137,6 +152,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -146,6 +162,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -155,6 +172,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -164,6 +182,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -173,6 +192,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -182,6 +202,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -191,6 +212,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -200,6 +222,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -209,6 +232,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -218,6 +242,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -241,6 +266,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -250,6 +276,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],
@@ -259,6 +286,7 @@
     { 
         "WIdPool" : [
       { "Name" : "SWATHornet", "Weight" : 2},
+      { "Name" : "MageHornet", "Weight" : 2},
       { "Name" : "Hornet", "Weight" : 6 },
       { "Name" : "TargetDummy", "Weight" : 1 }
                     ],

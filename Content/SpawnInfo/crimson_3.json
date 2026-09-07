@@ -1,0 +1,799 @@
+[
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 203,
+        "Y" : 218
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 215,
+        "Y" : 219
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 194,
+        "Y" : 217
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 208,
+        "Y" : 195
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 203,
+        "Y" : 195
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 226,
+        "Y" : 197
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 253,
+        "Y" : 197
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 205,
+        "Y" : 164
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 220,
+        "Y" : 165
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 246,
+        "Y" : 160
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 288,
+        "Y" : 172
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 298,
+        "Y" : 171
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 321,
+        "Y" : 167
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 340,
+        "Y" : 173
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 331,
+        "Y" : 173
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 146,
+        "Y" : 120
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 165,
+        "Y" : 119
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 153,
+        "Y" : 78
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 166,
+        "Y" : 79
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 187,
+        "Y" : 75
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 183,
+        "Y" : 75
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 212,
+        "Y" : 76
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 216,
+        "Y" : 76
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 238,
+        "Y" : 74
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 259,
+        "Y" : 89
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 263,
+        "Y" : 89
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 311,
+        "Y" : 76
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 329,
+        "Y" : 70
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 365,
+        "Y" : 66
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 360,
+        "Y" : 66
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 359,
+        "Y" : 84
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 319,
+        "Y" : 104
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 330,
+        "Y" : 104
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 313,
+        "Y" : 144
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 333,
+        "Y" : 136
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 388,
+        "Y" : 120
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 272,
+        "Y" : 80
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 319,
+        "Y" : 225
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 325,
+        "Y" : 225
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 349,
+        "Y" : 238
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 414,
+        "Y" : 200
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 404,
+        "Y" : 200
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 2},
+      { "Name" : "Crimslime", "Weight" : 2},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 407,
+        "Y" : 200
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 184,
+        "Y" : 78
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 205,
+        "Y" : 177
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 244,
+        "Y" : 181
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 164,
+        "Y" : 128
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 160,
+        "Y" : 128
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 122,
+        "Y" : 120
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 260,
+        "Y" : 115
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 275,
+        "Y" : 131
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 339,
+        "Y" : 82
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 348,
+        "Y" : 93
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 368,
+        "Y" : 94
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 347,
+        "Y" : 112
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 288,
+        "Y" : 150
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 362,
+        "Y" : 182
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 375,
+        "Y" : 192
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 401,
+        "Y" : 210
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 378,
+        "Y" : 220
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 368,
+        "Y" : 235
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 187,
+        "Y" : 118
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 210,
+        "Y" : 113
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 204,
+        "Y" : 230
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 178,
+        "Y" : 237
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "SkeletonSniper", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 0},
+      { "Name" : "TargetDummy", "Weight" : 0}
+                    ],
+        "X" : 129,
+        "Y" : 233
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 386,
+        "Y" : 128
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 175,
+        "Y" : 86
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 209,
+        "Y" : 83
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 2},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 2},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 220,
+        "Y" : 171
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 0},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 5},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 391,
+        "Y" : 166
+    },
+    { 
+        "WIdPool" : [
+      { "Name" : "Crimera", "Weight" : 0},
+      { "Name" : "BloodCrawler", "Weight" : 0},
+      { "Name" : "Crimslime", "Weight" : 0},
+      { "Name" : "Drippler", "Weight" : 5},
+      { "Name" : "TargetDummy", "Weight" : 1}
+                    ],
+        "X" : 318,
+        "Y" : 169
+    },
+    {
+        "Name": "BrainofCthulhu",
+        "X": 84,
+        "Y": 26
+    }
+]
