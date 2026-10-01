@@ -152,6 +152,39 @@ namespace TerrariaCells.Common.GlobalNPCs
         }
     }
 
+    public class ModifyApplyStatus : ILoadable
+    {
+        public interface INPC //Used for ModNPC
+        {
+            bool ModifyStatus(ref int buffType, ref int duration);
+        }
+        public interface IGlobal //Used for GlobalNPC
+        {
+            bool ModifyStatus(NPC npc, ref int buffType, ref int duration);
+        }
+        private static GlobalHookList<GlobalNPC> _hook;
+        internal static bool Invoke(NPC npc, ref int buffType, ref int duration)
+        {
+            if (npc.ModNPC is INPC n)
+                if (!n.ModifyStatus(ref buffType, ref duration)) return false;
+
+            foreach (GlobalNPC g in _hook.Enumerate(npc))
+            {
+                if (g is not IGlobal ig) continue;
+
+                if (!ig.ModifyStatus(npc, ref buffType, ref duration)) return false;
+            }
+            return true;
+        }
+        public void Load(Mod mod)
+        {
+            _hook = NPCLoader.AddModHook(GlobalHookList<GlobalNPC>.Create(e => ((IGlobal)e).ModifyStatus));
+        }
+        public void Unload()
+        {
+            _hook = null;
+        }
+    }
     public class NPCTypeEdits : GlobalNPC
     {
         public override void Load()
@@ -159,6 +192,7 @@ namespace TerrariaCells.Common.GlobalNPCs
             IL_NPC.StrikeNPC_HitInfo_bool_bool += IL_StrikeNPC;
             IL_NPC.FindFrame += IL_NPC_FindFrame;
             On_NPC.VanillaHitEffect += On_NPC_VanillaHitEffect;
+            IL_Player.StatusFromNPC += IL_Player_StatusFromNPC;
         }
 
         public override void Unload()
@@ -166,6 +200,10 @@ namespace TerrariaCells.Common.GlobalNPCs
             IL_NPC.StrikeNPC_HitInfo_bool_bool -= IL_StrikeNPC;
             IL_NPC.FindFrame -= IL_NPC_FindFrame;
             On_NPC.VanillaHitEffect -= On_NPC_VanillaHitEffect;
+            
+            Mod.Logger.Info("Start loading Status IL...");
+            IL_Player.StatusFromNPC -= IL_Player_StatusFromNPC;
+            Mod.Logger.Info("Finish loading Status IL...");
         }
 
         private void IL_StrikeNPC(ILContext context)
@@ -272,6 +310,56 @@ namespace TerrariaCells.Common.GlobalNPCs
             {
                 npc.position -= npc.netOffset;
             }
+        }
+
+        private static class StatusVars
+        {
+            public static int Type;
+            public static int Time;
+            public static bool Quiet;
+            public static bool FoodHack;
+            
+            public static readonly FieldInfo Fld_Type = typeof(StatusVars).GetField("Type", BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField);
+            public static readonly FieldInfo Fld_Time = typeof(StatusVars).GetField("Time", BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField);
+            public static readonly FieldInfo Fld_Quiet = typeof(StatusVars).GetField("Quiet", BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField);
+            public static readonly FieldInfo Fld_FoodHack = typeof(StatusVars).GetField("FoodHack", BindingFlags.Public | BindingFlags.Static | BindingFlags.GetField);
+        }
+        private static void IL_Player_StatusFromNPC(ILContext context)
+        {
+            var modInstance = ModContent.GetInstance<TerrariaCells>();
+            ILCursor cursor = new ILCursor(context);
+            
+            while(cursor.TryGotoNext(
+                i => i.MatchCall<Player>(nameof(Player.AddBuff))
+            ))
+            {
+                cursor.Index++;
+                ILLabel skipAddBuff = cursor.MarkLabel();
+                cursor.GotoLabel(skipAddBuff, MoveType.Before);
+                cursor.Index--;
+                cursor.EmitLdarg1(); //NPC
+                cursor.EmitDelegate(HandleAddBuff);
+                cursor.EmitBrtrue(skipAddBuff);
+                cursor.EmitLdarg0(); //Player
+                cursor.EmitLdsfld(StatusVars.Fld_Type);
+                cursor.EmitLdsfld(StatusVars.Fld_Time);
+                cursor.EmitLdsfld(StatusVars.Fld_Quiet);
+                cursor.EmitLdsfld(StatusVars.Fld_FoodHack);
+                
+                //ENSURE NO INFINITE LOOP
+                cursor.Index++;
+            }
+        }
+        private static bool HandleAddBuff(Player player, int type, int time, bool quiet, bool foodHack, NPC npc)
+        {
+            bool result = ModifyApplyStatus.Invoke(npc, ref type, ref time);
+        
+            StatusVars.Type = type;
+            StatusVars.Time = time;
+            StatusVars.Quiet = quiet;
+            StatusVars.FoodHack = foodHack;
+            
+            return result;
         }
 
         private void On_NPC_VanillaHitEffect(On_NPC.orig_VanillaHitEffect orig, NPC self, int hitDirection, double dmg, bool instantKill)
